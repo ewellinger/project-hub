@@ -27,6 +27,10 @@ logs instead of on a live tmux server. The fixture also points
 `GIT_CONFIG_GLOBAL` at its own file, so your global git config never leaks
 into a test.
 
+The `skill` integration test checks that every command the table in
+`skills/hub/SKILL.md` names still exists and that the generated copies stay
+untracked, so a renamed or removed command needs a matching skill edit.
+
 ## Branches and pull requests
 
 - Work on a branch; open a PR against `main`. CI must be green before merge.
