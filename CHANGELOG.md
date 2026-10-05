@@ -6,6 +6,16 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-10-04
+
+First release from the public repository; its git history starts at this version.
+
+### Changed
+- README examples and test fixtures use neutral `acme` names.
+
+### Removed
+- The internal design specs and plans under `docs/`.
+
 ## [0.19.0] - 2026-10-04
 
 ### Added
