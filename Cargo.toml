@@ -1,6 +1,6 @@
 [package]
 name = "project-hub"
-version = "0.19.0"
+version = "0.20.0"
 edition = "2024"
 rust-version = "1.88"
 description = "Coordinate features that span several git repositories"
