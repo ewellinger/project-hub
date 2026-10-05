@@ -101,7 +101,7 @@ impl App {
     /// lands back on that row; the status request is the same one `Enter`
     /// makes. Refused, with the reason in the footer, when the feature is
     /// finished or unknown. Shared by `Enter` and startup from a feature
-    /// worktree (EW-71).
+    /// worktree.
     pub fn enter_feature(&mut self, name: &str) -> Vec<Effect> {
         match self.feature_summary(name).map(|s| s.status) {
             None => {

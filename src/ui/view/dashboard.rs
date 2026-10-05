@@ -202,7 +202,7 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
     };
     let widths = [
         Constraint::Length(width_of(&|r| r.role.chars().count(), 4, 16)),
-        // The branch is the distinguishing name; never truncate it (EW-56).
+        // The branch is the distinguishing name; never truncate it.
         Constraint::Length(width_of(&|r| r.branch.chars().count(), 6, usize::MAX)),
         Constraint::Length(width_of(&|r| r.stage.chars().count(), 5, 8)),
         Constraint::Length(width_of(&|r| state_text(r).chars().count(), 5, 40)),
