@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 use std::io::Write;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 
@@ -154,7 +154,14 @@ pub fn write_json<T: Serialize>(path: &Path, value: &T) -> Result<()> {
     let mut text = serde_json::to_string_pretty(value)
         .map_err(|e| HubError::Precondition(format!("serializing {}: {e}", path.display())))?;
     text.push('\n');
-    let tmp = path.with_extension("json.tmp");
+    write_atomic(path, &text)
+}
+
+/// `text` written to a temp file beside `path` and renamed into place.
+pub fn write_atomic(path: &Path, text: &str) -> Result<()> {
+    let mut tmp = path.as_os_str().to_owned();
+    tmp.push(".tmp");
+    let tmp = PathBuf::from(tmp);
     // Since 0.13.0 a feature record has no second copy in git, so the temp
     // file is flushed to disk before the rename: a crash in between leaves
     // the previous record, never a truncated one.

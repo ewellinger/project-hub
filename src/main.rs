@@ -38,6 +38,15 @@ enum Command {
         #[arg(long)]
         force: bool,
     },
+    /// Show the configuration, or change it with set/unset
+    #[command(args_conflicts_with_subcommands = true)]
+    Config {
+        /// Machine-readable output
+        #[arg(long)]
+        json: bool,
+        #[command(subcommand)]
+        command: Option<ConfigCommand>,
+    },
     /// Register or unregister member repos
     Repo {
         #[command(subcommand)]
@@ -87,6 +96,14 @@ enum Command {
         #[arg(long)]
         json: bool,
     },
+}
+
+#[derive(Subcommand)]
+enum ConfigCommand {
+    /// Validate VALUE and write it to the config file
+    Set { key: String, value: String },
+    /// Remove KEY from the config file
+    Unset { key: String },
 }
 
 #[derive(Subcommand)]
@@ -329,6 +346,15 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 force,
             },
         ),
+        Command::Config { json, command } => {
+            let file = ops::config::ConfigFile::from_process()?;
+            match command {
+                None if json => Ok(vec![file.render_json(&file.show()?)?]),
+                None => Ok(file.render(&file.show()?)),
+                Some(ConfigCommand::Set { key, value }) => file.set(&key, &value),
+                Some(ConfigCommand::Unset { key }) => file.unset(&key),
+            }
+        }
         Command::Repo { command } => {
             let hub = locate()?;
             match command {

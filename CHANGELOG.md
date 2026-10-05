@@ -6,6 +6,15 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-10-05
+
+### Added
+- `hub config` shows each config key with its effective value and source (variable, file, or default), with `--json`; `hub config set KEY VALUE` and `hub config unset KEY` edit `config.toml`, validating the value and keeping comments. They run outside a hub, so a fresh install can configure itself.
+
+### Changed
+- The README is reorganized for first-time readers: a quick start near the top, the reference prose grouped under "How it works", and upgrade notes for hubs created by older versions removed (they remain in this changelog).
+- The "not set" error names `hub config set`.
+
 ## [0.20.0] - 2026-10-04
 
 First release from the public repository; its git history starts at this version.

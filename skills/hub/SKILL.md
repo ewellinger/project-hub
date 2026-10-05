@@ -35,6 +35,7 @@ A hub is a git repo, shared through a remote when the project has one, whose `hu
 | Create or repair the tmux session (never attaches) | `hub tmux` |
 | Open the VS Code workspace (all base clones from the main hub) | `hub open` |
 | Regenerate the workspace file | `hub sync` |
+| Show each config key's value and where it comes from; change or remove a key in `config.toml` | `hub config [--json]`, `hub config set KEY VALUE`, `hub config unset KEY` |
 
 Commands that act on a feature infer it from the hub worktree you are in. Anywhere else, pass `--feature NAME`. `hub <command> --help` explains each flag. `hub` never prompts when stdin is not a terminal, so pass every role and branch explicitly; `hub feature add` needs its role, and `hub feature start` without `--repo` is a docs-only start. Bare `hub` opens an interactive dashboard only in a terminal; the skill always passes a subcommand.
 

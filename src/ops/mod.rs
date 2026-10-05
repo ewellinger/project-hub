@@ -1,4 +1,5 @@
 pub mod add;
+pub mod config;
 pub mod finish;
 pub mod init;
 pub mod list;
