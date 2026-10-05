@@ -46,9 +46,16 @@ From a clone: `cargo install --locked --path .`.
 
 ### Configuration
 
-`hub` needs to know where main clones and worktrees live. Put both in
-`~/.config/hub/config.toml` (`$XDG_CONFIG_HOME/hub/config.toml` when that
-variable is set; the path is the same on macOS and Linux):
+`hub` needs to know where main clones and worktrees live. Set both once:
+
+```bash
+hub config set project_home ~/workspace
+hub config set worktree_dir ~/workspace/worktrees
+```
+
+This writes `~/.config/hub/config.toml` (`$XDG_CONFIG_HOME/hub/config.toml`
+when that variable is set; the path is the same on macOS and Linux), which
+you can also edit by hand:
 
 ```toml
 project_home = "~/workspace"           # main clones live at <project_home>/<clone>
@@ -63,6 +70,13 @@ arguments work (`"code --new-window"`) but quoting and `$VAR` do not. The
 environment variables `PROJECT_HOME` and `GIT_WORKTREE_DIR`, when set and
 non-empty, override the file's two paths. With neither source, every command
 exits with the file's path and the example above.
+
+`hub config` lists every key with its effective value and where it comes
+from (the variable, the file, or the default), and `--json` gives the same
+for scripts. `hub config set KEY VALUE` checks the value the way every
+command does (directories must exist, `tmux` is `true` or `false`) before
+writing, keeps comments and other keys, and refuses unknown keys; `hub
+config unset KEY` removes one.
 
 ### Without tmux
 
@@ -122,6 +136,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature list [--all] [--json]` | Open features with the stage of each role; `--all` includes finished ones |
 | `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
+| `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
 | `hub tmux` / `hub open` / `hub sync` | Repair the session / open the workspace / regenerate it; from the main hub, `open` uses all base checkouts |
 
 Feature commands infer the feature from the hub worktree you are in, or take
