@@ -37,6 +37,7 @@ ratatui = { version = "=0.30.2", features = ["unstable-rendered-line-info"] }
 crossterm = "0.29"
 toml = { version = "1", default-features = false, features = ["std", "parse", "serde"] }
 arboard = { version = "3", default-features = false, features = ["wayland-data-control"] }
+toml_edit = { version = "0.25", default-features = false, features = ["parse", "display"] }
 
 [dev-dependencies]
 tempfile = "3.27"

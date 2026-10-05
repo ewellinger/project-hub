@@ -154,7 +154,7 @@ impl Env {
         if !missing.is_empty() {
             let verb = if missing.len() == 1 { "is" } else { "are" };
             return Err(HubError::Usage(format!(
-                "{} {verb} not set; create {shown_path} with\n\n{}\n\nor export the variable(s)",
+                "{} {verb} not set; create {shown_path} with\n\n{}\n\nor run `hub config set project_home <dir>` and `hub config set worktree_dir <dir>`,\nor export the variable(s)",
                 missing.join(" and "),
                 EXAMPLE
                     .lines()
@@ -209,7 +209,7 @@ impl Env {
 }
 
 /// `label` names the source in messages: the variable, or `key in <file>`.
-fn existing_dir(label: &str, path: PathBuf) -> Result<PathBuf> {
+pub(crate) fn existing_dir(label: &str, path: PathBuf) -> Result<PathBuf> {
     if !path.is_absolute() {
         return Err(HubError::Usage(format!(
             "{label} must be absolute, got {}",
