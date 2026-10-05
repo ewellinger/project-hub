@@ -1,6 +1,6 @@
 ## Summary
 
-<!-- One or two sentences: what changes and why. Link the Linear issue (EW-nn). -->
+<!-- One or two sentences: what changes and why. -->
 
 ## Changes
 

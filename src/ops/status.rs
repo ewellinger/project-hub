@@ -466,7 +466,7 @@ fn change_row(
 /// ancestry alone would flag every untouched branch as merged. A branch
 /// fast-forwarded to a moved base also looks merged by history alone; the
 /// sync case is a branch that is at the base tip, has no `origin/<branch>`
-/// now, and was never seen on origin by hub (EW-53). That last condition is
+/// now, and was never seen on origin by hub. That last condition is
 /// not the same as "never pushed": a branch pushed by hand with no review
 /// recorded still has `origin_seen == false`, and a push-then-fast-forward-
 /// then-prune of a branch hub never saw on origin still reads as a sync

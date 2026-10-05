@@ -496,16 +496,16 @@ mod tests {
     #[test]
     fn parses_gitlab_and_github_urls_with_decorations() {
         let mr = parse_review_url(
-            "https://GitLab.com/acme/platform/ai/acme-agent-platform/-/merge_requests/486/?tab=diffs#note_1",
+            "https://GitLab.com/acme/tools/cli/widget/-/merge_requests/123/?tab=diffs#note_1",
         )
         .unwrap();
         assert_eq!(mr.provider, Provider::GitLab);
         assert_eq!(mr.host, "gitlab.com");
-        assert_eq!(mr.path, "acme/platform/ai/acme-agent-platform");
-        assert_eq!(mr.number, 486);
+        assert_eq!(mr.path, "acme/tools/cli/widget");
+        assert_eq!(mr.number, 123);
         assert_eq!(
             mr.canonical(),
-            "https://gitlab.com/acme/platform/ai/acme-agent-platform/-/merge_requests/486"
+            "https://gitlab.com/acme/tools/cli/widget/-/merge_requests/123"
         );
         let pr = parse_review_url("https://github.example.com:8443/Owner/Repo.js/pull/12").unwrap();
         assert_eq!(pr.provider, Provider::GitHub);
@@ -549,15 +549,15 @@ mod tests {
     fn normalizes_remote_forms_to_one_identity() {
         let want = RemoteIdentity {
             host: "gitlab.com".into(),
-            path: "acme/platform/ai/acme-agent-platform".into(),
+            path: "acme/tools/cli/widget".into(),
         };
         for remote in [
-            "git@gitlab.com:acme/platform/ai/acme-agent-platform.git",
-            "git@GitLab.com:acme/platform/ai/acme-agent-platform",
-            "ssh://git@gitlab.com/acme/platform/ai/acme-agent-platform.git",
-            "https://gitlab.com/acme/platform/ai/acme-agent-platform.git",
-            "https://oauth2:token@gitlab.com/acme/platform/ai/acme-agent-platform.git/",
-            "http://gitlab.com/acme/platform/ai/acme-agent-platform",
+            "git@gitlab.com:acme/tools/cli/widget.git",
+            "git@GitLab.com:acme/tools/cli/widget",
+            "ssh://git@gitlab.com/acme/tools/cli/widget.git",
+            "https://gitlab.com/acme/tools/cli/widget.git",
+            "https://oauth2:token@gitlab.com/acme/tools/cli/widget.git/",
+            "http://gitlab.com/acme/tools/cli/widget",
         ] {
             assert_eq!(parse_remote(remote).unwrap(), want, "{remote}");
         }
@@ -587,7 +587,7 @@ mod tests {
         }
         assert!(want.matches(&RemoteIdentity {
             host: "gitlab.com".into(),
-            path: "Acme/Platform/AI/Acme-Agent-Platform".into()
+            path: "Acme/Tools/CLI/Widget".into()
         }));
         assert!(!want.matches(&RemoteIdentity {
             host: "gitlab.com:2222".into(),

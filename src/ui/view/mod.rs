@@ -19,7 +19,7 @@ pub const MIN_WIDTH: u16 = 60;
 pub const MIN_HEIGHT: u16 = 12;
 
 /// Key legends as `(key, description)` pairs; `legend_line` styles the key
-/// bold and the description dim (EW-51). The rendered text is exactly the
+/// bold and the description dim. The rendered text is exactly the
 /// pairs joined by two spaces, with one leading space. These show only the
 /// frequent keys so both fit the minimum width; `?` lists them all.
 const LEGEND: &[(&str, &str)] = &[
@@ -838,7 +838,7 @@ mod tests {
             find_style(100, 30, &a, "F finish with force")
                 .add_modifier
                 .contains(Modifier::BOLD),
-            "key bold (EW-51)"
+            "key bold"
         );
         assert_eq!(
             find_style(100, 30, &a, "! not merged").fg,

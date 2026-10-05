@@ -50,7 +50,7 @@ pub enum Flow {
         change: usize,
         /// `(label, text)` pairs shown by the last `Show`, snapshotted at
         /// `Begin` so a background refresh landing while the overlay is
-        /// open can't retarget what Enter copies (EW-57).
+        /// open can't retarget what Enter copies.
         options: Vec<(String, String)>,
     },
     AddRole(AddRole),

@@ -10,7 +10,7 @@ use super::{Action, App, Effect, Flow, RowId, Screen};
 
 /// Row indices of a feature report in display order: the hub row (row 0),
 /// then changes whose stage is not `merged`, then merged ones, each group in
-/// record order (EW-55). Pure; both views and the cursor use it, so the
+/// record order. Pure; both views and the cursor use it, so the
 /// table and the keys always agree on which change a row is.
 pub fn display_order(rows: &[StatusRow]) -> Vec<usize> {
     let mut order: Vec<usize> = Vec::with_capacity(rows.len());

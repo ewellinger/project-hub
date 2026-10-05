@@ -330,7 +330,7 @@ impl App {
     /// The effects the event loop starts with. From a feature worktree
     /// (`cwd_feature`) the feature view opens first, as `Enter` on its row
     /// would; anywhere else, or when that feature is finished, the dashboard
-    /// opens on the base row and requests it (EW-71).
+    /// opens on the base row and requests it.
     pub fn start(&mut self, cwd_feature: Option<&str>) -> Vec<Effect> {
         let mut effects = match cwd_feature {
             Some(name) => self.enter_feature(name),
