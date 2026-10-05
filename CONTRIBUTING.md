@@ -36,8 +36,9 @@ untracked, so a renamed or removed command needs a matching skill edit.
 - Work on a branch; open a PR against `main`. CI must be green before merge.
 - One logical change per PR. Update `CHANGELOG.md` under `Unreleased` in the
   same PR when the change is user-visible.
-- Merges to `main` are merge commits whose message names the branch and, when
-  the binary changed, the new version: `Merge <branch>: <summary> (<version>)`.
+- PRs are squash-merged (the repository allows nothing else), so the PR title
+  becomes the commit on `main` as `<title> (#<number>)`; write it as the
+  summary of the whole change.
 
 ## Releasing
 
@@ -51,12 +52,13 @@ automated by `.github/workflows/release.yml`.
 3. In `CHANGELOG.md`, rename `## [Unreleased]` to `## [<version>] - <YYYY-MM-DD>`,
    add a fresh empty `## [Unreleased]` above it, and update the compare links
    at the bottom.
-4. Commit as `Bump to <version>`, merge to `main`, then tag the merge commit
-   and push both:
+4. Commit as `Bump to <version>` in the PR, squash-merge it, then tag the
+   resulting commit on `main` and push the tag:
 
    ```bash
+   git switch main && git pull --ff-only
    git tag v<version>
-   git push origin main v<version>
+   git push origin v<version>
    ```
 
 5. The tag triggers the release workflow: it checks the tag against
