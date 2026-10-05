@@ -1,0 +1,49 @@
+[package]
+name = "project-hub"
+version = "0.19.0"
+edition = "2024"
+rust-version = "1.88"
+description = "Coordinate features that span several git repositories"
+license = "MIT"
+repository = "https://github.com/ewellinger/project-hub"
+readme = "README.md"
+keywords = ["git", "worktree", "tmux", "monorepo", "cli"]
+categories = ["command-line-utilities", "development-tools"]
+exclude = ["/docs", "/tests", "/.github", "/dist-workspace.toml", "/rustfmt.toml", "/.gitignore"]
+
+[lib]
+name = "hub"
+path = "src/lib.rs"
+
+[[bin]]
+name = "hub"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.6", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+time = { version = "0.3", features = ["formatting"] }
+fd-lock = "4.0"
+inquire = "0.9"
+comfy-table = "8.0"
+# `unstable-rendered-line-info` is on for `Paragraph::line_count`, which
+# sizes overlay boxes in src/ui/view/overlay.rs. ratatui gives no semver
+# guarantee for unstable features. The exact pin here and the Cargo.lock
+# entry are load-bearing: a patch release may change or remove the API, so
+# install with --locked and bump this line deliberately.
+ratatui = { version = "=0.30.2", features = ["unstable-rendered-line-info"] }
+crossterm = "0.29"
+toml = { version = "1", default-features = false, features = ["std", "parse", "serde"] }
+arboard = { version = "3", default-features = false, features = ["wayland-data-control"] }
+
+[dev-dependencies]
+tempfile = "3.27"
+assert_cmd = "2.2"
+predicates = "3"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"

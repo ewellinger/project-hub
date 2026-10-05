@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Fake glab/gh for tests. `<name> api --hostname HOST --method GET ENDPOINT`
+# logs its arguments to $FAKE_PROVIDER_LOG and prints
+# $FAKE_PROVIDER_DIR/<key>.json, where key is ENDPOINT with `/` -> `__` and
+# `%` -> `_`. FAKE_PROVIDER_FAIL=<text> makes every call fail with <text>.
+set -eu
+: "${FAKE_PROVIDER_DIR:?}" "${FAKE_PROVIDER_LOG:?}"
+name=$(basename "$0")
+printf '%s %s\n' "$name" "$*" >> "$FAKE_PROVIDER_LOG"
+if [[ -n "${FAKE_PROVIDER_FAIL:-}" ]]; then
+  echo "$FAKE_PROVIDER_FAIL" >&2
+  exit 1
+fi
+[[ "${1:-}" == api ]] || { echo "fake $name: only 'api' is supported" >&2; exit 1; }
+shift
+endpoint=""
+while (($#)); do
+  case $1 in
+    --hostname|--method) shift ;;
+    *) endpoint=$1 ;;
+  esac
+  shift
+done
+key=${endpoint//\//__}
+key=${key//%/_}
+file="$FAKE_PROVIDER_DIR/$key.json"
+[[ -f $file ]] || { echo "fake $name: no response for $endpoint" >&2; exit 1; }
+cat "$file"
+# A queued follow-up answer replaces this one after it has been served once.
+next="$FAKE_PROVIDER_DIR/$key.next.json"
+[[ -f $next ]] && mv "$next" "$file"
+exit 0

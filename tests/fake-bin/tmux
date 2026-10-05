@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Fake tmux for tests. Sessions are directories under $FAKE_TMUX_STATE; each
+# holds a "windows" file of "name<TAB>dir" lines. Every call is appended to
+# $FAKE_TMUX_LOG. Set FAKE_TMUX_FAIL=<subcommand> to make that subcommand fail.
+set -eu
+: "${FAKE_TMUX_STATE:?}" "${FAKE_TMUX_LOG:?}"
+printf '%s\n' "$*" >> "$FAKE_TMUX_LOG"
+cmd=$1
+shift
+if [[ "${FAKE_TMUX_FAIL:-}" == "$cmd" ]]; then
+  echo "fake tmux: forced failure for $cmd" >&2
+  exit 1
+fi
+session="" window="" dir="" target="" rest=""
+while (($#)); do
+  case $1 in
+    -s) session=$2; shift ;;
+    -n) window=$2; shift ;;
+    -c) dir=$2; shift ;;
+    -t) target=$2; shift ;;
+    -F) shift ;;
+    *) rest=$1 ;;
+  esac
+  shift
+done
+if [[ -n $target ]]; then
+  target=${target#=}
+  session=${target%%:*}
+  [[ $target == *:* ]] && window=${target#*:}
+fi
+sdir="$FAKE_TMUX_STATE/$session"
+case $cmd in
+  has-session)
+    [[ -d $sdir ]] ;;
+  new-session)
+    if [[ -d $sdir ]]; then echo "duplicate session: $session" >&2; exit 1; fi
+    mkdir -p "$sdir"
+    printf '%s\t%s\n' "$window" "$dir" >> "$sdir/windows" ;;
+  new-window)
+    [[ -d $sdir ]] || { echo "can't find session: $session" >&2; exit 1; }
+    printf '%s\t%s\n' "$window" "$dir" >> "$sdir/windows" ;;
+  list-windows)
+    [[ -d $sdir ]] || { echo "can't find session: $session" >&2; exit 1; }
+    cut -f1 "$sdir/windows" ;;
+  respawn-pane)
+    [[ -d $sdir ]] || { echo "can't find session: $session" >&2; exit 1; }
+    grep -q "^$window	" "$sdir/windows" || { echo "can't find window: $window" >&2; exit 1; }
+    awk -F'\t' -v w="$window" -v d="$dir" 'BEGIN{OFS="\t"} $1==w{$2=d} {print}' "$sdir/windows" > "$sdir/windows.new"
+    mv "$sdir/windows.new" "$sdir/windows" ;;
+  kill-session)
+    [[ -d $sdir ]] || { echo "can't find session: $session" >&2; exit 1; }
+    rm -r "$sdir" ;;
+  display-message)
+    printf '%s\n' "${FAKE_TMUX_CURRENT:?}" ;;
+  send-keys)
+    [[ -d $sdir ]] || { echo "can't find session: $session" >&2; exit 1; } ;;
+  rename-window)
+    [[ -d $sdir ]] || { echo "can't find session: $session" >&2; exit 1; }
+    grep -q "^$window	" "$sdir/windows" || { echo "can't find window: $window" >&2; exit 1; }
+    awk -F'\t' -v w="$window" -v n="$rest" 'BEGIN{OFS="\t"} $1==w{$1=n} {print}' "$sdir/windows" > "$sdir/windows.new"
+    mv "$sdir/windows.new" "$sdir/windows" ;;
+  *)
+    echo "fake tmux: unsupported command $cmd" >&2
+    exit 1 ;;
+esac

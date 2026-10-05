@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Fake VS Code launcher: records its arguments.
+set -eu
+: "${FAKE_CODE_LOG:?}"
+printf '%s\n' "$*" >> "$FAKE_CODE_LOG"

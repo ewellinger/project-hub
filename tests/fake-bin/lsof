@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Fake lsof for tests. Prints `-F pcn` records for each line of
+# $FAKE_LSOF_CWDS, formatted "pid<TAB>command<TAB>cwd". Unset or empty means
+# no process is anywhere interesting. With $FAKE_LSOF_SELF set it also
+# reports what the real lsof always does: itself, the hub that ran it, and
+# hub's parent, all with the working directory they inherited.
+set -eu
+if [[ -n "${FAKE_LSOF_SELF:-}" ]]; then
+  grandparent=$(ps -o ppid= -p "$PPID" | tr -d ' ')
+  printf 'p%s\nc%s\nfcwd\nn%s\n' "$$" lsof "$PWD" "$PPID" hub "$PWD" "$grandparent" zsh "$PWD"
+fi
+[[ -n "${FAKE_LSOF_CWDS:-}" ]] || exit 0
+while IFS=$'\t' read -r pid cmd dir; do
+  [[ -n $pid ]] || continue
+  printf 'p%s\nc%s\nfcwd\nn%s\n' "$pid" "$cmd" "$dir"
+done <<< "$FAKE_LSOF_CWDS"
