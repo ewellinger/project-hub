@@ -6,6 +6,14 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.21.1] - 2026-10-06
+
+First release published to crates.io.
+
+### Changed
+- Source comments no longer reference the private issue tracker, and one test fixture path is renamed. No behavior changes.
+- GitHub Actions in the CI and release workflows are pinned to commit SHAs.
+
 ## [0.21.0] - 2026-10-05
 
 ### Added
