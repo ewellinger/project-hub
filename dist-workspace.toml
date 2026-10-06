@@ -17,6 +17,12 @@ install-path = "CARGO_HOME"
 install-updater = false
 # Which actions to run on pull requests
 pr-run-mode = "plan"
+# Publish jobs to run in CI; publish-crates-io.yml does `cargo publish`
+publish-jobs = ["./publish-crates-io"]
+
+# Trusted publishing needs an OIDC token in the crates.io job
+[dist.github-custom-job-permissions]
+"publish-crates-io" = { contents = "read", id-token = "write" }
 
 # Pin the actions in the generated release.yml to commit SHAs
 [dist.github-action-commits]
