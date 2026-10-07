@@ -6,6 +6,11 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.21.2] - 2026-10-07
+
+### Changed
+- The README adds a "Why" section, the workflow `hub` assumes, what a hub contains, and a note on AI assistance. Republished so the crates.io page matches. No behavior changes.
+
 ## [0.21.1] - 2026-10-06
 
 First release published to crates.io.
