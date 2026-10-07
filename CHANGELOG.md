@@ -6,6 +6,8 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-10-07
+
 ### Changed
 - The branch step of `hub feature start`/`add` and of the dashboard's new-feature and add-role flows keeps "type another name" visible while you filter. Typing a new branch name and choosing it opens the name prompt prefilled with what you typed, so a new name no longer needs a restart.
 
