@@ -2,9 +2,11 @@
 
 [![CI](https://github.com/ewellinger/project-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/ewellinger/project-hub/actions/workflows/ci.yml)
 
-A feature that touches an API, a web app, and a BFF means three repos, three
-branches, three worktrees, and a terminal and editor window for each, all
-kept in step by hand. `hub` does that bookkeeping.
+`hub` makes a lightweight "glue" repository for working across several
+repositories at once, carrying the guidance coding agents need to see how
+those repositories fit together. It leans on git worktrees so that several
+features can be in progress at any given time, and so that an agent working
+on one of them references the right state of every repository involved.
 
 A hub is a git repo whose `hub.json` lists the member repos by role; give it a
 remote and teammates share it. Each feature gets a hub worktree for its
@@ -14,6 +16,73 @@ actually on disk, and `hub feature finish` takes it down again, keeping every
 branch. Those bindings are recorded on this machine under the hub's
 `.git/hub/features/<name>.json` and are never committed; `hub.json` and the
 documents on feature branches are the only hub state git tracks.
+
+## Why?
+
+This project was inspired by work on a project that spanned several
+distinct repositories, which sometimes needed coordinated changes across
+them.
+
+For example, suppose a project has these components:
+
+- A UI frontend, where users actually interact with the application.
+- An API the frontend calls, which coordinates between the application
+  database and a separate AI API. For brevity this is called the
+  "Backend-for-Frontend", or BFF.
+- The AI/agent/ML API.
+
+Running Claude or Codex inside one of those repos made it over-index on that
+component, unless it was explicitly told to look at the larger picture. There
+was also the overhead of keeping track of many git worktrees, and of making
+sure agents _actually_ referenced the right state of each codebase.
+
+This project was also an excuse to get more experience with Rust and with
+building a TUI in [Ratatui](https://ratatui.rs).
+
+## The workflow `hub` assumes
+
+`hub` is built around one way of working, and fits best when yours is close
+to it:
+
+- Work is organized as features. A feature touches one or more member
+  repos, and several features can be open at once.
+- Each repo a feature touches gets its own branch and its own worktree under
+  `worktree_dir`. The main clones stay on their base branches.
+- The hub gets a worktree per feature too, on a hub branch that holds that
+  feature's documents: plans, specs, notes. You and your coding agent work
+  from there, so the agent sees the hub's guidance and the [agent
+  skill](#agent-skill), and `hub status` points it at every member worktree
+  for the feature.
+- Each repo's change is reviewed and merged on its own, through a GitLab
+  merge request or GitHub pull request; `hub feature review` and
+  `hub feature merged` record that progress one repo at a time.
+- When the feature is done, `hub feature finish` removes its worktrees and
+  session and keeps every branch.
+- Optionally, each feature gets a tmux session, and an editor workspace
+  opens all of its worktrees together.
+
+If your workflow differs a lot, for example you work in one repo at a time,
+keep all your work on one long-lived branch, or don't use worktrees, `hub`
+will likely get in your way more than it helps.
+
+## What goes in a hub
+
+The hub's `CLAUDE.md` and its feature documents are where an agent learns
+how the member repos fit together. Keep them to what no single repo can say.
+
+Do put in the hub:
+
+- How the member repos relate: which calls which, the contracts between
+  them, and the data that flows across them.
+- Ordering: dependencies between changes, which repo merges first, and the
+  order to deploy in.
+- Per-feature plans and designs that span more than one repo.
+
+Don't put in the hub:
+
+- Guidance or context that already lives in a member repo, such as its own
+  `CLAUDE.md`, `AGENTS.md`, or README. The agent reads those when it works in
+  that repo, and a copy in the hub drifts out of date.
 
 ## Install
 
@@ -372,6 +441,12 @@ procedure. Releases are listed in [CHANGELOG.md](CHANGELOG.md).
 cargo test
 cargo clippy --all-targets -- -D warnings
 ```
+
+## AI disclosure
+
+AI coding agents were used heavily to build this project: much of its code
+and documentation was written by Claude Code under the author's direction
+and review.
 
 ## License
 
