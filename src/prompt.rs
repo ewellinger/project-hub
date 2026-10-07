@@ -1,6 +1,7 @@
 //! Every interactive prompt, and the only module that imports `inquire`.
 //! Nothing here touches hub state: callers run these before the lock.
 
+use std::cell::RefCell;
 use std::fmt;
 use std::io::IsTerminal;
 
@@ -104,8 +105,15 @@ pub fn pick_add(
 fn pick_branch(hub: &Hub, feature: &Feature, role: &str) -> Result<String> {
     let default = suggest::default_branch(hub, feature, role)?;
     let rows = branch_rows(default, suggest::suggestions(hub, feature, role)?);
+    // The filter text, kept so `Other` can prefill the name prompt with it.
+    let filter = RefCell::new(String::new());
+    let scorer = |input: &str, row: &BranchRow, label: &str, _: usize| {
+        filter.replace(input.to_string());
+        branch_score(input, row, label)
+    };
     let choice = Select::new(&format!("Branch for {role}:"), rows)
         .with_help_message("type to filter; enter accepts the highlighted row")
+        .with_scorer(&scorer)
         .prompt()
         .map_err(prompt_error)?;
     match choice {
@@ -113,7 +121,9 @@ fn pick_branch(hub: &Hub, feature: &Feature, role: &str) -> Result<String> {
         BranchRow::Suggested(s) => Ok(s.branch),
         BranchRow::Other => {
             let git = hub.git();
+            let typed = filter.take();
             Text::new("Branch name:")
+                .with_initial_value(&typed)
                 .with_validator(move |input: &str| {
                     let name = input.trim();
                     if name.is_empty() {
@@ -131,6 +141,15 @@ fn pick_branch(hub: &Hub, feature: &Feature, role: &str) -> Result<String> {
                 .map_err(prompt_error)
                 .map(|s| s.trim().to_string())
         }
+    }
+}
+
+/// inquire's default scoring, except `Other` survives any filter and sorts
+/// last, so a typed name that matches no branch still has a row to pick.
+fn branch_score(input: &str, row: &BranchRow, label: &str) -> Option<i64> {
+    match row {
+        BranchRow::Other => Some(i64::MIN),
+        _ => Select::<BranchRow>::DEFAULT_SCORER(input, row, label, 0),
     }
 }
 
@@ -174,6 +193,19 @@ mod tests {
                 other => panic!("expected HubError::Usage, got {other:?}"),
             }
         }
+    }
+
+    #[test]
+    fn branch_score_keeps_other_under_any_filter_and_ranks_it_last() {
+        let rows = branch_rows("feat-1".into(), vec![]);
+        let other = rows.last().unwrap();
+        assert_eq!(
+            branch_score("fix/zz", other, "type another name"),
+            Some(i64::MIN)
+        );
+        assert_eq!(branch_score("", other, "type another name"), Some(i64::MIN));
+        assert_eq!(branch_score("fix/zz", &rows[0], "feat-1  new"), None);
+        assert!(branch_score("feat", &rows[0], "feat-1  new").is_some());
     }
 
     #[test]
