@@ -444,9 +444,8 @@ cargo clippy --all-targets -- -D warnings
 
 ## AI disclosure
 
-AI coding agents were used heavily to build this project: much of its code
-and documentation was written by Claude Code under the author's direction
-and review.
+AI coding agents helped build this project, with the author directing and
+reviewing the work.
 
 ## License
 
