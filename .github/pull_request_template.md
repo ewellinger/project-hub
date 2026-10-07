@@ -19,3 +19,8 @@
 ## Misc Notes
 
 <!-- Include deployment order, companion PRs, migrations, backward compatibility, rollback considerations, or other reviewer-relevant caveats. Delete this section if none apply. -->
+
+## Release
+
+- [ ] `CHANGELOG.md` updated under `Unreleased`, or no user-visible change
+- [ ] Version: none / patch / minor (anything that changes the binary, including `skills/hub/SKILL.md`, needs a bump)

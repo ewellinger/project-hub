@@ -29,6 +29,9 @@ pub enum Overlay {
         cursor: usize,
         /// Rows are still being built on a worker; only Esc works.
         loading: bool,
+        /// A row the filter never hides; Enter on it while a filter is
+        /// typed answers `Text(filter)` instead of `Picked`.
+        pinned: Option<usize>,
     },
     MultiSelect {
         title: String,
@@ -110,7 +113,16 @@ impl Overlay {
             filter: String::new(),
             cursor: 0,
             loading: false,
+            pinned: None,
         }
+    }
+
+    /// Keep select row `row` visible under any filter (see `pinned`).
+    pub fn with_pinned(mut self, row: usize) -> Overlay {
+        if let Overlay::Select { pinned, .. } = &mut self {
+            *pinned = Some(row);
+        }
+        self
     }
 
     pub fn loading(title: String) -> Overlay {
@@ -120,6 +132,7 @@ impl Overlay {
             filter: String::new(),
             cursor: 0,
             loading: true,
+            pinned: None,
         }
     }
 
@@ -180,14 +193,20 @@ impl Overlay {
         self
     }
 
-    /// Indices of a select's rows that contain the filter, case-insensitively.
+    /// Indices of a select's rows that contain the filter, case-insensitively,
+    /// plus the pinned row.
     pub fn filtered(&self) -> Vec<usize> {
         match self {
-            Overlay::Select { rows, filter, .. } => {
+            Overlay::Select {
+                rows,
+                filter,
+                pinned,
+                ..
+            } => {
                 let needle = filter.to_lowercase();
                 rows.iter()
                     .enumerate()
-                    .filter(|(_, r)| r.to_lowercase().contains(&needle))
+                    .filter(|(i, r)| Some(*i) == *pinned || r.to_lowercase().contains(&needle))
                     .map(|(i, _)| i)
                     .collect()
             }
@@ -209,13 +228,22 @@ impl Overlay {
                 // The immutable borrow for `filtered` ends before `self` is
                 // re-matched mutably.
                 let visible = self.filtered();
-                let Overlay::Select { filter, cursor, .. } = self else {
+                let Overlay::Select {
+                    filter,
+                    cursor,
+                    pinned,
+                    ..
+                } = self
+                else {
                     unreachable!()
                 };
                 match key.code {
                     KeyCode::Up => step(cursor, -1, visible.len()),
                     KeyCode::Down => step(cursor, 1, visible.len()),
                     KeyCode::Enter => match visible.get(*cursor) {
+                        Some(i) if Some(*i) == *pinned && !filter.is_empty() => {
+                            return Outcome::Answer(Answer::Text(filter.clone()));
+                        }
                         Some(i) => return Outcome::Answer(Answer::Picked(*i)),
                         None => return Outcome::Stay,
                     },
@@ -346,6 +374,37 @@ mod tests {
         assert!(o.filtered().is_empty());
         assert_eq!(o.key(k(KeyCode::Enter)), Outcome::Stay, "nothing to pick");
         assert_eq!(o.key(k(KeyCode::Esc)), Outcome::Cancel);
+    }
+
+    #[test]
+    fn pinned_row_survives_the_filter_and_answers_with_the_filter_text() {
+        let mut o = Overlay::select(
+            "Branch for api".into(),
+            vec![
+                "feature/x  new".into(),
+                "main  local".into(),
+                "type another name".into(),
+            ],
+        )
+        .with_pinned(2);
+        for c in "fix/zz".chars() {
+            o.key(k(KeyCode::Char(c)));
+        }
+        assert_eq!(o.filtered(), vec![2], "only the pinned row is left");
+        assert_eq!(
+            o.key(k(KeyCode::Enter)),
+            Outcome::Answer(Answer::Text("fix/zz".into()))
+        );
+        for _ in 0..6 {
+            o.key(k(KeyCode::Backspace));
+        }
+        assert_eq!(o.key(k(KeyCode::Down)), Outcome::Stay);
+        assert_eq!(o.key(k(KeyCode::Down)), Outcome::Stay);
+        assert_eq!(
+            o.key(k(KeyCode::Enter)),
+            Outcome::Answer(Answer::Picked(2)),
+            "with no filter it is an ordinary row"
+        );
     }
 
     #[test]
