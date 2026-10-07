@@ -26,6 +26,7 @@ pub(super) fn render_overlay(app: &App, frame: &mut Frame, screen: Rect) {
             filter,
             cursor,
             loading,
+            ..
         } => (
             title,
             select_lines(overlay, rows, filter, *cursor, *loading, app.spinner),

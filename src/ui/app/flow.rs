@@ -436,8 +436,13 @@ impl BranchPick {
             return Step::Show(Overlay::loading(format!("Branch for {}", self.role)));
         }
         let labels = rows.iter().map(|r| r.to_string()).collect();
+        let other = rows.iter().position(|r| r.branch().is_none());
         self.rows = rows;
-        Step::Show(Overlay::select(format!("Branch for {}", self.role), labels))
+        let overlay = Overlay::select(format!("Branch for {}", self.role), labels);
+        Step::Show(match other {
+            Some(i) => overlay.with_pinned(i),
+            None => overlay,
+        })
     }
 
     /// `Ok(branch)` for a named row; `Err(step)` shows the text input for `Other`.
@@ -458,8 +463,24 @@ impl BranchPick {
         }
     }
 
+    /// Text answered on the branch step: the typed name once `Other` is
+    /// open, or else the filter the user typed before picking `Other`, which
+    /// opens the name input prefilled with it.
     #[allow(clippy::result_large_err)]
-    pub fn typed(&self, text: String) -> Result<String, Step> {
+    pub fn text(&mut self, text: String) -> Result<String, Step> {
+        if self.typing {
+            return self.typed(text);
+        }
+        self.typing = true;
+        Err(Step::Show(Overlay::input(
+            format!("Branch for {}", self.role),
+            text,
+            None,
+        )))
+    }
+
+    #[allow(clippy::result_large_err)]
+    fn typed(&self, text: String) -> Result<String, Step> {
         let name = text.trim().to_string();
         match names::validate_branch_name(&name) {
             Ok(()) => Ok(name),
@@ -550,11 +571,8 @@ fn add_role(state: &mut AddRole, answer: Answer, app: &App) -> Step {
             }
         }
         (true, Answer::Text(text)) => {
-            let pick = state.pick.as_ref().expect("picking");
-            if !pick.typing {
-                return Step::Cancel("unexpected answer".into());
-            }
-            match pick.typed(text) {
+            let pick = state.pick.as_mut().expect("picking");
+            match pick.text(text) {
                 Ok(branch) => Step::Run(Action::Add {
                     feature,
                     role: pick.role.clone(),
@@ -751,9 +769,9 @@ fn new_feature(state: &mut NewFeature, answer: Answer, app: &App) -> Step {
             }
         }
         (WizardStage::Branch(_), Answer::Text(text)) => {
-            let typed = match &state.pick {
-                Some(pick) if pick.typing => pick.typed(text),
-                _ => return Step::Cancel("unexpected answer".into()),
+            let typed = match &mut state.pick {
+                Some(pick) => pick.text(text),
+                None => return Step::Cancel("unexpected answer".into()),
             };
             match typed {
                 Ok(branch) => state.accept_branch(branch, app.tmux_on),
@@ -1165,6 +1183,78 @@ mod tests {
                 feature: "suspense".into(),
                 role: "ui".into(),
                 branch: "feature/z".into()
+            })
+        );
+    }
+
+    #[test]
+    fn wizard_branch_filter_text_prefills_the_name_input() {
+        let app = dashboard_app();
+        let mut flow = Flow::NewFeature(NewFeature::new());
+        flow.advance(Answer::Begin, &app);
+        flow.advance(Answer::Text("suspense".into()), &app);
+        flow.advance(
+            Answer::Loaded(Ok(Loaded::Checkout {
+                name: "suspense".into(),
+                checkout: "acme-suspense".into(),
+            })),
+            &app,
+        );
+        flow.advance(Answer::PickedMany(vec![0]), &app);
+        let Step::Show(Overlay::Select { pinned, .. }) = flow.advance(
+            Answer::Loaded(Ok(Loaded::Branches {
+                role: "api".into(),
+                rows: rows(),
+            })),
+            &app,
+        ) else {
+            panic!()
+        };
+        assert_eq!(pinned, Some(2), "the other row survives any filter");
+        // Enter on the pinned row with `fix/zz` typed into the filter.
+        let Step::Show(Overlay::Input { title, value, .. }) =
+            flow.advance(Answer::Text("fix/zz".into()), &app)
+        else {
+            panic!()
+        };
+        assert_eq!(
+            (title.as_str(), value.as_str()),
+            ("Branch for api", "fix/zz")
+        );
+        let Step::Show(Overlay::Confirm { lines, .. }) =
+            flow.advance(Answer::Text("fix/zz".into()), &app)
+        else {
+            panic!()
+        };
+        assert_eq!(lines[3].0, "  api  fix/zz");
+    }
+
+    #[test]
+    fn add_role_branch_filter_text_prefills_the_name_input() {
+        let mut app = on_feature();
+        app.repos = vec![repo("ui", "ui-clone", "")];
+        let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
+        flow.advance(Answer::Begin, &app);
+        flow.advance(Answer::Picked(0), &app);
+        flow.advance(
+            Answer::Loaded(Ok(Loaded::Branches {
+                role: "ui".into(),
+                rows: rows(),
+            })),
+            &app,
+        );
+        let Step::Show(Overlay::Input { value, .. }) =
+            flow.advance(Answer::Text("fix/zz".into()), &app)
+        else {
+            panic!()
+        };
+        assert_eq!(value, "fix/zz");
+        assert_eq!(
+            flow.advance(Answer::Text("fix/zz".into()), &app),
+            Step::Run(Action::Add {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                branch: "fix/zz".into()
             })
         );
     }
