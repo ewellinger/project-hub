@@ -89,11 +89,11 @@ Don't put in the hub:
 From crates.io, with a Rust toolchain of 1.88 or newer:
 
 ```bash
-cargo install --locked project-hub
+cargo install project-hub
 ```
 
-`--locked` matters: `hub` uses a ratatui feature that has no semver
-guarantee, and the lock file pins the version it was tested with.
+Add `--locked` to build with the exact dependency versions a release was
+tested with.
 
 Prebuilt binaries for macOS (Apple silicon and Intel) and Linux (x86_64)
 are attached to every [GitHub release](https://github.com/ewellinger/project-hub/releases).
@@ -103,7 +103,7 @@ The installer script puts `hub` in `~/.cargo/bin`:
 curl --proto '=https' --tlsv1.2 -LsSf https://github.com/ewellinger/project-hub/releases/latest/download/project-hub-installer.sh | sh
 ```
 
-From a clone: `cargo install --locked --path .`.
+From a clone: `cargo install --path .`.
 
 ### Requirements
 
@@ -217,6 +217,23 @@ Exit codes: `0` ok, `1` usage or precondition error (nothing changed), `2`
 bad arguments, `20` dirty worktree, `21` worktree in use, `30` drift.
 
 ## How it works
+
+### One open change per role
+
+A feature holds at most one open change per role: one branch, in one
+worktree. To work on another branch of the same repo, first close the open
+change with `hub feature merged ROLE`, then run
+`hub feature add ROLE --branch OTHER`. Until then, `feature add` refuses
+with `role 'ROLE' already has an open change on branch '...'`.
+
+This is deliberate. Within a feature, a role always resolves to exactly
+one checkout: the feature's open change while it is working or in review,
+and the base checkout otherwise. The commands that name a role (`review`,
+`merged`, `set-base`), the rows of `status` and `pull`, the workspace file,
+the tmux window named after the role, and an agent reading the hub all rely
+on that answer being unambiguous. With two open branches of the same repo,
+each of them would first have to ask which one you meant. Work that needs
+two branches of one repo at the same time belongs in two features.
 
 ### Bases
 
