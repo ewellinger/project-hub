@@ -6,6 +6,8 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.22.1] - 2026-10-08
+
 ### Changed
 - `cargo install project-hub` no longer needs `--locked`. Overlay boxes are now sized with stable ratatui API instead of the unstable `Paragraph::line_count`, so ratatui is an ordinary `0.30.2` dependency rather than an exact pin. `--locked` still gives the exact versions a release was tested with.
 - The README explains why a feature allows only one open change per role.
