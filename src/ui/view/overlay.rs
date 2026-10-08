@@ -1,10 +1,11 @@
 //! Overlay boxes: centred over the dimmed screen.
 
 use ratatui::Frame;
+use ratatui::buffer::Buffer;
 use ratatui::layout::{Constraint, Flex, Layout, Rect};
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span};
-use ratatui::widgets::{Block, Clear, Paragraph, Wrap};
+use ratatui::widgets::{Block, Clear, Paragraph, Widget, Wrap};
 
 use crate::ui::app::{App, Overlay, Preview, Tone};
 use crate::ui::view::dashboard::SPINNER;
@@ -85,8 +86,8 @@ pub(super) fn render_overlay(app: &App, frame: &mut Frame, screen: Rect) {
     // the bottom. The last line is the key legend and gets its own row.
     let inner_width = width.saturating_sub(2).max(1);
     let (head, last) = body.split_at(body.len().saturating_sub(1));
+    let rows = wrapped_rows(head, inner_width) + last.len();
     let head = Paragraph::new(head.to_vec()).wrap(Wrap { trim: false });
-    let rows = head.line_count(inner_width) + last.len();
     let height = (u16::try_from(rows).unwrap_or(u16::MAX).saturating_add(2))
         .min(screen.height.saturating_sub(2));
     let [area] = Layout::horizontal([Constraint::Length(width)])
@@ -290,4 +291,58 @@ fn help_lines(rows: &[(String, String)]) -> Vec<Line<'static>> {
     out.push(Line::from(""));
     out.push(legend_line(&[("?", "close"), ("Esc", "close")]));
     out
+}
+
+/// Rows `lines` take wrapped (`trim: false`) at `width`, found by rendering
+/// them into an offscreen buffer; ratatui's `Paragraph::line_count` would do
+/// this but is unstable API. A marker line after the text shows where it
+/// ends, so trailing blank lines count.
+fn wrapped_rows(lines: &[Line<'static>], width: u16) -> usize {
+    if lines.is_empty() {
+        return 0;
+    }
+    let mut text = lines.to_vec();
+    text.push(Line::from("x"));
+    // A row and the first word of the next one together overflow `width`,
+    // so a line never needs more than twice its full rows plus two.
+    let rows: usize = text
+        .iter()
+        .map(|l| l.width() / usize::from(width) * 2 + 2)
+        .sum();
+    let area = Rect::new(0, 0, width, u16::try_from(rows).unwrap_or(u16::MAX));
+    let mut buf = Buffer::empty(area);
+    Paragraph::new(text)
+        .wrap(Wrap { trim: false })
+        .render(area, &mut buf);
+    (0..area.height)
+        .rev()
+        .find(|&y| (0..width).any(|x| buf[(x, y)].symbol() != " "))
+        .map_or(0, usize::from)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn rows(lines: &[&str], width: u16) -> usize {
+        let lines: Vec<Line<'static>> = lines.iter().map(|l| Line::from(l.to_string())).collect();
+        wrapped_rows(&lines, width)
+    }
+
+    #[test]
+    fn wrapped_rows_counts_rows_as_rendered() {
+        assert_eq!(rows(&[], 10), 0);
+        assert_eq!(rows(&["abc"], 10), 1);
+        assert_eq!(rows(&[""], 10), 1, "an empty line still takes a row");
+        assert_eq!(rows(&["abc", "", "def"], 10), 3);
+        assert_eq!(rows(&["abc", ""], 10), 2, "a trailing blank line counts");
+        assert_eq!(rows(&["aaaa bbbb cccc"], 9), 2, "word wrap");
+        let path = "/private/tmp/some/long/worktree/path/for/api";
+        assert_eq!(
+            rows(&[path], 10),
+            5,
+            "a path with no spaces breaks mid-word"
+        );
+        assert_eq!(rows(&[path], 100), 1);
+    }
 }
