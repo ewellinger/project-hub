@@ -206,8 +206,10 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
         Constraint::Length(width_of(&|r| r.branch.chars().count(), 6, usize::MAX)),
         Constraint::Length(width_of(&|r| r.stage.chars().count(), 5, 8)),
         // Wide enough for a pinned change's whole state, such as
-        // `behind pin <sha> by <n>, <base> +N since pin`.
-        Constraint::Length(width_of(&|r| state_text(r).chars().count(), 5, 56)),
+        // `behind pin <sha> by <n>, <base> +N since pin`. `Max` gives way
+        // before the `Length` columns when the row is too narrow, so a long
+        // state is cut instead of the branch.
+        Constraint::Max(width_of(&|r| state_text(r).chars().count(), 5, 56)),
         Constraint::Min(4),
     ];
     let header = TableRow::new(["ROLE", "BRANCH", "STAGE", "STATE", "PATH"])

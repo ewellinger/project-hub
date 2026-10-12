@@ -1055,6 +1055,34 @@ mod tests {
     }
 
     #[test]
+    fn a_long_pinned_state_never_truncates_the_branch() {
+        use crate::ui::app::feature::tests::{on_report, pinned_api};
+        let Report::Feature {
+            feature,
+            mut report,
+        } = pinned_api()
+        else {
+            unreachable!()
+        };
+        report.rows[1].dirty = true;
+        report.rows[1].base_behind = Some(2);
+        let a = on_report(Report::Feature { feature, report });
+        for width in [80, 100] {
+            let out = lines(width, 30, &a);
+            let api = out
+                .iter()
+                .find(|l| l.contains(" api "))
+                .unwrap_or_else(|| panic!("{}", joined(&out)));
+            assert!(api.contains("feature/x"), "at {width}: {api}");
+        }
+        let text = joined(&lines(120, 30, &a));
+        assert!(
+            text.contains("dirty, behind pin 0123456 by 2, main +3 since pin"),
+            "{text}"
+        );
+    }
+
+    #[test]
     fn the_feature_footer_adds_unfreeze_and_refreeze_only_on_a_frozen_row() {
         use crate::ui::app::feature::tests::{frozen_ui, on_report, pinned_api};
         let mut a = on_report(frozen_ui());
@@ -1064,10 +1092,13 @@ mod tests {
             " ↑↓/jk role  c copy  z freeze  f finish  ? help  Esc back",
             "the cursor is on the open api change"
         );
+        assert_eq!(a.selected_role_row().unwrap().branch, "feature/x");
         a.update(Event::Key(KeyEvent::new(
             KeyCode::Char('j'),
             KeyModifiers::NONE,
         ))); // ui, frozen
+        let row = a.selected_role_row().unwrap();
+        assert_eq!((row.role.as_str(), row.stage.as_str()), ("ui", "frozen"));
         let out = lines(MIN_WIDTH, 30, &a);
         assert_eq!(
             out.last().unwrap(),
