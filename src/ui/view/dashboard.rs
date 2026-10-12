@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 use ratatui::Frame;
 use ratatui::layout::{Constraint, Layout, Rect};
 use ratatui::style::{Color, Modifier, Style};
-use ratatui::text::Line;
+use ratatui::text::{Line, Span};
 use ratatui::widgets::{
     Block, Cell, List, ListItem, ListState, Paragraph, Row as TableRow, Table, Wrap,
 };
@@ -44,12 +44,12 @@ pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
                     s.roles
                         .iter()
                         .filter(|r| r.stage != Stage::Merged)
-                        .map(|r| Line::from(role_line(&r.role, r.stage.as_str(), inner))),
+                        .map(|r| stage_line(&r.role, r.stage.as_str(), inner)),
                 );
                 text.extend(
                     s.frozen
                         .iter()
-                        .map(|f| Line::styled(role_line(&f.role, "frozen", inner), read_only())),
+                        .map(|f| stage_line(&f.role, "frozen", inner).style(read_only())),
                 );
                 ListItem::new(text)
             }
@@ -61,6 +61,22 @@ pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
         .highlight_style(Style::new().add_modifier(Modifier::BOLD | Modifier::REVERSED));
     let mut state = ListState::default().with_selected(Some(app.selected));
     frame.render_stateful_widget(list, area, &mut state);
+}
+
+/// `role_line` with the stage coloured by value: working green, review
+/// yellow, frozen grey. On the selected row `REVERSED` turns the colour
+/// into the stage's background, which still reads.
+fn stage_line(role: &str, stage: &str, width: usize) -> Line<'static> {
+    let mut text = role_line(role, stage, width);
+    let stage_text = text.split_off(text.len() - stage.len());
+    let colour = match stage {
+        "working" => Some(Color::Green),
+        "review" => Some(Color::Yellow),
+        "frozen" => Some(Color::DarkGray),
+        _ => None,
+    };
+    let style = colour.map_or(Style::new(), |c| Style::new().fg(c));
+    Line::from(vec![Span::raw(text), Span::styled(stage_text, style)])
 }
 
 /// `"  <role>  …  <stage>"` exactly `width` chars wide when it fits: the
@@ -306,6 +322,23 @@ mod tests {
         let line = role_line("a-very-long-role-name", "working", 20);
         assert_eq!(line, "  a-very-lo… working");
         assert_eq!(line.chars().count(), 20);
+    }
+
+    #[test]
+    fn stage_line_colours_only_the_stage() {
+        for (stage, colour) in [
+            ("working", Some(Color::Green)),
+            ("review", Some(Color::Yellow)),
+            ("frozen", Some(Color::DarkGray)),
+            ("other", None),
+        ] {
+            let line = stage_line("api", stage, 20);
+            assert_eq!(line.spans.len(), 2, "{stage}");
+            assert_eq!(line.spans[0].style.fg, None, "{stage}");
+            assert_eq!(line.spans[1].content, stage);
+            assert_eq!(line.spans[1].style.fg, colour, "{stage}");
+            assert_eq!(line.to_string(), role_line("api", stage, 20));
+        }
     }
 
     #[test]
