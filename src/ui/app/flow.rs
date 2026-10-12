@@ -714,10 +714,23 @@ pub fn role_label(repo: &hub::manifest::RepoSpec) -> String {
 fn add_or_ask_from(state: &mut AddRole, app: &App, branch: String) -> Step {
     let pick = state.pick.as_ref().expect("picking");
     let role = pick.role.clone();
-    let pin = feature_record(app, &state.feature)
+    // `from_latest` starts at origin/<the role's current base>, which a
+    // `hub repo set --base` after the freeze may have moved off `pin.base`.
+    // The base itself exists (`suggestions` leaves it out of the rows) and
+    // `add` reuses it, so it never asks.
+    let ask = feature_record(app, &state.feature)
         .and_then(|f| f.pin(&role))
-        .filter(|p| p.worktree.is_some() && pick.is_new(&branch));
-    let Some(pin) = pin else {
+        .filter(|p| p.worktree.is_some())
+        .map(|p| {
+            let base = app
+                .repos
+                .iter()
+                .find(|r| r.role == role)
+                .map_or(p.base.as_str(), |r| r.base.as_str());
+            (p, base)
+        })
+        .filter(|(_, base)| *base != branch && pick.is_new(&branch));
+    let Some((pin, base)) = ask else {
         return Step::Run(Action::Add {
             feature: state.feature.clone(),
             role,
@@ -725,13 +738,6 @@ fn add_or_ask_from(state: &mut AddRole, app: &App, branch: String) -> Step {
             from_latest: false,
         });
     };
-    // `from_latest` starts at origin/<the role's current base>, which a
-    // `hub repo set --base` after the freeze may have moved off `pin.base`.
-    let base = app
-        .repos
-        .iter()
-        .find(|r| r.role == role)
-        .map_or(pin.base.as_str(), |r| r.base.as_str());
     let rows = vec![
         format!("frozen {}  (keeps the pin)", pin.short()),
         format!("latest origin/{base}  (drops the pin)"),
@@ -2127,10 +2133,11 @@ mod tests {
     #[test]
     fn adding_a_frozen_role_asks_whether_to_start_from_the_pin_or_the_latest_base() {
         let mut app = on_report(frozen_ui());
-        app.repos = vec![
-            repo("api", "api-clone", ""),
-            repo("ui", "ui-clone", "web ui"),
-        ];
+        // A `hub repo set --base` since the freeze: `latest` names the
+        // current base, not `pin.base` (main).
+        let mut ui = repo("ui", "ui-clone", "web ui");
+        ui.base = "dev".into();
+        app.repos = vec![repo("api", "api-clone", ""), ui];
         let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
         let Step::Show(Overlay::Select { rows: labels, .. }) = flow.advance(Answer::Begin, &app)
         else {
@@ -2158,7 +2165,7 @@ mod tests {
             labels,
             vec![
                 "frozen 0123456  (keeps the pin)",
-                "latest origin/main  (drops the pin)"
+                "latest origin/dev  (drops the pin)"
             ]
         );
         let mut keep = flow.clone();
@@ -2242,6 +2249,10 @@ mod tests {
             flow.advance(Answer::Text("main-ish".into()), &app),
             run("main-ish")
         );
+        // The base itself, which the loaded rows leave out.
+        let mut flow = start(rows());
+        flow.advance(Answer::Picked(2), &app); // type another name
+        assert_eq!(flow.advance(Answer::Text("main".into()), &app), run("main"));
         // The default branch when it already exists.
         let mut flow = start(vec![
             BranchRow::Default {
