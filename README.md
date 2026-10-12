@@ -205,7 +205,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature review ROLE [URL]` | Record that the role's change is in review |
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch |
-| `hub feature list [--all] [--json]` | Open features with the stage of each role; `--all` includes finished ones |
+| `hub feature list [--all] [--json]` | Open features with the stage of each role, and frozen roles as `ROLE:frozen`; `--all` includes finished ones |
 | `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
 | `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
@@ -426,7 +426,9 @@ repairs.
 
 `hub` with no subcommand, in a terminal, opens the dashboard: the base
 checkouts and every open feature on the left, the live status of the
-selected row on the right. Status runs in the background when you move the
+selected row on the right. Frozen roles are listed under their feature in
+dim italics, marked `frozen`: they are read-only references, not members.
+Status runs in the background when you move the
 selection or press `r`, showing the last result until the new one lands.
 Finished features are hidden until `a` shows them. Run from a feature's hub
 worktree, `hub` opens that feature's view directly; `Esc` returns to the
@@ -450,8 +452,16 @@ the footer; `Ctrl-C` quits from either screen.
 
 The feature view shows one feature's roles with their branch, stage, and
 state, plus warnings, the selected role's review URL, and the attach command.
-Open roles are listed above merged ones, and the branch column is never
-truncated. The footer shows the frequent keys; `?` lists them all.
+Open roles and frozen roles are listed above merged ones, and the branch
+column is never truncated. A frozen role shows stage `frozen`, its base as the
+branch, and `frozen @<sha>` with how many commits the local base gained since
+the pin (`main +3 since pin`); a pinned open change shows the same marker in
+its state.
+Frozen rows are dim italic; with the cursor on one, the view says it is a
+read-only reference checkout. A pinned open change is still a member and is
+styled like one.
+The footer shows the frequent keys, and `u` and `Z` with the cursor on a
+frozen role or pinned change; `?` lists them all.
 Its keys call the same commands the CLI has, under the hub lock, and show the
 command's output when it finishes; a failure shows the error and changes
 nothing.
@@ -459,11 +469,14 @@ nothing.
 | Key | Action |
 |---|---|
 | `↑` `↓` `j` `k` | select a role |
-| `c` | copy the role's branch name, worktree path, or review URL to the OS clipboard; only what exists is offered |
+| `c` | copy the role's branch name (a frozen role's pinned commit), worktree path, or review URL to the OS clipboard; only what exists is offered |
 | `v` | `feature review` for the role, with an optional URL |
 | `m` | `feature merged` for the role, after a preview of the worktree it removes; `F` in the preview forces |
 | `b` | `feature set-base` for the role |
-| `+` | `feature add`: pick a role, then a branch |
+| `+` | `feature add`: pick a role, then a branch; for a new branch of a frozen role, then whether it starts from the frozen commit (keeping the pin) or from `origin/<base>` (dropping it). An existing branch keeps the pin without asking |
+| `z` | `feature freeze`: pick any role that is not frozen yet, with the role under the cursor preselected. A role with an open change has it pinned; any other role, including one not in the feature, gets a reference checkout at its local base tip |
+| `u` | `feature unfreeze` for the frozen role or pinned change under the cursor. A reference worktree is previewed first, with a warning when it is dirty or off its pin; `F` in the preview forces. A pinned open change is unpinned at once |
+| `Z` | `feature refreeze` for the frozen role or pinned change under the cursor: move its pin to the base's current local tip. A dirty or off-pin reference worktree is refused, and the error is shown |
 | `f` | `feature finish`, after a preview of every worktree it removes and a warning for roles not yet merged; `F` forces |
 | `o` | open the feature's workspace |
 | `p` | `hub pull` for the feature: fast-forward every open role |
