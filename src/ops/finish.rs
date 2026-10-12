@@ -4,12 +4,14 @@ use crate::error::{HubError, Result};
 use crate::feature::{Feature, FeatureStatus};
 use crate::git::Git;
 use crate::hub::Hub;
+use crate::ops::freeze::{frozen_removal_line, require_on_pin};
 use crate::ops::merged::{close_change, refuse_in_use, removal_line};
-use crate::ops::session::{change_path, ordered_open_changes};
+use crate::ops::session::{change_path, ordered_open_changes, pin_path};
 
-/// Close every open change's worktree, remove the hub worktree, kill the
-/// session, and mark the feature finished. Stages are left as they are and no
-/// branch is deleted or merged.
+/// Close every open change's worktree and every frozen reference worktree,
+/// remove the hub worktree, kill the session, and mark the feature finished.
+/// Without `force`, a frozen worktree whose HEAD left its pin is refused like a
+/// dirty one. Stages are left as they are and no branch is deleted or merged.
 pub fn finish(
     hub: &Hub,
     feature: &mut Feature,
@@ -47,6 +49,19 @@ pub fn finish(
                 }
             }
         }
+        for pin in &feature.pins {
+            let Some(path) = pin_path(hub, pin).filter(|p| p.exists()) else {
+                continue;
+            };
+            let git = Git::new(&path);
+            if git.is_dirty()? {
+                return Err(HubError::Dirty {
+                    path,
+                    status: git.status_short()?,
+                });
+            }
+            require_on_pin(&path, pin)?;
+        }
         if hub_wt.exists() {
             let git = Git::new(&hub_wt);
             if git.is_dirty()? {
@@ -80,6 +95,7 @@ pub fn finish(
         .filter(|c| c.worktree.is_some())
         .map(|c| change_path(hub, c))
         .collect();
+    paths.extend(feature.pins.iter().filter_map(|p| pin_path(hub, p)));
     paths.push(hub_wt.clone());
     paths.retain(|p| p.exists());
     lines.extend(refuse_in_use(&paths, force)?);
@@ -88,6 +104,14 @@ pub fn finish(
         let (_, closed) = close_change(hub, change, force, confirm)?;
         lines.extend(closed);
     }
+    for pin in &feature.pins {
+        let Some(path) = pin_path(hub, pin).filter(|p| p.exists()) else {
+            continue;
+        };
+        let removal = Git::new(hub.env.clone_path(&pin.clone)).worktree_remove(&path, force)?;
+        lines.push(frozen_removal_line(&removal, &path, &pin.role));
+    }
+    feature.pins.clear();
     if hub_wt.exists() {
         let removal = hub.git().worktree_remove(&hub_wt, force)?;
         let kept = format!("branch {}", feature.name);

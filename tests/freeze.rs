@@ -353,3 +353,94 @@ fn status_reports_drift_when_the_frozen_worktree_leaves_its_pin() {
         .code(30)
         .stdout(predicate::str::contains("missing"));
 }
+
+#[test]
+fn finish_removes_frozen_worktrees_and_refuses_dirty_ones_without_force() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    std::fs::write(frozen_wt(&fx).join("scratch.txt"), "x\n").unwrap();
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .code(20);
+    assert!(frozen_wt(&fx).exists());
+    std::fs::remove_file(frozen_wt(&fx).join("scratch.txt")).unwrap();
+
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("api: removed frozen worktree"));
+    assert!(!frozen_wt(&fx).exists());
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["status"], "finished");
+    assert!(f.get("pins").is_none());
+    let api = fx.project_home.join("api-clone");
+    assert_eq!(fx.git(&api, &["worktree", "list"]).lines().count(), 1);
+}
+
+#[test]
+fn finish_refuses_commits_off_the_pin_unless_forced() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let work = fx.commit_file(&frozen_wt(&fx), "work.txt", "work on the detached head");
+
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("role 'api'"))
+        .stderr(predicate::str::contains(&work[..7]))
+        .stderr(predicate::str::contains("git -C"));
+    assert_eq!(
+        head(&fx, &frozen_wt(&fx)),
+        work,
+        "worktree and commit survive"
+    );
+    assert!(hub_wt(&fx).exists(), "nothing was removed");
+    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "open");
+
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--feature", "feat-1", "--force"],
+    )
+    .assert()
+    .success();
+    assert!(!frozen_wt(&fx).exists());
+    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "finished");
+}
+
+#[test]
+fn pull_leaves_frozen_worktrees_alone() {
+    let (fx, _hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let pin = head(&fx, &frozen_wt(&fx));
+    fx.hub(&hub_wt(&fx), &["pull"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "api: frozen at {}; not pulled",
+            &pin[..7]
+        )));
+    assert_eq!(head(&fx, &frozen_wt(&fx)), pin);
+}
+
+#[test]
+fn add_refuses_a_frozen_role_until_it_is_unfrozen() {
+    let (fx, _hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(
+        &hub_wt(&fx),
+        &["feature", "add", "api", "--branch", "feat-1"],
+    )
+    .assert()
+    .failure()
+    .stderr(predicate::str::contains("is frozen"))
+    .stderr(predicate::str::contains("hub feature unfreeze api"));
+    assert!(frozen_wt(&fx).exists());
+}

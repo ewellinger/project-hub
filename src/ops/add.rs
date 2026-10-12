@@ -6,6 +6,15 @@ use crate::ops::session::{after_save, change_path, converge_tmux, write_workspac
 
 pub fn add(hub: &Hub, feature: &mut Feature, opts: &AddOptions) -> Result<Vec<String>> {
     feature.require_open()?;
+    if let Some(pin) = feature.pin(opts.role).filter(|p| p.worktree.is_some()) {
+        return Err(HubError::Precondition(format!(
+            "role '{}' is frozen at {} in feature '{}'; run `hub feature unfreeze {}` first",
+            opts.role,
+            pin.short(),
+            feature.name,
+            opts.role
+        )));
+    }
     // Transaction: branch, worktree, and the record write succeed together or
     // are rolled back together. Workspace and tmux come after the write.
     let mut created = Created::new();
