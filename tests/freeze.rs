@@ -98,13 +98,9 @@ fn freeze_at_must_name_a_commit_on_the_local_base() {
 }
 
 #[test]
-fn freeze_refuses_open_changes_repeats_unknown_roles_and_occupied_paths() {
+fn freeze_refuses_repeats_unknown_roles_and_occupied_paths() {
     let (fx, _hub) = world();
     let wt = hub_wt(&fx);
-    fx.hub(&wt, &["feature", "freeze", "ui"])
-        .assert()
-        .failure()
-        .stderr(predicate::str::contains("has an open change"));
     fx.hub(&wt, &["feature", "freeze", "nope"])
         .assert()
         .failure();
@@ -598,4 +594,64 @@ fn repo_rename_records_only_refuses_to_give_a_role_two_pins() {
         before,
         "no record was written"
     );
+}
+
+fn status_row(fx: &Fixture, role: &str) -> serde_json::Value {
+    let out = fx
+        .hub(&hub_wt(fx), &["status", "--json"])
+        .assert()
+        .success()
+        .get_output()
+        .stdout
+        .clone();
+    let report: serde_json::Value = serde_json::from_slice(&out).unwrap();
+    report["rows"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|r| r["role"] == role)
+        .cloned()
+        .unwrap_or_else(|| panic!("no status row for {role}"))
+}
+
+#[test]
+fn freeze_on_an_open_change_pins_its_merge_base_with_the_local_base() {
+    let (fx, hub) = world();
+    let ui = fx.project_home.join("ui-clone");
+    let ui_wt = fx.worktree_dir.join("ui-clone").join("feat-1");
+    fx.commit_file(&ui_wt, "work.txt", "feature work");
+    let fork = fx.git(&ui, &["merge-base", "feat-1", "develop"]);
+    // Local develop moves on after the fork; the pin stays at the fork.
+    fx.commit_file(&ui, "later.txt", "later on develop");
+
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "ui"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "ui: frozen at {}",
+            &fork[..7]
+        )))
+        .stdout(predicate::str::contains("feat-1 is 0 behind the pin"));
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["pins"][0]["role"], "ui");
+    assert_eq!(f["pins"][0]["base"], "develop");
+    assert_eq!(f["pins"][0]["sha"], fork);
+    assert!(f["pins"][0]["worktree"].is_null(), "no reference worktree");
+    assert!(
+        !fx.worktree_dir
+            .join("ui-clone")
+            .join("feat-1-frozen")
+            .exists()
+    );
+
+    let row = status_row(&fx, "ui");
+    assert_eq!(row["stage"], "working");
+    assert_eq!(row["frozen_sha"], fork);
+    assert_eq!(row["base_behind"], 0);
+    assert_eq!(row["base_moved"], 1);
+    fx.hub(&hub_wt(&fx), &["status"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!("frozen @{}", &fork[..7])))
+        .stdout(predicate::str::contains("develop +1 since pin"));
 }

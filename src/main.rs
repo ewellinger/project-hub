@@ -224,11 +224,11 @@ enum FeatureCommand {
         #[arg(long)]
         feature: Option<String>,
     },
-    /// Pin a role outside the feature to its local base tip in a detached reference worktree
+    /// Pin a role to a commit of its local base: a reference worktree outside the feature, a comparison point for an open change
     Freeze {
         /// Role to freeze
         role: String,
-        /// Commit to pin instead of the local base tip; must be on the local base
+        /// Commit to pin instead of the default; must be on the local base
         #[arg(long, value_name = "REF")]
         at: Option<String>,
         /// Feature name; inferred from the hub worktree when omitted

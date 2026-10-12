@@ -438,8 +438,15 @@ fn change_row(
     };
     let custom_base =
         base.is_some() && base != hub.manifest.repo(&change.role).map(|r| r.base.clone());
-    let base_behind = match &base {
-        Some(b) if git.local_branch_exists(&change.branch)? => {
+    // A pinned change measures its lag against the pin, not origin/<base>.
+    let pin = feature
+        .pin(&change.role)
+        .filter(|p| open && p.worktree.is_none());
+    let base_behind = match (&base, pin) {
+        (Some(_), Some(pin)) if git.local_branch_exists(&change.branch)? => {
+            Some(git.missing_commits(&change.branch, &pin.sha)?)
+        }
+        (Some(b), None) if git.local_branch_exists(&change.branch)? => {
             let base_ref = format!("origin/{b}");
             if git.remote_branch_exists(b)? {
                 Some(git.missing_commits(&change.branch, &base_ref)?)
@@ -451,6 +458,12 @@ fn change_row(
                 ));
                 None
             }
+        }
+        _ => None,
+    };
+    let base_moved = match pin {
+        Some(pin) if git.local_branch_exists(&pin.base)? => {
+            Some(git.missing_commits(&pin.sha, &format!("refs/heads/{}", pin.base))?)
         }
         _ => None,
     };
@@ -475,8 +488,8 @@ fn change_row(
         base_behind,
         hint,
         review_url: change.review_url.clone(),
-        frozen_sha: None,
-        base_moved: None,
+        frozen_sha: pin.map(|p| p.sha.clone()),
+        base_moved,
         drift: open && (!exists || !registered || !branch_matches),
     })
 }
@@ -728,12 +741,19 @@ pub fn state_text(row: &StatusRow) -> String {
         state.push(format!("+{a}/-{b}"));
     }
     if let Some((base, n)) = base_lag(row) {
-        state.push(format!("behind base {base} by {n}"));
+        // A pinned change's lag is measured against its pin; name the pin.
+        state.push(match &row.frozen_sha {
+            Some(sha) => format!("behind pin {} by {n}", short_sha(sha)),
+            None => format!("behind base {base} by {n}"),
+        });
     }
     if state.is_empty() {
         state.push("ok".to_string());
     }
-    if let Some(sha) = &row.frozen_sha {
+    // The lag already names the pin; show the marker only when there is none.
+    if let Some(sha) = &row.frozen_sha
+        && base_lag(row).is_none()
+    {
         state.push(format!("frozen @{}", short_sha(sha)));
     }
     if let Some(n) = row.base_moved.filter(|n| *n > 0) {
@@ -848,6 +868,28 @@ mod tests {
             base_moved: None,
             drift: false,
         }
+    }
+
+    #[test]
+    fn pinned_changes_name_the_pin_in_their_lag() {
+        let mut r = row();
+        r.base = Some("develop".into());
+        r.frozen_sha = Some("0123456789abcdef0123456789abcdef01234567".into());
+        r.base_behind = Some(0);
+        r.base_moved = Some(0);
+        assert_eq!(
+            state_text(&r),
+            "ok, frozen @0123456",
+            "behind 0 still shows the pin"
+        );
+        r.base_behind = Some(2);
+        assert_eq!(state_text(&r), "behind pin 0123456 by 2");
+        assert_eq!(state_colour(&r), StateColour::Yellow);
+        r.base_moved = Some(3);
+        assert_eq!(
+            state_text(&r),
+            "behind pin 0123456 by 2, develop +3 since pin"
+        );
     }
 
     #[test]

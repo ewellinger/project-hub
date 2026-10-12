@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use crate::error::{HubError, Result};
-use crate::feature::{Feature, Owner, Pin, Worktree, short_sha};
+use crate::feature::{Change, Feature, Owner, Pin, Worktree, short_sha};
 use crate::git::{Git, WorktreeRemoval};
 use crate::hub::Hub;
 use crate::ops::merged::refuse_in_use;
@@ -39,6 +39,69 @@ pub fn resolve_pin(git: &Git, base: &str, at: Option<&str>) -> Result<String> {
         )));
     }
     Ok(sha)
+}
+
+/// The pin an open change takes by default: where its branch left the
+/// local `base`. Never fetches.
+pub fn change_pin(git: &Git, branch: &str, base: &str) -> Result<String> {
+    let tip = resolve_pin(git, base, None)?;
+    git.merge_base(branch, &tip)?.ok_or_else(|| {
+        HubError::Precondition(format!(
+            "{branch} and the local {base} share no history; there is no commit to pin"
+        ))
+    })
+}
+
+/// Pin a role's open change to the merge base of its branch and the local
+/// `base`, or to `at`. No worktree: `status` measures the branch against
+/// the pin instead of `origin/<base>`.
+fn freeze_change(
+    hub: &Hub,
+    feature: &mut Feature,
+    change: &Change,
+    base: &str,
+    at: Option<&str>,
+) -> Result<Vec<String>> {
+    if let Some(pin) = feature.pin(&change.role) {
+        return Err(HubError::Precondition(format!(
+            "role '{}' is already frozen at {}; use `hub feature refreeze {}` or `hub feature unfreeze {}`",
+            change.role,
+            pin.short(),
+            change.role,
+            change.role
+        )));
+    }
+    let clone_dir = hub.env.clone_path(&change.clone);
+    let git = Git::new(&clone_dir);
+    if !git.is_repo() {
+        return Err(HubError::Precondition(format!(
+            "clone for role '{}' is missing: {}",
+            change.role,
+            clone_dir.display()
+        )));
+    }
+    let sha = match at {
+        Some(_) => resolve_pin(&git, base, at)?,
+        None => change_pin(&git, &change.branch, base)?,
+    };
+    let behind = git.missing_commits(&change.branch, &sha)?;
+    feature.pins.push(Pin {
+        role: change.role.clone(),
+        clone: change.clone.clone(),
+        base: base.to_string(),
+        sha: sha.clone(),
+        worktree: None,
+    });
+    if let Err(err) = hub.save_feature(feature) {
+        feature.remove_pin(&change.role);
+        return Err(err);
+    }
+    Ok(vec![format!(
+        "{}: frozen at {} ({base}); {} is {behind} behind the pin",
+        change.role,
+        short_sha(&sha),
+        change.branch
+    )])
 }
 
 /// The step `freeze` and `start --freeze` share: add a frozen pin and its
@@ -106,8 +169,9 @@ pub fn add_frozen(
     Ok(line)
 }
 
-/// Pin a role with no open change to its local base (or `at`) and check
-/// the commit out, detached, in a hub-owned reference worktree.
+/// Pin a role to its local base (or `at`). A role outside the feature gets
+/// a detached, hub-owned reference worktree; an open change gets a pin at
+/// its merge base with the local base, and no worktree.
 pub fn freeze(
     hub: &Hub,
     feature: &mut Feature,
@@ -115,6 +179,15 @@ pub fn freeze(
     at: Option<&str>,
 ) -> Result<Vec<String>> {
     feature.require_open()?;
+    // An open change is pinned in place; `add_frozen` stays for roles
+    // outside the feature.
+    if let Some(change) = feature.open_change(role).cloned() {
+        let base = match change.effective_base(&hub.manifest) {
+            Some(base) => base,
+            None => hub.manifest.require_repo(role)?.base.clone(),
+        };
+        return freeze_change(hub, feature, &change, &base, at);
+    }
     // Transaction: worktree and record write succeed together or the
     // worktree is removed again. Workspace and tmux come after the write.
     let mut created = Created::new();
