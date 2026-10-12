@@ -25,14 +25,23 @@ pub use overlay::{Outcome, Overlay, Preview, Tone};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Screen {
     Dashboard,
-    /// One open feature. `selected` is an index into `feature.changes`
-    /// (changes are append-only, so it is a stable key); `None` means the
-    /// first change in display order, so a fresh view lands on an open
-    /// role and stays there across refreshes.
+    /// One open feature. `selected` is the row under the cursor (see
+    /// `Selected`); `None` means the first row in display order, so a
+    /// fresh view lands on an open role and stays there across refreshes.
     Feature {
         name: String,
-        selected: Option<usize>,
+        selected: Option<Selected>,
     },
+}
+
+/// The feature view's cursor, stored by a key that survives refreshes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Selected {
+    /// An index into `feature.changes`: append-only, so a stable key.
+    Change(usize),
+    /// A frozen reference row, by role. Its position moves whenever a
+    /// change is added or another role is unfrozen; the role does not.
+    Frozen(String),
 }
 
 /// A row of the list pane: the hub's base checkouts, or one feature.
@@ -53,6 +62,9 @@ pub enum Action {
         feature: String,
         role: String,
         branch: String,
+        /// For a frozen role: branch from the latest base and drop the
+        /// pin, instead of branching from the pin and keeping it.
+        from_latest: bool,
     },
     Review {
         feature: String,
@@ -68,6 +80,20 @@ pub enum Action {
         feature: String,
         role: String,
         force: bool,
+    },
+    /// `feature freeze ROLE` at the local base tip; the dashboard never passes `--at`.
+    Freeze {
+        feature: String,
+        role: String,
+    },
+    Unfreeze {
+        feature: String,
+        role: String,
+        force: bool,
+    },
+    Refreeze {
+        feature: String,
+        role: String,
     },
     Finish {
         feature: String,
@@ -88,6 +114,9 @@ impl Action {
             | Action::Review { feature, .. }
             | Action::SetBase { feature, .. }
             | Action::Merged { feature, .. }
+            | Action::Freeze { feature, .. }
+            | Action::Unfreeze { feature, .. }
+            | Action::Refreeze { feature, .. }
             | Action::Finish { feature, .. }
             | Action::Pull {
                 row: RowId::Feature(feature),
@@ -104,6 +133,9 @@ impl fmt::Display for Action {
             Action::Review { role, .. } => write!(f, "review {role}"),
             Action::SetBase { role, .. } => write!(f, "set-base {role}"),
             Action::Merged { role, .. } => write!(f, "merged {role}"),
+            Action::Freeze { role, .. } => write!(f, "freeze {role}"),
+            Action::Unfreeze { role, .. } => write!(f, "unfreeze {role}"),
+            Action::Refreeze { role, .. } => write!(f, "refreeze {role}"),
             Action::Finish { feature, .. } => write!(f, "finish {feature}"),
             Action::Pull { row: RowId::Base } => write!(f, "pull base"),
             Action::Pull {
@@ -633,6 +665,7 @@ mod tests {
                 branch: format!("feature/{name}"),
                 stage: Stage::Working,
             }],
+            frozen: Vec::new(),
         }
     }
 
@@ -836,7 +869,8 @@ mod tests {
             Action::Add {
                 feature: "x".into(),
                 role: "ui".into(),
-                branch: "b".into()
+                branch: "b".into(),
+                from_latest: false
             }
             .to_string(),
             "add ui to x"
@@ -1011,6 +1045,8 @@ mod tests {
                 base_behind: None,
                 hint: None,
                 review_url: None,
+                frozen_sha: None,
+                base_moved: None,
                 drift: false,
             }],
             warnings: vec![],
@@ -1571,6 +1607,100 @@ mod tests {
             a.footer
                 .as_ref()
                 .is_some_and(|f| f.is_error && f.text.contains("no clipboard available"))
+        );
+    }
+
+    #[test]
+    fn the_freeze_action_names_the_role_and_refreshes_its_feature() {
+        let action = Action::Freeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        assert_eq!(action.to_string(), "freeze api");
+        assert_eq!(action.feature(), Some("alpha"));
+        let mut a = app();
+        assert_eq!(a.run(action.clone()), vec![Effect::Run(action.clone())]);
+        let effects = a.update(Event::Done {
+            action,
+            result: Ok(vec!["api: frozen at 0123456".into()]),
+        });
+        assert!(a.running.is_none());
+        assert_eq!(
+            effects,
+            vec![Effect::Request {
+                row: RowId::Feature("alpha".into()),
+                r#gen: 1
+            }]
+        );
+    }
+
+    #[test]
+    fn unfreeze_and_refreeze_name_the_role_and_refresh_their_feature() {
+        let unfreeze = Action::Unfreeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+            force: true,
+        };
+        let refreeze = Action::Refreeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        assert_eq!(unfreeze.to_string(), "unfreeze api");
+        assert_eq!(refreeze.to_string(), "refreeze api");
+        for action in [unfreeze, refreeze] {
+            assert_eq!(action.feature(), Some("alpha"));
+            let mut a = app();
+            assert_eq!(a.run(action.clone()), vec![Effect::Run(action.clone())]);
+            let effects = a.update(Event::Done {
+                action: action.clone(),
+                result: Ok(vec!["api: unfrozen (was 0123456)".into()]),
+            });
+            assert!(a.running.is_none());
+            assert_eq!(
+                effects,
+                vec![Effect::Request {
+                    row: RowId::Feature("alpha".into()),
+                    r#gen: 1
+                }],
+                "{action}"
+            );
+        }
+    }
+
+    /// EW-95 refuses to move or release a frozen worktree whose HEAD left
+    /// its pin. The dashboard shows that refusal like any other op error
+    /// and refreshes, so the row's `off-pin` state is current.
+    #[test]
+    fn an_off_pin_refusal_shows_in_the_error_overlay() {
+        // EW-95's `require_on_pin` wording: one line, `\` continuations.
+        let refusal = "role 'api': frozen worktree /wt/api/alpha-frozen is off its pin 0123456 \
+                       (HEAD is 89abcde); it may hold commits that are on no branch. Keep them with \
+                       `git -C /wt/api/alpha-frozen branch <name> 89abcde` first; unfreeze and \
+                       finish discard them with --force";
+        let refreeze = Action::Refreeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        let mut a = app();
+        a.run(refreeze.clone());
+        let effects = a.update(Event::Done {
+            action: refreeze,
+            result: Err(HubError::Precondition(refusal.into())),
+        });
+        assert_eq!(
+            a.overlay,
+            Some(Overlay::result(
+                "refreeze api".into(),
+                vec![refusal.into()],
+                true
+            ))
+        );
+        assert_eq!(
+            effects,
+            vec![Effect::Request {
+                row: RowId::Feature("alpha".into()),
+                r#gen: 1
+            }]
         );
     }
 }

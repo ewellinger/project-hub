@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:8f63d4ccdc682c878e994bdc73b33bf3db78f513ab6e4f4f9c5f475d67e91ae1",
+  "pageVersion": "sha256:7a84ddd8d96c4b565f1a659597f5817622c3b660a5afcb2ecebf71033324e449",
   "claims": [
     {
       "id": "claim_e4ab32e300dd456aa6ca521e062a31b9",
@@ -37,7 +37,7 @@
       "statement": "Every hub-scoped command refreshes the skill in all existing hub worktrees, collecting failures as warnings printed to stderr rather than failing the command.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L291-L300",
+          "resource": "repo://src/main.rs#L327-L336",
           "version": "repo-lines-v1:sha256:6f524497c0611fae0a15c3772e835dd75e73c5e968c5c892d8b10fca170c6e3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZDMxYWM0NzhlYjY5NjkyNzA3OGZmYmIxYzY2ODVlYmMxNmI4YjkzODE2OTA5MTA3NjQ4ZTdhOGI3ZmIxMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkNDQ2NDE5ODBkMGY4ZjJiOWMyYjFjODQ2ZTBiNmNjMzJkYWEzNjIwZDUxYTAxMjc2N2M5OTZlNWM3NThiYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhZmUxMWE2ODc2MDQzMmFhMmRjNWVhNzYzNmYxNmFlNzNmMGM2M2U4ZTMzMGI5MDE5ZGIyZWMwNmE3NGU1ZTcifQ"
         },
         {
@@ -55,7 +55,7 @@
           "version": "repo-lines-v1:sha256:eff8fe6202ff78ed52da22b427664aaac2fd8be50b4b1b9e588ebbb17835d39a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZWMxYTRiY2U3N2U5OWNhMjljOWE0MzRmYTVjYjcwMWMyNDlmNzc4ZmM5ZGU5OTQxN2VjZTg4NTA5MzBhY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzNzIxYTA4ZTYxY2QyYzdiOGUzMDU0MmVjMzE2ODA4NjA4OTQ0YWYzNTgzNTRjZjcyM2Q5NWE3YWIyNDk2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhOTkzYWNlNjZiZjhhMzMzMTdmMWJjY2Y2MmZlNmUxMjhlNjk3ZjZkOTI3YjEwMzRjOGI1NjE1OWZmMGE5MTkifQ"
         },
         {
-          "resource": "repo://src/ops/start.rs#L80-L86",
+          "resource": "repo://src/ops/start.rs#L108-L114",
           "version": "repo-lines-v1:sha256:4731479b6182e334894f477357102f20b05f0a5c80a1ed86d10cc89ab00bed9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjFlMDg5ZGViM2IxOTBmYjRlNDU2MWUxNTUxZjA1MDc0YzNlYTQ1NzUxYzI0NTIzODhjOGU2YzcxNGM1ZTFkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2I2Y2YzYTEzNDljOGQ5NGE2NjYzOWIwZDUzZTNhMWFlN2NhOGI5MThiNzE5YzhmZTdmZWY3Y2U2MTAxMzVlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjUzMDhlODZkOWUxYTIwNzk2YzhjNGEzNjBhOTQ0NzMxOTlmNWYzZjg3NDJlNWQ5YzQ5NzcyZDczYmU4YmY0MSJ9"
         },
         {
@@ -79,14 +79,24 @@
       "statement": "The skill instructs agents to treat hub status exit 30 as drift and stop, to refer to member repos by role, and to take paths from hub status --json rows.",
       "evidence": [
         {
-          "resource": "repo://skills/hub/SKILL.md#L10-L46",
-          "version": "repo-lines-v1:sha256:42215248a1a75a9a521ad4f3408d7e1efa52d9bdd067011befbe5c5c14cf794b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNGIwODdjNGMwNDIyZmE4NDQ1MTQ2ODA4OWE4YWM3M2MwZmIxYWM0Y2E4NzhmZTJlNDM1MDlmNDg2YWJiNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0MmM4YzVmOWJmNzUyODNhMzAzNmYzMWM1NDAzY2E5Mjk5ODBlM2Y4NGUwYTAwNTM5NTgyNzRjNTkwZGJjMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NWE1MzJiNDU5NjNjZGVhYTYwMWIyNWNjZjFmZDE0M2NlZTVjZDNiNDk4ODUwYzgyOTZlNjlkMDhlOWU0ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NWEyMzAzOTA3ZTZlZWFlMTUwMWVlOTQ1MzkyMDY3NzgyNTU4MTg3NjMwZDVhOWQzZTY3NTBlYTg4ZTYxODcifQ"
+          "resource": "repo://skills/hub/SKILL.md#L10-L49",
+          "version": "repo-lines-v1:sha256:22c34fb75378faa9cb946f62dc373b0b492bf65bdf5a2d3f4eaf04b85afd553d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNGIwODdjNGMwNDIyZmE4NDQ1MTQ2ODA4OWE4YWM3M2MwZmIxYWM0Y2E4NzhmZTJlNDM1MDlmNDg2YWJiNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMDNlMjBhODI3ZTNlMmMyNzM3NjY2YjVjOGQwM2JiYzUwNjAzYzJjMWRkODMzOTM1YzNhYzgyMzkzZWJjMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NWE1MzJiNDU5NjNjZGVhYTYwMWIyNWNjZjFmZDE0M2NlZTVjZDNiNDk4ODUwYzgyOTZlNjlkMDhlOWU0ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NWEyMzAzOTA3ZTZlZWFlMTUwMWVlOTQ1MzkyMDY3NzgyNTU4MTg3NjMwZDVhOWQzZTY3NTBlYTg4ZTYxODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_88bad53db9fe4bcdb2d6c9f75262a6de",
+      "statement": "The skill tells agents that a frozen row is a read-only reference checkout never to edit, commit in, or check out, to run refreeze only when the user asks, and never to pass --force past an 'is off its pin' refusal without the user's explicit yes.",
+      "evidence": [
+        {
+          "resource": "repo://skills/hub/SKILL.md#L59-L61",
+          "version": "repo-lines-v1:sha256:733237008faf50f0ec48a5355913c3db5955fd1a5f5c6d357df41d678f6d598b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGQwNDVmMGUzZWIxNDBhZjgyMTNkOWQyZDg5ZjE2ZDc2MGJiNDBlMmE5YjIzOTc5NTRiYjhlMjc4Yjg3MmU2NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTA0YWU2NGMwYzU1YTYxNTAwYjk2Nzg2YWExMjlmZTdkODVlMTVkOTJhZTdhMzdlYjQ1MGM0NDM0MDc2MzQ2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODk5OGFmMjk4NDhlNjFlNDZlNjdkZWIwZGFmYjgwZDI0NDVkODJmMzMyODNiZTZhMWE5YTg3YzM1MDRmNTZmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTVkMTY4NTJlZjIwYjNlYjZjYjc0MDY4NTIxZjQxYWViY2UwMmViZGE0YTczMjE1NDI5ZmYzOGY1NGUzNjJiYSJ9"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T04:10:52.427Z"
+    "at": "2026-10-12T18:18:24.526Z"
   }
 }

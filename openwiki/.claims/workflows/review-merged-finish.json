@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2e2703f9424261361358e17982ccf04db967e8fd6da1ef66392e9dc209616bc4",
+  "pageVersion": "sha256:2f6862668110de2cd631414fadacc92f1927419b810f40b14929b155be70a620",
   "claims": [
     {
       "id": "claim_0f7be9383d424624981b0526642970c4",
@@ -14,11 +14,11 @@
     },
     {
       "id": "claim_7ae1ce8ce8554d5aae6554898f9acac9",
-      "statement": "feature merged checks for a dirty worktree before re-pointing the role's tmux window at the main clone, because respawning kills processes in that window.",
+      "statement": "feature merged checks for a dirty worktree before re-pointing the role's tmux window at the main clone with repoint_window, because respawning kills processes in that window.",
       "evidence": [
         {
-          "resource": "repo://src/ops/merged.rs#L134-L169",
-          "version": "repo-lines-v1:sha256:d868f5a481928571adde31b8d264d35aa66b191c3953190b59d241e2f9097835:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmM2U2YzBmYzI4Y2FlMDhjNjdlNTRjZDQ4MjkxNTE4M2Y5NWIyMjQyMGZjYjdmNmFmNDA5YmE0MzlhYzQ3OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlMzliZTIxYjBmOGRmYjkzMDU4OWU4ZDk1MmQwMWE5NzFiZTY3NTRiMmFkNWJjMjU3NzM3Mzk0Y2YxZWYxZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4YTZiYzBhYmVkZjkzNzEwZmY1M2ZmNjIwZmU2ZjdkMDg2NDMxMDY4OThiYjc4MTJjYTkzOWQ2MGU5YTY0MGQifQ"
+          "resource": "repo://src/ops/merged.rs#L134-L170",
+          "version": "repo-lines-v1:sha256:3573aaf2e1108e28c81ffc6bac81d61e34e81124894b2a5dd8e5cf928ab8ccff:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMGQ2ZDUzYjUxZWQ2YzczOTI1YjZhYmEzNGM5OGUxZGY0ZTFkZjM0N2M1MmE2MTAwOTRiYWU4Njc4MGJlOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NWVlNDE3N2I5NTJlYjk0NjQyODU0YTlkZTdjZWRkNWQyMmYyOWYyMzk2NDA0YzcxYmI1YmNkNmIzOGFlMDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxZGFmNDA3MzIwOGE4ZDZiZjBiN2RlMDQ2MDU2YzRiNWFhYTFiNmYwZTIxMzJkMmJhNWM5YmM4NDQ0NmFlMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyNzdhOWZmMmU3MDkyMzgyODVhMDJmN2IxMTVlMzU5MWFmMzc2NTM1NTAwMThkZGQyZGMwOWJmYTkyNzkyMjMifQ"
         }
       ]
     },
@@ -51,22 +51,22 @@
       "statement": "merged and finish perform irreversible removals before writing the feature record, so a failed write can be completed by rerunning the command.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L61-L97",
-          "version": "repo-lines-v1:sha256:89fbacabbb5484624a434b343943f3df790461187ba290e3fa17af9eb1a5be79:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYWQzOWFhOTc2ODExYjk3YzM3Zjg2MTBjMzU3MDQyODQxYmMwOWVhNTU3MDNlNDI1MmJiNzAyZjZhZWRlYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYjYwNWJmZTNhMDYxOTE3MWY3Y2JjM2QyODcyMmIzNDUxYmQxMDMxYmZhNmIxZjM5N2Q5YTFkODliOWIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWUwZWVhM2Q5ZmQyOTAzNzMyYTBhNzU1ZTExZmEwOTg1ZTU2ZDc4MDhmODYyZWU2OWRmY2JhZDcxNmZmMDUifQ"
+          "resource": "repo://src/ops/finish.rs#L86-L133",
+          "version": "repo-lines-v1:sha256:6ce63522303d0b7c7b7f0fd779b2cae59daed21735c889ef1e7c9e94d39fdd65:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMWM5NDA4YWRiNTA2ZmNlNjQwMTJmMWNjMDdjZWQ1YWUzMDhjOTEzZGNiZTkwYzAwMGIyOGMyM2FlOTY1ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNWFmMTFhYzBjYjc0NjgxM2E0OWE4ZjkwZmY2MGZiY2U4MjNhNDcxYTcyN2M3ZGRmNjExY2JmMWJlNGVhNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://src/ops/merged.rs#L174-L189",
-          "version": "repo-lines-v1:sha256:e2ce759fd9a3324367c881edc6d2aa98541787af4d04afbbf110266f809ea54a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjMTc0NzI4ZmIwMzllMzAxNmVhMmI1OTcxYzgzNjRlMGMxNzg5MTY4NDNmYmU2YzZlOGU2M2ExMzUxYTEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYjYwNWJmZTNhMDYxOTE3MWY3Y2JjM2QyODcyMmIzNDUxYmQxMDMxYmZhNmIxZjM5N2Q5YTFkODliOWIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4YzJlZWQ0ZDc3ZWJiYWMyNjM5NzAyOWM0ZGQ3ODY0OGJmNGZiYTZlZDVkNTY5YTU1NDhiZmE0YzVmNTBhMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5MjA4ZDJhODY5Mjc4ZWM2NjAyMmY2ZTViODcwNzcxZTNmODQyYzQ2MTI4MGNkOTU3MGFhZGNjYTYxZDU0OGMifQ"
+          "resource": "repo://src/ops/merged.rs#L170-L191",
+          "version": "repo-lines-v1:sha256:976b70cc7eb450338029c65990d50cd104539c7648180b9859089ac8f9eae010:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NWVlNDE3N2I5NTJlYjk0NjQyODU0YTlkZTdjZWRkNWQyMmYyOWYyMzk2NDA0YzcxYmI1YmNkNmIzOGFlMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiMWIyMzcxZGQ4MTI2YWU0ODkyODE4OWIwMTM4MDc4MGFjYTE4YWZkOTkyMzRkYzExYzAzZTdjOGI1NDE4ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_fd1b83bc2115478fa21fdbc284edb3ad",
-      "statement": "feature finish refuses to run inside the feature's own tmux session, checks every worktree including the hub worktree for dirtiness before acting, kills the session, removes all worktrees, and marks the feature finished without changing stages or deleting branches.",
+      "statement": "feature finish refuses to run inside the feature's own tmux session, checks frozen worktrees for commits off their pin and then every worktree including the hub worktree for dirtiness before acting, kills the session, removes all worktrees including frozen ones, clears the pins, and marks the feature finished without changing stages or deleting branches.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L10-L103",
-          "version": "repo-lines-v1:sha256:495774697c4fe671c35b4851b8f548b916d4fb029a7ea8faa465cc09a35fcebc:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4N2Q5NDdmYWNhODM0ZGY1ZTkzZWE4NmZhZDdiMWVmZWExZWIxYjhiZTk1MmU4NTVkNDNlY2VmZWVmMTU1MmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkYjc0ZWVkM2M2MjllZWIxYTRlYzcwOTA4OTdkOTE5MWJmZmIyZmQ2YzJjYTZkNTY0NGFlZDc1MzNmZDI0ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/ops/finish.rs#L10-L133",
+          "version": "repo-lines-v1:sha256:1d34222d2a1f11ffd42a63864b8eaa88b6f7be5f4def87c52704bf40975cfc78:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjYzI5YTE3YWY4ZDUxZDZmNjkzMzk3NDE2ZGExNTAyMGFhZDVlZDI5NzBhYWFkZTEzYjhlODBhMjk5YTQ4YjBkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -89,10 +89,20 @@
           "version": "repo-lines-v1:sha256:7bec4736bafe40bd5305474e25fc8ae4d931051b458467358c93465ffb5f42ca:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiOTI0M2Y0YzI4NWIwOGY1Mzk5YzNmZDJjNTk4NWVlOGE5ZGNiYjczNjFjNjFkNWQwYjM4MDNiZjZhZmUyZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
+    },
+    {
+      "id": "claim_70666ea173e446daba083b7c76f7ac6e",
+      "statement": "feature merged drops the role's pin along with its change when it saves the record.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/merged.rs#L175-L190",
+          "version": "repo-lines-v1:sha256:e6a17af71cf407fbcfad7c127ba290adb86126036cdbd4e70c169c117dec3d99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZjI2ZDE1MGRhNjM3ZWVkZTRjN2I3MGVmYzkxOWRjM2Q2ODQxOGMwY2YzMDIyNjFkZDY2MzFiNGIwYWY3OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5OGFiMmY3NzBjZWUyMzExNDJiNzkyNDJmOTNlMTAzZmFlOTI4NTY5NWFiNTdiY2IwZDdjMWFiNWVkNDdlYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T04:10:52.427Z"
+    "at": "2026-10-12T18:18:24.526Z"
   }
 }

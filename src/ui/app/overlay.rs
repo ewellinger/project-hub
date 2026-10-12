@@ -85,11 +85,20 @@ pub const DASHBOARD_HELP: &[(&str, &str)] = &[
 
 pub const FEATURE_HELP: &[(&str, &str)] = &[
     ("↑↓/jk", "select a role"),
-    ("c", "copy the branch, path, or review URL"),
+    ("c", "copy the branch or pinned commit, path, or review URL"),
     ("v", "record the review URL"),
     ("m", "mark the role merged and remove its worktree"),
     ("b", "set the branch the role merges into"),
     ("+", "add a role"),
+    (
+        "z",
+        "freeze a role: pin its open change, or check out its local base tip",
+    ),
+    ("u", "unfreeze the role under the cursor"),
+    (
+        "Z",
+        "move the pin of the role under the cursor to its local base tip",
+    ),
     ("f", "finish the feature"),
     ("o", "open the feature's workspace"),
     ("p", "pull every open role, fast-forward only"),

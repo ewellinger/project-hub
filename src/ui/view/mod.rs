@@ -32,7 +32,19 @@ const LEGEND: &[(&str, &str)] = &[
 const FEATURE_LEGEND: &[(&str, &str)] = &[
     ("↑↓/jk", "role"),
     ("c", "copy"),
+    ("z", "freeze"),
     ("f", "finish"),
+    ("?", "help"),
+    ("Esc", "back"),
+];
+/// The feature legend with the cursor on a frozen row (`frozen_sha` set),
+/// where `u` and `Z` act. It trades `↑↓/jk` and `f` for them to fit the
+/// minimum width; `?` still lists every key.
+const FROZEN_LEGEND: &[(&str, &str)] = &[
+    ("c", "copy"),
+    ("z", "freeze"),
+    ("u", "unfreeze"),
+    ("Z", "refreeze"),
     ("?", "help"),
     ("Esc", "back"),
 ];
@@ -148,6 +160,13 @@ fn render_footer(app: &App, frame: &mut Frame, area: Rect) {
             ),
             None => match &app.screen {
                 Screen::Dashboard => legend_line(LEGEND),
+                Screen::Feature { .. }
+                    if app
+                        .selected_role_row()
+                        .is_some_and(|r| r.frozen_sha.is_some()) =>
+                {
+                    legend_line(FROZEN_LEGEND)
+                }
                 Screen::Feature { .. } => legend_line(FEATURE_LEGEND),
             },
         },
@@ -237,6 +256,8 @@ mod tests {
             base_behind: None,
             hint: hint.map(str::to_string),
             review_url: None,
+            frozen_sha: None,
+            base_moved: None,
             drift: dirty,
         }
     }
@@ -258,6 +279,7 @@ mod tests {
                     stage: Stage::Working,
                 },
             ],
+            frozen: Vec::new(),
         }
     }
 
@@ -624,7 +646,7 @@ mod tests {
         let out = lines(MIN_WIDTH, 30, &a);
         assert_eq!(
             out.last().unwrap(),
-            " ↑↓/jk role  c copy  f finish  ? help  Esc back"
+            " ↑↓/jk role  c copy  z freeze  f finish  ? help  Esc back"
         );
     }
 
@@ -647,10 +669,26 @@ mod tests {
         )));
         let text = flatten(&lines(100, 30, &a));
         assert!(
-            text.contains("c copy the branch, path, or review URL"),
+            text.contains("c copy the branch or pinned commit, path, or review URL"),
             "{text}"
         );
         assert!(text.contains("+ add a role"), "{text}");
+        assert!(
+            text.contains("z freeze a role: pin its open change, or check out its local base tip"),
+            "{text}"
+        );
+        assert!(
+            text.contains("u unfreeze the role under the cursor"),
+            "{text}"
+        );
+        assert!(
+            text.contains("Z move the pin of the role under the cursor to its local base tip"),
+            "{text}"
+        );
+        assert!(
+            text.contains("? close Esc close"),
+            "help overlay clipped: {text}"
+        );
     }
 
     #[test]
@@ -947,5 +985,233 @@ mod tests {
             "last body line clipped: {text}"
         );
         assert!(text.contains("⏎ close"), "key line clipped: {text}");
+    }
+
+    #[test]
+    fn feature_view_shows_frozen_rows_with_their_pin_and_base_movement() {
+        use crate::ui::app::feature::tests::{frozen_ui, on_report};
+        let mut a = on_report(frozen_ui());
+        let out = lines(120, 30, &a);
+        let text = joined(&out);
+        let frozen = out
+            .iter()
+            .position(|l| l.contains("frozen @0123456"))
+            .unwrap_or_else(|| panic!("{text}"));
+        assert!(
+            out[frozen].contains(" ui ") && out[frozen].contains("main +3 since pin"),
+            "{}",
+            out[frozen]
+        );
+        let merged = out.iter().position(|l| l.contains("old-ui")).unwrap();
+        assert!(frozen < merged, "frozen above merged: {text}");
+        a.update(Event::Key(KeyEvent::new(
+            KeyCode::Char('j'),
+            KeyModifiers::NONE,
+        )));
+        let out = lines(120, 30, &a);
+        assert!(
+            out[frozen].contains("▸"),
+            "cursor on the frozen row: {}",
+            out[frozen]
+        );
+    }
+
+    #[test]
+    fn a_dirty_pinned_change_shows_its_whole_state() {
+        use crate::ui::app::feature::tests::{on_report, pinned_api};
+        let Report::Feature {
+            feature,
+            mut report,
+        } = pinned_api()
+        else {
+            unreachable!()
+        };
+        report.rows[1].dirty = true;
+        let a = on_report(Report::Feature { feature, report });
+        let text = joined(&lines(120, 30, &a));
+        assert!(
+            text.contains("dirty, frozen @0123456, main +3 since pin"),
+            "{text}"
+        );
+    }
+
+    #[test]
+    fn a_pinned_change_behind_its_pin_shows_its_whole_state() {
+        use crate::ui::app::feature::tests::{on_report, pinned_api};
+        let Report::Feature {
+            feature,
+            mut report,
+        } = pinned_api()
+        else {
+            unreachable!()
+        };
+        // EW-97 measures a pinned change against its pin, not origin/<base>.
+        report.rows[1].base_behind = Some(2);
+        let a = on_report(Report::Feature { feature, report });
+        let text = joined(&lines(120, 30, &a));
+        assert!(
+            text.contains("behind pin 0123456 by 2, main +3 since pin"),
+            "{text}"
+        );
+    }
+
+    #[test]
+    fn a_long_pinned_state_never_truncates_the_branch() {
+        use crate::ui::app::feature::tests::{on_report, pinned_api};
+        let Report::Feature {
+            feature,
+            mut report,
+        } = pinned_api()
+        else {
+            unreachable!()
+        };
+        report.rows[1].dirty = true;
+        report.rows[1].base_behind = Some(2);
+        let a = on_report(Report::Feature { feature, report });
+        for width in [80, 100] {
+            let out = lines(width, 30, &a);
+            let api = out
+                .iter()
+                .find(|l| l.contains(" api "))
+                .unwrap_or_else(|| panic!("{}", joined(&out)));
+            assert!(api.contains("feature/x"), "at {width}: {api}");
+        }
+        let text = joined(&lines(120, 30, &a));
+        assert!(
+            text.contains("dirty, behind pin 0123456 by 2, main +3 since pin"),
+            "{text}"
+        );
+    }
+
+    #[test]
+    fn the_feature_footer_adds_unfreeze_and_refreeze_only_on_a_frozen_row() {
+        use crate::ui::app::feature::tests::{frozen_ui, on_report, pinned_api};
+        let mut a = on_report(frozen_ui());
+        let out = lines(MIN_WIDTH, 30, &a);
+        assert_eq!(
+            out.last().unwrap(),
+            " ↑↓/jk role  c copy  z freeze  f finish  ? help  Esc back",
+            "the cursor is on the open api change"
+        );
+        assert_eq!(a.selected_role_row().unwrap().branch, "feature/x");
+        a.update(Event::Key(KeyEvent::new(
+            KeyCode::Char('j'),
+            KeyModifiers::NONE,
+        ))); // ui, frozen
+        let row = a.selected_role_row().unwrap();
+        assert_eq!((row.role.as_str(), row.stage.as_str()), ("ui", "frozen"));
+        let out = lines(MIN_WIDTH, 30, &a);
+        assert_eq!(
+            out.last().unwrap(),
+            " c copy  z freeze  u unfreeze  Z refreeze  ? help  Esc back"
+        );
+        let a = on_report(pinned_api());
+        let out = lines(MIN_WIDTH, 30, &a);
+        assert_eq!(
+            out.last().unwrap(),
+            " c copy  z freeze  u unfreeze  Z refreeze  ? help  Esc back",
+            "a pinned open change is a frozen row too"
+        );
+    }
+
+    #[test]
+    fn the_unfreeze_preview_keeps_its_key_line_under_a_long_wrapped_path() {
+        use crate::ui::app::feature::tests::{frozen_ui, on_report};
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        report.rows[3].path = PathBuf::from(format!("/{}/ui/suspense-frozen", "x".repeat(90)));
+        report.rows[3].dirty = true;
+        let mut a = on_report(Report::Feature { feature, report });
+        for c in ['j', 'u'] {
+            a.update(Event::Key(KeyEvent::new(
+                KeyCode::Char(c),
+                KeyModifiers::NONE,
+            )));
+        }
+        let out = lines(80, 24, &a);
+        assert!(
+            flatten(&out).contains("! ui is dirty; unfreeze will refuse without force"),
+            "{}",
+            joined(&out)
+        );
+        assert!(
+            joined(&out).contains("⏎ unfreeze  F unfreeze with force  Esc cancel"),
+            "key line clipped: {}",
+            joined(&out)
+        );
+    }
+
+    #[test]
+    fn the_feature_list_shows_frozen_roles_as_read_only() {
+        let mut s = summary("suspense", FeatureStatus::Open);
+        s.frozen.push(hub::ops::list::FrozenSummary {
+            role: "bff".into(),
+            sha: "0123456789abcdef0123456789abcdef01234567".into(),
+        });
+        let a = App::new("acme", vec![s]);
+        let rows = lines(100, 30, &a);
+        assert!(
+            rows.iter()
+                .any(|l| l.contains("  bff ") && l.contains("frozen│")),
+            "{}",
+            joined(&rows)
+        );
+        let style = find_style(100, 30, &a, "frozen│");
+        assert!(
+            style.add_modifier.contains(Modifier::ITALIC)
+                && style.add_modifier.contains(Modifier::DIM),
+            "{style:?}"
+        );
+        let member = find_style(100, 30, &a, "working│");
+        assert!(
+            !member.add_modifier.contains(Modifier::ITALIC),
+            "{member:?}"
+        );
+    }
+
+    #[test]
+    fn frozen_rows_in_the_feature_view_are_read_only_and_say_so_under_the_cursor() {
+        use crate::ui::app::feature::tests::{frozen_ui, on_report};
+        let mut a = on_report(frozen_ui());
+        let style = find_style(120, 30, &a, "ui/suspense-frozen");
+        assert!(
+            style.add_modifier.contains(Modifier::ITALIC)
+                && style.add_modifier.contains(Modifier::DIM),
+            "{style:?}"
+        );
+        assert!(
+            !joined(&lines(120, 30, &a)).contains("read-only reference checkout"),
+            "only shown with the cursor on the frozen row"
+        );
+        a.update(Event::Key(KeyEvent::new(
+            KeyCode::Char('j'),
+            KeyModifiers::NONE,
+        )));
+        let text = joined(&lines(120, 30, &a));
+        assert!(
+            text.contains("ui: read-only reference checkout at 0123456; u unfreezes"),
+            "{text}"
+        );
+    }
+
+    #[test]
+    fn a_pinned_open_change_keeps_member_styling() {
+        use crate::ui::app::feature::tests::{on_report, pinned_api};
+        let mut a = on_report(pinned_api());
+        a.update(Event::Key(KeyEvent::new(
+            KeyCode::Char('j'),
+            KeyModifiers::NONE,
+        ))); // cursor off api, so its row has no highlight style
+        let text = joined(&lines(120, 30, &a));
+        assert!(text.contains("frozen @0123456"), "the pin marker: {text}");
+        assert!(!text.contains("read-only"), "{text}");
+        let style = find_style(120, 30, &a, "feature/x");
+        assert!(!style.add_modifier.contains(Modifier::ITALIC), "{style:?}");
+        assert!(!style.add_modifier.contains(Modifier::DIM), "{style:?}");
     }
 }

@@ -5,7 +5,7 @@ description: How `hub` locates a hub repository, what state is committed (`hub.j
 tags: [architecture, state, manifest, locking, persistence]
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
+    at: 2026-10-12T18:18:24.526Z
 sources:
   - id: openwiki-source-a9fddfa72ce7af0e031fedf8
     resource: repo://src/hub.rs
@@ -15,7 +15,7 @@ sources:
     resource: repo://src/manifest.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
 ---
 
 # Hub state, manifest, and locking
@@ -26,7 +26,7 @@ hub state lives in two places with very different sharing rules:
 | State | Location | Shared via git? | Owner |
 |---|---|---|---|
 | Manifest (`hub.json`): hub name, checkout template, member repos by role | `<hub root>/hub.json` on `main` | Yes, committed | `src/manifest.rs` |
-| Feature records: one JSON file per feature | `<git common dir>/hub/features/<name>.json` | No, per machine | `src/feature.rs`, `src/hub.rs` |
+| Feature records: one JSON file per feature (its changes and, since frozen bases, its `pins`) | `<git common dir>/hub/features/<name>.json` | No, per machine | `src/feature.rs`, `src/hub.rs` |
 | Lock file | `<git common dir>/hub/hub.lock` | No | `src/hub.rs` |
 
 Because feature records live under the git *common* dir, every hub worktree
@@ -113,7 +113,8 @@ Every mutating command runs inside `hub.with_lock(|hub| ...)`:
   while it was starting.
 
 The CLI wraps `repo add/set/rename/remove`, `feature start`, `start-review`,
-`add`, `set-base`, `review`, `merged`, `finish`, and `pull` in the lock
+`add`, `set-base`, `freeze`, `unfreeze`, `refreeze`, `review`, `merged`,
+`finish`, and `pull` in the lock
 (`src/main.rs`); read-only commands such as `status` and `list` do not take it.
 The dashboard runs its actions through the same lock from a worker thread
 (`src/ui/worker.rs`). Interactive prompts run before the lock is taken.

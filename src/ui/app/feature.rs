@@ -6,7 +6,7 @@ use hub::ops::status::{StatusReport, StatusRow};
 
 use super::flow::AddRole;
 use super::overlay::{FEATURE_HELP, Overlay};
-use super::{Action, App, Effect, Flow, RowId, Screen};
+use super::{Action, App, Effect, Flow, RowId, Screen, Selected};
 
 /// Row indices of a feature report in display order: the hub row (row 0),
 /// then changes whose stage is not `merged`, then merged ones, each group in
@@ -41,13 +41,14 @@ impl App {
     }
 
     /// A feature report's rows after the hub worktree row: one per change,
-    /// in record order.
+    /// in record order, then one per frozen role.
     pub fn change_rows(report: &StatusReport) -> &[StatusRow] {
         report.rows.get(1..).unwrap_or(&[])
     }
 
-    /// Change indices (into `feature.changes`) in display order: open
-    /// changes first, then merged ones. Row `i + 1` is change `i`.
+    /// Row indices after the hub row, in display order: open changes and
+    /// frozen references first, then merged changes. Row `i + 1` is change
+    /// `i`, or a frozen reference when `i >= feature.changes.len()`.
     pub fn change_order(report: &StatusReport) -> Vec<usize> {
         display_order(&report.rows)
             .into_iter()
@@ -56,26 +57,34 @@ impl App {
             .collect()
     }
 
-    /// The change index under the cursor: the stored one when it is inside
-    /// the record, the last change in display order when it is past the
-    /// end, the first when none was chosen yet. `None` without a report.
+    /// The cursor's index into the report's rows after the hub row. An
+    /// index below `feature.changes.len()` is that change; the rest are
+    /// frozen reference rows, which `status` appends after the changes.
+    /// A stored change resolves to its index while it is in the record, a
+    /// stored frozen role to wherever its row is now; either one that is
+    /// gone falls back to the last row in display order. The first row
+    /// when none was chosen yet; `None` without a report.
     pub fn cursor(&self) -> Option<usize> {
         let Screen::Feature { selected, .. } = &self.screen else {
             return None;
         };
         let (feature, report) = self.feature_report()?;
         let order = Self::change_order(report);
-        match selected {
-            Some(i) if *i < feature.changes.len() => Some(*i),
-            Some(_) => order.last().copied(),
-            None => order.first().copied(),
-        }
+        let rows = Self::change_rows(report);
+        let found = match selected {
+            None => return order.first().copied(),
+            Some(Selected::Change(i)) => (*i < feature.changes.len()).then_some(*i),
+            Some(Selected::Frozen(role)) => {
+                (feature.changes.len()..rows.len()).find(|&i| rows[i].role == *role)
+            }
+        };
+        found.or_else(|| order.last().copied())
     }
 
     /// The change under the cursor and its status row. The mapping is
     /// positional: `status` emits one row per change in `feature.changes`
-    /// order after the hub row, and returns `Err` if any row fails, so row
-    /// `i + 1` is always change `i`. Looking the change up by the row's role
+    /// order after the hub row (frozen rows come after them), and returns
+    /// `Err` if any row fails, so row `i + 1` is always change `i`. Looking the change up by the row's role
     /// would pick the wrong one for a role that was merged and reopened.
     pub fn selected_change(&self) -> Option<(&Change, &StatusRow)> {
         let i = self.cursor()?;
@@ -83,6 +92,14 @@ impl App {
         let row = Self::change_rows(report).get(i)?;
         let change = feature.changes.get(i)?;
         Some((change, row))
+    }
+
+    /// The status row under the cursor: a change's row, or a frozen
+    /// reference row.
+    pub fn selected_role_row(&self) -> Option<&StatusRow> {
+        let i = self.cursor()?;
+        let (_, report) = self.feature_report()?;
+        Self::change_rows(report).get(i)
     }
 
     pub(super) fn feature_key(&mut self, key: KeyEvent) -> Vec<Effect> {
@@ -131,6 +148,27 @@ impl App {
                 }
                 self.start_flow(Flow::AddRole(AddRole::new(name)))
             }
+            KeyCode::Char('z') => {
+                if self.busy() {
+                    return Vec::new();
+                }
+                if self.feature_report().is_none() {
+                    self.say("status not loaded yet; press r".into(), true);
+                    return Vec::new();
+                }
+                self.start_flow(Flow::Freeze {
+                    feature: name,
+                    roles: Vec::new(),
+                })
+            }
+            KeyCode::Char('u') => match self.frozen_role() {
+                Some((feature, role)) => self.start_flow(Flow::Unfreeze { feature, role }),
+                None => Vec::new(),
+            },
+            KeyCode::Char('Z') => match self.frozen_role() {
+                Some((feature, role)) => self.run(Action::Refreeze { feature, role }),
+                None => Vec::new(),
+            },
             KeyCode::Char('c') => {
                 if self.busy() {
                     return Vec::new();
@@ -160,7 +198,7 @@ impl App {
 
     /// The feature and role a per-role action applies to, or `None` after
     /// saying why not: an action is running, no status is cached, or the
-    /// role's last change is merged.
+    /// row is a merged change or a frozen reference.
     fn role_action(&mut self) -> Option<(String, String)> {
         if self.busy() {
             return None;
@@ -171,7 +209,15 @@ impl App {
             return None;
         }
         let Some((change, _)) = self.selected_change() else {
-            self.say("status not loaded yet; press r".into(), true);
+            // A frozen reference row has a role but no change.
+            let text = match self.selected_role_row() {
+                Some(row) => format!(
+                    "no open change for role '{}' in feature '{}'",
+                    row.role, name
+                ),
+                None => "status not loaded yet; press r".into(),
+            };
+            self.say(text, true);
             return None;
         };
         if !change.is_open() {
@@ -185,19 +231,52 @@ impl App {
         Some((name, change.role.clone()))
     }
 
+    /// The feature and role of the frozen reference or pinned change under
+    /// the cursor, or `None` after saying why not.
+    fn frozen_role(&mut self) -> Option<(String, String)> {
+        if self.busy() {
+            return None;
+        }
+        let name = self.feature_name()?.to_string();
+        let Some((role, frozen)) = self
+            .selected_role_row()
+            .map(|r| (r.role.clone(), r.frozen_sha.is_some()))
+        else {
+            self.say("status not loaded yet; press r".into(), true);
+            return None;
+        };
+        if !frozen {
+            self.say(
+                format!("role '{role}' is not frozen in feature '{name}'"),
+                true,
+            );
+            return None;
+        }
+        Some((name, role))
+    }
+
     /// Step the cursor through the display order and clamp at its ends.
+    /// A change is stored by its record index, a frozen row by its role, so
+    /// a refresh that shifts the frozen rows keeps the same role selected.
     fn move_role(&mut self, delta: isize) -> Vec<Effect> {
         let Some(current) = self.cursor() else {
             return Vec::new();
         };
-        let order = self
-            .feature_report()
-            .map(|(_, r)| Self::change_order(r))
-            .unwrap_or_default();
+        let Some((feature, report)) = self.feature_report() else {
+            return Vec::new();
+        };
+        let order = Self::change_order(report);
         let pos = order.iter().position(|&i| i == current).unwrap_or(0) as isize;
         let next = (pos + delta).clamp(0, order.len().saturating_sub(1) as isize) as usize;
+        let pick = order.get(next).map(|&i| {
+            if i < feature.changes.len() {
+                Selected::Change(i)
+            } else {
+                Selected::Frozen(Self::change_rows(report)[i].role.clone())
+            }
+        });
         if let Screen::Feature { selected, .. } = &mut self.screen {
-            *selected = order.get(next).copied();
+            *selected = pick;
         }
         Vec::new()
     }
@@ -208,7 +287,7 @@ pub(crate) mod tests {
     use super::super::*;
     use super::display_order;
     use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
-    use hub::feature::{Change, Feature, Stage};
+    use hub::feature::{Change, Feature, Owner, Pin, Stage, Worktree};
     use hub::ops::list::RoleSummary;
     use hub::ops::status::{StatusReport, StatusRow};
     use std::path::PathBuf;
@@ -227,6 +306,7 @@ pub(crate) mod tests {
                 branch: "feature/x".into(),
                 stage: Stage::Working,
             }],
+            frozen: Vec::new(),
         }
     }
 
@@ -265,6 +345,8 @@ pub(crate) mod tests {
             base_behind: None,
             hint: None,
             review_url: None,
+            frozen_sha: None,
+            base_moved: None,
             drift: false,
         }
     }
@@ -313,6 +395,74 @@ pub(crate) mod tests {
                 warnings: vec![],
                 drift: false,
             },
+        }
+    }
+
+    pub(crate) const PIN: &str = "0123456789abcdef0123456789abcdef01234567";
+
+    pub(crate) fn pin(role: &str, worktree: bool) -> Pin {
+        Pin {
+            role: role.into(),
+            clone: format!("{role}-clone"),
+            base: "main".into(),
+            sha: PIN.into(),
+            worktree: worktree.then(|| Worktree {
+                name: "suspense-frozen".into(),
+                owner: Owner::Hub,
+            }),
+        }
+    }
+
+    /// The row `status` emits for a frozen reference worktree.
+    pub(crate) fn frozen_status_row(role: &str) -> StatusRow {
+        let mut r = status_row(role, "main", "frozen");
+        r.path = PathBuf::from(format!("/wt/{role}/suspense-frozen"));
+        r.ahead = None;
+        r.behind = None;
+        r.frozen_sha = Some(PIN.into());
+        r.base_moved = Some(3);
+        r
+    }
+
+    /// `suspense` with `ui` (whose only change is merged) frozen in a
+    /// reference worktree. Rows: hub, api working, ui merged, ui frozen.
+    pub(crate) fn frozen_ui() -> Report {
+        let Report::Feature {
+            mut feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        feature.pins.push(pin("ui", true));
+        report.rows.push(frozen_status_row("ui"));
+        Report::Feature { feature, report }
+    }
+
+    /// `suspense` with its open `api` change pinned; no reference worktree.
+    pub(crate) fn pinned_api() -> Report {
+        let Report::Feature {
+            mut feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        feature.pins.push(pin("api", false));
+        report.rows[1].base = Some("main".into());
+        report.rows[1].frozen_sha = Some(PIN.into());
+        report.rows[1].base_moved = Some(3);
+        Report::Feature { feature, report }
+    }
+
+    pub(crate) fn repo(role: &str) -> hub::manifest::RepoSpec {
+        hub::manifest::RepoSpec {
+            role: role.into(),
+            clone: format!("{role}-clone"),
+            remote: "origin".into(),
+            base: "main".into(),
+            branch_template: "{feature}".into(),
+            description: String::new(),
         }
     }
 
@@ -395,7 +545,7 @@ pub(crate) mod tests {
             a.screen,
             Screen::Feature {
                 name: "suspense".into(),
-                selected: Some(0)
+                selected: Some(Selected::Change(0))
             }
         );
     }
@@ -578,7 +728,7 @@ pub(crate) mod tests {
         // index, not by role name.
         a.screen = Screen::Feature {
             name: "suspense".into(),
-            selected: Some(0),
+            selected: Some(Selected::Change(0)),
         };
         let (change, row) = a.selected_change().expect("a change under the cursor");
         assert!(!change.is_open());
@@ -598,7 +748,7 @@ pub(crate) mod tests {
         }
         a.screen = Screen::Feature {
             name: "suspense".into(),
-            selected: Some(1),
+            selected: Some(Selected::Change(1)),
         };
         let (change, row) = a.selected_change().expect("a change under the cursor");
         assert!(change.is_open());
@@ -645,6 +795,22 @@ pub(crate) mod tests {
     }
 
     #[test]
+    fn j_and_k_walk_open_frozen_and_merged_rows() {
+        let mut a = on_report(frozen_ui());
+        assert_eq!(a.cursor(), Some(0), "the open api change");
+        a.update(key(KeyCode::Char('j')));
+        assert_eq!(a.cursor(), Some(2), "down reaches the frozen ui row");
+        a.update(key(KeyCode::Char('j')));
+        assert_eq!(a.cursor(), Some(1), "then the merged ui change");
+        a.update(key(KeyCode::Char('k')));
+        assert_eq!(a.cursor(), Some(2), "back up to the frozen row");
+        a.update(key(KeyCode::Char('k')));
+        assert_eq!(a.cursor(), Some(0), "back up to the open change");
+        a.update(key(KeyCode::Char('k')));
+        assert_eq!(a.cursor(), Some(0), "clamps at the first row");
+    }
+
+    #[test]
     fn a_refresh_that_reorders_rows_keeps_the_cursor_on_the_same_change() {
         // Two open changes; the cursor moves to the second (ui).
         let mut f = Feature::new("suspense", "acme-suspense");
@@ -688,7 +854,7 @@ pub(crate) mod tests {
         let mut a = on_report(reopened());
         a.screen = Screen::Feature {
             name: "suspense".into(),
-            selected: Some(7),
+            selected: Some(Selected::Change(7)),
         };
         assert_eq!(
             a.cursor(),
@@ -853,6 +1019,264 @@ pub(crate) mod tests {
             a.footer
                 .as_ref()
                 .is_some_and(|f| f.is_error && f.text == "status not loaded yet; press r")
+        );
+    }
+
+    #[test]
+    fn the_cursor_reaches_a_frozen_row_between_open_and_merged_ones() {
+        let mut a = on_report(frozen_ui());
+        assert_eq!(a.cursor(), Some(0), "lands on the open api change");
+        a.update(key(KeyCode::Char('j')));
+        assert_eq!(
+            a.cursor(),
+            Some(2),
+            "the frozen ui row sits above the merged change"
+        );
+        let row = a.selected_role_row().expect("a row under the cursor");
+        assert_eq!((row.role.as_str(), row.stage.as_str()), ("ui", "frozen"));
+        assert!(
+            a.selected_change().is_none(),
+            "a frozen row is not a change"
+        );
+        a.update(key(KeyCode::Char('j')));
+        assert_eq!(a.cursor(), Some(1), "then the merged ui change");
+        a.update(key(KeyCode::Char('j')));
+        assert_eq!(a.cursor(), Some(1), "clamped");
+    }
+
+    #[test]
+    fn a_view_with_only_a_frozen_role_opens_on_it() {
+        let mut f = Feature::new("suspense", "acme-suspense");
+        f.pins.push(pin("ui", true));
+        let a = on_report(Report::Feature {
+            feature: f,
+            report: StatusReport {
+                feature: "suspense".into(),
+                checkout: "acme-suspense".into(),
+                status: FeatureStatus::Open,
+                rows: vec![status_row("hub", "suspense", "-"), frozen_status_row("ui")],
+                warnings: vec![],
+                drift: false,
+            },
+        });
+        assert_eq!(a.cursor(), Some(0));
+        assert_eq!(a.selected_role_row().map(|r| r.role.as_str()), Some("ui"));
+    }
+
+    #[test]
+    fn change_keys_on_a_frozen_row_say_it_has_no_open_change() {
+        let mut a = on_report(frozen_ui());
+        a.update(key(KeyCode::Char('j'))); // ui, frozen
+        for code in [KeyCode::Char('v'), KeyCode::Char('b'), KeyCode::Char('m')] {
+            assert!(a.update(key(code)).is_empty(), "{code:?}");
+            assert!(a.overlay.is_none(), "{code:?}");
+            assert!(
+                a.footer.as_ref().is_some_and(|f| f.is_error
+                    && f.text == "no open change for role 'ui' in feature 'suspense'"),
+                "{code:?}: {:?}",
+                a.footer.as_ref().map(|f| f.text.clone())
+            );
+        }
+    }
+
+    #[test]
+    fn a_report_without_the_frozen_row_clamps_the_cursor() {
+        let mut a = on_report(frozen_ui());
+        a.update(key(KeyCode::Char('j'))); // ui frozen, index 2
+        a.update(Event::Report {
+            row: RowId::Feature("suspense".into()),
+            r#gen: 2,
+            result: Ok(suspense()),
+        });
+        assert_eq!(
+            a.cursor(),
+            Some(1),
+            "the last row in display order: merged ui"
+        );
+    }
+
+    #[test]
+    fn c_on_a_frozen_row_offers_the_pinned_commit_and_the_path() {
+        let mut a = on_report(frozen_ui());
+        a.update(key(KeyCode::Char('j'))); // ui, frozen
+        assert!(a.update(key(KeyCode::Char('c'))).is_empty());
+        let Some(Overlay::Select { rows, .. }) = &a.overlay else {
+            panic!("{:?}", a.overlay);
+        };
+        assert_eq!(
+            rows,
+            &vec![
+                format!("commit  {PIN}"),
+                "path  /wt/ui/suspense-frozen".to_string(),
+            ]
+        );
+        let effects = a.update(key(KeyCode::Enter));
+        assert_eq!(
+            effects,
+            vec![Effect::Copy {
+                label: "commit".into(),
+                text: PIN.into(),
+            }]
+        );
+    }
+
+    #[test]
+    fn a_refresh_that_shifts_the_frozen_row_keeps_the_same_role_selected() {
+        let mut a = on_report(frozen_ui());
+        a.update(key(KeyCode::Char('j'))); // ui frozen, index 2
+        assert_eq!(
+            a.screen,
+            Screen::Feature {
+                name: "suspense".into(),
+                selected: Some(Selected::Frozen("ui".into()))
+            }
+        );
+        // Another terminal adds bff: its change is appended to the record,
+        // so its row lands before the frozen ui row and shifts it to index 3.
+        let Report::Feature {
+            mut feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        feature
+            .changes
+            .push(change("bff", "feature/z", Stage::Working));
+        report
+            .rows
+            .insert(3, status_row("bff", "feature/z", "working"));
+        a.update(Event::Report {
+            row: RowId::Feature("suspense".into()),
+            r#gen: 2,
+            result: Ok(Report::Feature { feature, report }),
+        });
+        assert_eq!(a.cursor(), Some(3), "followed the role, not the index");
+        let row = a.selected_role_row().expect("a row under the cursor");
+        assert_eq!((row.role.as_str(), row.stage.as_str()), ("ui", "frozen"));
+    }
+
+    #[test]
+    fn z_opens_the_freeze_picker_and_enter_freezes_the_role_under_the_cursor() {
+        let mut a = on_feature();
+        a.repos = vec![repo("api"), repo("ui")];
+        assert!(a.update(key(KeyCode::Char('z'))).is_empty());
+        assert!(
+            matches!(a.overlay, Some(Overlay::Select { ref title, .. }) if title == "Freeze a role in suspense")
+        );
+        assert_eq!(
+            a.update(key(KeyCode::Enter)),
+            vec![Effect::Run(Action::Freeze {
+                feature: "suspense".into(),
+                role: "api".into()
+            })]
+        );
+        assert!(a.update(key(KeyCode::Char('z'))).is_empty(), "busy");
+        assert!(a.overlay.is_none());
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.text == "busy: freeze api…")
+        );
+        a.running = None;
+        a.cache.clear();
+        assert!(a.update(key(KeyCode::Char('z'))).is_empty());
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.text == "status not loaded yet; press r")
+        );
+    }
+
+    #[test]
+    fn u_and_shift_z_act_on_a_frozen_row_and_are_refused_elsewhere() {
+        let mut a = on_report(frozen_ui());
+        for code in [KeyCode::Char('u'), KeyCode::Char('Z')] {
+            assert!(a.update(key(code)).is_empty(), "{code:?}");
+            assert!(a.overlay.is_none(), "{code:?}");
+            assert!(
+                a.footer
+                    .as_ref()
+                    .is_some_and(|f| f.is_error
+                        && f.text == "role 'api' is not frozen in feature 'suspense'"),
+                "{code:?}: {:?}",
+                a.footer.as_ref().map(|f| f.text.clone())
+            );
+        }
+        a.update(key(KeyCode::Char('j'))); // ui, frozen
+        assert!(a.update(key(KeyCode::Char('u'))).is_empty());
+        assert!(
+            matches!(a.overlay, Some(Overlay::Confirm { ref title, .. }) if title == "Unfreeze ui in suspense")
+        );
+        assert_eq!(
+            a.update(key(KeyCode::Char('F'))),
+            vec![Effect::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: true
+            })]
+        );
+        assert!(a.update(key(KeyCode::Char('Z'))).is_empty(), "busy");
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.text == "busy: unfreeze ui…")
+        );
+        a.running = None;
+        assert_eq!(
+            a.update(key(KeyCode::Char('Z'))),
+            vec![Effect::Run(Action::Refreeze {
+                feature: "suspense".into(),
+                role: "ui".into()
+            })]
+        );
+    }
+
+    #[test]
+    fn enter_on_a_dirty_unfreeze_preview_does_not_force() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        report.rows[3].dirty = true;
+        let mut a = on_report(Report::Feature { feature, report });
+        a.update(key(KeyCode::Char('j'))); // ui, frozen
+        a.update(key(KeyCode::Char('u')));
+        assert_eq!(
+            a.update(key(KeyCode::Enter)),
+            vec![Effect::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: false
+            })]
+        );
+    }
+
+    #[test]
+    fn u_and_shift_z_on_a_pinned_open_change_run_directly() {
+        let mut a = on_report(pinned_api());
+        assert_eq!(
+            a.update(key(KeyCode::Char('u'))),
+            vec![Effect::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "api".into(),
+                force: false
+            })]
+        );
+        assert!(
+            a.overlay.is_none(),
+            "no preview: nothing on disk is removed"
+        );
+        a.running = None;
+        assert_eq!(
+            a.update(key(KeyCode::Char('Z'))),
+            vec![Effect::Run(Action::Refreeze {
+                feature: "suspense".into(),
+                role: "api".into()
+            })]
         );
     }
 }

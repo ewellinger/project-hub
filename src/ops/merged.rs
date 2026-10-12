@@ -4,7 +4,7 @@ use crate::error::{HubError, Result};
 use crate::feature::{Change, Feature, Owner, Stage, now_rfc3339};
 use crate::git::{Git, WorktreeRemoval};
 use crate::hub::Hub;
-use crate::ops::session::{after_save, write_workspace};
+use crate::ops::session::{after_save, repoint_window, write_workspace};
 use crate::procs;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -123,7 +123,6 @@ pub fn merged(
         ))
     })?;
     let mut lines = Vec::new();
-    let session = feature.checkout.clone();
     let clone_dir = hub.env.clone_path(&change.clone);
     let path = change
         .worktree
@@ -149,20 +148,10 @@ pub fn merged(
     // shell, and anything started from it, cannot block the removal.
     if path.is_some() {
         lines.extend(hub.tmux_warning());
-        if let Some(tmux) = &hub.tmux {
-            let tmux_step = (|| -> Result<Vec<String>> {
-                if tmux.has_session(&session)? && tmux.windows(&session)?.iter().any(|w| w == role)
-                {
-                    tmux.respawn_window(&session, role, &clone_dir)?;
-                    return Ok(vec![format!(
-                        "Re-pointed tmux window {role} at the main clone"
-                    )]);
-                }
-                Ok(Vec::new())
-            })();
+        if hub.tmux.is_some() {
             after_save(
                 &mut lines,
-                tmux_step,
+                repoint_window(hub, feature, role, &clone_dir),
                 &format!("hub tmux --feature {}", feature.name),
             );
         }
@@ -186,6 +175,8 @@ pub fn merged(
     let open = feature.open_change_mut(role).expect("checked above");
     open.stage = Stage::Merged;
     open.merged_at = Some(now_rfc3339());
+    // The pin belonged to the change; the role goes back to absent.
+    let dropped = feature.remove_pin(role);
     hub.save_feature(feature)?;
     after_save(
         &mut lines,
@@ -193,5 +184,8 @@ pub fn merged(
         &format!("hub sync --feature {}", feature.name),
     );
     lines.push(format!("{role}: {} marked merged", change.branch));
+    if let Some(pin) = dropped {
+        lines.push(format!("{role}: pin at {} dropped", pin.short()));
+    }
     Ok(lines)
 }

@@ -3,9 +3,6 @@ type: architecture
 title: Dashboard architecture
 description: How the ratatui dashboard (bare `hub` in a terminal) is structured — an event loop around a pure `App::update(Event) -> Vec<Effect>` state machine, background worker threads for status, actions, editor, and clipboard, generation-tagged status requests, and pure rendering — and how dashboard actions reuse the same `ops` functions under the hub lock.
 tags: [ui, tui, ratatui, dashboard, architecture, concurrency]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-c55e62404e7071e7e42c91b9
     resource: repo://src/ui/app/dashboard.rs
@@ -13,9 +10,14 @@ sources:
     resource: repo://src/ui/app/mod.rs
   - id: openwiki-source-e9fb0e624f38b4189cab5a2d
     resource: repo://src/ui/mod.rs
+  - id: openwiki-source-39beb1223f2645ced84e1825
+    resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Dashboard architecture
@@ -67,9 +69,11 @@ restarting the dashboard.
 for a row), `OpenWorkspace`, `Copy`, `ReloadList`, `Run(Action)`,
 `LoadBranches`, `Preflight`. `update` never performs side effects itself.
 
-`Action` is one hub operation with resolved arguments — `Start`, `Add`,
-`Review`, `SetBase`, `Merged`, `Finish`, `Pull { row }` — and is the unit the
-worker executes.
+`Action` is one hub operation with resolved arguments — `Start`, `Add`
+(carrying `from_latest` for a frozen role), `Review`, `SetBase`, `Merged`,
+`Freeze`, `Unfreeze { force }`, `Refreeze`, `Finish`, `Pull { row }` — and is
+the unit the worker executes. The dashboard never passes `--at`: `Freeze`
+always pins the local base tip.
 
 ## Status requests and caching
 
@@ -129,6 +133,15 @@ including report age and a spinner while refreshing; the feature screen is in
 `view/feature.rs`. There are minimum terminal dimensions (`MIN_WIDTH`,
 `MIN_HEIGHT`).
 
+Both screens share `status_table`: ROLE, BRANCH, STAGE, STATE, PATH. BRANCH
+is a `Length` column sized to the longest branch and is never truncated;
+STATE is a `Max` column capped at 56 so a pinned change's whole state (such as
+`behind pin <sha> by <n>, <base> +N since pin`) fits when there is room, and it
+gives way first when the terminal is narrow. Merged rows are dimmed, and
+frozen reference rows use the read-only style (dim + italic). The dashboard
+list pane also lists each open feature's frozen roles, after its members, in
+the read-only style.
+
 ## Dashboard keys
 
 `app/dashboard.rs`: `↑↓/jk` select (and request status), `Enter` opens a
@@ -139,6 +152,7 @@ covered in [Dashboard flows and overlays](dashboard-flows-and-overlays.md).
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](../workflows/frozen-bases.md)
 - [Dashboard flows and overlays](dashboard-flows-and-overlays.md)
 - [Status, list, and pull](../workflows/status-and-pull.md)
 - [Architecture overview](../architecture/overview.md)

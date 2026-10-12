@@ -3,7 +3,7 @@
 //! wait on, the action to run, or a cancellation.
 
 use hub::env::{home_dir, shorten_home};
-use hub::feature::{Change, Feature, Owner};
+use hub::feature::{Feature, Owner, Worktree};
 use hub::names;
 use hub::ops::status::StatusRow;
 use hub::ops::suggest::BranchRow;
@@ -42,11 +42,21 @@ pub enum Flow {
         feature: String,
         role: String,
     },
+    Freeze {
+        feature: String,
+        /// Roles offered, in manifest order; filled at `Begin`.
+        roles: Vec<String>,
+    },
+    Unfreeze {
+        feature: String,
+        role: String,
+    },
     Finish {
         feature: String,
     },
     Copy {
         feature: String,
+        /// The cursor index (see `App::cursor`): a change or a frozen reference row.
         change: usize,
         /// `(label, text)` pairs shown by the last `Show`, snapshotted at
         /// `Begin` so a background refresh landing while the overlay is
@@ -63,6 +73,8 @@ impl Flow {
             Flow::Review { feature, role } => review(feature, role, answer, app),
             Flow::SetBase { feature, role } => set_base(feature, role, answer, app),
             Flow::Merged { feature, role } => merged(feature, role, answer, app),
+            Flow::Freeze { feature, roles } => freeze(feature, roles, answer, app),
+            Flow::Unfreeze { feature, role } => unfreeze(feature, role, answer, app),
             Flow::Finish { feature } => finish(feature, answer, app),
             Flow::Copy {
                 feature,
@@ -107,18 +119,22 @@ fn review(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
     }
 }
 
-/// `(label, text)` pairs offered for change `change`: the branch always, the
-/// worktree path when it exists, the review URL when the change has one.
+/// `(label, text)` pairs offered for row `change`: a change's branch, or a
+/// frozen reference's pinned commit; the path when it exists; the review
+/// URL when the change has one.
 fn copy_options(app: &App, feature: &str, change: usize) -> Option<Vec<(&'static str, String)>> {
     let (record, report) = app.feature_report().filter(|(f, _)| f.name == feature)?;
-    let c = record.changes.get(change)?;
     let row = App::change_rows(report).get(change)?;
-    let mut out = vec![("branch", c.branch.clone())];
+    let c = record.changes.get(change);
+    let mut out = match c {
+        Some(c) => vec![("branch", c.branch.clone())],
+        None => vec![("commit", row.frozen_sha.clone()?)],
+    };
     if row.exists {
         out.push(("path", row.path.display().to_string()));
     }
-    if let Some(url) = &c.review_url {
-        out.push(("review", url.clone()));
+    if let Some(url) = c.and_then(|c| c.review_url.clone()) {
+        out.push(("review", url));
     }
     Some(out)
 }
@@ -196,16 +212,16 @@ fn set_base(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
     }
 }
 
-/// Two lines describing a change's worktree for a confirm overlay:
+/// Two lines describing a worktree for a confirm overlay:
 /// `label  path` then `owner · state`. A change checked out in the main
 /// clone has no worktree to remove and gets a single dim line.
 pub fn worktree_lines(
     label: &str,
-    change: &Change,
+    worktree: Option<&Worktree>,
     row: Option<&StatusRow>,
 ) -> Vec<(String, Tone)> {
     let pad = " ".repeat(label.chars().count() + 2);
-    let Some(wt) = &change.worktree else {
+    let Some(wt) = worktree else {
         return vec![(format!("{label}  main clone, not removed"), Tone::Dim)];
     };
     let path = row
@@ -244,6 +260,47 @@ fn open_row<'a>(
     App::change_rows(report).get(i)
 }
 
+/// The status row of `role`'s frozen reference worktree. A role has at
+/// most one pin, so the role name is enough.
+fn frozen_status<'a>(
+    report: &'a hub::ops::status::StatusReport,
+    role: &str,
+) -> Option<&'a StatusRow> {
+    App::change_rows(report)
+        .iter()
+        .find(|r| r.role == role && r.stage == "frozen")
+}
+
+/// `!` lines for a frozen worktree that `op` refuses without force: one whose
+/// HEAD left its pin (`status` reports that as an existing, registered row
+/// with `branch_matches == false`, shown as `off-pin`), or a dirty one.
+fn frozen_warnings(role: &str, row: Option<&StatusRow>, op: &str) -> Vec<(String, Tone)> {
+    let Some(r) = row else {
+        return Vec::new();
+    };
+    let mut out = Vec::new();
+    // Same test as `state_text`'s `off-pin`: a missing or unregistered
+    // worktree also has `branch_matches == false` but is not off its pin.
+    // Listed before dirty, as the backend checks it: F answers a dirty
+    // refusal but skips the pin check and removes the worktree. "may": a
+    // branch checked out at the pin commit reads off-pin yet loses nothing.
+    if r.exists && r.registered && !r.branch_matches {
+        out.push((
+            format!(
+                "! {role} is off its pin; commits on its detached HEAD may be on no branch, and F discards them"
+            ),
+            Tone::Warn,
+        ));
+    }
+    if r.dirty {
+        out.push((
+            format!("! {role} is dirty; {op} will refuse without force"),
+            Tone::Warn,
+        ));
+    }
+    out
+}
+
 fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
     match answer {
         Answer::Begin => {
@@ -261,7 +318,10 @@ fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
                 format!("Close change     {role}: {}", change.branch),
                 Tone::Plain,
             )];
-            for (i, (text, tone)) in worktree_lines(role, change, row).into_iter().enumerate() {
+            for (i, (text, tone)) in worktree_lines(role, change.worktree.as_ref(), row)
+                .into_iter()
+                .enumerate()
+            {
                 let prefix = if i == 0 {
                     "Remove worktree  "
                 } else {
@@ -299,6 +359,106 @@ fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
     }
 }
 
+/// Pick a role to freeze: every manifest role without a pin. A role with an
+/// open change gets that change pinned; any other gets a reference
+/// checkout. The role under the view's cursor is preselected.
+fn freeze(feature: &str, roles: &mut Vec<String>, answer: Answer, app: &App) -> Step {
+    match answer {
+        Answer::Begin => {
+            let Some(record) = feature_record(app, feature) else {
+                return Step::Cancel("status not loaded yet; press r".into());
+            };
+            let free: Vec<&hub::manifest::RepoSpec> = app
+                .repos
+                .iter()
+                .filter(|r| record.pin(&r.role).is_none())
+                .collect();
+            if free.is_empty() {
+                return Step::Cancel(format!("every role is already frozen in {feature}"));
+            }
+            *roles = free.iter().map(|r| r.role.clone()).collect();
+            let labels = free
+                .iter()
+                .map(|r| {
+                    let what = if record.open_change(&r.role).is_some() {
+                        "pins its open change"
+                    } else {
+                        "reference checkout"
+                    };
+                    format!("{}  ({what})", role_label(r))
+                })
+                .collect();
+            let mut overlay = Overlay::select(format!("Freeze a role in {feature}"), labels);
+            let under_cursor = app.selected_role_row().map(|r| r.role.as_str());
+            if let Overlay::Select { cursor, .. } = &mut overlay
+                && let Some(i) = roles.iter().position(|r| Some(r.as_str()) == under_cursor)
+            {
+                *cursor = i;
+            }
+            Step::Show(overlay)
+        }
+        Answer::Picked(i) => match roles.get(i) {
+            Some(role) => Step::Run(Action::Freeze {
+                feature: feature.to_string(),
+                role: role.clone(),
+            }),
+            None => Step::Cancel("unexpected answer".into()),
+        },
+        _ => Step::Cancel("unexpected answer".into()),
+    }
+}
+
+/// Release a pin. A reference worktree is removed, so preview it the way
+/// `merged` does, `F` forcing a dirty or off-pin one; a pinned open change
+/// has nothing on disk to remove and runs straight away.
+fn unfreeze(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
+    let run = |force| {
+        Step::Run(Action::Unfreeze {
+            feature: feature.to_string(),
+            role: role.to_string(),
+            force,
+        })
+    };
+    match answer {
+        Answer::Begin => {
+            let Some((record, report)) = app.feature_report().filter(|(f, _)| f.name == feature)
+            else {
+                return Step::Cancel("status not loaded yet; press r".into());
+            };
+            let Some(pin) = record.pin(role) else {
+                return Step::Cancel(format!(
+                    "role '{role}' is not frozen in feature '{feature}'"
+                ));
+            };
+            let Some(wt) = &pin.worktree else {
+                return run(false);
+            };
+            let row = frozen_status(report, role);
+            let mut lines = vec![(
+                format!("Release pin      {role} @{}", pin.short()),
+                Tone::Plain,
+            )];
+            for (i, (text, tone)) in worktree_lines(role, Some(wt), row).into_iter().enumerate() {
+                let prefix = if i == 0 {
+                    "Remove worktree  "
+                } else {
+                    "                 "
+                };
+                lines.push((format!("{prefix}{text}"), tone));
+            }
+            lines.push((String::new(), Tone::Plain));
+            lines.extend(frozen_warnings(role, row, "unfreeze"));
+            Step::Show(Overlay::confirm(
+                format!("Unfreeze {role} in {feature}"),
+                lines,
+                true,
+            ))
+        }
+        Answer::Confirmed { force } => run(force),
+        _ => Step::Cancel("unexpected answer".into()),
+    }
+}
+
 fn finish(feature: &str, answer: Answer, app: &App) -> Step {
     match answer {
         Answer::Begin => {
@@ -325,7 +485,16 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
             };
             for change in record.open_changes() {
                 let row = open_row(record, report, &change.role);
-                for (text, tone) in worktree_lines(&change.role, change, row) {
+                for (text, tone) in worktree_lines(&change.role, change.worktree.as_ref(), row) {
+                    push_wt(&mut lines, text, tone);
+                }
+            }
+            for pin in &record.pins {
+                if pin.worktree.is_none() {
+                    continue;
+                }
+                let row = frozen_status(report, &pin.role);
+                for (text, tone) in worktree_lines(&pin.role, pin.worktree.as_ref(), row) {
                     push_wt(&mut lines, text, tone);
                 }
             }
@@ -375,6 +544,10 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
                         Tone::Warn,
                     ));
                 }
+            }
+            for pin in &record.pins {
+                let row = frozen_status(report, &pin.role);
+                lines.extend(frozen_warnings(&pin.role, row, "finish"));
             }
             if report.rows.first().is_some_and(|r| r.dirty) {
                 lines.push((
@@ -463,6 +636,21 @@ impl BranchPick {
         }
     }
 
+    /// Whether `branch` names no existing ref: the default row marked
+    /// `new`, or a typed name no loaded row has. `suggestions` lists every
+    /// local and origin branch the hub could adopt, so a name missing from
+    /// the rows does not exist (or could not be added anyway).
+    pub fn is_new(&self, branch: &str) -> bool {
+        self.rows.iter().all(|r| match r {
+            BranchRow::Default {
+                branch: b,
+                existing,
+            } => b != branch || existing.is_none(),
+            BranchRow::Suggested(s) => s.branch != branch,
+            BranchRow::Other => true,
+        })
+    }
+
     /// Text answered on the branch step: the typed name once `Other` is
     /// open, or else the filter the user typed before picking `Other`, which
     /// opens the name input prefilled with it.
@@ -498,6 +686,9 @@ pub struct AddRole {
     /// Addable roles in manifest order, filled at `Begin`.
     pub roles: Vec<String>,
     pub pick: Option<BranchPick>,
+    /// The new branch picked for a frozen role, waiting on the
+    /// from-frozen / from-latest choice.
+    pub branch: Option<String>,
 }
 
 impl AddRole {
@@ -506,6 +697,7 @@ impl AddRole {
             feature,
             roles: Vec::new(),
             pick: None,
+            branch: None,
         }
     }
 }
@@ -520,8 +712,60 @@ pub fn role_label(repo: &hub::manifest::RepoSpec) -> String {
     s
 }
 
+/// The add for `branch`. For a new branch of a frozen role, first ask
+/// whether it starts from the pinned commit (keeping the pin) or from
+/// `origin/<base>` (dropping it). An existing branch never asks and keeps
+/// the pin, as `hub feature add` does.
+fn add_or_ask_from(state: &mut AddRole, app: &App, branch: String) -> Step {
+    let pick = state.pick.as_ref().expect("picking");
+    let role = pick.role.clone();
+    // `from_latest` starts at origin/<the role's current base>, which a
+    // `hub repo set --base` after the freeze may have moved off `pin.base`.
+    // The base itself exists (`suggestions` leaves it out of the rows) and
+    // `add` reuses it, so it never asks.
+    let ask = feature_record(app, &state.feature)
+        .and_then(|f| f.pin(&role))
+        .filter(|p| p.worktree.is_some())
+        .map(|p| {
+            let base = app
+                .repos
+                .iter()
+                .find(|r| r.role == role)
+                .map_or(p.base.as_str(), |r| r.base.as_str());
+            (p, base)
+        })
+        .filter(|(_, base)| *base != branch && pick.is_new(&branch));
+    let Some((pin, base)) = ask else {
+        return Step::Run(Action::Add {
+            feature: state.feature.clone(),
+            role,
+            branch,
+            from_latest: false,
+        });
+    };
+    let rows = vec![
+        format!("frozen {}  (keeps the pin)", pin.short()),
+        format!("latest origin/{base}  (drops the pin)"),
+    ];
+    let title = format!("Start {branch} from");
+    state.branch = Some(branch);
+    Step::Show(Overlay::select(title, rows))
+}
+
 fn add_role(state: &mut AddRole, answer: Answer, app: &App) -> Step {
     let feature = state.feature.clone();
+    if let Some(branch) = state.branch.clone() {
+        let role = state.pick.as_ref().expect("picking").role.clone();
+        return match answer {
+            Answer::Picked(i @ (0 | 1)) => Step::Run(Action::Add {
+                feature,
+                role,
+                branch,
+                from_latest: i == 1,
+            }),
+            _ => Step::Cancel("unexpected answer".into()),
+        };
+    }
     // Match on whether a branch pick is in progress, not on `&mut state.pick`
     // itself: the arms below assign to `state.pick` and read `state.roles`.
     let picking = state.pick.is_some();
@@ -541,7 +785,13 @@ fn add_role(state: &mut AddRole, answer: Answer, app: &App) -> Step {
                 ));
             }
             state.roles = addable.iter().map(|r| r.role.clone()).collect();
-            let labels = addable.iter().map(|r| role_label(r)).collect();
+            let labels = addable
+                .iter()
+                .map(|r| match record.pin(&r.role) {
+                    Some(pin) => format!("{}  (frozen @{})", role_label(r), pin.short()),
+                    None => role_label(r),
+                })
+                .collect();
             Step::Show(Overlay::select(format!("Role to add to {feature}"), labels))
         }
         (false, Answer::Picked(i)) => {
@@ -560,24 +810,16 @@ fn add_role(state: &mut AddRole, answer: Answer, app: &App) -> Step {
         }
         (true, Answer::Loaded(Err(e))) => Step::Cancel(e),
         (true, Answer::Picked(i)) => {
-            let pick = state.pick.as_mut().expect("picking");
-            match pick.picked(i) {
-                Ok(branch) => Step::Run(Action::Add {
-                    feature,
-                    role: pick.role.clone(),
-                    branch,
-                }),
+            let picked = state.pick.as_mut().expect("picking").picked(i);
+            match picked {
+                Ok(branch) => add_or_ask_from(state, app, branch),
                 Err(step) => step,
             }
         }
         (true, Answer::Text(text)) => {
-            let pick = state.pick.as_mut().expect("picking");
-            match pick.text(text) {
-                Ok(branch) => Step::Run(Action::Add {
-                    feature,
-                    role: pick.role.clone(),
-                    branch,
-                }),
+            let typed = state.pick.as_mut().expect("picking").text(text);
+            match typed {
+                Ok(branch) => add_or_ask_from(state, app, branch),
                 Err(step) => step,
             }
         }
@@ -798,8 +1040,10 @@ fn new_feature(state: &mut NewFeature, answer: Answer, app: &App) -> Step {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ui::app::feature::tests::{change, on_feature, status_row, suspense};
-    use crate::ui::app::{Cached, Loaded, Preview, Report, RowId};
+    use crate::ui::app::feature::tests::{
+        change, frozen_ui, on_feature, on_report, pinned_api, status_row, suspense,
+    };
+    use crate::ui::app::{Cached, Loaded, Preview, Report, RowId, Screen, Selected};
     use hub::feature::{Feature, FeatureStatus, Owner, Stage};
     use hub::ops::status::StatusReport;
     use hub::ops::suggest::{BranchRow, Suggestion};
@@ -1148,7 +1392,8 @@ mod tests {
             Step::Run(Action::Add {
                 feature: "suspense".into(),
                 role: "ui".into(),
-                branch: "main-ish".into()
+                branch: "main-ish".into(),
+                from_latest: false
             })
         );
     }
@@ -1182,7 +1427,8 @@ mod tests {
             Step::Run(Action::Add {
                 feature: "suspense".into(),
                 role: "ui".into(),
-                branch: "feature/z".into()
+                branch: "feature/z".into(),
+                from_latest: false
             })
         );
     }
@@ -1254,7 +1500,8 @@ mod tests {
             Step::Run(Action::Add {
                 feature: "suspense".into(),
                 role: "ui".into(),
-                branch: "fix/zz".into()
+                branch: "fix/zz".into(),
+                from_latest: false
             })
         );
     }
@@ -1403,7 +1650,7 @@ mod tests {
         let mut c = change("api", "feature/x", Stage::Working);
         let mut row = status_row("api", "feature/x", "working");
         assert_eq!(
-            worktree_lines("api", &c, Some(&row)),
+            worktree_lines("api", c.worktree.as_ref(), Some(&row)),
             vec![
                 ("api  /wt/api/feature/x".to_string(), Tone::Plain),
                 ("     hub-created · clean".to_string(), Tone::Dim),
@@ -1412,16 +1659,16 @@ mod tests {
         row.dirty = true;
         c.worktree.as_mut().unwrap().owner = Owner::Adopted;
         assert_eq!(
-            worktree_lines("api", &c, Some(&row))[1],
+            worktree_lines("api", c.worktree.as_ref(), Some(&row))[1],
             ("     adopted · dirty".to_string(), Tone::Warn)
         );
         assert_eq!(
-            worktree_lines("api", &c, None)[1],
+            worktree_lines("api", c.worktree.as_ref(), None)[1],
             ("     adopted · unknown".to_string(), Tone::Dim)
         );
         c.worktree = None;
         assert_eq!(
-            worktree_lines("api", &c, Some(&row)),
+            worktree_lines("api", c.worktree.as_ref(), Some(&row)),
             vec![("api  main clone, not removed".to_string(), Tone::Dim)]
         );
     }
@@ -1638,5 +1885,415 @@ mod tests {
             !text.iter().any(|l| l.contains("/wt/api/old-api")),
             "the merged api row must not be previewed: {text:?}"
         );
+    }
+
+    #[test]
+    fn freeze_offers_every_unfrozen_role_with_the_cursor_role_preselected() {
+        let mut app = on_feature();
+        app.repos = vec![
+            repo("api", "api-clone", ""),
+            repo("ui", "ui-clone", "web ui"),
+            repo("bff", "bff-clone", ""),
+        ];
+        app.screen = Screen::Feature {
+            name: "suspense".into(),
+            selected: Some(Selected::Change(1)), // the merged ui row
+        };
+        let mut flow = Flow::Freeze {
+            feature: "suspense".into(),
+            roles: Vec::new(),
+        };
+        let Step::Show(Overlay::Select {
+            title,
+            rows: labels,
+            cursor,
+            ..
+        }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert_eq!(title, "Freeze a role in suspense");
+        assert_eq!(
+            labels,
+            vec![
+                "api  api-clone  (pins its open change)",
+                "ui  ui-clone  web ui  (reference checkout)",
+                "bff  bff-clone  (reference checkout)",
+            ]
+        );
+        assert_eq!(cursor, 1, "the role under the view's cursor");
+        assert_eq!(
+            flow.advance(Answer::Picked(2), &app),
+            Step::Run(Action::Freeze {
+                feature: "suspense".into(),
+                role: "bff".into()
+            })
+        );
+    }
+
+    #[test]
+    fn freeze_leaves_out_frozen_roles_and_cancels_when_none_are_left() {
+        let mut app = on_report(frozen_ui());
+        app.repos = vec![repo("api", "api-clone", ""), repo("ui", "ui-clone", "")];
+        let mut flow = Flow::Freeze {
+            feature: "suspense".into(),
+            roles: Vec::new(),
+        };
+        let Step::Show(Overlay::Select {
+            rows: labels,
+            cursor,
+            ..
+        }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert_eq!(labels, vec!["api  api-clone  (pins its open change)"]);
+        assert_eq!(cursor, 0);
+        app.repos = vec![repo("ui", "ui-clone", "")];
+        let mut flow = Flow::Freeze {
+            feature: "suspense".into(),
+            roles: Vec::new(),
+        };
+        assert_eq!(
+            flow.advance(Answer::Begin, &app),
+            Step::Cancel("every role is already frozen in suspense".into())
+        );
+    }
+
+    #[test]
+    fn unfreeze_previews_the_reference_worktree_and_runs_with_the_chosen_force() {
+        let app = on_report(frozen_ui());
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        let Step::Show(Overlay::Confirm {
+            title,
+            lines,
+            force,
+            blocked,
+        }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!("expected a confirm");
+        };
+        assert_eq!(title, "Unfreeze ui in suspense");
+        assert!(force && blocked.is_none());
+        let text: Vec<&str> = lines.iter().map(|(t, _)| t.as_str()).collect();
+        assert_eq!(text[0], "Release pin      ui @0123456");
+        assert_eq!(text[1], "Remove worktree  ui  /wt/ui/suspense-frozen");
+        assert_eq!(text[2].trim(), "hub-created · clean");
+        assert!(!text.iter().any(|t| t.contains("dirty")), "{text:?}");
+        assert_eq!(
+            flow.advance(Answer::Confirmed { force: false }, &app),
+            Step::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: false
+            })
+        );
+    }
+
+    #[test]
+    fn unfreeze_warns_when_the_reference_worktree_is_dirty() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        report.rows[3].dirty = true;
+        let app = on_report(Report::Feature { feature, report });
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        assert_eq!(lines[2].0.trim(), "hub-created · dirty");
+        assert!(
+            lines.contains(&(
+                "! ui is dirty; unfreeze will refuse without force".to_string(),
+                Tone::Warn
+            )),
+            "{lines:?}"
+        );
+        assert_eq!(
+            flow.advance(Answer::Confirmed { force: true }, &app),
+            Step::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: true
+            })
+        );
+    }
+
+    #[test]
+    fn unfreezing_a_pinned_open_change_runs_without_a_preview() {
+        let app = on_report(pinned_api());
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "api".into(),
+        };
+        assert_eq!(
+            flow.advance(Answer::Begin, &app),
+            Step::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "api".into(),
+                force: false
+            })
+        );
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        assert_eq!(
+            flow.advance(Answer::Begin, &app),
+            Step::Cancel("role 'ui' is not frozen in feature 'suspense'".into())
+        );
+    }
+
+    #[test]
+    fn finish_previews_frozen_worktrees_and_warns_when_one_is_dirty() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        report.rows[3].dirty = true;
+        let app = on_report(Report::Feature { feature, report });
+        let mut flow = Flow::Finish {
+            feature: "suspense".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        let text: Vec<&str> = lines.iter().map(|(t, _)| t.trim()).collect();
+        let frozen = text
+            .iter()
+            .position(|t| *t == "ui  /wt/ui/suspense-frozen")
+            .unwrap_or_else(|| panic!("frozen worktree not previewed: {text:?}"));
+        let hub = text
+            .iter()
+            .position(|t| *t == "hub  /wt/hub/suspense")
+            .unwrap();
+        assert!(frozen < hub, "the hub worktree stays last: {text:?}");
+        assert_eq!(text[frozen + 1], "hub-created · dirty");
+        assert!(
+            lines.contains(&(
+                "! ui is dirty; finish will refuse without force".to_string(),
+                Tone::Warn
+            )),
+            "{lines:?}"
+        );
+    }
+
+    #[test]
+    fn unfreeze_and_finish_warn_when_the_reference_worktree_is_off_its_pin() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        // `status` reports a frozen worktree whose HEAD left the pin as an
+        // existing, registered row with `branch_matches == false` (`off-pin`).
+        report.rows[3].branch_matches = false;
+        report.rows[3].dirty = true;
+        let app = on_report(Report::Feature { feature, report });
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, force, .. }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert!(force, "F is offered");
+        // Off-pin comes first: F, the answer to the dirty refusal, discards
+        // the detached commits.
+        let off_pin = lines.iter().position(|l| {
+            *l == (
+                "! ui is off its pin; commits on its detached HEAD may be on no branch, and F discards them".to_string(),
+                Tone::Warn,
+            )
+        });
+        let dirty = lines.iter().position(|l| {
+            *l == (
+                "! ui is dirty; unfreeze will refuse without force".to_string(),
+                Tone::Warn,
+            )
+        });
+        assert!(
+            off_pin.is_some() && dirty.is_some() && off_pin < dirty,
+            "{lines:?}"
+        );
+        let mut flow = Flow::Finish {
+            feature: "suspense".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        // Off-pin comes first: F, the answer to the dirty refusal, discards
+        // the detached commits.
+        let off_pin = lines.iter().position(|l| {
+            *l == (
+                "! ui is off its pin; commits on its detached HEAD may be on no branch, and F discards them".to_string(),
+                Tone::Warn,
+            )
+        });
+        let dirty = lines.iter().position(|l| {
+            *l == (
+                "! ui is dirty; finish will refuse without force".to_string(),
+                Tone::Warn,
+            )
+        });
+        assert!(
+            off_pin.is_some() && dirty.is_some() && off_pin < dirty,
+            "{lines:?}"
+        );
+    }
+
+    #[test]
+    fn adding_a_frozen_role_asks_whether_to_start_from_the_pin_or_the_latest_base() {
+        let mut app = on_report(frozen_ui());
+        // A `hub repo set --base` since the freeze: `latest` names the
+        // current base, not `pin.base` (main).
+        let mut ui = repo("ui", "ui-clone", "web ui");
+        ui.base = "dev".into();
+        app.repos = vec![repo("api", "api-clone", ""), ui];
+        let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
+        let Step::Show(Overlay::Select { rows: labels, .. }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert_eq!(labels, vec!["ui  ui-clone  web ui  (frozen @0123456)"]);
+        flow.advance(Answer::Picked(0), &app);
+        flow.advance(
+            Answer::Loaded(Ok(Loaded::Branches {
+                role: "ui".into(),
+                rows: rows(),
+            })),
+            &app,
+        );
+        let Step::Show(Overlay::Select {
+            title,
+            rows: labels,
+            ..
+        }) = flow.advance(Answer::Picked(0), &app)
+        else {
+            panic!()
+        };
+        assert_eq!(title, "Start feature/y from");
+        assert_eq!(
+            labels,
+            vec![
+                "frozen 0123456  (keeps the pin)",
+                "latest origin/dev  (drops the pin)"
+            ]
+        );
+        let mut keep = flow.clone();
+        assert_eq!(
+            keep.advance(Answer::Picked(0), &app),
+            Step::Run(Action::Add {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                branch: "feature/y".into(),
+                from_latest: false
+            })
+        );
+        assert_eq!(
+            flow.advance(Answer::Picked(1), &app),
+            Step::Run(Action::Add {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                branch: "feature/y".into(),
+                from_latest: true
+            })
+        );
+    }
+
+    #[test]
+    fn a_typed_branch_for_a_frozen_role_asks_too() {
+        let mut app = on_report(frozen_ui());
+        app.repos = vec![repo("ui", "ui-clone", "")];
+        let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
+        flow.advance(Answer::Begin, &app);
+        flow.advance(Answer::Picked(0), &app);
+        flow.advance(
+            Answer::Loaded(Ok(Loaded::Branches {
+                role: "ui".into(),
+                rows: rows(),
+            })),
+            &app,
+        );
+        flow.advance(Answer::Picked(2), &app); // type another name
+        let Step::Show(Overlay::Select { title, .. }) =
+            flow.advance(Answer::Text("feature/z".into()), &app)
+        else {
+            panic!()
+        };
+        assert_eq!(title, "Start feature/z from");
+    }
+
+    /// Like `hub feature add`, an existing branch never asks: it keeps the
+    /// pin (at the branch's merge base), so `from_latest` is false.
+    #[test]
+    fn an_existing_branch_for_a_frozen_role_adds_without_asking() {
+        let mut app = on_report(frozen_ui());
+        app.repos = vec![repo("ui", "ui-clone", "")];
+        let run = |branch: &str| {
+            Step::Run(Action::Add {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                branch: branch.into(),
+                from_latest: false,
+            })
+        };
+        let start = |rows: Vec<BranchRow>| {
+            let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
+            flow.advance(Answer::Begin, &app);
+            flow.advance(Answer::Picked(0), &app);
+            flow.advance(
+                Answer::Loaded(Ok(Loaded::Branches {
+                    role: "ui".into(),
+                    rows,
+                })),
+                &app,
+            );
+            flow
+        };
+        // A suggested branch git already knows.
+        let mut flow = start(rows());
+        assert_eq!(flow.advance(Answer::Picked(1), &app), run("main-ish"));
+        // A typed name that matches a loaded branch.
+        let mut flow = start(rows());
+        flow.advance(Answer::Picked(2), &app); // type another name
+        assert_eq!(
+            flow.advance(Answer::Text("main-ish".into()), &app),
+            run("main-ish")
+        );
+        // The base itself, which the loaded rows leave out.
+        let mut flow = start(rows());
+        flow.advance(Answer::Picked(2), &app); // type another name
+        assert_eq!(flow.advance(Answer::Text("main".into()), &app), run("main"));
+        // The default branch when it already exists.
+        let mut flow = start(vec![
+            BranchRow::Default {
+                branch: "feature/y".into(),
+                existing: Some(Suggestion {
+                    branch: "feature/y".into(),
+                    local: false,
+                    origin: true,
+                    worktree: None,
+                }),
+            },
+            BranchRow::Other,
+        ]);
+        assert_eq!(flow.advance(Answer::Picked(0), &app), run("feature/y"));
     }
 }

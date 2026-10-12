@@ -472,3 +472,159 @@ fn a_failed_hub_launch_still_builds_every_window() {
         ));
     assert_eq!(fx.window_names("acme-feat_1"), vec!["hub", "ai", "api"]);
 }
+
+fn frozen_wt(fx: &Fixture, clone: &str, feature: &str) -> std::path::PathBuf {
+    fx.worktree_dir
+        .join(clone)
+        .join(format!("{feature}-frozen"))
+}
+
+#[test]
+fn start_freezes_roles_at_their_local_base_tip() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    // Local master is ahead of origin/master: the pin must be the local tip.
+    let tip = fx.commit_file(&api, "local.txt", "local only");
+
+    fx.hub(
+        &hub,
+        &[
+            "feature", "start", "feat-1", "--repo", "ui", "--freeze", "bff", "--freeze", "api",
+        ],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains(format!(
+        "api: frozen at {}",
+        &tip[..7]
+    )))
+    .stdout(predicate::str::contains("bff: frozen at"));
+
+    let wt = frozen_wt(&fx, "api-clone", "feat-1");
+    assert_eq!(fx.git(&wt, &["rev-parse", "HEAD"]), tip);
+    assert_eq!(
+        fx.git(&wt, &["rev-parse", "--abbrev-ref", "HEAD"]),
+        "HEAD",
+        "detached"
+    );
+    assert!(frozen_wt(&fx, "bff-clone", "feat-1").exists());
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"].as_array().unwrap().len(), 1);
+    assert_eq!(f["changes"][0]["role"], "ui");
+    assert_eq!(
+        f["pins"][0]["role"], "api",
+        "manifest order, not flag order"
+    );
+    assert_eq!(f["pins"][0]["sha"], tip);
+    assert_eq!(f["pins"][0]["base"], "master");
+    assert_eq!(f["pins"][0]["worktree"]["name"], "feat-1-frozen");
+    assert_eq!(f["pins"][1]["role"], "bff");
+    // Frozen and worked-on roles share one window order: manifest order.
+    assert_eq!(
+        fx.window_names("acme-feat_1"),
+        vec!["hub", "ai", "api", "bff", "ui"]
+    );
+
+    // Docs-only start that freezes a role another feature already froze.
+    fx.hub(&hub, &["feature", "start", "feat-2", "--freeze", "api"])
+        .assert()
+        .success();
+    let f2 = fx.feature_json(&hub, "feat-2");
+    assert!(f2["changes"].as_array().is_none_or(Vec::is_empty), "{f2}");
+    assert_eq!(f2["pins"][0]["role"], "api");
+    assert_eq!(
+        fx.git(
+            &frozen_wt(&fx, "api-clone", "feat-2"),
+            &["rev-parse", "HEAD"]
+        ),
+        tip
+    );
+}
+
+#[test]
+fn start_refuses_a_role_both_worked_on_and_frozen() {
+    let (fx, hub) = world();
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "start",
+            "feat-1",
+            "--repo",
+            "api:feature/x",
+            "--freeze",
+            "api",
+        ],
+    )
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains(
+        "role 'api' is given to both --repo and --freeze",
+    ));
+    fx.hub(
+        &hub,
+        &[
+            "feature", "start", "feat-1", "--freeze", "ui", "--freeze", "ui",
+        ],
+    )
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("more than once"));
+    fx.hub(&hub, &["feature", "start", "feat-1", "--freeze", "nope"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("unknown role"));
+
+    assert!(!hub.join(".git/hub/features/feat-1.json").exists());
+    assert_eq!(fx.git(&hub, &["branch", "--list", "feat-1"]), "");
+    assert!(!fx.worktree_dir.join("acme").exists());
+    assert!(!frozen_wt(&fx, "api-clone", "feat-1").exists());
+    assert!(!frozen_wt(&fx, "ui-clone", "feat-1").exists());
+}
+
+#[test]
+fn start_rolls_back_frozen_worktrees_when_the_record_write_fails() {
+    let (fx, hub) = world();
+    fx.block_feature_writes(&hub);
+    fx.hub(
+        &hub,
+        &[
+            "feature", "start", "feat-1", "--repo", "api", "--freeze", "ui",
+        ],
+    )
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("Permission denied"));
+    fx.allow_feature_writes(&hub);
+
+    assert!(!hub.join(".git/hub/features/feat-1.json").exists());
+    assert!(!frozen_wt(&fx, "ui-clone", "feat-1").exists());
+    let ui = fx.project_home.join("ui-clone");
+    assert_eq!(fx.git(&ui, &["worktree", "list"]).lines().count(), 1);
+    assert!(!fx.worktree_dir.join("api-clone").join("feat-1").exists());
+    assert_eq!(fx.git(&hub, &["branch", "--list", "feat-1"]), "");
+    assert!(!fx.has_session("acme-feat_1"));
+}
+
+#[test]
+fn start_rolls_back_an_earlier_frozen_worktree_when_a_later_freeze_fails() {
+    let (fx, hub) = world();
+    // api freezes first (manifest order); bff's path is occupied.
+    std::fs::create_dir_all(frozen_wt(&fx, "bff-clone", "feat-1")).unwrap();
+    fx.hub(
+        &hub,
+        &[
+            "feature", "start", "feat-1", "--freeze", "api", "--freeze", "bff",
+        ],
+    )
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("already exists"));
+
+    assert!(!frozen_wt(&fx, "api-clone", "feat-1").exists());
+    let api = fx.project_home.join("api-clone");
+    assert_eq!(fx.git(&api, &["worktree", "list"]).lines().count(), 1);
+    assert!(!hub.join(".git/hub/features/feat-1.json").exists());
+    assert_eq!(fx.git(&hub, &["branch", "--list", "feat-1"]), "");
+    assert!(!fx.worktree_dir.join("acme").join("acme-feat_1").exists());
+}

@@ -195,14 +195,17 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub repo set ROLE [--clone C] [--base B] [--branch-template T] [--description D]` | Change a role's fields in place, keeping its position |
 | `hub repo rename OLD NEW [--records-only [--clone C]]` | Rename a role in `hub.json` and this machine's feature records |
 | `hub repo remove ROLE` / `hub repo list [--json]` | Unregister / show the member repos |
-| `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]...` | Hub branch + worktree, one change per `--repo`, tmux session; prompts for roles and branches in a terminal |
+| `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]...` | Hub branch + worktree, one change per `--repo`, one frozen reference worktree per `--freeze` (local base tip), tmux session; prompts for roles, roles to freeze, and branches in a terminal |
 | `hub feature start-review URL [--name N] [--checkout C]` | Review feature for the one role whose remote the GitLab MR or GitHub PR URL names: its real source branch at the verified head, base = the MR's target, stage `review`, workspace and session; refuses forks, closed reviews, and occupied branches |
-| `hub feature add [ROLE] [--branch B] [--from REF] [--base B] [--worktree W]` | Bring one more role into the feature; prompts for the role and branch in a terminal |
+| `hub feature add [ROLE] [--branch B] [--from REF \| --from-latest] [--base B] [--worktree W]` | Bring one more role into the feature; prompts for the role and branch in a terminal. On a frozen role a new branch starts from the pin unless `--from-latest` |
 | `hub feature set-base ROLE BRANCH` | Record the branch the role's open change merges into; the member branch and its git upstream are untouched |
+| `hub feature freeze ROLE [--at REF]` | Pin a role to the tip of its local base (or `REF`, a commit on it): a role outside the feature gets a detached reference worktree, an open change is pinned at its merge base and measured against the pin |
+| `hub feature unfreeze ROLE [--force]` | Release the pin and remove the reference worktree |
+| `hub feature refreeze ROLE` | Move the pin, and the reference worktree, to the local base's current tip |
 | `hub feature review ROLE [URL]` | Record that the role's change is in review |
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch |
-| `hub feature list [--all] [--json]` | Open features with the stage of each role; `--all` includes finished ones |
+| `hub feature list [--all] [--json]` | Open features with the stage of each role, and frozen roles as `ROLE:frozen`; `--all` includes finished ones |
 | `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
 | `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
@@ -245,14 +248,72 @@ the new base; it never checks out, rebases, or edits git's upstream, and
 git's upstream never changes the recorded base. Merge hints target the
 recorded base.
 
+### Frozen bases
+
+A busy base branch keeps moving while a feature is in progress. Freezing a
+role pins it, for one feature, to a single commit of its base: `hub feature
+freeze ROLE` checks the tip of the local base branch (the main clone's, so
+run `hub pull --base` first for the latest) out, detached, in a reference
+worktree named `<feature>-frozen`. The feature's workspace and tmux session
+include it, so you and your agent read that repo at a fixed state instead of
+whatever the main clone is on.
+
+`hub feature add ROLE` on a frozen role turns the reference worktree into
+a change: a new branch starts at the pin and keeps it, `--from-latest`
+starts from `origin/<base>` and drops the pin (an explicit `--from REF`
+drops it too), and an existing branch given with `--branch` keeps a pin at
+its merge base with the local base. In a terminal, `add` asks which start
+you want for a new branch, also one named with `--branch`, unless `--from`
+or `--from-latest` is given; an existing branch never asks. `--from` with
+an existing branch is refused on a frozen role, since it would drop the
+pin. A change that keeps the pin must merge into the pin's base: if
+`--base`, or a base changed in `hub.json` since the freeze, says otherwise,
+pass `--from-latest`. `hub repo set ROLE --base` refuses while an open
+feature has the role frozen, either kind; unfreeze it first. The reference worktree is removed once the change is
+recorded. A dirty one, or one moved off its pin, stops `add` before
+anything is created; if a process still runs in it, `add` undoes the new
+branch and worktree and stops with exit 21. Like `unfreeze`, `add` re-points
+the role's tmux window, which restarts that window's pane.
+
+`hub status` lists the role with stage `frozen`, `frozen @<sha>`, and how
+many commits the local base has gained since the pin (`master +3 since
+pin`); `--json` carries `frozen_sha` and `base_moved`. A reference worktree
+moved off its pin is drift (`off-pin`, exit 30). `hub pull` leaves frozen
+worktrees alone. `hub feature refreeze ROLE` moves the pin to the base's
+current local tip when you decide to take those commits in; `hub feature
+unfreeze ROLE` removes the worktree and the feature reads the main clone
+again. `finish` removes frozen worktrees with everything else. Commits made
+on a reference worktree's detached HEAD are on no branch, so `refreeze`
+refuses to move it and `unfreeze` and `finish` refuse to remove it without
+`--force`; save the work with `git -C <path> branch <name>` first.
+
+An open change can be pinned too: `hub feature freeze ROLE` on a role in
+the feature pins the merge base of its branch and the local base, with no
+extra worktree. `status` then measures the branch against the pin
+(`base_behind` counts commits on the pin the branch lacks, shown as
+`behind pin <sha> by <n>`, or `frozen @<sha>` while it is 0) and shows how
+far the local base has moved since (`<base> +N since pin`). `refreeze` moves the pin to the local
+base tip and reports the new lag; it never merges. `unfreeze` goes back to
+comparing against `origin/<base>`, and `merged` drops the pin with the
+change. `set-base` refuses a pinned change: unfreeze first, set the base,
+and freeze again if you still want a pin.
+
+To freeze roles from the start, pass `--freeze ROLE` (repeatable) to `hub
+feature start`; each pins its local base tip exactly as `freeze` does. A role
+is either worked on or frozen, so naming it in both `--repo` and `--freeze`
+is an error (exit 1). If anything fails before the feature record is
+written, the frozen worktrees are removed along with everything else.
+
 ### Status
 
 `hub status` fetches each repo and compares the feature branch with
 `origin/<base>`, showing `behind base <branch> by <n>` in yellow when the
-base has commits the branch lacks. A `BASE` column appears only when some
+base has commits the branch lacks. A pinned change (see Frozen bases) is
+compared with its pin instead and shows `behind pin <sha> by <n>`. A `BASE` column appears only when some
 change merges into a branch other than its role's base, so a feature on
 default bases keeps the compact table. `--json` carries it as `base`,
-`custom_base`, and `base_behind` next to `ahead`/`behind` against the
+`custom_base`, and `base_behind` (counted against the pin for a pinned
+change, whose row also carries `frozen_sha`) next to `ahead`/`behind` against the
 branch's own origin copy, and reports `review_url` on every row.
 
 Dirtiness and base lag are operational state, reported but never failing
@@ -365,7 +426,9 @@ repairs.
 
 `hub` with no subcommand, in a terminal, opens the dashboard: the base
 checkouts and every open feature on the left, the live status of the
-selected row on the right. Status runs in the background when you move the
+selected row on the right. Frozen roles are listed under their feature in
+dim italics, marked `frozen`: they are read-only references, not members.
+Status runs in the background when you move the
 selection or press `r`, showing the last result until the new one lands.
 Finished features are hidden until `a` shows them. Run from a feature's hub
 worktree, `hub` opens that feature's view directly; `Esc` returns to the
@@ -389,8 +452,16 @@ the footer; `Ctrl-C` quits from either screen.
 
 The feature view shows one feature's roles with their branch, stage, and
 state, plus warnings, the selected role's review URL, and the attach command.
-Open roles are listed above merged ones, and the branch column is never
-truncated. The footer shows the frequent keys; `?` lists them all.
+Open roles and frozen roles are listed above merged ones, and the branch
+column is never truncated. A frozen role shows stage `frozen`, its base as the
+branch, and `frozen @<sha>` with how many commits the local base gained since
+the pin (`main +3 since pin`); a pinned open change shows the same marker in
+its state.
+Frozen rows are dim italic; with the cursor on one, the view says it is a
+read-only reference checkout. A pinned open change is still a member and is
+styled like one.
+The footer shows the frequent keys, and `u` and `Z` with the cursor on a
+frozen role or pinned change; `?` lists them all.
 Its keys call the same commands the CLI has, under the hub lock, and show the
 command's output when it finishes; a failure shows the error and changes
 nothing.
@@ -398,11 +469,14 @@ nothing.
 | Key | Action |
 |---|---|
 | `↑` `↓` `j` `k` | select a role |
-| `c` | copy the role's branch name, worktree path, or review URL to the OS clipboard; only what exists is offered |
+| `c` | copy the role's branch name (a frozen role's pinned commit), worktree path, or review URL to the OS clipboard; only what exists is offered |
 | `v` | `feature review` for the role, with an optional URL |
 | `m` | `feature merged` for the role, after a preview of the worktree it removes; `F` in the preview forces |
 | `b` | `feature set-base` for the role |
-| `+` | `feature add`: pick a role, then a branch |
+| `+` | `feature add`: pick a role, then a branch; for a new branch of a frozen role, then whether it starts from the frozen commit (keeping the pin) or from `origin/<base>` (dropping it). An existing branch keeps the pin without asking |
+| `z` | `feature freeze`: pick any role that is not frozen yet, with the role under the cursor preselected. A role with an open change has it pinned; any other role, including one not in the feature, gets a reference checkout at its local base tip |
+| `u` | `feature unfreeze` for the frozen role or pinned change under the cursor. A reference worktree is previewed first, with a warning when it is dirty or off its pin; `F` in the preview forces. A pinned open change is unpinned at once |
+| `Z` | `feature refreeze` for the frozen role or pinned change under the cursor: move its pin to the base's current local tip. An off-pin reference worktree is refused, and a dirty one is refused when the pin would move; the error is shown |
 | `f` | `feature finish`, after a preview of every worktree it removes and a warning for roles not yet merged; `F` forces |
 | `o` | open the feature's workspace |
 | `p` | `hub pull` for the feature: fast-forward every open role |
@@ -428,14 +502,20 @@ add`, `remove`, `set`, or `rename`.
 
 When stdin and stderr are both a terminal, `feature start` and `feature add`
 prompt for whatever you left out: the roles (`start` with no `--repo`, or
-`add` with no role) and then a branch per role. The branch prompt lists the
+`add` with no role), then for `start` with no `--repo` which of the remaining
+roles to freeze (none by default, added to any `--freeze` roles), and then a
+branch per role. The roles prompt leaves out `--freeze` roles. The branch
+prompt lists the
 default first (marked `new` when it does not exist yet), then branches git
 already knows in that clone, each showing whether it is local, on origin, or
 checked out in a worktree the hub can adopt, and finally a free-text row.
 Enter on the first row is exactly what the flags would have done. Esc or
 Ctrl-C exits 1 with nothing changed; prompts finish before the hub lock is
 taken. Without a terminal nothing prompts: `start` with no `--repo` is a
-docs-only start and `add` needs its role.
+docs-only start and `add` needs its role. In a terminal, for a new branch
+on a frozen role, including one given with `--branch`, `add` then asks whether to start
+from the frozen commit or from the latest base; `--from` or `--from-latest`
+answers it up front, and an existing branch is never asked about.
 
 ## Agent skill
 

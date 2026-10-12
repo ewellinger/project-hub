@@ -108,12 +108,14 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                         name: name.clone(),
                         checkout: None,
                         repos: repos.clone(),
+                        freeze: Vec::new(),
                     },
                 ),
                 Action::Add {
                     feature,
                     role,
                     branch,
+                    from_latest,
                 } => {
                     let mut f = hub.load_feature(feature)?;
                     ops::add::add(
@@ -125,6 +127,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                             from: None,
                             worktree: None,
                             base: None,
+                            from_latest: *from_latest,
                         },
                     )
                 }
@@ -147,6 +150,22 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                 } => {
                     let mut f = hub.load_feature(feature)?;
                     ops::merged::merged(hub, &mut f, role, *force, &mut |_| true)
+                }
+                Action::Freeze { feature, role } => {
+                    let mut f = hub.load_feature(feature)?;
+                    ops::freeze::freeze(hub, &mut f, role, None)
+                }
+                Action::Unfreeze {
+                    feature,
+                    role,
+                    force,
+                } => {
+                    let mut f = hub.load_feature(feature)?;
+                    ops::freeze::unfreeze(hub, &mut f, role, *force)
+                }
+                Action::Refreeze { feature, role } => {
+                    let mut f = hub.load_feature(feature)?;
+                    ops::freeze::refreeze(hub, &mut f, role)
                 }
                 Action::Finish { feature, force } => {
                     let mut f = hub.load_feature(feature)?;

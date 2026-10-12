@@ -2,116 +2,123 @@
   "schemaVersion": 1,
   "pages": {
     "/openwiki/architecture/hub-state-and-locking.md": {
-      "pageVersion": "sha256:1209565a048fb55d0ef0a151e93f1ed2b6720e300d4ba4977cac2ff1ab60d4e6",
+      "pageVersion": "sha256:374898b6242fdddc233bb72eb2a4ecd78dd44663a5b4be596e80639ec590e98e",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/architecture/overview.md": {
-      "pageVersion": "sha256:478f5960c8fb6ede7277c8a4848ba6a1ebe8ca24426a7df2ace4e362ffd58635",
+      "pageVersion": "sha256:e327f7a6b741eac612489f5cc33d51e4d47bad48d47adb4d3e1556724e60d5ea",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/concepts/features-changes-and-stages.md": {
-      "pageVersion": "sha256:3ec1a5bcd232bd99071b18d8424813ea96be9818b821d180af1691c52255baf1",
+      "pageVersion": "sha256:65330aca6ede631f390cc880c5a3ace84e29a0022881a4a38b1e7722ea7092c4",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/configuration/environment-and-config.md": {
+      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
+      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c",
       "pageVersion": "sha256:0ba6825557130d140049d19c57440a4df884c7e9901a2bdcd35825f3bd352803",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c"
     },
     "/openwiki/integrations/agent-skill.md": {
-      "pageVersion": "sha256:8f63d4ccdc682c878e994bdc73b33bf3db78f513ab6e4f4f9c5f475d67e91ae1",
+      "pageVersion": "sha256:7a84ddd8d96c4b565f1a659597f5817622c3b660a5afcb2ecebf71033324e449",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/integrations/git-tmux-editor.md": {
-      "pageVersion": "sha256:ef6a290ca16573da22d8d7fac0b83f9422410714a52cf93bfb33a5783a8a7aad",
+      "pageVersion": "sha256:a5abe4010d70404dfe9155912a0c583dba6b7d6f1c9f550d630b828823c23832",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/operations/ci-and-release.md": {
-      "pageVersion": "sha256:e932eafd2b62c81eaaee89e2d5738ee2fb9aa61d6eac260cd3423d1f205fa166",
+      "pageVersion": "sha256:d265c8ea47754ab5b37769873f2b02fc9acf81023c2b0d7535b275885861ca99",
       "completedBy": "claude-code",
       "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
       "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
       "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
     },
     "/openwiki/quickstart.md": {
-      "pageVersion": "sha256:33136465fb8595b4ad1570cfa7b87f0447f1c9011bd18a391db16abfceee96a6",
+      "pageVersion": "sha256:46585811aa4f6c5d15fc04e0f40f30749285048f5bca9fd20654100b813c87f5",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/testing/integration-test-harness.md": {
-      "pageVersion": "sha256:608dd1a4848deb11c7340567a4f54da48619cca70300941e02aaead97d16513e",
+      "pageVersion": "sha256:f52304dea485ba370fcb49ed8b2e5df6e29a2fbc20c82bdcb3fc028684e9c306",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/ui/dashboard-architecture.md": {
-      "pageVersion": "sha256:cbd43614710603c56b8edade1d20eef34335351ae41caf9e56c84490f4882f6b",
+      "pageVersion": "sha256:959f709d7edee66fef8488c4a44cf7945222f77c11a5a138b8aa7c7d0bd66f38",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/ui/dashboard-flows-and-overlays.md": {
-      "pageVersion": "sha256:70c47f902c214be00edc431854e4054351b10eb927e6ab36983fe413a01a9bc9",
+      "pageVersion": "sha256:0dc3265266ef53e53a411f261304d0620664d017e0510d2cc283f782a9e9dabd",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/workflows/feature-start-and-add.md": {
-      "pageVersion": "sha256:803166d6453fb49e776788039ba3293853bc5954bdb0a592d6db3784c95cb95f",
+      "pageVersion": "sha256:dabefc007aec3b97a9d422fcd19f0db8f016344019d1dc5ca83cda0d3b67c032",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
+    },
+    "/openwiki/workflows/frozen-bases.md": {
+      "pageVersion": "sha256:4b619ba1d33b523a254fe0a33aff71e31272650806427a20bf8b5fdd7d70d34e",
+      "completedBy": "claude-code",
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/workflows/hub-and-repo-management.md": {
-      "pageVersion": "sha256:df13afa55ea9517eea857e4774a44de5fb22426ba8773f5e44f65ae74e3ba9f7",
+      "pageVersion": "sha256:6085cfba4590e31ea76d29db25837ffa896f42d5a3c5274869fc1aa58d333b19",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/workflows/review-merged-finish.md": {
-      "pageVersion": "sha256:2e2703f9424261361358e17982ccf04db967e8fd6da1ef66392e9dc209616bc4",
+      "pageVersion": "sha256:2f6862668110de2cd631414fadacc92f1927419b810f40b14929b155be70a620",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     },
     "/openwiki/workflows/start-review.md": {
+      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
+      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c",
       "pageVersion": "sha256:07eb0623d29a322cf7858842e9e56263ba0c61f9f55677712e9ee52be029cceb",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c"
     },
     "/openwiki/workflows/status-and-pull.md": {
-      "pageVersion": "sha256:fdd850e3418137c12fed182dcf31da4af8a3477214113175d510b4322c84a548",
+      "pageVersion": "sha256:b5f169dedac09bb8d3c4457b3e374661225919a8af99b09b275dec31ee98b407",
       "completedBy": "claude-code",
-      "completedRunId": "060bf7c4-6fed-40ab-9b27-6d329767ad5c",
-      "gitHead": "bb417fb34aa5a70c754c9bdce3a02515260a3c1c",
-      "sourceFingerprint": "sha256:61a07a900221a197b77067626bf87e5818f9282778af2523b7eb13a33c60602c"
+      "completedRunId": "94dfea2a-632f-475b-a062-dde91d766188",
+      "gitHead": "01bd72b4cb556816e8f5bbc0dfc985b553c78bc9",
+      "sourceFingerprint": "sha256:751a38628caced88a7a63b89ba0eafc24871de56024dcc9730c9c1d79f912ef0"
     }
   }
 }

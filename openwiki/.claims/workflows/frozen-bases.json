@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:4b619ba1d33b523a254fe0a33aff71e31272650806427a20bf8b5fdd7d70d34e",
+  "claims": [
+    {
+      "id": "claim_a78d6f229fc1491c81feeea40d788334",
+      "statement": "A frozen reference role's pin is checked out detached in a hub-owned worktree named <feature>-frozen under the clone's worktree directory, while a pinned open change has no extra worktree.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/freeze.rs#L107-L226",
+          "version": "repo-lines-v1:sha256:8d60043ba0bc0e431494dfb1c954b85962335c9fe29d04c71e48a885c2dc7288:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiMmRiNDM3NmQzNjlmODNmNDJlM2NiOTdlYTc4OWVjMDQ1MDc3MjQyNzQ3Y2YyODZhOWIxZTQyOTAwM2Q5Zjk2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkZWUyMWE0MDZlYjY5ZDQyMWJjMzAyZGZhOGUxZTVjOGIyMWJlZjc2YjBkOTkxMTQ0MTQyNTc5YzkyNWRiYjhmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmNzdlNmI2NzcxZmE3YTQ0MDgzZjNkMzA5OGY5MjcwYzNhY2JiNDc5YWI0YTA1ZmM2ZTZkNGU3OTYwMTUzNzI5In0"
+        },
+        {
+          "resource": "repo://src/ops/freeze.rs#L11-L15",
+          "version": "repo-lines-v1:sha256:607ce7459fde65919a1a74518c83a179a72a6d22d84e3b3ad739f1a84b2e5fcf:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjNmYTlkY2ZmZGIwZjIwN2FjNzAzOTEwMGIzOWViNmQ1MTMwZjRkNDYxZjA1MzA2Mjk3MTM2MTliMThmZDYwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWQyYjY3YjViMmQwNDhhMTJlNThkNzM0ZjAzZTcwYzZkMTY5Y2QxYTVjZWU3MWQyZDQ1ZTY2ZjI5MTYyYWM2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDQ2YzllNWNkMmU2ODc0ZDNjMDFmNGQ2NzdiNWRhMmZkMWYzYjVlMTZhZGZiMTUwMjc2NzViNWI0NWUwY2Q1OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2b9dbfa7ff448918d9f4a3eec164dc2",
+      "statement": "A reference pin takes the tip of the local base branch, or --at which must be that tip or an ancestor of it, and freezing never fetches; an open change's pin defaults to the merge base of its branch and the local base.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/freeze.rs#L17-L54",
+          "version": "repo-lines-v1:sha256:e99f76e54f3b1e62dd1f7f5b3d2aa8db59b78e4e12ce504656832a2da80dc9f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYmJmNDcyY2QzYWViZDUwMTc3ZTZiYzgyMDU0OTk0MzFhYjJlMTA5OWU3OGQxNjIwZmNlZTk0YzE1ZGYxMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkYzUzOTc5YmE4YjYxNDk3YWI2MjAzZjc5NDI2MmQ3NmRhOTZlZDFlNGFhNDIyNGM2ODI0OWQ0NjVlMTg3ZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4NDkwODJjNmYwZjVkMTZhZWNlOTBjMDBmOTJmMDRiMWNkOTk3NzFiNGUzNWRkZTQzZDhhMjQ5MTYzNjg0YzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d3f5da9ebe8942dfab735f17d11110ce",
+      "statement": "freeze dispatches an open change to freeze_change, which pins without a worktree, and otherwise uses add_frozen, which creates the detached worktree, records it for rollback, and pushes the pin; a failed record write removes the pin and rolls the worktree back.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/freeze.rs#L55-L226",
+          "version": "repo-lines-v1:sha256:00bf84c0a4e1786c3ef9e9881489efd56a07b030606f73fbd058a2115c1fb574:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiZjZmYjY1YTNjNGNiYjRmNDI4YjhiNTliNDRkYWViZDY5ZWFiZTE3YjAyNTAyY2RkZGQyMDY1ODU0MGJiMDg3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MDYzYzRkMWFmOGNkODliYjBiZGQ3NjU3ZmZjYmY2ODA2YTYxMGQ3OWQ2YzhkNGMzMDdjMjQxZGYzOTAwNTIyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmNzdlNmI2NzcxZmE3YTQ0MDgzZjNkMzA5OGY5MjcwYzNhY2JiNDc5YWI0YTA1ZmM2ZTZkNGU3OTYwMTUzNzI5In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_0aa094c5469845ae95ea02a72cb6bd47",
+      "statement": "require_on_pin refuses with an 'is off its pin' message when a frozen worktree's HEAD differs from the pin, because commits on its detached HEAD are on no branch and the dirty check cannot see them.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/freeze.rs#L227-L247",
+          "version": "repo-lines-v1:sha256:201d8808bd2657457e803607a3e7d5c3c6f139e9b0f5afeb55b412aea69119c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYmFmOTUwN2MwNTgzNWQ3ZDA3ZGY2OGUzZjBiMmQ2OWY0MjQxMzAyY2IzN2U0OGZmNzcyNmJlZjRjYTg4NmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiYWU2OTliNTNmNTU1MWQyZDQwZGRkNjIwNjE0N2U1OGZmOTI1YzZhMzI5ZWQwYTIyZmFmZmJkZGNhODY2NzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fbe2f2f14ecf4ed59d8a4a8f6e56164e",
+      "statement": "unfreeze checks the pin before dirtiness unless forced, re-points the role's tmux window at the main clone, refuses a worktree still in use, removes the worktree before dropping the pin and saving, and for a pinned change only drops the pin.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/freeze.rs#L260-L307",
+          "version": "repo-lines-v1:sha256:be10cc9a3a09d85057911c0ad0c6165d7bd56930f8c4e113a139bbb50080274b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiYzI1YWRjMjE3NWI4Yjc1ZWE2NWUyOGM2ZDhmMDBhMTIwNDhkZTJhNTBmNTFiMzg5MzhmODIxYjFlYTE0MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1M2RhYTE1MDE0ZDEwNTUwODVhODU5NjVhZjBmZWFiNGE2NjdkOWQwODlhOWViNjMwM2JkMTc2OTFlY2M1NTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0d417a58cd9e49d2bce39f0bda36faba",
+      "statement": "refreeze moves the pin to the local base tip without merging, always refuses an off-pin reference worktree, reports a pinned change's lag behind the new pin, refuses a dirty worktree only when the pin would move, and moves the worktree back to its prior HEAD if the save fails.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/freeze.rs#L309-L392",
+          "version": "repo-lines-v1:sha256:2e7062f63d6442c54e045c795838673e628386e1250edcff12a6a63e044cdb6c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMzdiYjNhNDAwNDE3MGNhMjZjZjczZGQ3ZTg4MDliYzBmNDFkOGZmNDllMzg4NTA3MWJiZTZhZWFjYjQwMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4d6e042d1e56431fad742a0c1bb1a0ed",
+      "statement": "repo set --base, repo set --clone, and repo remove refuse while an open feature has the role frozen, and repo rename --records-only refuses renames that would give a role two pins or a frozen reference beside an open change.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/repo.rs#L148-L218",
+          "version": "repo-lines-v1:sha256:349a253273588d18301af650f8bc7f5d7e313c488364b79d2609d47f7ef41186:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMjU0YmJiYTFmYWM4NzE4NDAwYThkNGJhNzNkMmU5NzUyNDZiYjkxMGJhYWE5YTA1NjhlNTY1NTlkYzM2YTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4ZDhlNDlhMDU5MTJmMWI5NDI2YTZmZDhjNTJiZTE4NTkzZTMzY2RiNmVjNzkxOTJiNzQwNWUwMDhiZjdiNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmOGY2M2I0MDQ1Y2NlZjI0MDJiNTlmMmQ4YTk2NmUzZWE2ODk4YWNlNzMzMWFkMmE3NDk4YmViYjkxODUzNTcifQ"
+        },
+        {
+          "resource": "repo://src/ops/repo.rs#L340-L362",
+          "version": "repo-lines-v1:sha256:256c20561585e43162002b2cb4e54320dbf40a9d07dd53b13e32ae3c18ca566e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMTNkYWNjM2U2MGRiZWEzMDdmN2I4Zjk5MTM0NWNmMTQ5ZGU4ODY5OWFjMTYyMzIxZGNmNTY2YmZlZmJiNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMWNiNDk4YTYzOTE1MmY2NjUyMTJhNzZjM2NhNjg3YTE4MGE1YjYyMDRkYWFhOTljMjA0ZjAwYTYyNTJmOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5YTFmNWVmN2ZjMmNlYjhhZmNiNDRmMWU1MDgyYmRiZTFjZWY0NjU2MDMzZjFlN2I1Nzg4MWVkYzhiYTY0M2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlkYzY3NGEzNDQ0MTU3NDhjZjMwZDg2MmIzMWFhODJmNDM2OWIwZDIwYzg5NzM0OTk2MjE1OWFiYmE3NjAxODEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d8d75a608b3841f29efe9f3122f3f7cc",
+      "statement": "merged drops a role's pin together with its change.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/merged.rs#L175-L190",
+          "version": "repo-lines-v1:sha256:e6a17af71cf407fbcfad7c127ba290adb86126036cdbd4e70c169c117dec3d99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZjI2ZDE1MGRhNjM3ZWVkZTRjN2I3MGVmYzkxOWRjM2Q2ODQxOGMwY2YzMDIyNjFkZDY2MzFiNGIwYWY3OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5OGFiMmY3NzBjZWUyMzExNDJiNzkyNDJmOTNlMTAzZmFlOTI4NTY5NWFiNTdiY2IwZDdjMWFiNWVkNDdlYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_81a7f008082046aa903a448642113254",
+      "statement": "pull skips frozen reference worktrees and reports them as frozen rather than pulling them.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/pull.rs#L60-L85",
+          "version": "repo-lines-v1:sha256:4757bcae4ad6a9af7ab8f5997a800a16c2e14d262ff22b4e12df91179f8c137f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzNzhmYmM2MjE5ZjRmZTBmZGEyZmQ1N2YzY2I4ZTc1ODQzOGE2ZDc2YmZhYWE4MmZjYTAwZjRmMjNiMDI4ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzMTUyZDc0YTYxOTExYTgxYTkxMDA2ZDAyZWFiOTMyYWRmZmYwZmRhNjc2YjJiMTBhZDkxNTgwNzRlNzYxY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExNGRiNzM1ODQ3ZGE2NmIyOWJlOGVkNTBkYmI0OGZiYTA2MmViNjhkZWJkZWMwMWU4ZjJkZTk1NDE1Zjc4ZDkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T18:18:24.526Z"
+  }
+}

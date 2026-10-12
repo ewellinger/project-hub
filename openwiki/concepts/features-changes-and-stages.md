@@ -3,9 +3,6 @@ type: concept
 title: Features, changes, stages, and bases
 description: The project-hub domain model stored in feature records — Feature, Change, Stage, Owner, Worktree — including the one-open-change-per-role invariant, recorded bases and base_sha, finished features, and the naming/template rules.
 tags: [concepts, domain-model, feature, change, stage, base, naming]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-c17c8e3e271a8329ed7a5e63
     resource: repo://src/feature.rs
@@ -19,7 +16,10 @@ sources:
     resource: repo://src/ops/set_base.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Features, changes, stages, and bases
@@ -74,6 +74,26 @@ different branch, close the open change with `feature merged` and then
 `feature add` again; closed changes stay in `changes` as history, and
 `names::next_branch` proposes a follow-up name such as `foo-2`.
 
+## Pins (frozen bases)
+
+A feature record also holds `pins`, one `Pin { role, clone, base, sha,
+worktree }` per role whose base is frozen at a fixed commit (`src/feature.rs`).
+The key is omitted when there are no pins, so records written before frozen
+bases load and round-trip unchanged. A pin takes one of two shapes:
+
+- **With a `worktree`:** the role has no open change and its pinned commit is
+  checked out, detached, in a hub-owned reference worktree. That worktree is
+  the role's single checkout for the feature.
+- **Without a worktree:** the pin belongs to the role's open change, whose
+  worktree stays the checkout; `status` measures the change against the pin
+  instead of `origin/<base>`.
+
+`Feature::validate` keeps the one-checkout rule across both lists: a role is
+pinned at most once, a pin with a worktree may not coexist with an open change
+for the role, and a pin without a worktree must have one. `pin.base` is a
+branch name without `origin/` and `sha` must be a full 40- or 64-digit commit
+id. See [Frozen bases](../workflows/frozen-bases.md).
+
 ## Bases
 
 Each change records the branch it merges into:
@@ -96,6 +116,9 @@ refuses `origin/`-prefixed input, fetches origin, requires `origin/<BRANCH>`
 to exist and the local feature branch to exist, recomputes `base_sha` as the
 merge base, and saves the feature. It never checks out, resets, rebases, or
 edits git's upstream, and is a no-op when base and `base_sha` are unchanged.
+It refuses a pinned open change ("unfreeze first"), because the pin was taken
+from the current base. A frozen reference role has no open change, so it gets
+the ordinary "no open change" refusal.
 
 ## Finished features
 
@@ -125,6 +148,7 @@ Templates:
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](../workflows/frozen-bases.md)
 - [Hub state, manifest, and locking](../architecture/hub-state-and-locking.md)
 - [Starting features and adding roles](../workflows/feature-start-and-add.md)
 - [Review, merged, set-base, and finish](../workflows/review-merged-finish.md)

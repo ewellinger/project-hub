@@ -139,11 +139,21 @@ pub fn set(hub: &Hub, opts: &SetRepoOptions) -> Result<Vec<String>> {
         note("branch_template", &repo.branch_template, template);
         repo.branch_template = template.clone();
     }
-    if let Some(base) = &opts.base {
+    if let Some(base) = opts.base.as_ref().filter(|b| **b != repo.base) {
         if base.is_empty() || base.starts_with("origin/") {
             return Err(HubError::Usage(format!(
                 "--base '{base}' must be a branch name without origin/"
             )));
+        }
+        // A pin was taken from the current base; moving the base under it
+        // would split the pin's base from the change's.
+        for feature in hub.list_features()? {
+            if feature.is_open() && feature.pin(&opts.role).is_some() {
+                return Err(HubError::Precondition(format!(
+                    "feature '{}' has role '{}' frozen on {}; unfreeze it or finish the feature before changing the base",
+                    feature.name, opts.role, repo.base
+                )));
+            }
         }
         note("base", &repo.base, base);
         repo.base = base.clone();
@@ -160,6 +170,12 @@ pub fn set(hub: &Hub, opts: &SetRepoOptions) -> Result<Vec<String>> {
                 return Err(HubError::Precondition(format!(
                     "feature '{}' has an open change for role '{}' in clone '{}'; \
                      merge or finish it before changing the clone",
+                    feature.name, opts.role, repo.clone
+                )));
+            }
+            if feature.is_open() && feature.pin(&opts.role).is_some() {
+                return Err(HubError::Precondition(format!(
+                    "feature '{}' has role '{}' frozen in clone '{}'; unfreeze it or finish the feature before changing the clone",
                     feature.name, opts.role, repo.clone
                 )));
             }
@@ -190,6 +206,12 @@ pub fn remove(hub: &Hub, role: &str) -> Result<Vec<String>> {
         if feature.is_open() && feature.open_change(role).is_some() {
             return Err(HubError::Precondition(format!(
                 "feature '{}' has an open change for role '{role}'; merge or finish it first",
+                feature.name
+            )));
+        }
+        if feature.is_open() && feature.pin(role).is_some() {
+            return Err(HubError::Precondition(format!(
+                "feature '{}' has role '{role}' frozen; unfreeze it or finish the feature first",
                 feature.name
             )));
         }
@@ -257,14 +279,14 @@ pub fn rename(hub: &Hub, opts: &RenameOptions) -> Result<Vec<String>> {
     }
     if let Some(f) = features
         .iter()
-        .find(|f| f.changes.iter().any(|c| c.role == new))
+        .find(|f| f.changes.iter().any(|c| c.role == new) || f.pin(new).is_some())
     {
         return Err(HubError::Precondition(format!(
             "feature '{}' already records changes for role '{new}'; pick another name",
             f.name
         )));
     }
-    let (rewritten, count) = rewrite_records(features, old, new, None);
+    let (rewritten, count, pins) = rewrite_records(features, old, new, None);
     let mut manifest = hub.manifest.clone();
     manifest
         .repos
@@ -281,7 +303,7 @@ pub fn rename(hub: &Hub, opts: &RenameOptions) -> Result<Vec<String>> {
         "renamed in hub.json; finish the records with: hub repo rename {old} {new} --records-only"
     );
     apply_rename(&renamed, &rewritten, old, new, Some(&recovery), &mut lines)?;
-    lines.push(summary_line(old, count, rewritten.len()));
+    lines.push(summary_line(old, count, pins, rewritten.len()));
     Ok(lines)
 }
 
@@ -319,23 +341,40 @@ fn rename_records_only(
                 f.name
             )));
         }
+        let renames_a_pin = f
+            .pins
+            .iter()
+            .any(|p| p.role == old && clone.is_none_or(|k| p.clone == k));
+        if renames_a_pin && (f.pin(new).is_some() || f.open_change(new).is_some()) {
+            return Err(HubError::Precondition(format!(
+                "feature '{}' already has role '{new}' pinned or open; renaming its '{old}' pin would give '{new}' two checkouts",
+                f.name
+            )));
+        }
+        if renames_an_open_change && f.pin(new).is_some_and(|p| p.worktree.is_some()) {
+            return Err(HubError::Precondition(format!(
+                "feature '{}' has role '{new}' frozen; renaming its open '{old}' change would give '{new}' two checkouts",
+                f.name
+            )));
+        }
     }
-    let (rewritten, count) = rewrite_records(features, old, new, clone);
+    let (rewritten, count, pins) = rewrite_records(features, old, new, clone);
     let mut lines = Vec::new();
     apply_rename(hub, &rewritten, old, new, None, &mut lines)?;
-    lines.push(summary_line(old, count, rewritten.len()));
+    lines.push(summary_line(old, count, pins, rewritten.len()));
     Ok(lines)
 }
 
-/// The features with at least one change for `old` (and `clone`, when
-/// given), with those changes renamed, and how many changes that was.
+/// The features with at least one change or pin for `old` (and `clone`,
+/// when given), with those renamed, and how many changes and pins that was.
 fn rewrite_records(
     features: Vec<Feature>,
     old: &str,
     new: &str,
     clone: Option<&str>,
-) -> (Vec<Feature>, usize) {
+) -> (Vec<Feature>, usize, usize) {
     let mut count = 0;
+    let mut pins = 0;
     let rewritten = features
         .into_iter()
         .filter_map(|mut f| {
@@ -349,10 +388,19 @@ fn rewrite_records(
                 touched = true;
                 count += 1;
             }
+            for p in f
+                .pins
+                .iter_mut()
+                .filter(|p| p.role == old && clone.is_none_or(|k| p.clone == k))
+            {
+                p.role = new.to_string();
+                touched = true;
+                pins += 1;
+            }
             touched.then_some(f)
         })
         .collect();
-    (rewritten, count)
+    (rewritten, count, pins)
 }
 
 /// Save the rewritten records, then, for each open feature now using
@@ -373,10 +421,10 @@ fn apply_rename(
             None => e,
         })?;
     }
-    for f in rewritten
-        .iter()
-        .filter(|f| f.is_open() && f.open_change(new).is_some())
-    {
+    for f in rewritten.iter().filter(|f| {
+        f.is_open()
+            && (f.open_change(new).is_some() || f.pin(new).is_some_and(|p| p.worktree.is_some()))
+    }) {
         if let Some(tmux) = &hub.tmux {
             let step = (|| -> Result<Vec<String>> {
                 if tmux.has_session(&f.checkout)?
@@ -405,10 +453,12 @@ fn apply_rename(
     Ok(())
 }
 
-fn summary_line(old: &str, changes: usize, features: usize) -> String {
-    if changes == 0 {
+fn summary_line(old: &str, changes: usize, pins: usize, features: usize) -> String {
+    if changes == 0 && pins == 0 {
         format!("No changes recorded for role {old}")
-    } else {
+    } else if pins == 0 {
         format!("Renamed {changes} changes in {features} features")
+    } else {
+        format!("Renamed {changes} changes and {pins} pins in {features} features")
     }
 }

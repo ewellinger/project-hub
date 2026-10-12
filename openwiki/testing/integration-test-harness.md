@@ -3,9 +3,6 @@ type: testing
 title: Testing and the integration harness
 description: How project-hub is tested — unit tests inside modules, and integration tests that build real git repositories in a temp directory and run the `hub` binary with fake tmux, code, lsof, gh, and glab on PATH — plus the fault-injection helpers and which test file covers which command.
 tags: [testing, integration-tests, fixtures, fakes, assert_cmd]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-5c70522e7407c31f9c2fa754
     resource: repo://tests/common/mod.rs
@@ -15,9 +12,14 @@ sources:
     resource: repo://tests/fake-bin/lsof
   - id: openwiki-source-14f64ae4f9fdaf3f49cfc5e8
     resource: repo://tests/fake-bin/tmux
+  - id: openwiki-source-642f1c913a50430ef0592ce3
+    resource: repo://tests/freeze.rs
   - id: openwiki-source-f13236b3ab41e3f4cea296b6
     resource: repo://tests/misc.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Testing and the integration harness
@@ -35,6 +37,11 @@ macOS; see [CI and release](../operations/ci-and-release.md)).
   terminal (see [Dashboard architecture](../ui/dashboard-architecture.md)).
 - **Integration tests** in `tests/*.rs` run the real `hub` binary
   (`assert_cmd::Command::cargo_bin("hub")`) against real git repositories.
+  They run whatever `target/debug/hub` cargo considers fresh. A local
+  `cargo package`/`cargo publish` can leave a fingerprint that keeps an older
+  binary marked fresh, so CLI tests silently exercise stale code; run
+  `cargo clean -p project-hub` after a local publish if CLI behaviour looks
+  older than the source.
 
 ## The `Fixture` (`tests/common/mod.rs`)
 
@@ -95,7 +102,7 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/init.rs` | `hub init`, `--force` refresh |
 | `tests/repo.rs` | `repo add/set/remove/rename/list` |
 | `tests/config.rs` | `hub config` show/set/unset |
-| `tests/start.rs` | `feature start` |
+| `tests/start.rs` | `feature start`, including `--freeze` |
 | `tests/add.rs`, `tests/resolve.rs` | `feature add`, change opening and adoption |
 | `tests/suggest.rs` | branch suggestions for prompts/pickers |
 | `tests/start_review.rs` | `feature start-review` |
@@ -107,8 +114,10 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/tmux_off.rs` | behavior with sessions off |
 | `tests/skill.rs` | generated agent skill and its command table |
 | `tests/misc.rs` | `tmux`/`open`/`sync`, exit codes, the lock, finished-feature read-only rules, record location |
+| `tests/freeze.rs` | frozen bases: `freeze`/`unfreeze`/`refreeze` on reference roles and open changes, frozen `status` rows and drift, off-pin and dirty refusals, record-write rollbacks, `feature add` on a frozen role, `finish`/`pull`/`repo` interactions, and `feature list`'s frozen roles |
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](../workflows/frozen-bases.md)
 - [CI and release](../operations/ci-and-release.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)

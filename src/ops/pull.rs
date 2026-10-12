@@ -61,13 +61,31 @@ pub fn pull_feature(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
             branch: change.branch.clone(),
         })
         .collect();
+    let frozen: Vec<String> = feature
+        .pins
+        .iter()
+        .filter(|p| p.worktree.is_some())
+        .map(|p| {
+            format!(
+                "{}: frozen at {}; not pulled (`hub feature refreeze {}` moves the pin)",
+                p.role,
+                p.short(),
+                p.role
+            )
+        })
+        .collect();
     if targets.is_empty() {
-        return Ok(vec![format!(
-            "feature '{}' has no open changes; nothing to pull",
-            feature.name
-        )]);
+        if frozen.is_empty() {
+            return Ok(vec![format!(
+                "feature '{}' has no open changes; nothing to pull",
+                feature.name
+            )]);
+        }
+        return Ok(frozen);
     }
-    pull_all(targets)
+    let mut lines = pull_all(targets)?;
+    lines.extend(frozen);
+    Ok(lines)
 }
 
 /// Pull every target, one thread per repo, and return one line per target

@@ -169,7 +169,7 @@ enum RepoCommand {
 
 #[derive(Subcommand)]
 enum FeatureCommand {
-    /// Create the hub branch and worktree, open a change per --repo, and the tmux session
+    /// Create the hub branch and worktree, open a change per --repo, freeze each --freeze role, and the tmux session
     Start {
         /// Feature name
         name: String,
@@ -179,6 +179,9 @@ enum FeatureCommand {
         /// Role to include, optionally with a branch: --repo ui --repo api:feature/x
         #[arg(long = "repo", value_name = "ROLE[:BRANCH]")]
         repos: Vec<String>,
+        /// Role to freeze at the tip of its local base in a detached reference worktree; repeatable
+        #[arg(long = "freeze", value_name = "ROLE")]
+        freeze: Vec<String>,
     },
     /// Create a review feature for one role from a GitLab merge request or GitHub pull request URL
     StartReview {
@@ -201,9 +204,12 @@ enum FeatureCommand {
         /// Branch name; defaults to the role's template, or the previous branch plus -<n> after a merge
         #[arg(long)]
         branch: Option<String>,
-        /// Start point for a brand-new branch; defaults to origin/<base>
+        /// Start point for a brand-new branch; defaults to the pin of a frozen role, else origin/<base>
         #[arg(long)]
         from: Option<String>,
+        /// Start a frozen role's new branch from origin/<base> instead of its pin, and drop the pin
+        #[arg(long, conflicts_with = "from")]
+        from_latest: bool,
         /// Branch this change merges into; defaults to the role's base in hub.json
         #[arg(long)]
         base: Option<String>,
@@ -217,6 +223,36 @@ enum FeatureCommand {
         role: String,
         /// Base branch name, without origin/
         branch: String,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+    },
+    /// Pin a role to a commit of its local base: a reference worktree outside the feature, a comparison point for an open change
+    Freeze {
+        /// Role to freeze
+        role: String,
+        /// Commit to pin instead of the default; must be on the local base
+        #[arg(long, value_name = "REF")]
+        at: Option<String>,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+    },
+    /// Release a role's pin; removes its frozen reference worktree
+    Unfreeze {
+        /// Role to unfreeze
+        role: String,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+        /// Remove the frozen worktree even if dirty or off its pin (discards commits on its detached HEAD)
+        #[arg(long)]
+        force: bool,
+    },
+    /// Move a role's pin to the current tip of its local base branch
+    Refreeze {
+        /// Role to refreeze
+        role: String,
         /// Feature name; inferred from the hub worktree when omitted
         #[arg(long)]
         feature: Option<String>,
@@ -247,7 +283,7 @@ enum FeatureCommand {
         /// Feature name; inferred from the hub worktree when omitted
         #[arg(long)]
         feature: Option<String>,
-        /// Remove dirty and adopted worktrees without asking
+        /// Remove dirty, adopted, and off-pin frozen worktrees without asking (discards commits on a frozen worktree's detached HEAD)
         #[arg(long)]
         force: bool,
     },
@@ -421,17 +457,26 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     name,
                     checkout,
                     repos,
+                    freeze,
                 } => {
                     let mut repos: Vec<(String, Option<String>)> =
                         repos.iter().map(|r| parse_repo_flag(r)).collect();
+                    let mut freeze = freeze;
                     // Prompts finish before the lock; cancelling touches nothing.
                     if prompt::is_interactive() {
-                        repos = prompt::pick_start_repos(&hub, &name, checkout.as_deref(), repos)?;
+                        (repos, freeze) = prompt::pick_start_repos(
+                            &hub,
+                            &name,
+                            checkout.as_deref(),
+                            repos,
+                            freeze,
+                        )?;
                     }
                     let opts = ops::start::StartOptions {
                         name,
                         checkout,
                         repos,
+                        freeze,
                     };
                     hub.with_lock(|hub| ops::start::start(hub, &opts))
                 }
@@ -452,13 +497,15 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     feature,
                     branch,
                     from,
+                    from_latest,
                     base,
                     worktree,
                 } => {
-                    let (role, branch) = match role {
-                        Some(role) if branch.is_some() || !prompt::is_interactive() => {
-                            (role, branch)
-                        }
+                    let (role, branch, from_latest) = match role {
+                        // With a terminal, `pick_add` runs even when role and
+                        // branch are given: a new branch of a frozen role asks
+                        // where to start.
+                        Some(role) if !prompt::is_interactive() => (role, branch, from_latest),
                         None if !prompt::is_interactive() => Cli::command()
                             .error(
                                 ErrorKind::MissingRequiredArgument,
@@ -470,7 +517,10 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                             // finished feature fails the same way it does with flags.
                             let f = hub.resolve_feature(feature.as_deref())?;
                             f.require_open()?;
-                            prompt::pick_add(&hub, &f, role, branch)?
+                            let ask_start = from.is_none() && !from_latest;
+                            let (role, branch, picked_latest) =
+                                prompt::pick_add(&hub, &f, role, branch, ask_start)?;
+                            (role, branch, from_latest || picked_latest)
                         }
                     };
                     let opts = ops::resolve::AddOptions {
@@ -479,6 +529,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         from: from.as_deref(),
                         worktree: worktree.as_deref(),
                         base: base.as_deref(),
+                        from_latest,
                     };
                     hub.with_lock(|hub| {
                         let mut f = hub.resolve_feature(feature.as_deref())?;
@@ -492,6 +543,22 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::set_base::set_base(hub, &mut f, &role, &branch)
+                }),
+                FeatureCommand::Freeze { role, at, feature } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::freeze::freeze(hub, &mut f, &role, at.as_deref())
+                }),
+                FeatureCommand::Unfreeze {
+                    role,
+                    feature,
+                    force,
+                } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::freeze::unfreeze(hub, &mut f, &role, force)
+                }),
+                FeatureCommand::Refreeze { role, feature } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::freeze::refreeze(hub, &mut f, &role)
                 }),
                 FeatureCommand::Review { role, url, feature } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;

@@ -1,6 +1,7 @@
 pub mod add;
 pub mod config;
 pub mod finish;
+pub mod freeze;
 pub mod init;
 pub mod list;
 pub mod merged;
