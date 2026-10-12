@@ -86,6 +86,34 @@ impl Change {
     }
 }
 
+/// A role pinned to one commit of its base for this feature. With a
+/// `worktree` the role has no open change and the pin is checked out,
+/// detached, in a hub-owned reference worktree; without one the pin
+/// belongs to the role's open change.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Pin {
+    pub role: String,
+    /// Copied from the manifest when the pin was taken, like `Change::clone`.
+    pub clone: String,
+    /// Branch the pin was taken from, without `origin/`; `refreeze` moves
+    /// the pin to this branch's local tip.
+    pub base: String,
+    /// Full commit id (40 or 64 hex digits).
+    pub sha: String,
+    pub worktree: Option<Worktree>,
+}
+
+impl Pin {
+    pub fn short(&self) -> &str {
+        short_sha(&self.sha)
+    }
+}
+
+/// The first seven characters of a commit id, or all of a shorter one.
+pub fn short_sha(sha: &str) -> &str {
+    &sha[..sha.len().min(7)]
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum FeatureStatus {
@@ -100,6 +128,9 @@ pub struct Feature {
     pub status: FeatureStatus,
     pub created: String,
     pub changes: Vec<Change>,
+    /// Roles pinned to a commit; see `Pin`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub pins: Vec<Pin>,
 }
 
 pub fn now_rfc3339() -> String {
@@ -118,6 +149,7 @@ impl Feature {
             status: FeatureStatus::Open,
             created: now_rfc3339(),
             changes: Vec::new(),
+            pins: Vec::new(),
         }
     }
 
@@ -187,6 +219,54 @@ impl Feature {
                 ));
             }
         }
+        let mut pinned = std::collections::HashSet::new();
+        for pin in &self.pins {
+            if !pinned.insert(pin.role.as_str()) {
+                return Err(bad("pins", format!("role '{}' is pinned twice", pin.role)));
+            }
+            names::validate_clone(&pin.clone)
+                .map_err(|e| bad("pins[].clone", format!("role '{}': {e}", pin.role)))?;
+            if pin.base.is_empty() || pin.base.starts_with("origin/") {
+                return Err(bad(
+                    "pins[].base",
+                    format!(
+                        "role '{}': base must be a branch name without origin/",
+                        pin.role
+                    ),
+                ));
+            }
+            if !matches!(pin.sha.len(), 40 | 64) || !pin.sha.chars().all(|c| c.is_ascii_hexdigit())
+            {
+                return Err(bad(
+                    "pins[].sha",
+                    format!("role '{}': '{}' is not a full commit id", pin.role, pin.sha),
+                ));
+            }
+            match (&pin.worktree, open_roles.contains(pin.role.as_str())) {
+                (Some(wt), false) => names::validate_worktree_name(&wt.name).map_err(|e| {
+                    bad("pins[].worktree.name", format!("role '{}': {e}", pin.role))
+                })?,
+                (Some(_), true) => {
+                    return Err(bad(
+                        "pins",
+                        format!(
+                            "role '{}' has both a frozen worktree and an open change",
+                            pin.role
+                        ),
+                    ));
+                }
+                (None, false) => {
+                    return Err(bad(
+                        "pins",
+                        format!(
+                            "role '{}' is pinned without a worktree or an open change",
+                            pin.role
+                        ),
+                    ));
+                }
+                (None, true) => {}
+            }
+        }
         Ok(())
     }
 
@@ -214,6 +294,19 @@ impl Feature {
         self.changes
             .iter_mut()
             .find(|c| c.role == role && c.is_open())
+    }
+
+    pub fn pin(&self, role: &str) -> Option<&Pin> {
+        self.pins.iter().find(|p| p.role == role)
+    }
+
+    pub fn pin_mut(&mut self, role: &str) -> Option<&mut Pin> {
+        self.pins.iter_mut().find(|p| p.role == role)
+    }
+
+    pub fn remove_pin(&mut self, role: &str) -> Option<Pin> {
+        let index = self.pins.iter().position(|p| p.role == role)?;
+        Some(self.pins.remove(index))
     }
 
     pub fn open_changes(&self) -> Vec<&Change> {
@@ -454,5 +547,85 @@ mod tests {
         f.changes[0].base = None;
         f.changes[0].clone = "bad_clone".into();
         assert_eq!(field_error(&f), "changes[].clone");
+    }
+
+    fn pin(role: &str, sha: &str, worktree: bool) -> Pin {
+        Pin {
+            role: role.into(),
+            clone: format!("{role}-clone"),
+            base: "master".into(),
+            sha: sha.into(),
+            worktree: worktree.then(|| Worktree {
+                name: "feat-1-frozen".into(),
+                owner: Owner::Hub,
+            }),
+        }
+    }
+
+    const SHA1: &str = "0123456789abcdef0123456789abcdef01234567";
+
+    #[test]
+    fn records_without_pins_round_trip_without_a_pins_key() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("f.json");
+        let f = Feature::new("feat-1", "feat-1");
+        f.save(&path).unwrap();
+        let text = std::fs::read_to_string(&path).unwrap();
+        assert!(!text.contains("pins"), "{text}");
+        assert!(Feature::load(&path).unwrap().pins.is_empty());
+    }
+
+    #[test]
+    fn pins_round_trip_and_look_up_by_role() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("f.json");
+        let mut f = Feature::new("feat-1", "feat-1");
+        f.pins.push(pin("api", SHA1, true));
+        f.save(&path).unwrap();
+        let loaded = Feature::load(&path).unwrap();
+        assert_eq!(loaded, f);
+        assert_eq!(loaded.pin("api").unwrap().short(), "0123456");
+        assert!(loaded.pin("ui").is_none());
+        let mut f = loaded;
+        f.pin_mut("api").unwrap().sha = "f".repeat(64);
+        assert_eq!(f.remove_pin("api").unwrap().short(), "fffffff");
+        assert!(f.pins.is_empty());
+    }
+
+    #[test]
+    fn pin_validation() {
+        let mut f = Feature::new("feat-1", "feat-1");
+        f.pins.push(pin("api", SHA1, true));
+        f.validate(Path::new("f.json")).unwrap();
+        f.pins[0].sha = "f".repeat(64);
+        f.validate(Path::new("f.json")).unwrap();
+
+        f.pins[0].sha = "abc".into();
+        assert_eq!(field_error(&f), "pins[].sha");
+        f.pins[0].sha = SHA1.into();
+        f.pins[0].base = "origin/master".into();
+        assert_eq!(field_error(&f), "pins[].base");
+        f.pins[0].base = "master".into();
+        f.pins[0].clone = "bad_clone".into();
+        assert_eq!(field_error(&f), "pins[].clone");
+        f.pins[0].clone = "api-clone".into();
+        f.pins[0].worktree.as_mut().unwrap().name = "a/b".into();
+        assert_eq!(field_error(&f), "pins[].worktree.name");
+        f.pins[0].worktree.as_mut().unwrap().name = "feat-1-frozen".into();
+
+        f.pins.push(pin("api", SHA1, true));
+        assert_eq!(field_error(&f), "pins", "one pin per role");
+        f.pins.pop();
+
+        f.changes.push(change("api", "a", Stage::Working));
+        assert_eq!(
+            field_error(&f),
+            "pins",
+            "frozen worktree beside an open change"
+        );
+        f.pins[0].worktree = None;
+        f.validate(Path::new("f.json")).unwrap();
+        f.changes[0].stage = Stage::Merged;
+        assert_eq!(field_error(&f), "pins", "no worktree and no open change");
     }
 }
