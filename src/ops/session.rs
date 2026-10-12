@@ -1,7 +1,7 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::error::{HubError, Result};
-use crate::feature::{Change, Feature};
+use crate::feature::{Change, Feature, Pin};
 use crate::hub::Hub;
 use crate::workspace::{Folder, relative_path, render};
 
@@ -12,6 +12,49 @@ pub fn change_path(hub: &Hub, change: &Change) -> PathBuf {
         None => hub.env.clone_path(&change.clone),
         Some(wt) => hub.env.worktree_path(&change.clone, &wt.name),
     }
+}
+
+/// Where a frozen reference worktree lives; `None` for a pin that belongs
+/// to the role's open change.
+pub fn pin_path(hub: &Hub, pin: &Pin) -> Option<PathBuf> {
+    pin.worktree
+        .as_ref()
+        .map(|wt| hub.env.worktree_path(&pin.clone, &wt.name))
+}
+
+/// Every checkout the feature binds a role to, open changes and frozen
+/// reference worktrees alike, in manifest (deployment) order.
+pub fn role_checkouts(hub: &Hub, feature: &Feature) -> Vec<(String, PathBuf)> {
+    let mut checkouts: Vec<(String, PathBuf)> = feature
+        .open_changes()
+        .into_iter()
+        .map(|c| (c.role.clone(), change_path(hub, c)))
+        .chain(
+            feature
+                .pins
+                .iter()
+                .filter_map(|p| pin_path(hub, p).map(|path| (p.role.clone(), path))),
+        )
+        .collect();
+    checkouts.sort_by_key(|(role, _)| hub.manifest.role_index(role).unwrap_or(usize::MAX));
+    checkouts
+}
+
+/// Point the role's tmux window, when the session has one, at `dir`,
+/// killing whatever ran in it. Lets a worktree about to be removed go free.
+pub fn repoint_window(hub: &Hub, feature: &Feature, role: &str, dir: &Path) -> Result<Vec<String>> {
+    let Some(tmux) = &hub.tmux else {
+        return Ok(Vec::new());
+    };
+    let session = &feature.checkout;
+    if tmux.has_session(session)? && tmux.windows(session)?.iter().any(|w| w == role) {
+        tmux.respawn_window(session, role, dir)?;
+        return Ok(vec![format!(
+            "Re-pointed tmux window {role} at {}",
+            dir.display()
+        )]);
+    }
+    Ok(Vec::new())
 }
 
 /// Run an environment step (workspace file, tmux) whose failure is a
@@ -38,7 +81,7 @@ pub fn attach_line(feature: &Feature) -> String {
 pub const TMUX_OFF_LINE: &str = "tmux is off; no session created";
 
 /// Ensure the session exists with windows `hub`, `ai`, then one per open
-/// change in manifest order. Existing windows are never moved or killed, so
+/// change or frozen role in manifest order. Existing windows are never moved or killed, so
 /// a pre-existing session gets missing windows appended: complete, but only
 /// a fresh session is guaranteed the documented order. A session it creates
 /// starts `hub` in the `hub` window.
@@ -63,10 +106,10 @@ pub fn converge_tmux(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
             lines.push(format!("Added tmux window {name}"));
         }
     }
-    for change in ordered_open_changes(hub, feature) {
-        if !existing.iter().any(|w| w == &change.role) {
-            tmux.new_window(session, &change.role, &change_path(hub, change))?;
-            lines.push(format!("Added tmux window {}", change.role));
+    for (role, path) in role_checkouts(hub, feature) {
+        if !existing.iter().any(|w| w == &role) {
+            tmux.new_window(session, &role, &path)?;
+            lines.push(format!("Added tmux window {role}"));
         }
     }
     // Through the shell, so quitting the TUI leaves a prompt in the window.
@@ -88,10 +131,9 @@ pub fn write_workspace(hub: &Hub, feature: &Feature) -> Result<PathBuf> {
         name: hub.manifest.name.clone(),
         path: ".".into(),
     }];
-    for change in ordered_open_changes(hub, feature) {
-        let target = change_path(hub, change);
+    for (role, target) in role_checkouts(hub, feature) {
         folders.push(Folder {
-            name: change.role.clone(),
+            name: role,
             path: relative_path(&hub_wt, &target)
                 .to_string_lossy()
                 .into_owned(),

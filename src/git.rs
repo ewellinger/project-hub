@@ -239,6 +239,28 @@ impl Git {
         .map(|_| ())
     }
 
+    /// Check `commit` out, detached, in a new worktree at `path`.
+    pub fn worktree_add_detached(&self, path: &Path, commit: &str) -> Result<()> {
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent)
+                .map_err(|e| HubError::io(format!("creating {}", parent.display()), e))?;
+        }
+        self.run_os(&[
+            OsStr::new("worktree"),
+            OsStr::new("add"),
+            OsStr::new("--detach"),
+            path.as_os_str(),
+            OsStr::new(commit),
+        ])
+        .map(|_| ())
+    }
+
+    /// Move this checkout's HEAD, detached, and its working tree to `commit`.
+    pub fn checkout_detached(&self, commit: &str) -> Result<()> {
+        self.run(&["checkout", "-q", "--detach", commit])
+            .map(|_| ())
+    }
+
     /// Remove a worktree. Git unregisters it before deleting the directory
     /// and reports failure if any entry survives (a process recreating files,
     /// an unwritable subdirectory), so a failed command may still have
@@ -856,5 +878,54 @@ mod tests {
         std::os::unix::fs::symlink(&real, &link).unwrap();
         assert!(same_path(&real, &link));
         assert!(!same_path(&real, tmp.path()));
+    }
+
+    #[test]
+    fn detached_worktree_add_and_move() {
+        let tmp = tempfile::tempdir().unwrap();
+        let repo = tmp.path().join("r");
+        std::fs::create_dir_all(&repo).unwrap();
+        let git = Git::new(&repo);
+        let run = |args: &[&str]| git.raw(args).unwrap();
+        run(&["init", "-q", "-b", "main"]);
+        run(&[
+            "-c",
+            "user.name=t",
+            "-c",
+            "user.email=t@t",
+            "commit",
+            "-q",
+            "--allow-empty",
+            "-m",
+            "one",
+        ]);
+        let first = git.rev_parse("HEAD").unwrap();
+        run(&[
+            "-c",
+            "user.name=t",
+            "-c",
+            "user.email=t@t",
+            "commit",
+            "-q",
+            "--allow-empty",
+            "-m",
+            "two",
+        ]);
+        let second = git.rev_parse("HEAD").unwrap();
+
+        let wt = tmp.path().join("wts").join("frozen");
+        git.worktree_add_detached(&wt, &first).unwrap();
+        let entry = git
+            .worktrees()
+            .unwrap()
+            .into_iter()
+            .find(|w| same_path(&w.path, &wt))
+            .unwrap();
+        assert_eq!(entry.branch, None, "detached");
+        assert_eq!(entry.head, first);
+
+        Git::new(&wt).checkout_detached(&second).unwrap();
+        assert_eq!(Git::new(&wt).rev_parse("HEAD").unwrap(), second);
+        assert_eq!(git.current_branch().unwrap().as_deref(), Some("main"));
     }
 }
