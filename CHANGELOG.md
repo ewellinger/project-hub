@@ -6,6 +6,8 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-10-12
+
 ### Added
 - `hub feature freeze ROLE [--at REF]` pins a role outside the feature to a commit of its local base in a detached reference worktree that joins the feature's workspace and tmux session; `unfreeze` releases it and `refreeze` moves it to the base's current local tip. `hub status` shows frozen roles with their pin and how far the base has moved since (`frozen_sha`, `base_moved` in `--json`).
 - `hub feature start --freeze ROLE` (repeatable) freezes roles at their local base tip as part of the start; a role given to both `--repo` and `--freeze` is refused. In a terminal, the start prompt offers to freeze the roles you didn't choose. Frozen worktrees are rolled back with the rest if the start fails.
