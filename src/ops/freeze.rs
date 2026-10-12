@@ -338,12 +338,23 @@ pub fn refreeze(hub: &Hub, feature: &mut Feature, role: &str) -> Result<Vec<Stri
         None => None,
     };
     let new = resolve_pin(&git, &pin.base, None)?;
+    // A pinned change's lag against the new pin; refreezing never merges.
+    let behind = match feature.open_change(role) {
+        Some(change) => Some(format!(
+            "  {} is {} behind the pin",
+            change.branch,
+            git.missing_commits(&change.branch, &new)?
+        )),
+        None => None,
+    };
     if new == pin.sha {
-        return Ok(vec![format!(
+        let mut lines = vec![format!(
             "{role}: already frozen at the tip of {} ({})",
             pin.base,
             pin.short()
-        )]);
+        )];
+        lines.extend(behind);
+        return Ok(lines);
     }
     let moved = git.missing_commits(&pin.sha, &new)?;
     if let Some(path) = &path {
@@ -370,10 +381,12 @@ pub fn refreeze(hub: &Hub, feature: &mut Feature, role: &str) -> Result<Vec<Stri
         }
         return Err(err);
     }
-    Ok(vec![format!(
+    let mut lines = vec![format!(
         "{role}: refrozen at {} ({} +{moved} since {})",
         short_sha(&new),
         pin.base,
         pin.short()
-    )])
+    )];
+    lines.extend(behind);
+    Ok(lines)
 }

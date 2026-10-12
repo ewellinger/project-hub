@@ -655,3 +655,107 @@ fn freeze_on_an_open_change_pins_its_merge_base_with_the_local_base() {
         .stdout(predicate::str::contains(format!("frozen @{}", &fork[..7])))
         .stdout(predicate::str::contains("develop +1 since pin"));
 }
+
+#[test]
+fn refreeze_on_an_open_change_moves_the_pin_to_the_local_base_and_reports_the_lag() {
+    let (fx, hub) = world();
+    let ui = fx.project_home.join("ui-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "ui"])
+        .assert()
+        .success();
+    // The pin is already the local tip: still report the lag.
+    fx.hub(&hub_wt(&fx), &["feature", "refreeze", "ui"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("already frozen at the tip"))
+        .stdout(predicate::str::contains("feat-1 is 0 behind the pin"));
+    let branch_tip = fx.git(&ui, &["rev-parse", "feat-1"]);
+    fx.commit_file(&ui, "d1.txt", "d1");
+    let tip = fx.commit_file(&ui, "d2.txt", "d2");
+
+    fx.hub(&hub_wt(&fx), &["feature", "refreeze", "ui"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "ui: refrozen at {}",
+            &tip[..7]
+        )))
+        .stdout(predicate::str::contains("feat-1 is 2 behind the pin"));
+    assert_eq!(fx.feature_json(&hub, "feat-1")["pins"][0]["sha"], tip);
+    assert_eq!(
+        fx.git(&ui, &["rev-parse", "feat-1"]),
+        branch_tip,
+        "never merges"
+    );
+    let row = status_row(&fx, "ui");
+    assert_eq!(row["base_behind"], 2);
+    assert_eq!(row["base_moved"], 0);
+    fx.hub(&hub_wt(&fx), &["status"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "behind pin {} by 2",
+            &tip[..7]
+        )))
+        .stdout(predicate::str::contains("behind base").not());
+
+    // Unfreezing goes back to origin/develop, which never got d1 and d2.
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "ui"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("ui: unfrozen"));
+    assert!(fx.feature_json(&hub, "feat-1").get("pins").is_none());
+    let row = status_row(&fx, "ui");
+    assert!(row["frozen_sha"].is_null());
+    assert_eq!(row["base_behind"], 0);
+}
+
+#[test]
+fn set_base_refuses_a_pinned_change_until_it_is_unfrozen() {
+    let (fx, hub) = world();
+    fx.remote_branch("ui-clone", "release");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "ui"])
+        .assert()
+        .success();
+    fx.hub(&hub_wt(&fx), &["feature", "set-base", "ui", "release"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("unfreeze first"));
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][0]["base"],
+        "develop"
+    );
+
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "ui"])
+        .assert()
+        .success();
+    fx.hub(&hub_wt(&fx), &["feature", "set-base", "ui", "release"])
+        .assert()
+        .success();
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][0]["base"],
+        "release"
+    );
+}
+
+#[test]
+fn merged_drops_the_pin_with_the_change() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "ui"])
+        .assert()
+        .success();
+    let pin = fx.feature_json(&hub, "feat-1")["pins"][0]["sha"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "ui: pin at {} dropped",
+            &pin[..7]
+        )));
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"][0]["stage"], "merged");
+    assert!(f.get("pins").is_none(), "the role is back to absent");
+}

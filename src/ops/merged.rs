@@ -175,6 +175,8 @@ pub fn merged(
     let open = feature.open_change_mut(role).expect("checked above");
     open.stage = Stage::Merged;
     open.merged_at = Some(now_rfc3339());
+    // The pin belonged to the change; the role goes back to absent.
+    let dropped = feature.remove_pin(role);
     hub.save_feature(feature)?;
     after_save(
         &mut lines,
@@ -182,5 +184,8 @@ pub fn merged(
         &format!("hub sync --feature {}", feature.name),
     );
     lines.push(format!("{role}: {} marked merged", change.branch));
+    if let Some(pin) = dropped {
+        lines.push(format!("{role}: pin at {} dropped", pin.short()));
+    }
     Ok(lines)
 }
