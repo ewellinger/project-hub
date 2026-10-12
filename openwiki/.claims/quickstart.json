@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:33136465fb8595b4ad1570cfa7b87f0447f1c9011bd18a391db16abfceee96a6",
+  "claims": [
+    {
+      "id": "claim_047f11ca67ea49c7929bce7126c3f6c8",
+      "statement": "project-hub is published as the `project-hub` crate with Rust 1.88 minimum and edition 2024, building a `hub` binary that coordinates features spanning several git repositories.",
+      "evidence": [
+        {
+          "resource": "repo://Cargo.toml#L1-L20",
+          "version": "repo-lines-v1:sha256:93c091be08669b16e270dfb328a60304f1177f6928c9322233901c4fe5982268:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2NkNWE4MWIzZjlhNjIxYWE0OTNkOTBjNDVmNDJhYjU3MWQ0ZTQyYjhhZTVhZmYzNTFjYjBhMDJkMDZkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYWJiMmJhNWU2ZmI5MTQwMGQwNTdlOTMxY2U5MTk5OGI2ZjcwZmM1OGI3MzMwNTIxMzI2YTRlYzVlNWI2YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlMDQ2ZTAwMjVmZGIyYWE1NGJkNzBjYjYwNDFjYmFhNjg1ZThiOGMxMjUyYWI5NmM1N2FmMWM4M2Q0MjU0MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7e5e748338d641838ad8f77d1c538371",
+      "statement": "Each feature gets a hub worktree, a branch and worktree per touched member repo, a tmux session, and a VS Code workspace, with bindings recorded per machine under .git/hub/features and never committed.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L11-L18",
+          "version": "repo-lines-v1:sha256:3249b307dbdad12b9781ca084f8ec2ddce888aa30c7b2454c75c54bc5635c555:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmMzNjQ3YjZhN2E1Y2IwNTgxNWNkNWQ4YzJhYjM2NjFlNWQ2YWEwODIwMTUzZWQ1OGNiOTMwNDg4Y2YwZGFhYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVlMjQ1Njk3YWIwZjVkZDhiZDAwYjdlOWU1NzBiYmI2NzA1OWRiY2QwYjBiZWJhODE1YmRkZWQ4M2Y1NTY4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWE1YWRkYTUyMDU4YjQzNTBhMTkyOThmYTMzYTllNDAyNjQzYTI4YWJkYWVhMTMwYzBlODA5NmM1OTZlYjNhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWVkNmZkZDljYTcwMWU3ZjI2N2UyMTNiYTAwYmNlODNkMGY0ZjRjMTdmZTE0NjI2YTdhYTBkOTY2NzBjNTU2OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_685d44c564f943dca440f3026a512473",
+      "statement": "Contributors must pass cargo fmt --check, clippy with -D warnings, cargo test, and an MSRV 1.88 check.",
+      "evidence": [
+        {
+          "resource": "repo://CONTRIBUTING.md#L9-L19",
+          "version": "repo-lines-v1:sha256:80fba1042b41a35c09fb7fbd5b4eed8af96fe8735fdb73097b8090e8b7464e64:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNDdmMmExZTVkMDM2M2UxMWI4YzBkOGUyMWM0MTQ3MDdlYTFkMzM4ODQxNDEwMWI5YzQxYmJlYjdiOGM4YjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYjExOGE0MTliZmIyMzJkNWVjNzU0NDExMmM4ZjNhYjI4YjNiZTAzMGU4NTc1OTlhNWJhYzQwNTExM2UzZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4NDQwYWJlZjVhZWI4YTk2ZmRmZGUzNGQ4NDllNzNhNGM2Y2JiNGMzYjIyY2M2NmNhZjdjZmNmODcwZWQzMjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0c75cf6a920b4a8da6b8285982b5fcf4",
+      "statement": "Running hub requires git 2.31 or newer, optionally tmux, an editor launcher (code by default), and glab or gh only for start-review.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L108-L114",
+          "version": "repo-lines-v1:sha256:9b7d25818920f9c07b3616a5191bf52a3325b36b52925c4377caebd3358daf8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJmYTE5OGE2NTEzMzA3NzJlYzVmMGJlMTgyZDA5N2Y3ZThlODgyMWM5ZjA0MjYzNjMzM2RjNGI1NDdjNDg2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVkYzU2YTNkMWFmMjJkMWQ1MjE5MTYxM2JjZDY5NTBkZmQ3ODdlM2MzMDRjOWU0N2U3ZjIzYzI0ZDg1ODM2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzVjZWZiYzM0ZTlmY2M2ZjgyYWRmMjk0NmEzMzE1MmVkM2E5NTUwNThkM2QxMjBiOTRjMzc5NTE1NDBhY2EyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTk2ZWZiZTE4MmY5ZjJiYzJmZmY0YjFmZDhiZTVlZjMwYmI3MTIwMTNkNDZmYmUxMjcxOTJjMTVlOGVjNzI4YSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

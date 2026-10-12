@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:0ba6825557130d140049d19c57440a4df884c7e9901a2bdcd35825f3bd352803",
+  "claims": [
+    {
+      "id": "claim_ce0630ca305b411b92f03361113b1dc2",
+      "statement": "The config file is $XDG_CONFIG_HOME/hub/config.toml, falling back to ~/.config/hub/config.toml when XDG_CONFIG_HOME is unset, empty, or relative.",
+      "evidence": [
+        {
+          "resource": "repo://src/env.rs#L53-L62",
+          "version": "repo-lines-v1:sha256:d90ab5c824ea4ef8c2426a3a7ef834248ac07d8d9692169faafdb327ee416927:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyYzZkMWI2NDEyYjdjNDZlNTBmOTEyMDA4YzE5ZmM0YWJkMzI4NmUxOGEwZjgwNDhhMTliMmY0MjliNGNiYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2YTUxNGM1Y2Q0NGM0NzRlNmE1MTBkYmU1OTNiMTJkOTY1Mzk3NGVmYjEwZjg5NWNhMjI4Yzg3YmQwMDMwMTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8df3f2e2561b41dda4462c440526c399",
+      "statement": "config.toml keys are all optional, unknown keys are refused, and a missing file is treated as an empty config.",
+      "evidence": [
+        {
+          "resource": "repo://src/env.rs#L29-L38",
+          "version": "repo-lines-v1:sha256:c3ff1e01de1cda972517818f381308d9e8f2391346829a1528e41e1b55471163:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwODNmMzRmOTU3MDMwNWY4N2UwOGNiNjZhN2U2ZjU3ODUxZjhkYjc3NmRjMDc3MDcxYjBjNWJkMzExMTJkMTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiZDY0MzE1OTdjYmNlZTRmZTg3OTA5YWE0YTFlYWNlMzQzNWY3MGM0YmQ1NDAwODY4NmQxODk1YTY5NmVjNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiMjZkMmUzZDlhYzQ4YWNlODlkYzE5NTc0OTAwN2VhMTUxMGZlODQ3ZmVlZTUzZTAwNzk4ZmUwNjQ0YWVmZGMifQ"
+        },
+        {
+          "resource": "repo://src/env.rs#L73-L86",
+          "version": "repo-lines-v1:sha256:2682143c717c006c3f9b6be0e43a31126086dcb68885770d163f67e6b57b22e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4MDc5NGE2MDA2MzNhZTY5ZGFlMWYzOThjYTk3ZTc5Yzg3NDc5ZDFjNjE3MDg0ZTRkMTgyODZmMTlkODFjMTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0NDE3ZmM4YTRhMTc4YTFkYzQ3ZDM2MWM1YmM0YWMwNzc4NmNkMDQ3NmRiZjZmMzU5MTMzYTVmYjU4NDFmMWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f47b06998d584e29a7f07d0d826ba937",
+      "statement": "PROJECT_HOME and GIT_WORKTREE_DIR override the file's project_home and worktree_dir only when set and non-empty; file values get ~ expansion, and missing roots produce a usage error with an example config.",
+      "evidence": [
+        {
+          "resource": "repo://src/env.rs#L113-L165",
+          "version": "repo-lines-v1:sha256:ac5cb52955bbd5980ced3fc761e680cb63bbfd34c7b441718c4c49d2b3e5a4ee:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NjU0ZDQ4MDE3MDU0NDAwYzBiNjM1ZWJjNzFhZDc0NDRiNDU1M2ExYjMxNWRjODFhMmMwYmI2NjAwNjk4OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjMTgyMjY5OWRhMDMwZjk0MmExOTQ1NzYyYTVmY2RlMDJjNTcxZDU1MGRiODFiZmNmNzliZDYxMjk1ZmQ5MDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxNjc1ZTAwOGYxMTBkMTgyNTIwZGNkYmYyZDEzNGJmMDI5YjNkOGNlZGJlMDI3ZjdlMGMyZGI0Mjk2Zjg4MmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc86f4ea32244b20a04cb5b26cfabe33",
+      "statement": "Both root directories must be absolute and exist and are canonicalized; the editor defaults to `code` and is split on whitespace.",
+      "evidence": [
+        {
+          "resource": "repo://src/env.rs#L166-L187",
+          "version": "repo-lines-v1:sha256:8b4bf80c4dec1b8c3213c212b1cbc8713763cdf97e6430e39221dcfdcd49df7f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjY2RmNWZkNzM4OWU2ZGQwMzczMmVkMWJmODFhMGE0OTRjNGM4NjVlOTE5YzAxNDQ5MTZjZWIwNTQ2NjdkMmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZWQyNmYzOTkyODFjYWY0MWRkNTg1N2ExYmI3YzQxY2FiNmY0NmM4YWE3MmU4MDQ0N2I2MjQ2MGYxNzJiYzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1YTI3ZmU2OTg5NmU2ZjViODhkMTUxZmU0ZDA1OWFmYWQ5YTI0Y2YzMDNiZTZjM2VhZjZlNTU4YmYyMmQzOTgifQ"
+        },
+        {
+          "resource": "repo://src/env.rs#L211-L227",
+          "version": "repo-lines-v1:sha256:d9968f9f5e084eb6f59b028833f076582c282a3686ff1db9b15c98353bd54b2d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3NzQyOWMyNjYyNGM0ZGVkNTZiMmM1NmQ5OGZmZTNjMzQzZjY5ZGQyYzkwMjA5Zjk3YjZhYzljNTlkN2U3OWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c502405e57a47c0b692361cc2787415",
+      "statement": "`hub config` reports each key's value with a source of the overriding variable, file, default, or unset.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/config.rs#L56-L108",
+          "version": "repo-lines-v1:sha256:5c367fc304a69171fcf0dae80131585c518aed44c4efb48491c19debf330882f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhZTJkZWU5OGVlNzUxNDBjOTkzNjYxNTVjNzRiZTBiOTFjOTZiODBhOGYzMDYxYWNlMDc2N2VmOWY1MGQ3YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiODdhYjExMzkwNTQxNmFlMDg3OGNkM2Y1ZDRjMWVlMmY1OGFjOGYzNzBkZWRmODc2NDM4YTgyOGViYjA2ODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkNjlkYjNiYjQyMzY1M2Q2ODEzNTEwZGRkZGNiY2ZlOTc4OWM3ZjlhYjhiZTUwNmZhZjY1Yjk1NDhlMzZmMWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1eb11ca69feb4fd0aea54d03ec79a692",
+      "statement": "`hub config set` validates values like Env::resolve, preserves other content via toml_edit, refuses to write a file that would not parse, writes atomically, and notes when an env var overrides the key; unknown keys are refused.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/config.rs#L134-L210",
+          "version": "repo-lines-v1:sha256:3d05946e5079b618c1a0d08735032664652b5055e9babed97720586f246d877f:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3OWVhMGRlMmI0MjVjNDg2NGFiNTM3MjI4MTM2MGMyNjUzMzBiZGE5YTFiMGZhYjFhNDY2YWFjMGJiYmEwNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0ZDYxMjgwN2YwODRiODExM2NjZjczOWYwZDRiOTBkZGIxNTNjOWMzNWY1MmQ5MjdhZTIwMDFhOGJkYmRjMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_89c5d036fc00450eb7659c597967830f",
+      "statement": "tmux sessions are off when the config says tmux = false or tmux is not an executable on PATH; tmux = true with tmux missing adds a warning.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L101-L106",
+          "version": "repo-lines-v1:sha256:84770a133528126662635f9a107dad64558798319cd19fd241a63e31c00af792:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDdlNDRjNzYyN2FjYzQ1MTI3NjFmZDRhOTBjZTI3ZGMwYzRkYjM4YmNhNDUyMDZlOGRkMDg0MWQ4MWM0Y2QwNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNhMjg0MDUwMjIxMTVmZTQ3YmQ1Mjc3Njc5YjQ0NjQ1YzY3MDM5YTEzNjIxY2IxYzRjOGEyZDA1MDhjYjQ1MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTI1ZTMzNGU2ODVhZTlkMDU4ZTg3MGJjMTg5OTE2Y2M2YWMyZDZiM2FmNzFlY2ZmMzAxMGFjMzViYjk5NzliZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjBmMWE2YzRjMjE0MjQ5MGU0MDg0MmQ4YzBlOWRmOWQ4NmZlMDI4MmRlY2MzNTU3ZGQ1NDZiZWMzYTVjMWNjNSJ9"
+        },
+        {
+          "resource": "repo://src/tmux.rs#L24-L61",
+          "version": "repo-lines-v1:sha256:18ab7fe3875e77cde89632f78089a683c8f6c64b11d4ae9aefd770a1385ed114:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmNzU1ZjI4OTViYTg5MTkzMzZhYzM3MjJkMWUyODdlOTQ3MTlkMTkxNTViZTMzMTE3OGEyNTRkYmRhZmQ0ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0OWRmYzVhNmM3YjAxN2U4YmY4Yzg2ZDcyNzQzMDc3ZTE5MzE2NmIxOGI1NTFiOTA3NDY2N2UyZTBjNzcxM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiZjg3YTcxMzExOGI3ZTEwMjkzZGRhZTFkZmJlOGE2Y2QzY2RlMWZkZGU2OGViNjRmNTc3ZTUzN2Q3ODdkYTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c37861e17e874e54bd4a6ad7afc75f07",
+      "statement": "`hub tmux` refuses with the off reason when sessions are disabled.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L519-L527",
+          "version": "repo-lines-v1:sha256:d6b596bc61369263ab8a32193b5d6d34f07ff9f82381b2f40c53a25f089e911c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVhZDAwODc0NTZkNjE1MmM4MzM1MTQxOWY2NjA0NzkyOWNlOGQ5OWE3MDJmYjVjMGEyZGE2ZDhiYWI3YzBlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhhNzZjOGI5NTA5M2E2NWU1MzVkYzgwZWVmYTU3Y2U0ZmQxMjYyOTgwOGFhNzZlY2ZjMmQ4OWE2YjRhOGE0YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzdhYjgwNTE1ZTAzZDllYzc1OGNhZGFiMDU0MmVkMDQ1ZDNmNzcwYzhjOTJjNjJjOTJmNGRlMDZiNTg3YjEzMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmEzYzI2ODFmOTQ1MmZlM2FmZTdjNmRkZmM4NDEwMmI4ZTcwOTE5MTJjMjczMTM2ZDlmODdiZDRiNTY4OGRlYiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:df13afa55ea9517eea857e4774a44de5fb22426ba8773f5e44f65ae74e3ba9f7",
+  "claims": [
+    {
+      "id": "claim_2f2d2972de2546659ae66cd6e26567f1",
+      "statement": "hub init derives the hub name from --name or the directory, requires an existing repo to be on main (or runs git init -b main), refuses when hub.json exists, keeps an existing CLAUDE.md, merges .gitignore lines, and commits as `hub: init <name>`.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/init.rs#L48-L119",
+          "version": "repo-lines-v1:sha256:5f6d38d99f01ca14c4d83c00a00dfa1db7df396bbd90ea10c2ad897ccba262c8:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1MjgwOTVlMDM3Njg3MzYwOWI4MzJkNmI1NzdhMDRkZjg0Y2IwNDk5ZjdhYzE4OGJmYWNjYzY4MDJjN2YxZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NmY4Y2IwODNmYTgwMGE0ZGNkMjk2OTcyMmQ3YjkyNjg2YWRkOWViZTM2NTU0OTJmYTY3MmIxYTdjZWQyNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3MGVlYTFjNjdkMzE3YTVkN2M2YjM2MmU1ZDJkMjBmMWZkMGQyMTMyMGMwYmU0OWEyMWNhMjVmYjYwZTk5MGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4b7c5003ab7b4d9b8b2772ad7129cacf",
+      "statement": "init's managed .gitignore lines are .DS_Store, .tmp/, *.code-workspace, .claude/skills/hub/, and .agents/skills/hub/, appended without removing existing lines.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/init.rs#L18-L24",
+          "version": "repo-lines-v1:sha256:529dd44104ad99bd02cee4a95943bd151371aba0fa6e6b65f515104000f1577c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjliNDYyN2FkNTliOGM3Njk4YWQxNDY3ZGFlN2I3YWExZTU1NzU3NzJlMDc1YWU5N2M2MjYyNDU2YmZkOGU0NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAyZDJjMGQ2ZGM1ZTc0ZDkyZmExNGI5MWRiZWEyNjQwOTBiZWIzNWZkYjkxODhkOWIzNDExODFkY2U5ZjRjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmU1ZDBmNzY1M2Q2NDNhNDVmNjQxZjAzOWYzNDYyZTQwNTU3ZTExODFjYTA1NWMxMjAzNTAyZDZkNmYwN2NiMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTFiODFhOGM0MjMyNTlkNWZlYWQ4NTRlZjYxMTc5ZmE2ZDAyYjg4NjE4MDVmODYyZjdlYTBjZGRjMTRlNGRjZCJ9"
+        },
+        {
+          "resource": "repo://src/ops/init.rs#L218-L237",
+          "version": "repo-lines-v1:sha256:c7cec2a9dabf5c29802fb730d6f81248701fb74a7c9c86e0424a35d5f99d511a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjNGNjNTM5YTBlZjVkOGEzZWU1YjdmN2M3NDUyMmZmYTBkY2UxNzYyYTVlYzc4NTI1NzgxZDA1ZGE5NjVmZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzYTEwMzdmMDcxOTYxZmIzYjEzYTdkYWZmNjlhY2MyYmFiODEwZmU4YmRhMTZhMmIyMjcxNTU0MzcxNGNjNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2ZThmYzJhYTU2ZWY4ODkzMGRmNzczMzMwNWEyYzUxNTZjOWVhMzA5MDM0OGM5NmNmODk2YmViMjNhNmVmMzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_20a26a024c6f4ea9b51a4610b5d28ad5",
+      "statement": "hub init --force merges ignore lines, untracks now-ignored files while leaving them on disk, commits as `hub: refresh init files`, removes a hub pre-push hook, and never modifies hub.json or CLAUDE.md.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/init.rs#L133-L216",
+          "version": "repo-lines-v1:sha256:c0dd9655f59cbbff275c95cf9413dc1a71da2d6b65973c09eec1c3dbd5ff3a64:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxZWI0MTEzYjkyYWQzZWFiZGFmNGMzZWUwODcxYTgwMmQ5OGQ0ZWY2NWUzMDczOTYzMTViYzhiNzViMDk3NGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyZmQ5ZDhiZWU1NzU3ZDRjMzI4ZmE2MGFjNjE0OWIzNTk3NjkyOWQ3YjM0Y2FiNjkyOWI0Njc5MWJmYmZjMTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_80b013ced3c4439dbfd73ce7999c9c94",
+      "statement": "repo add records the clone's configured origin URL as the remote and infers the base from origin/HEAD unless --base is given.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/repo.rs#L18-L34",
+          "version": "repo-lines-v1:sha256:72478adfd1b75e26e799901241762a61e02cdff6222e0b92fec93e9ad283482b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNGE4ZGJjZjM5NDFlOTA1MWM0OGJiNmYyMzk1NTkxY2YzOThiOWFjY2RiMDgzYTQzM2Y2ZmMwMWQ5OTg2NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYTBjMTE2NTU0NWY5ZWQwYzBlZDBjZmYzZjNmNjBiM2M1YmI1NTJlM2VhOTcyMzYxMzUyYWY1ZGE0Y2VlZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5ZTBjZjA1NmUxYWRhYmI1MDQzOTVkYWI2MDg1YmI5M2VjODdhZDQ2ZDNmYjUzNGIxZTI4OWExNzk5YjNkMmYifQ"
+        },
+        {
+          "resource": "repo://src/ops/repo.rs#L60-L101",
+          "version": "repo-lines-v1:sha256:4f69afc3beba3ea173c7e4153c8412703a760e7e63360baff64f60e709bfa4b5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYTMwYTMxNzc4NDJjNWEyMmY3MzM0ZjZjYjliZjE5ZjRkZDYyZWIyYzg4M2Y3N2RiMjNmMTU1OWM5NmYwNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjYTkzYjdlYjhiOTM5MmZkOTUwMTk0YTRlN2JlYjQ1ZDcyYjQ2NDQwM2M2M2Y1MGUzODlhZDA2ZWMxZTU0MTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc97c2d4381f420192c26ebdf014556f",
+      "statement": "repo set edits fields in place keeping position, refuses changing the clone while an open feature has an open change for the role, and commits nothing when values are unchanged.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/repo.rs#L111-L185",
+          "version": "repo-lines-v1:sha256:d51fffc216d858679c233687d709cccb91a0efffeafb5b66253e5eb1ab713792:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5Zjg3ZDAxNjA1NzFlNTEwMGEzY2UxMTMwZTYyZjgxYzM2Y2QwMzU4OGIxMmVmNjc5OGY5Zjg5YzZjMGY0ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYTBjMTE2NTU0NWY5ZWQwYzBlZDBjZmYzZjNmNjBiM2M1YmI1NTJlM2VhOTcyMzYxMzUyYWY1ZGE0Y2VlZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YjE3ZDNmZGM2ZDg5MzY1ZDQ4OWJmZGNiZjRhYTNhZmQ1MmNkZGNmYTM2ZDAxYjJiYTNhOGQwMmQxZGRhYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c5460b71b4d43e288a5f53c9e522e43",
+      "statement": "repo remove refuses while any open feature has an open change for the role and leaves the clone and branches untouched.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/repo.rs#L187-L203",
+          "version": "repo-lines-v1:sha256:656381093d499da7f67aac6d6a856a1dce59fef6f71aded58c039ae5999e2203:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhOTExMDEzYjRkMTRlYmQ4ZGI0ZGY3OTNjZjE1YjMyODE2ODBjOTgzNjM0MTQxNTUzZjMxODdkOWU0NTI4OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4NWRiMjI2OWEzZmRlNWQyYTU2MDU4YzIyZThmOWRlOGQyY2YwZjNhNTM3ZGQ2MGUyOTJjZGQwNzcwZDk3MDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a8331f2a7e24575892579ecc1bde867",
+      "statement": "repo rename renames the role in hub.json in place and rewrites local feature records, then renames tmux windows and regenerates workspaces as warnings-only steps.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/repo.rs#L238-L286",
+          "version": "repo-lines-v1:sha256:024d17982bd2e6f37098b6f0376334bd22f7ff34a301ecc796a3adf3d8f4fd5d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMzIzMDVmMzMyMWY2Y2M2MjdhZDM0MDgxMmE1MzI3MjJiZmIyYjU0Mjc5ZGEzNTkwYWRjOGUyZDA2MDJhYzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0MDZiZDJhNzI1MDk4YmM1ZWUzNDM2ZjNkNzY3Nzc2NjE4MzRkZTU2NGQyOTIyNmY5YzIyMzgyYzE2MWE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhZTdkOThmZDI1NTM3NGYyOTEzZjMzNDA4ZDYxMWQxMjYyOWI1Y2RiMjgyOTMxMGRkNjdmOTExYWViMDk3ODIifQ"
+        },
+        {
+          "resource": "repo://src/ops/repo.rs#L358-L406",
+          "version": "repo-lines-v1:sha256:846f75a07760873989fe1f96cc6781ed6b9b50f7859f0c9a0510a573dfe30563:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4YTI1M2FiYzRjODNmNTJhMzQzOTEwOTY1ODQxZmZiMDc0OTRhM2FlNTQ3NDhiMGQ2N2M5YjBmN2M2NjRlOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3MzMxM2UxNjdjNTEzNzFiMmI0Y2U0ZjBkYTE0ZTgwZDA3Mzk1NTkyM2Q1MTc0ZGIwMjI1Y2Q4NzZjOTM2ZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4MDBhNjJhOTg2ODQ0YmMzYzVjMGJhMjdmMTg0ZmNkM2JjZWRjYzkzMjVlZDg4OTAyZmJhNmI3MGE3MTAwYjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eaaf4aa8d8f54b29942c326ef1b4c994",
+      "statement": "repo rename --records-only rewrites only local records, never commits, requires NEW in hub.json, refuses a rewrite that would create two open changes for NEW, and --clone limits it to changes with that clone.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/repo.rs#L288-L356",
+          "version": "repo-lines-v1:sha256:602ee254f3d889882580e3b7d06e4656b4a13d14a7972af5fd6381f3476f76aa:eyJzZWxlY3RlZExpbmVDb3VudCI6NjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyMzM3MDQ0YTQwY2M5YTJjNGNmNmIzOTIyZjRlZTdlNjZkNDhjM2JmMjUwMDIyYWNmOTkzNDQwZDdiNTczM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyN2NjOGM1ZDkwZjk5Y2VlMzk3MDNjMWRkZGEwYjQzOTVhM2JiMjNhZGQ0OTU3MGNmNmZlNDc3ZTUxMzhkZDMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

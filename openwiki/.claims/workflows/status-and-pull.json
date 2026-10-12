@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:fdd850e3418137c12fed182dcf31da4af8a3477214113175d510b4322c84a548",
+  "claims": [
+    {
+      "id": "claim_aa29ee8eb4c1484ca443d553ab3a40b7",
+      "statement": "Feature status emits the hub worktree row first and then one row per change in record order, including merged changes, with paths derived from the change's recorded clone.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/status.rs#L217-L260",
+          "version": "repo-lines-v1:sha256:f78c147364431e0fcd637683297d8d766386748122f6d00c7852aefb904eb9f3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhMzVmOTg3MGEyZTY4ZTQ1OGEwMzIyNTQzYjNlYjk1ZTIzMjAxZmEwOGZiZDkxMWEyNmVkOGZjMDE2N2Y1ZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1MGM5NDdjYzNlYjhmZjIwYzE1MGYzNjIxODdlYWVhMTVmNjA2NTk3ZmFkZjE5OTIyMzU4NjZhZTE1YjAzMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxYmVhOGNlMTEwYjhkZTNiYjllYzAxMzIwYTA0OThhNDZmNDY0MTNjZDE3MWEzMmIyNGNjY2ZjZDM2YTAwYmMifQ"
+        },
+        {
+          "resource": "repo://src/ops/status.rs#L345-L357",
+          "version": "repo-lines-v1:sha256:5458c9c15fa6cbbc5fd81147083993c1636e624d0ed6c4a197a616ea023b1a28:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZDg3MWFhZjdmZGVhYjg3YmJlNTBkNDY0NjJiMjc2MzY0ZDcwOTgwZjEyNzFhMWYwY2FlOTg5YTc4NDIwMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkMWNhNWQ1YjA0NTdkMzk3Y2M0ZjFhOGU5OWE1YmY4NzJmY2EzZDBhOGIxNTk1ZmI5MzcyYTJjMWNmOTc3ZmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0OWI5ZGJhNDM2NDNmZmViYmEwOWRmY2MwMDc2NDYxOWRjMDE2MDg5ZDg3YmVhOGYyYTEwNjM2MzNlOTA0MWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7159881c6e464351a15038cc6c36ecc1",
+      "statement": "A row drifts only when an open change in an open feature (or the open feature's hub worktree) is missing, unregistered, or on the wrong branch, or its clone is missing; dirtiness and base lag never drift.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/status.rs#L341-L341",
+          "version": "repo-lines-v1:sha256:4596b54b34ecc19418d023ce33cea239d547158cfcdbc0c5be31dcdeec09e672:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU5NmI1NGIzNGVjYzE5NDE4ZDAyM2NlMzNjZWEyMzlkNTQ3MTU4Y2ZjZGJjMGM1YmUzMWRjZGVlYzA5ZTY3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU5NmI1NGIzNGVjYzE5NDE4ZDAyM2NlMzNjZWEyMzlkNTQ3MTU4Y2ZjZGJjMGM1YmUzMWRjZGVlYzA5ZTY3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTIwMjA1MGZkNjk0OTcyM2Y5Y2Q0ZWRjM2ZhNTgxM2RjOTVmN2U1YjgyMTZiMGNiYzdiYWIwNjg2ZWVjNTE5MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjA2M2M0ZDFhZjhjZDg5YmIwYmRkNzY1N2ZmY2JmNjgwNmE2MTBkNzlkNmM4ZDRjMzA3YzI0MWRmMzkwMDUyMiJ9"
+        },
+        {
+          "resource": "repo://src/ops/status.rs#L358-L381",
+          "version": "repo-lines-v1:sha256:acf7500b7f1362ee1e7b91883c69cec3203fe3c72728f4d46fba6ad00b3d7894:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMGY0ZjE4NDkxNDc4Zjc5MmFhNmEzMGFiNzU4Mzg1MjhhMDMzYzcwNjAyMDgyY2ZhNTM2YWIxYmQ1ODBmZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5YzEzNTkwNjY1NjMyM2QxYzVlYTQxNjU0ZWU2NmFmYjU4NWFjZGNmYWVhY2ExMjFkNWUzMGJmMTkzZWVkZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxNGQyMmRkYWZlOGJhZDQ4ZTAyOTljYTQ0ZWM2MWIzNzc2NDVlYmI0M2QzYzZiYWM0MzBmODc4MjZiYTM2ZjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4ODYxZjhkNGUwZjc3NzM5NGE4ZmY0YWM4ZjkwYzE5Y2Y3ZWRmYzRiNDA4Njg2M2M3YTc1MWVlOGQ5ZjNlZjgifQ"
+        },
+        {
+          "resource": "repo://src/ops/status.rs#L444-L461",
+          "version": "repo-lines-v1:sha256:86792062db8cf101d7882aa016385275cf6fc270d2e739cbe5202e453993a3e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1OGU1ZjczYmU4ZGNhMjFkMDUwNTUwZjQzZWY0MmM2MmNmYTcxMzk2MzdlZDM4ZTMwMmJhODM2ZmJhN2RhZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0NzVlOTRhOTA0YWM0OWIzMTU0ZDQ2NzJhNjZlODYyOWI4NmRhYzc0ZTNlMjkzN2JlNjkyN2FlM2RhMTFjNTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxOGY3OWQ1MTVlNDRiMzkyMDM2MzdmYzJmYTZlODQ3ZmRjYzY4MGZmMmRhZDc0ZDhjYzMwMzJmOWUxMDA2M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlMWRmMTM2ZjQ3Mzk3MGM3ODQ4MjA0NTllZDViMTkzNWFhNGRkMmQ4YzdlNTVmNWY5MmM5MDY0OTY4MGZhYzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc4d5d19ffd54f11bf2873b83273a8ca",
+      "statement": "status fetches each clone with an open change once with prune and the hub's origin concurrently; changes sharing a clone run sequentially, and fetch failures become warnings.",
+      "evidence": [
+        {
+          "resource": "repo://src/git.rs#L136-L139",
+          "version": "repo-lines-v1:sha256:3109b9d34f5a762c78587e6ae9edb3cc4467764ae8d0cae41b5c8ae7f056b1e1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IzODM4Njg3NWE0YjgxMzc3MmI3Y2QxNzU3YTgzZmVkMTNlMWY1OTUxODczMGZkNjNlNGU4MzJiZjgyNWQwNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDZmZTE4YzFkOThkZjVlNWIwMjdkYWJiMmFkMjY0OThmMTU3YWNiZjVhZjgwZDZjMDY3Mjc4ZWIxYjNmY2I0MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY3MWE2NTc5YjFlNTU5YmVmYTJlOTQxOWI3YTNlOWEyMzRlMzRkMjY0NzQ5ZDVkYmM3MmFmMzRiMTRjYzJkYSJ9"
+        },
+        {
+          "resource": "repo://src/ops/status.rs#L210-L297",
+          "version": "repo-lines-v1:sha256:ebc8b9a4101b8cc7ed987ea2cd37fbbc0dac61d676d8739050ab37c81fcf5586:eyJzZWxlY3RlZExpbmVDb3VudCI6ODgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MDkxYmQxMzgwZDA1YTA0Mjg1NjgxMjRhOTgxMTQ0OGM5MmJmZTRiMDNmZTQ1NTMzNjY1Zjg3N2UyMjkwOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzZTlkYWU1NDA4YzZhYWZjM2IzMGFjNzUwMGFjY2QzOTIxYTVhZmM4MjMyZWI3OWI2ZDY0MWNjOTBlODRmOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk2NjQ5MTM3NDY4MTQwZTQyZDcwOTMyYzk2YWJlM2U1ZWFhYTI1NjViN2RjNWNmYjFkMmI2MzM1NzlmNjc4NWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9345c2d574b3471b9c3fc2187e75e807",
+      "statement": "base_behind counts commits on origin/<base> missing from the branch and is null with a warning when origin/<base> does not exist; custom_base marks a base differing from the manifest.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/status.rs#L416-L438",
+          "version": "repo-lines-v1:sha256:872b3b79d1b3363c42a62458fbcdab17f9bdc1b4de773db02b7a4856836670f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMGQzOWE0OWUwYWEyNDBlZjdkOTlhYzhmZDMzNmExZGEzYjM1NzVmNjAyZjU3MDI3N2I1YmMxNjg3YzJkNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwNTQxNjc3Y2ZmNzhiNmFhOTcxNTVlMDkzMTY4ZTAzNjU3NjE2YTIwNDVjZGRhYmJkODZjNDRiYjQ3ZjU4ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiNDJkOWJlMTlhOTkxNDgzNGQxMGVhN2E1YzVhMjBjMTdhNTM4NzJjNjFhYmE4YzAxOWVjMDNjNWMwZGM4NmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_47497652e7a54ca6aa0164fd978f345e",
+      "statement": "Base status reports the hub main clone and each registered role's main clone against its configured base, treating a missing clone or wrong branch as drift.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/status.rs#L64-L208",
+          "version": "repo-lines-v1:sha256:d5d92e47d5c3242a235c796c722d625c64826af870fbe34f7d05ad517198b995:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxZjE0N2E5ZjNkYzZmNjIyODBmNTQ0MDJhMjJhMjVjZGQ1MzFhZjIyZjgwYjU2NjQ0YzlkMThkMWVjZDdmY2M3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4ODE2N2U3OGZiNjJmMzgzOGVkZjQyZmQxMjFjMjg5YTJkZTgwZTQ2N2Y2YmQ0MjIzOTE1Y2QxOGVkMmI0N2YwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlY2M5ZGFjNDBiMTRmYzFlOGY4OWNjM2UzMzgyODQwZmNhMjFiM2QyYWZjMGUwNDMzNGJjZGRmZjFjN2RhMzA1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_1033059c5ecc4de798d4349d555eabc1",
+      "statement": "The human status table lists merged rows, or all rows of a finished feature, in a separate Completed table, and adds a BASE column only when some row has a custom base.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/status.rs#L508-L545",
+          "version": "repo-lines-v1:sha256:24123d5960e3d566caa0e893b84612d7d7e7662fea0e041b178fc5aa669a62d6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhNTI2MDgzYzk0MTNiZDI2NDdlN2M0ODQxYWVkNjJhOTkwZWE1NDMxOWM0YWVlYzRmOGJhZDM0YmJiOWZhY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ODBkODBiNjJlODdiOWFiZDM1M2FmMmY2YmZjODVjY2VjZDE5MWQxZjZkYjMzZmE2Y2E3NmYxNmMyZjA5YTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlN2JiZWViMTg1MzNiYmUxY2U4MWVjMjk0OTkzOTI5MzY0ZDk5YmRjZDlhOTk5MmRmYzZiNDU1YWYxMDdjNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiNmZkNTQ5MWZmMzg5ZDc0ZDk5MTc0NTc1ZjRkOTUzMWFhYjEwMjJiYzcxYTljZmQ0YWQ4MTZhNWYxODRlNWMifQ"
+        },
+        {
+          "resource": "repo://src/ops/status.rs#L588-L595",
+          "version": "repo-lines-v1:sha256:d807e826f2bf8141edede0bb63b907b81a0f38932687df5ede7c7d49cd38024c:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2UyZmQyODFmODcwZTQ0NjFlZTk4YWY0NTIzMDdiMTBlYTQ0NjliMjY5ZjVmNGU0ZGY3OWQ1OTkwN2FlZTdlMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzk3OWIyNDkwNDk1YjMyNWM3ZjljM2QzYzJmOGYzMmVjNTk3MTdhN2NlNGI3MDYzMDI0ZmI0MGJlMmU0NjM4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2QwMzlhODcyNWNlYjczYTgyMTc2NGM3ZjgzMmU0ZDg0ZDFjOGU3OTdlNjkyMDhkNTI3YmM1NTM3ODI2ZjkzNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmVjZjM5OGRkNmZjOWFmY2JlMjhlMjIxY2I4YzdmMTgxY2RmMzdmZTcyY2FkNDljM2FlNGQ0ZmIyOTcyNjZjOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7a58cfe40ec24e969795578ba7beab59",
+      "statement": "feature list summarizes the latest change per role in manifest order, appends roles removed from hub.json, and sorts open features before finished ones.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/list.rs#L24-L65",
+          "version": "repo-lines-v1:sha256:2573f883bcd6d7311f1be2b42075645cb7c600ccb5171af79d420c550f2c1f27:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0NTYzY2Y3MDAwYmQ4ZmJjMTFiMjBiODU3MmI5NTA1OTNiNDcxZTQwNmVhYmE1ZWJkMjMzMjgyNGMxNDIzYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNDlmNGMzZWZlODRhNjhjMzQ0ZTlhYzliNjBkZTdmZDc5MzM0Mzc1MDdiMzY0ODgwOGQyNWZjYTI1ZjAxZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExZjdmZTA2ZmE3NWRjNjkxNGIzNjRiOGZmMmYwOTdlZDU5MmZhYzc3YzYyN2E3ZmZjN2ZmOTY3ODVmYTlmMGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_32030be3f60e4f1f8795367de5e8c5f9",
+      "statement": "hub pull fast-forwards only: it skips missing, unfetchable, wrong-branch, detached, origin-less, diverged, or dirty checkouts and otherwise runs merge --ff-only against origin/<branch>.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/pull.rs#L105-L156",
+          "version": "repo-lines-v1:sha256:8976454af731644ead51018848d2e6356a220d6689f1799bd00dda194ae4eca7:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyYjgwOThjOWM0YjllNzI0MTA4NDkxOTVlMjhkYmUzM2U2YTZkOTg5ZWZhOGM3NDY4ZjIwNGMwMTY4NWUwODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2NmFmYTA5NTMzZTdmNjJhNzdlYzE4Y2Q0NDA0MDk2MmQ5MTFkN2JkYTllZGNlNmYxOTFhMGE3MTVkNzU0ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61cd2e532a6641b0af56406f9e3a58dc",
+      "statement": "pull targets base checkouts of all registered roles from the main hub and each open change's checkout from a feature, never the hub's own clone; repos run concurrently while checkouts of one repo run sequentially, and output keeps input order.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L563-L573",
+          "version": "repo-lines-v1:sha256:af4d0389ebb2779730dc3815fa533eb0cd3e5f1b089cd6ef21e9da4657303c7a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkZTEzZTU3YTA0NjkwYzBlYTU4YThlMmMyMzM0ZjY0M2RhNTA1NWZmNjJjYTU5ZjM2ODk4MzVlN2QxMzQwOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MGQ1ZjE0YmJmZGU1ZTM4NmVkMGYxYzhjZjQ3MWVhOTMyNmFhNTI2NTIyYmJhZmRkOGNmZDkxYTQ1MmY5MWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3ZTFhY2YyMDI1ODFlYzhiYTFhYWRlNzE4YmE4NTEzZDk0ZDY2YWM1NWM2ZmExZTA2NDMyNWZmNDQzYzQyODAifQ"
+        },
+        {
+          "resource": "repo://src/ops/pull.rs#L1-L103",
+          "version": "repo-lines-v1:sha256:2b9fd47bfbc017e55fdd446a3f1861ea45f9ff013c0816f14de09435106fe095:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiY2I3NzUzZmU5OTRlMjdlNzIxMzUyNjVmOGE0MWFjN2JmMWM2NjM2MGY3MTYyYmE2M2RmNmJhYzJiZjE4YmFhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmMjdiNTliMmY2N2IwNTE1YzMzNTg2ODY5MGI1MTM4ODc5MzRlYzBhYzExZWFjN2I2NjNkMjJhYTIyODgxZDQ2In0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1209565a048fb55d0ef0a151e93f1ed2b6720e300d4ba4977cac2ff1ab60d4e6",
+  "claims": [
+    {
+      "id": "claim_7faf23742e7d45059c90a46f52411633",
+      "statement": "Hub::locate treats the first entry of `git worktree list` as the hub root, requires hub.json there, and requires that main clone to be on branch `main`.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L53-L77",
+          "version": "repo-lines-v1:sha256:2f642713291dc3a984cbf94fa876bdcdb1430a0947c61daf8ea1f1e743e0288c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZTgxN2RhMmUxY2NmZWNlZDk0NzM1Y2NlZWNhYjdiZjA4NDI3MDkxMGNhZGU4ZmEwMzcyODgxOGRkYzExYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2OWZiODc4ZWQwY2VlZDk2ZjQwYTI1OGE3ZjRlZDIwMmYyMjYyOGQ4NGIyNjdmNjI4NmIyYTcyNzliOTQ0NjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1MTZhMDMxMzZjMDZmMzllZjI4NTRjNzMzZGRkYzljYzA2MjQ1ZDlhZDczNmQxZmIyY2FjOTg1MGIwMjJiYTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4938979cee194e4bae8c4aaaf5a56c9c",
+      "statement": "Feature records are stored per machine under `<git common dir>/hub/features/<name>.json` and are never committed; the lock lives in the same `hub` state directory.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L13-L16",
+          "version": "repo-lines-v1:sha256:428c3ac23b0bb64b988933da9e6dbf286e31de2f404dac59d93811da89567992:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2UwNmYwN2Y0NDc4NWUyMDI2NzgxYjIwMTMwZWZmMGI2ZWQ0YjBlMzExMjcxNmYxOWNlNjA4NzUwYTdlNmVkMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhlMzZmMmEzMzZhMGQ2NmE1NjE4ZDlhMzBkN2I0ODBhYmRkYTEzZTQyNmJiNDllODYyN2VkMzZjZmUxODAwMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGFmNDNlZmI0MjIzMmFkZjc0MDBlMzcyMjBlZTdkNGJkYmQyNTA5MThjZTU1NzIyZjczMjk1Y2IyNDQ1MjQ2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWM5MzgzZmQ5NzliYTYyMjFhZTQzMzI5NmVlMTA4NzcxODA0MjYzYzFjMWRkNGI1ZjY1MDUzOTM0MmU5ZGNkNiJ9"
+        },
+        {
+          "resource": "repo://src/hub.rs#L137-L148",
+          "version": "repo-lines-v1:sha256:993d0f936039abd39957dc0e4950aa6c8e10e402c6cb3569b52ceab259b87027:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkNTYzZmNhZjQ1NTM3ODRhYjFmNGNlMmQxOGViZDIyZjE2ZmZhYTQ2YjJhZTYyMzNkOTQ5YTRkZGFjZDU3YzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0NDBhM2E1NjM1ZDhmOTk5ZmZhNTBhYTJjOWI2ZmUyNjZlN2FhNjI5MGQ1ZDYxZTE5OTU2N2Q4NGIzZDljNjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3YjEwZTg1MTE5ZGU5MTk0NDZmODFjZWI5NDE1MWRjZTM2ZjczMDllYWZlZjJkY2M0NjdmMWNhNmFhN2EwNmQifQ"
+        },
+        {
+          "resource": "repo://src/hub.rs#L242-L250",
+          "version": "repo-lines-v1:sha256:7304811a82e8ec4bd738a75f317bd9b5d69eace7c4f23d6930770e8b7bdc666b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQzMGMxNDg5OTZlNGJhMDg2MTEwODgxYTgwOTRmMzFkZTBlY2U4NTAwYjBkZTRjZTYyYzYyNjQ4ZmE2ZGIxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTYyZWU1N2U0MWE4YzIwYWUwMTY0ZGYyNjE0MzlkY2M0OTlkMzUyMDgzNDE1MTUxNmQwNDdlOGRlYWU4YTQ2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzgxNTE3OTRiMjNmODgxOTg3NjY4MzIwZWQzMzk1NDYwZDY3NzcwZTRhN2IwNjM0Y2RmMzcwODIzYjkzMTQ0MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1491a67bafb04d55b5a388caa502520f",
+      "statement": "The current feature is inferred from the cwd worktree's branch when it is not `main` and a matching feature record exists; resolve_feature prefers an explicit --feature flag.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L206-L214",
+          "version": "repo-lines-v1:sha256:3fc46d47ce33fb53bb759fa9569a25045ab7a3b7b645696925a7146e7ffa3dd0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhlN2YzZmJlODk1MTk2MDNhZDBiMmMwMDk0OGU1MzJmMjMxNmNiMTcxYzRmMjc4MzJhODBjYWVkMTRmY2Y3ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzcyODg5MjUzMGZhZDFmMTc5YmY5YThjMDk5NTk5Mjg4ZGU3ZGM2ZmJkNzU3ZmNkMDQ3YmI4ZmNmZWNlNzQ5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzQwMjg3NWI4Y2U4YWViZGQwMDY4ODJhOGE2NjYyNTNhNGZjYTc5YTEzNTczMjM3YTMzODNiY2QwZjBhZGM1NyJ9"
+        },
+        {
+          "resource": "repo://src/hub.rs#L92-L100",
+          "version": "repo-lines-v1:sha256:1f10c97341be01a02e456f39a9d9dcd6c4f969cfad881d3082fdebe0bfc2160c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZiNWEwM2JmMWU2NTkxOWFlMzZlMWI4NjIzY2NiNjM2YWFlMDc1ZDQ1YzViZjBhYjg3MWI2YWNlM2VmODg0YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzVjZGVmODA4NWFlNzRhYjYzNmQ2NDU5ZjVjNmQ1ZmJmYjBkYjI2NGYxYjBkNzViYWM1MTljOWIzZjY3MTdhYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmY0NGM1MTQ1NDlkMGJmYzFhMGIzNGViMTY1MTJhMTE0YjAyODU4MGNmMGVmYThhZTRiZDRkNjMyNDljZWNhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTYyZGUwNTgzZmEyZjA5OWZmMGUxNzQzNjYwMTQ3ZmFiYmVkMDg3M2I2M2YyMmQ0N2RlZDlmYmNmNzQ0MzMxYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8d0457734c344be990fc5a5800eaf1d",
+      "statement": "A hub with legacy feature records committed under features/ on main is refused with manual migration instructions.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L38-L48",
+          "version": "repo-lines-v1:sha256:70c5083024c99e8ff5e4ea65e15844a1a73dbb67dc7658335f75d32bbae1c024:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkOTFjNDEzYmUxZWU1NmQzZmFhOWI2NTAwYWRhYTI0OWEwMTNkZWY0ZTcyYTk4ZmFjZmY2ZjM4ZWViZDY2NzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzMTBmOTEyNjNjMjM1YzAzY2NjMDdiY2Y4ZWJjNjhiYTAxYmQzNGVlYWIxZTEyM2ZhZGY2ZmZjOTRkMGJiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5N2FiZGE3YmMyMmI2NDE3MjkwOGQ2NjUzYjMzZjA2MzgxNWY4MmEzZGVmOTM0ZDQyN2IwYzQyMWM5Nzg5YzEifQ"
+        },
+        {
+          "resource": "repo://src/hub.rs#L78-L89",
+          "version": "repo-lines-v1:sha256:75d82ac54bcbf9fc14ddb7976e0d33a0dbc764438d80a86ec23c3f97fde3932e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4NTA1YTM4NjA0ZmM2Zjc2YmMxYmZlMDdlMGYwMTY4ZjdmYmQxMjYzOGQ3MjU2ZjlmYzE4N2U1ZjYyMGY2ZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4MzE1ZjNlNjIyYTZmNzY1OTBkMmJiNTQxNGZhYjVlNzM5ODA1MTE3MDA1NmQ5OWM4ODkwYTYyNmQxYzViYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3MzQxYmJhZTAyNDc3NzM0MmRhOTE3NWI5Y2I5MTA0ZGMzMWJiY2EyNWMzMjU4MWE5YmIzNzJlODU4NGZiMmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95ab3b7a2b5f4406bf4c6f531dadea24",
+      "statement": "Hub::commit stages only the given paths, commits them alone as `hub: <message>`, no-ops when unchanged, and restores the paths from HEAD if the commit fails; only hub.json goes through it.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L216-L257",
+          "version": "repo-lines-v1:sha256:906626b1d8ea68dca31546443e47ae55cfb5816ec2f27028416097626193a23f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhMDJiMjI5NjAwMGI2Y2UxZjNkYmI5N2QzMzE1MGYxNWQ3YWNmYzg3YWY0YjM5NDUzMWUzMDAwMjViMjc1OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwZTE4MjcxNDRiNTA3YTgxYzIyMTFhYzA1ZTE5ZDc1ODc0NTYzNDZkMjNlYzA4ZWMxY2ZjYThjYzNiMTQ0ZDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_045dbf4312b64f5c80587d21dd5a54af",
+      "statement": "with_lock takes a non-blocking exclusive fd-lock on hub.lock, failing immediately if another hub command holds it, and reloads hub.json under the lock before running the closure.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L259-L281",
+          "version": "repo-lines-v1:sha256:f4d022c953b105d762fb9f3d18344e9daa226c41c25cc82f890c0b7d932f8ca1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwY2U4Y2EzYzdmNWI4OGRiZTk5NTg5YWRkNTMyNjJlZDQ1NTk2MjY0NGE3OGE4ZDVhZDEzYjcxOGNjZTBjZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjZTY5NGE3OTI2MTc1NmI4N2IxMjhlMjdkZjE4NmU3MWQ1NzJhY2ZjZjYyMTdjN2RiZjE2YTY1MmExMmFkZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f3f0cb91c718425e9a7a4d061bfd9be4",
+      "statement": "Mutating CLI commands (repo add/set/rename/remove, feature start/start-review/add/set-base/review/merged/finish, pull) run under the hub lock, as do dashboard actions.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L370-L572",
+          "version": "repo-lines-v1:sha256:5152ca7597aa08b20dacc9df9dd585795d306deab86e8ed2d54de2b6fa78fcb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxNjJjNmMwMzY5OTg1ODQ1MDJmMTNjMzFjYzIyYTVjOGE5NWE2YTE5YmRiYjk1YjM4ZTZhNWEzYmMyZjA1NjljIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1NTIyYzQyY2QxOWM2ZDAzZDgwOGM0NTI3MjA1NTI4MjViN2VhMWM1YjQ5MWIyMTg1MTFjYWM3NDE1Y2Y5ZDliIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0MjI5YmVhOTYyMmU0MjI2NzY4ZWM5MDhlYTQyYThiZjBmZDQzZjkzMDAwYWZkZGE5OTE2N2YzNTk4MjQ5NzE0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjMGM1NWVkNjY1ZTFhYjUyYjJkZDRhY2IxOWEzZWI5NGEzNjQ0MGU3NzVlMWJiOTFiN2I1MDEzOTk4ZWE2N2RhIn0"
+        },
+        {
+          "resource": "repo://src/ui/worker.rs#L100-L110",
+          "version": "repo-lines-v1:sha256:8dd5a524d8f19960bcc1171949a63b44bb45db10018750dc68d499d382073f6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjYTNlODU1YTA5Y2ZhNzIzMDhlMmY5ZmEyZjZmNzg1ZDU3MGNmN2E0N2U3NTEyNWNjZDllN2QzYWVkMmMxZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZGRlYTc5NTdhNDIyY2EzMDE4MjI0NTczYjAwYmQ4MmE3YjMwNTJmN2U0OGJiNjhmMDJkNzEzMjhmNDI5MDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NjEwMjM2MzA3NTEwNGY2ZDJiMTkyYjQzYjBlOTRjYzFmMjIzZmIyYTY2ZWMwNTAxY2ZiNTljZDc2NDU5NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxMjUwYTlhMTkwZDc1ZTRjYjllMDdjNDk1YTRhMmUwYzQ2NDY3ODUwNDJhMmY5NzU3OTJmNjBhZjVkZDdmMDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9f6a316662b481da78347b28bf7b75f",
+      "statement": "Manifest validation rejects empty names, checkout templates without a placeholder, invalid or duplicate roles/clones, empty remote/base, and branch templates lacking {feature}; repos order is deployment and tmux window order.",
+      "evidence": [
+        {
+          "resource": "repo://src/manifest.rs#L28-L120",
+          "version": "repo-lines-v1:sha256:713b566dceb32fa14cb3caad717ec78d6c5db9ea07606d99d031298eaf353cb0:eyJzZWxlY3RlZExpbmVDb3VudCI6OTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0ZDYxNTlkYTA2YTVkMDhmNjMyNjEwZmI1ZThiMjc3ODE5YTFjZTgxM2RiYzkwYTRlMGQ4MDhiZGU1NmYzYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3NjVkNjZmMDQ4MDU3MDdhNzk0MGY2YTgxNzBjMTZjNDhlY2Q5ZjgzZDE2YmY0YTFmMmQ5OWI4ZmI4NjYwYjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0ODUzY2M2NTc2MmNhMDVmNGQ2OTNhYzM2ZGUyZWNmODUyNzYxNWVmNzczZTExYTA5NGQ0ZmQwYWM0YWE2MDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d0451a10c06a4ecebfe3dc87bc5fc400",
+      "statement": "write_atomic writes to `<path>.tmp`, fsyncs it, renames it into place, and ignores directory-sync failures so a completed write is never reported as an error.",
+      "evidence": [
+        {
+          "resource": "repo://src/manifest.rs#L151-L188",
+          "version": "repo-lines-v1:sha256:2066452c6237a5ff904635164f9bc4c1357f6e58904bc7353e6d836a8ffad652:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzZDNiOGYxZTMwYzNjOGU3NDllMzUzMmQxZTM0MWYwODE5NTlkZjAwOWJhMGIzZGRhYmY1MWJhZDllZGQ0MzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

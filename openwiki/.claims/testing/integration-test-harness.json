@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:608dd1a4848deb11c7340567a4f54da48619cca70300941e02aaead97d16513e",
+  "claims": [
+    {
+      "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
+      "statement": "The integration Fixture creates a temp world with projects/, worktrees/, bare remotes, fake-tool state, an isolated gitconfig, and an empty XDG_CONFIG_HOME, and runs the real hub binary with tests/fake-bin first on PATH and TMUX removed.",
+      "evidence": [
+        {
+          "resource": "repo://tests/common/mod.rs#L11-L105",
+          "version": "repo-lines-v1:sha256:aa18e61afb1b2572464eebee3e016398070069860f587e4e952cacd2cd44dad6:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjM2ExOGEyM2ZhMTBhZmMwYWFlZDk4NzFmMmFjZWJiOWMwNzcwNTY4MDJmMzNmM2I4YmM2ZjdhZDI3N2I1MDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4ODAwZmQ0Y2FlMzUzNTlhNmJiNjJjMmI2ODA1YjU2NWJjMDFlYWQxMWU5YjUzYTViYWZjZDFhMzZlNWRkMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkNDk5MTQ1ZDVmNDMyZGIzMDMxN2E1MmVlNzRkZTY3NjAzMjA1ZDE3NjVlMWIzZjE2ZDIwMjczMTcwZTg5NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f8626d20edc04589ac0a2bd160fba2ed",
+      "statement": "make_provider_repo records a provider URL as origin while a gitconfig insteadOf rewrite sends fetches to a local bare repo, so provider flows run offline.",
+      "evidence": [
+        {
+          "resource": "repo://tests/common/mod.rs#L163-L178",
+          "version": "repo-lines-v1:sha256:e3de05dcbdc96fc3822dfb982cf431c57393e82d63559f3848cdee8fe2a8faf3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjYzUxMGY0M2Y4Yzk0ZWVmY2I4YmQyN2U3OGU4MTY5NTFmNTQzYmI0ZGU3ZTk4ZjIzMmEzZTQzYWM5ZmIyMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3MDg5Y2JmYTBjZDkwNDYxYWY2MWE1OGFlNTA0MDNlYTdmZDcxODA4MzU1MjRlZDA4NWY3ZjM3YjUwNTRmNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyMDc2NzYyYWZhMmZlNjAyYzNjY2YyYjRiNmZjNWE2ZTdiOTEwZDRjZWUzYzg1YzVlYTdiOWVmNzVmMDBkNjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_821e9af1c57847dd901154e7db424a6a",
+      "statement": "Fault-injection helpers block commits with a failing pre-commit hook, block feature-record writes with a read-only store directory, and block worktree directory deletion with a read-only excluded subdirectory.",
+      "evidence": [
+        {
+          "resource": "repo://tests/common/mod.rs#L275-L333",
+          "version": "repo-lines-v1:sha256:0d216c4a0f1db752aa973125d9a789cd4be4c5b076f17242214a829017ade245:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlMWUxZGExZjMwNWU4YTllMmZjMDQwZDUyZDAxZDFlY2ZiNDAxZmI3MWI2YWZjODc1NzlhYmZiZmE1NGJlMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyMDhkODMyMzg2YTVjOGU1NjJmM2FiOWUwMzcwNzE1NTAyNjhkYzRmZmFmODdkMDI5ZTU0MDk1ODk5M2Q5ZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5N2NjY2QyYjQ3Yzk1ZWZmZDM2YWEzZDAwZjhlZTFhYjhiMWZiMjk3ZGQ5YzliOGM4OWE3MWEwMGNhMThkYTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_98a1aae19a0144c094813555da6bc486",
+      "statement": "The fake tmux keeps sessions as directories with a windows file under FAKE_TMUX_STATE, logs every call to FAKE_TMUX_LOG, and can be forced to fail a subcommand via FAKE_TMUX_FAIL.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fake-bin/tmux#L1-L13",
+          "version": "repo-lines-v1:sha256:07e2e8e81e4095d0cc9b32fad9362d09c1b63cba8ce494c7b951c800dfe423e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NjlkMjM3Y2Q0MjBiOWQzOGI5ODFhMGE0ZjY3NzAxOTBhNGE4M2RjYTFmZTU2YzRmNWJhMWUyY2JjMGVmNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MzZjNzVhYTRiNDg5NGY0ZDE2M2NiM2NjMjY5ZGNlNGY5MDA2N2RkOTk2ZjgxMDAzYzIzYjM2ZGJhYWEzMjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3e326cfdc76743328b252d33147f9b50",
+      "statement": "The fake gh/glab support only `api`, log calls to FAKE_PROVIDER_LOG, and answer from JSON files under FAKE_PROVIDER_DIR keyed by the endpoint.",
+      "evidence": [
+        {
+          "resource": "repo://tests/common/mod.rs#L180-L200",
+          "version": "repo-lines-v1:sha256:3a716f5cfd6be4c4a3bf9c7b61ad49abb1c8a095402051330f8bdbec9d0fd1de:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhOTJmZTY3OTc4MzdlYzA3MzlhOWRhNTJhYTIxMzRmMDM3ODhkMmU2NGRlZWRkODRhMTNjNTg4YjVlYmVjYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZDQ3ZDA3YmRjMTU2NGMxMzE0MGExNjU1YTE0MmQwYjRkNzcyYmJmZWI5MWE0NTYxYjExYmMzZTk2NTQxNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4NTNmM2RlODQ4MjdkMWZiNjU4YzQyM2I3MWE1MTllOGM4ZmZkNzUwZmY3NDMzMmUyOGJiMjA5ZjY0ZWM0MTYifQ"
+        },
+        {
+          "resource": "repo://tests/fake-bin/glab#L1-L15",
+          "version": "repo-lines-v1:sha256:a0c251fb5e65f67ebab994dcf553f972165892ebb8434ff09ac317bb1df2f3b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1OGI3MTZmOGQ1OTlmYTVmMjFhZjM3NWQ4MzFkNWU5ZTliODZjMjVmNDA5ZjdlOWI1M2JkZTI0YTJiNjk1ZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0MzhiOTk4YTljMmVlNGRjNDI2OGU1OTc3OGEzYmY2MjNjMDU2ZmJhMjZiMTYwNjg5ZjQ2ZGVlMDNjNDAwNGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_75033395e2de48a1b61a04bfde96456c",
+      "statement": "The fake lsof emits cwd records from FAKE_LSOF_CWDS and, with FAKE_LSOF_SELF, also reports itself, hub, and hub's parent.",
+      "evidence": [
+        {
+          "resource": "repo://tests/fake-bin/lsof#L1-L16",
+          "version": "repo-lines-v1:sha256:fe42a2274dc100f6d5b1e7977ce83c87eedc45591a34303e2fc0bb621aa8ce0b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3ZWMxM2JkZWU3NzhkMTZhOTczNzc1YTJkMzFiNGFmNTJlZjlhZjhhODBlYjMyZTQ3ZDdmNmY5YzNlZmE1NDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_71374efdd859423eadd5063f2a9fb16f",
+      "statement": "tests/misc.rs covers tmux/open/sync, argument exit codes, the hub lock refusal, finished features being read-only, and feature records living under .git/hub.",
+      "evidence": [
+        {
+          "resource": "repo://tests/misc.rs#L19-L268",
+          "version": "repo-lines-v1:sha256:ca3ed9063136715416d4a96defbb8696318c9d9e55224377eeb67b1fd358d95f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMWU2NmNlYTNlMDQxMWQ4NzljYmQzN2U2MDRjY2UyZTc3NWMyMDU4OGVhZjVhZTJkZGRhOGRjMjk5ZGJjNTA2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlNTJhNjUzY2YyOWI4NmYwOTk5MGQ4ODljNjZkOTBjODQ5NTgxMjJmMTMzOGQyYmEyZDIyMWMyNmQ5MTNhYzQ2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkM2Q1NjEwYjhkNWI4N2NlMTI2ZTMxOTZkODA0OTIxNGNlMWU2ZWMyMDZmN2M2ZGVjOWRjOWE4YTA2NDFmMjAyIn0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

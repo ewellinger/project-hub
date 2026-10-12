@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2e2703f9424261361358e17982ccf04db967e8fd6da1ef66392e9dc209616bc4",
+  "claims": [
+    {
+      "id": "claim_0f7be9383d424624981b0526642970c4",
+      "statement": "feature review fetches the role's clone, sets the open change's stage to review, records the URL only when given, and sets origin_seen when the branch is on origin without ever clearing it.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/review.rs#L6-L43",
+          "version": "repo-lines-v1:sha256:4559996dd9e670fb9a3164b737735001e26d8ede0f5305af9584bda3d937cc57:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYWM2MTRiNGM5NWZlNTIxY2Q4YmZiYzk5MDgxMTZiNjNjZmE3OTQ1OWYzMWMxMTNiYjcxMjMxZDkzODk3ZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjZWFlMTIyMDY1ZDVmMGZkNGYxZDg2MmY3OGFjMjhhZjEwOWFkMTVhZjY1NzdkYWVmMjY2ZTExNGU0YWNmMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7ae1ce8ce8554d5aae6554898f9acac9",
+      "statement": "feature merged checks for a dirty worktree before re-pointing the role's tmux window at the main clone, because respawning kills processes in that window.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/merged.rs#L134-L169",
+          "version": "repo-lines-v1:sha256:d868f5a481928571adde31b8d264d35aa66b191c3953190b59d241e2f9097835:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmM2U2YzBmYzI4Y2FlMDhjNjdlNTRjZDQ4MjkxNTE4M2Y5NWIyMjQyMGZjYjdmNmFmNDA5YmE0MzlhYzQ3OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlMzliZTIxYjBmOGRmYjkzMDU4OWU4ZDk1MmQwMWE5NzFiZTY3NTRiMmFkNWJjMjU3NzM3Mzk0Y2YxZWYxZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4YTZiYzBhYmVkZjkzNzEwZmY1M2ZmNjIwZmU2ZjdkMDg2NDMxMDY4OThiYjc4MTJjYTkzOWQ2MGU5YTY0MGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_19f05d4713e44a80a623b760e54b33de",
+      "statement": "Removing a worktree is refused with exit 21 while any process has its cwd inside it, unless --force; if lsof is missing the check is skipped with a warning.",
+      "evidence": [
+        {
+          "resource": "repo://src/error.rs#L18-L24",
+          "version": "repo-lines-v1:sha256:6965e8504cbf396501ab317f08a8fd028678f34af1b1967839cbe0956cdfbdfb:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM2MDAzOTQ4ZDg1Mjc5ODEyM2U4YzUzODhjMWYzNGViYTRkYjE5OTkzZjExMjg5ODQzOTg0Y2FiMTYyM2M4NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzUxYjZiMmY1NzZhOTZkZjIwNGEyYjMyNzcwOGU0OWE5YTRiMWFjYzZkNzY2YmVjMDU2N2M3MjBjMzc2NDUxNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTQ1YjUwNWEwYjQ3MjMxNjRlYmNkMmM1Mzk4M2IzYzc3NjZlYTc1MmIzMjUwYjJjYmMxZWE2YTk0MWFkM2JiZSJ9"
+        },
+        {
+          "resource": "repo://src/ops/merged.rs#L18-L42",
+          "version": "repo-lines-v1:sha256:8ca06a436bce3b09505554c38d8ac98a34f35987d0d16739b5075ccceb81297e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NTVlZmZlOWMwNTJkODQ4ZDQ5ODMxOWQyMzRlMGFjYTY4NDk0ZWY3ZmNiMzFiZDhmZGRhNTUxYmJjNmJlYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwN2Y1MTBhMTE0Mzg5YmYyMzIxYjBmZWY3MGI2YjI0NGE5YjViZmMzZWUzNzMzMzJlM2EzOGJiNWMyNjJiOTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzYWUyNjAyM2JiMmNlMjUxYjUyY2IxODQxMzk0OTEwZTJjOWQzNzI3ODk2OTc4YWJiMmVkNGZlNzY1YmZiMDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6d4b9455a0094bf98f9103cfbcc184fa",
+      "statement": "close_change does nothing for a change in the main clone or a vanished worktree, requires --force for dirty trees, and requires --force or confirmation for adopted worktrees; it never deletes a branch.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/merged.rs#L58-L109",
+          "version": "repo-lines-v1:sha256:8735cd8f16488549131397b2e0ceb518e64c4c86940b68269cee1b61182b0a02:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMDI3ZDM5MGZmZjJmZjBiMzA2MzBiM2FjYjI2YjIxNWM4ODdhN2U0YWUzYzk2MGFmOTY1ZWJmNGI0MTMwYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3YWQyNzlkNTdiMDMyZDIxNGUxYmU2Y2MyOWE0YzA5NDU4M2IzMDI1MzU4MTMwZTgyMzQ3YzM1MjA4MzBiYmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fb5272cd6a8f48c2bce6c5751f068f71",
+      "statement": "merged and finish perform irreversible removals before writing the feature record, so a failed write can be completed by rerunning the command.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/finish.rs#L61-L97",
+          "version": "repo-lines-v1:sha256:89fbacabbb5484624a434b343943f3df790461187ba290e3fa17af9eb1a5be79:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYWQzOWFhOTc2ODExYjk3YzM3Zjg2MTBjMzU3MDQyODQxYmMwOWVhNTU3MDNlNDI1MmJiNzAyZjZhZWRlYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYjYwNWJmZTNhMDYxOTE3MWY3Y2JjM2QyODcyMmIzNDUxYmQxMDMxYmZhNmIxZjM5N2Q5YTFkODliOWIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWUwZWVhM2Q5ZmQyOTAzNzMyYTBhNzU1ZTExZmEwOTg1ZTU2ZDc4MDhmODYyZWU2OWRmY2JhZDcxNmZmMDUifQ"
+        },
+        {
+          "resource": "repo://src/ops/merged.rs#L174-L189",
+          "version": "repo-lines-v1:sha256:e2ce759fd9a3324367c881edc6d2aa98541787af4d04afbbf110266f809ea54a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjMTc0NzI4ZmIwMzllMzAxNmVhMmI1OTcxYzgzNjRlMGMxNzg5MTY4NDNmYmU2YzZlOGU2M2ExMzUxYTEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYjYwNWJmZTNhMDYxOTE3MWY3Y2JjM2QyODcyMmIzNDUxYmQxMDMxYmZhNmIxZjM5N2Q5YTFkODliOWIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4YzJlZWQ0ZDc3ZWJiYWMyNjM5NzAyOWM0ZGQ3ODY0OGJmNGZiYTZlZDVkNTY5YTU1NDhiZmE0YzVmNTBhMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5MjA4ZDJhODY5Mjc4ZWM2NjAyMmY2ZTViODcwNzcxZTNmODQyYzQ2MTI4MGNkOTU3MGFhZGNjYTYxZDU0OGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd1b83bc2115478fa21fdbc284edb3ad",
+      "statement": "feature finish refuses to run inside the feature's own tmux session, checks every worktree including the hub worktree for dirtiness before acting, kills the session, removes all worktrees, and marks the feature finished without changing stages or deleting branches.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/finish.rs#L10-L103",
+          "version": "repo-lines-v1:sha256:495774697c4fe671c35b4851b8f548b916d4fb029a7ea8faa465cc09a35fcebc:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4N2Q5NDdmYWNhODM0ZGY1ZTkzZWE4NmZhZDdiMWVmZWExZWIxYjhiZTk1MmU4NTVkNDNlY2VmZWVmMTU1MmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkYjc0ZWVkM2M2MjllZWIxYTRlYzcwOTA4OTdkOTE5MWJmZmIyZmQ2YzJjYTZkNTY0NGFlZDc1MzNmZDI0ZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fecf3021ccaa47699ef849291b361262",
+      "statement": "A worktree git unregistered but could not delete is reported as a warning naming the leftover directory and git's reason, and the change is still closed.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/merged.rs#L44-L56",
+          "version": "repo-lines-v1:sha256:47587b5326971a800380572d76ec4e1eaaee815b12c0ff6baf7608ab3b8bd9cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmZDFkYTAwYmRlZTEyNjlhNTRiNDIzMmNiOWRiODhiMmIwZTFlYTcxYjIxOTViMzZlOThmNDFmNzc2OTdkNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiZmU1YzMyZGU5YmFhM2NlZTM5MjdiYTJiNjcyMDViNDdmYTg0ODUxZTljMGYxODQxYjhhN2ZjZmZhNjAwMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhYTY4NTgxMmNlYzM5MDM0NmQzMGM4YjI5OTMzNTk2MWY1NWVlMGRmMjg5YjVlNGVmYTJhYTNhMmE3NTM0Y2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_361920a4e55742ff86e1800df9e7fe66",
+      "statement": "cwd_holders runs `lsof -w -d cwd -F pcn` and excludes hub's own process, its parent, and the lsof child; holders_in matches cwds at or below the canonical path.",
+      "evidence": [
+        {
+          "resource": "repo://src/procs.rs#L21-L90",
+          "version": "repo-lines-v1:sha256:7bec4736bafe40bd5305474e25fc8ae4d931051b458467358c93465ffb5f42ca:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiOTI0M2Y0YzI4NWIwOGY1Mzk5YzNmZDJjNTk4NWVlOGE5ZGNiYjczNjFjNjFkNWQwYjM4MDNiZjZhZmUyZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

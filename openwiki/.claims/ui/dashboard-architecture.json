@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:cbd43614710603c56b8edade1d20eef34335351ae41caf9e56c84490f4882f6b",
+  "claims": [
+    {
+      "id": "claim_17e3d0e433ec49f28691d71532ba3d2a",
+      "statement": "The dashboard event loop runs queued effects, draws the frame, polls one key with a 100 ms timeout (else a Tick), drains worker events from an mpsc channel, and feeds each event to App::update to collect new effects.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/mod.rs#L20-L96",
+          "version": "repo-lines-v1:sha256:ee29d334edb218c321d3f58323aeb186c1ab7a205c0aece6f490d567891268d7:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4Y2M5NmEwNGMxZTg5MmIxNWFmNzA0NzdjNjkzZTMyODg0Y2RiNWNiMWI5NjMyMjJmNTBlNDc0ZTBkZjA2MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxN2RiYjZmMGM3YTZiN2QxYjhjY2I0NDM4NWJkNTQwMWJlOTgxNDM0NDk5ZmRjZTllNGFmMzczN2RlN2VhZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_912b421950594265955f054a99616836",
+      "statement": "App::update is a pure state transition returning Effects; it performs no terminal, thread, or git work, making it unit-testable with synthetic events.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/mod.rs#L1-L2",
+          "version": "repo-lines-v1:sha256:4b781975410a5106f32a1d4683da3804394f3aa58766f60dca04bb856bbf25c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDY0MGVhOWM1MmI4MWJiMmQ3MjI1MmFmM2NiZTAwMzViYTI0OWZjZDk3NDRlNWYyYmNkZGY1YWEyYjg1YThmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjE4YjUzYjdjZDkzOGQ5YTEyMmNhYmZiMTY4Mjk3N2E4MzFiNTc3NDY4NDZjMTRhZTI1M2E5Mzk2OTc0ZWQ4YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmM2OTU4NzE3ZTEwODUxZDFjMzE5YWE1OWNhMDQwYTg3ODFhMTNlZjBjMzFiNzUyZjc4YWJkOThlODUwYzdhYyJ9"
+        },
+        {
+          "resource": "repo://src/ui/app/mod.rs#L185-L208",
+          "version": "repo-lines-v1:sha256:65436f5c86f3712ce3d7fc7cfa214053beacf9eb45fd9be0f9ca531b03357dff:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhNDE1M2UzNDE5NWVkOWNlZjFiMTlkNDAyMDYzY2QwMTA3ZDJmNzgzNTM1Yzk1YjZiOWM3MDM1NTRiYTVlZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3NmE1NDRjYzAyM2VkNDA1ZTNiOThiOGEzNTQwOTBmYWQxNmU5ZTE4ZDVlZTlmN2JhNmMzZTcwMDUzMDA5ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzMDYxMWE1ZWI5OTNkNTNlZWQyZTNmNWJmODk5Nzc2NjljM2U2MTEyNjAxODc5MTExNzhkOWNiNmUzNWNmOWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5913287a75ac45448a12323fa8961d99",
+      "statement": "Launched from a feature's hub worktree the dashboard opens that feature's view first; otherwise it requests the base row's status.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/mod.rs#L330-L341",
+          "version": "repo-lines-v1:sha256:c7f3cd864a1088332e521ad0fb6c78de2e75ac13dd9089e1cfafd9c2062b8a79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2ZTJjMmJkMjRlMDY3MzZkY2NhYmQzYjllYzk0NzcwYjUzMTM5YjQ1ZDUzOTJkYThjZjYyZWJhMDA5YjhlYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2NDM3NGVkZTY2MmJhYWJlNGQwODM0NTY3OTZmOGUyYjhkZmMzY2ZhYTczNDNjMzJlZWNlOGRkNGU5ZTAzNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ZWI2MzIzZDU0MzYyMmEwMGI0ZjdlNmY4ODAwNWQ0ZmRhNjA3ZDcyNzdkYzg5ZDU2NDYzMGRmMjhiMmQxZjIifQ"
+        },
+        {
+          "resource": "repo://src/ui/mod.rs#L25-L41",
+          "version": "repo-lines-v1:sha256:c2c70c8c00861d51a276ab93d33108254e14a2a59f4be32f9748ed66cb3f663c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyYjI1ZjFkYWRhZTA0YzQ2M2YyNGQ1ZDZmMDdhOTQ0OGE0Y2JiYjUxMzlkN2MzYjc3NDdkOWIwMTZmMWY5ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjZDgyOGM0MDU4ZWFhYzE3ZDYwZDA3MWJjMzI2MmJmODMyMmNhMDJjYjk5YWU5ZDBlNDY3Y2IzNTYxN2UyMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4YjRkYmM3MmVkNDRmNDMzNjQzMmQxOGUwNGFhYTUzNGZmNDBlZjhmZWQzMGRjYThlMjMxYmVjNzc5ZGE1MGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6526260fbaf24acf8fa3e0edc7ff0d1d",
+      "statement": "Status replies are tagged with a per-row generation and applied only when they match the newest in-flight request for a still-known row; stale replies are dropped.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/mod.rs#L303-L322",
+          "version": "repo-lines-v1:sha256:24b1d4bec82a147aa826193c963ece39403ae4fcb13f803d1fba3cd5bb4781eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExM2M3OWQ4ODg2YmM3MjFlMzUzNmE5NDNhMjY1NjNhYzRiNGNlNjBlMTA4YTNiZDBjYTA3N2YxODU2Y2FmNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzMzM2ODY3ZDdjYzEwN2RlM2RjYTJiNWJiZmEyYWUwYjQ2MDM3MTAwZDZkOTBmNWQ4ODBlOWFjZjA1ZjZlZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiZmNlODIzODMyZjFjYjU4YmU3OTJhYmI3ZWFhMDA0ZTIyOWFmZjE0ZTFmZGFjMTIyZDg2NzkxZWRlNDljYjcifQ"
+        },
+        {
+          "resource": "repo://src/ui/app/mod.rs#L356-L381",
+          "version": "repo-lines-v1:sha256:c2ed44a70d2b7ce23fb8bb3b46e9253eacc0c66e36fd89289b04bb6aa17befd0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4YmE4YzIxZTAwNzdjZDRhNWE0ZjZkMjZjYmI4MjBkY2ExYjJmYTY5OTc4YzE4MTNjYTg5MjlkMjZhYzRiMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkZGNkM2I4OTkxOTU4ZDM1Y2MwYzM1ZGYzOTJhNzVkZTJiYmQ4NDI2OWY3NmViNjJiOGIzMTM3MGE4YTU3ZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2NmI5MzJjNmVkYzhlNjczNThiZjM1MjEwMmExNmQwZGM3ODAyMjcwMTc0NWZhZWE4YzEzZDM2MzZlZTE4ZDMifQ"
+        },
+        {
+          "resource": "repo://src/ui/worker.rs#L20-L34",
+          "version": "repo-lines-v1:sha256:32284aa0a69440973b2c0cb9a09d0a0bdb57644c9b92c44684556e7c6ff6f697:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwYzVjMmEzM2QzMGE3ZjkxZTg1ZDk0ODQwMGViNzNmZmNlODdhMmE1ZjMwNzg1OWJjYjI2YjAxZTg1NWI0OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0ODEwMjFhMjZjZmYxYWEwZTgyODJlOGMyOGUxZDEyNTQ2MDE5Mjc3ODFlMzg3YzRmZTgxMWY2MzgyZWQ3ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkxM2Y0ZmE4YzhjZDI4MTk5OTljYWJjOGE1MDU3NTAyMzIwOGRmYTRhOTUyNTBhYWRhOWI0MWU1MjdjMTY0YWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_38d54b7da8964fc2a85d8a31237d147d",
+      "statement": "Dashboard actions run on a worker thread inside hub.with_lock, load the feature record inside the lock, call the same ops functions as the CLI, and convert panics into a Precondition error.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/worker.rs#L97-L181",
+          "version": "repo-lines-v1:sha256:9b9069dfc88228291ec2a606060fd2ae4095770370ccf9512cb3e5bfe87089f3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3ZjAxZDUzYThmNWQ5YTY1MDVjY2UwYTRkNTE2Y2FiZGI1MjVkMGUwNjA0NTBiYjEzMjQ4ODE4MTBiNDA0MzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzYTEwMzdmMDcxOTYxZmIzYjEzYTdkYWZmNjlhY2MyYmFiODEwZmU4YmRhMTZhMmIyMjcxNTU0MzcxNGNjNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwYWVlOWM0Y2E4ZDZmZDE0OGQ0NWFiOTM0MjNkZGZiMDY4YTMzZTI3ZGZiNmZjMmNhOWI4ZmQwMTczYTIyYmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_044e07cf08e54ddda9a08ce83dc7f76a",
+      "statement": "Only one dashboard action runs at a time; a second is refused with a busy footer, q/Esc refuse to quit mid-action, and Ctrl-C always quits.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/dashboard.rs#L11-L24",
+          "version": "repo-lines-v1:sha256:3e3bf2a1efb47f5737e629bc327248c9ade3852b48d9870fc4cba547e4891a6f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmZmU5NDc5ZTYxN2U4OTZjYjU3NDI5NDk5NGRmY2I5ZTc0ZjM1NWEyYzZkYTYyMDBjODRlMzY3ZjhlNGI5MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMDU0MGYwOWFhZDNiYzZkNzI1ZDY3NTMxOWFkNTkzNmNmNzc0OTdiMDkwOWRhOGU3MmI3YjAyNTcwMjI4NzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmMDM0ZDM1ZjVkYjcyZDdiOGQ4NDcyNGEzNTQ5NDQzNmRlOWEzYjBmYjI5MDIzOGI3MWEzN2U2MTFlNDMxMDMifQ"
+        },
+        {
+          "resource": "repo://src/ui/app/mod.rs#L420-L424",
+          "version": "repo-lines-v1:sha256:c357500ba82db667371fd2553a4bf9a5e67f6a70625ffab7ae8dc5892daf3c53:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTU3M2VjYTBiZjYwMDMwYjFjMjQ4ZjNmZDc3MWM5NGVhMDBjNDk3YmY3NzcyNmY0M2U4ZjJlNzBkMzY3MzVjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzg5MmIxZjgxNTYyYjE4N2Y1YjI1ODc5ODVjNzBmMDM3MDdkMTViMjc4MTUwMTZiZDEzMTI2MzgzOTI1OTAyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTA4YzIzMmQxN2E0MmMwYWRiNDVlODk3MTZkOTljOWY4ZmZmYzdkZTU5MjJmMTA2MjYxYTRmZTAxYTExYmZlMCJ9"
+        },
+        {
+          "resource": "repo://src/ui/app/mod.rs#L563-L581",
+          "version": "repo-lines-v1:sha256:109be0bef3c4cbb1808f819cee494fac8f6b5bea34626eb0e23ef2bca0f5c885:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4Mjg4Y2E4Nzk2YWVmYjdjNmFmN2Q0ODk0Y2NiODdhY2U1ZWNlMDBjOTAwOTEzOGY0ZTljMGZmYWYwMDJjMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4NzQyMjlhYzgzYjk1YzhiYjM5NzA1MjFkY2FhMDE2OGQ2YTczZWE5OTI1MGZkN2JkZTYxZjliYzVmMjM3MWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZGNjOTZjZDI0Y2VlNjU2YzA0N2RlNWFiZjg4ZTI5OGJjZDUwMmJlYTE3N2Y0YzZmZmVhYTc0ZjBhYTRlODMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9aaa819884df4d07bcec723da8c2ceed",
+      "statement": "After an action, single-line output goes to the footer and multi-line output or errors open a result overlay; the affected row is re-requested fresh, and start/finish reload the list.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/mod.rs#L583-L614",
+          "version": "repo-lines-v1:sha256:40a56ce0171b961d16a210953588961b579d2e77904c979613a533ce67ee4170:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiYjA5MDU1NWRkYmJkOTcxOWY5OWQ0MjkwM2E2MWFjMzgxYTA0ZDViMzJjOGY3MjE1MDZiNzFiOWVmNjVjMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNzliZTIyYmI1ZjA1YTVjNWIzOWQ0NGZjYzBkYTRiODliZTlhNzcyYWJlZDY0NDdhZjAyYzBjMWVhNzJjOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b9acbae977dd4e64b6d9a3d01d6504e4",
+      "statement": "The clipboard is written through one process-wide arboard handle so the X11 selection stays served while the dashboard runs; a failed handle is dropped and reconnected.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/worker.rs#L59-L95",
+          "version": "repo-lines-v1:sha256:0d83b3e28a5cf52a396251272ea5088b8dca33ca3e6a4239932c9d30c83a6d90:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0NzM4ZmY5ZDMxMzVlOGQzOTBiMmUxMzBkNGY1NGNjNGYwMzA4YjkyMTQzODI5OTgzMDViODk0YWYwOTNkNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmYWI3MTBkZGY3ODU5ZTU3NTc2NGE5MTNhMDAyYzc0NTg1ZmZhNzAwMTUxMGNiODgxMWRhODNkMmNmNzRiMzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2ZGQ5YWQ5ZjBiMzU2ODE2ODAwNTk4Y2UxYWVlZjI5YjlkMzIyM2JhNjZhZjJhOGZkNTc4YTQwYzllN2EyMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c05935b70299449c92cb7eb6646556c9",
+      "statement": "Opening a workspace from the dashboard runs on a thread and launches the editor with silenced stdio because the terminal is in raw mode.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/worker.rs#L36-L57",
+          "version": "repo-lines-v1:sha256:83f71d985f7c3adad0e6001164d1a7b18f4c3db92beba3aee9cb5d5fd8a6f01d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkYzk5NjRkODg0NTM2ZDkyMmM4ZGIxYWNhYzgwOGQ5YzVjNjhiMzgzZmNlNjg4N2I2M2JlM2ExYWM2NmM2MmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmYWI3MTBkZGY3ODU5ZTU3NTc2NGE5MTNhMDAyYzc0NTg1ZmZhNzAwMTUxMGNiODgxMWRhODNkMmNmNzRiMzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMzQ1OTcwOTU4MzllZGIzODgyOGIzOTQzM2UyMjFhM2Y4ZmVlYTJhMTViZTEzMGI0NTBkZWUxMDFjZDM5YjkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}
