@@ -501,10 +501,11 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     base,
                     worktree,
                 } => {
-                    let (role, branch) = match role {
-                        Some(role) if branch.is_some() || !prompt::is_interactive() => {
-                            (role, branch)
-                        }
+                    let (role, branch, from_latest) = match role {
+                        // With a terminal, `pick_add` runs even when role and
+                        // branch are given: a new branch of a frozen role asks
+                        // where to start.
+                        Some(role) if !prompt::is_interactive() => (role, branch, from_latest),
                         None if !prompt::is_interactive() => Cli::command()
                             .error(
                                 ErrorKind::MissingRequiredArgument,
@@ -516,7 +517,10 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                             // finished feature fails the same way it does with flags.
                             let f = hub.resolve_feature(feature.as_deref())?;
                             f.require_open()?;
-                            prompt::pick_add(&hub, &f, role, branch)?
+                            let ask_start = from.is_none() && !from_latest;
+                            let (role, branch, picked_latest) =
+                                prompt::pick_add(&hub, &f, role, branch, ask_start)?;
+                            (role, branch, from_latest || picked_latest)
                         }
                     };
                     let opts = ops::resolve::AddOptions {

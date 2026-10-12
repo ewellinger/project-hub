@@ -7,6 +7,7 @@ use std::io::IsTerminal;
 
 use hub::error::{HubError, Result};
 use hub::feature::Feature;
+use hub::git::Git;
 use hub::hub::Hub;
 use hub::manifest::RepoSpec;
 use hub::ops::start;
@@ -100,13 +101,15 @@ fn role_rows<'a>(repos: &'a [RepoSpec], taken: &[&str]) -> Vec<RoleRow<'a>> {
 }
 
 /// `add`: ask for the role when missing (only roles without an open change),
-/// then for the branch when missing.
+/// then for the branch when missing, then, for a new branch of a frozen role,
+/// whether it starts from the pin or from the latest base.
 pub fn pick_add(
     hub: &Hub,
     feature: &Feature,
     role: Option<String>,
     branch: Option<String>,
-) -> Result<(String, Option<String>)> {
+    ask_start: bool,
+) -> Result<(String, Option<String>, bool)> {
     let role = match role {
         Some(r) => {
             // Fail the way `add` would before asking anything.
@@ -135,7 +138,31 @@ pub fn pick_add(
         Some(b) => b,
         None => pick_branch(hub, feature, &role)?,
     };
-    Ok((role, Some(branch)))
+    let from_latest = ask_start && pick_start(hub, feature, &role, &branch)?;
+    Ok((role, Some(branch), from_latest))
+}
+
+/// A brand-new branch for a frozen role starts at the pin or at
+/// `origin/<base>`; true means the latter. Existing branches keep the pin
+/// without asking.
+fn pick_start(hub: &Hub, feature: &Feature, role: &str, branch: &str) -> Result<bool> {
+    let Some(pin) = feature.pin(role).filter(|p| p.worktree.is_some()) else {
+        return Ok(false);
+    };
+    let git = Git::new(hub.env.clone_path(&pin.clone));
+    if git.local_branch_exists(branch)? || git.remote_branch_exists(branch)? {
+        return Ok(false);
+    }
+    let frozen = format!("from frozen {}", pin.short());
+    let latest = format!("from latest origin/{}", pin.base);
+    let choice = Select::new(
+        &format!("Start {branch} for {role}:"),
+        vec![frozen, latest.clone()],
+    )
+    .with_help_message("from frozen keeps the pin; from latest drops it")
+    .prompt()
+    .map_err(prompt_error)?;
+    Ok(choice == latest)
 }
 
 fn pick_branch(hub: &Hub, feature: &Feature, role: &str) -> Result<String> {
