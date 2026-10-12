@@ -221,6 +221,17 @@ enum FeatureCommand {
         #[arg(long)]
         feature: Option<String>,
     },
+    /// Pin a role outside the feature to its local base tip in a detached reference worktree
+    Freeze {
+        /// Role to freeze
+        role: String,
+        /// Commit to pin instead of the local base tip; must be on the local base
+        #[arg(long, value_name = "REF")]
+        at: Option<String>,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+    },
     /// Mark a role's open change as in review and record its MR/PR URL
     Review {
         /// Role whose change is in review
@@ -492,6 +503,10 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::set_base::set_base(hub, &mut f, &role, &branch)
+                }),
+                FeatureCommand::Freeze { role, at, feature } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::freeze::freeze(hub, &mut f, &role, at.as_deref())
                 }),
                 FeatureCommand::Review { role, url, feature } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
