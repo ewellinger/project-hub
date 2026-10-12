@@ -1194,3 +1194,63 @@ fn add_adopting_a_branch_from_latest_drops_the_pin() {
     assert!(f.get("pins").is_none());
     assert_eq!(f["changes"][1]["branch"], "work");
 }
+
+#[test]
+fn feature_list_shows_frozen_roles_apart_from_members() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let pin = head(&fx, &frozen_wt(&fx));
+
+    fx.hub(&hub, &["feature", "list"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("api:frozen"));
+
+    let out = fx
+        .hub(&hub, &["feature", "list", "--json"])
+        .assert()
+        .success()
+        .get_output()
+        .stdout
+        .clone();
+    let list: serde_json::Value = serde_json::from_slice(&out).unwrap();
+    let f = list
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|f| f["name"] == "feat-1")
+        .expect("feat-1 listed");
+    assert_eq!(
+        f["frozen"],
+        serde_json::json!([{ "role": "api", "sha": pin }])
+    );
+    assert!(
+        !f["roles"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|r| r["role"] == "api"),
+        "a frozen role is not a member: {f}"
+    );
+
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api"])
+        .assert()
+        .success();
+    let out = fx
+        .hub(&hub, &["feature", "list", "--json"])
+        .assert()
+        .success()
+        .get_output()
+        .stdout
+        .clone();
+    let list: serde_json::Value = serde_json::from_slice(&out).unwrap();
+    let f = list
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|f| f["name"] == "feat-1")
+        .unwrap();
+    assert_eq!(f["frozen"], serde_json::json!([]), "always present");
+}

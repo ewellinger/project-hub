@@ -279,6 +279,7 @@ mod tests {
                     stage: Stage::Working,
                 },
             ],
+            frozen: Vec::new(),
         }
     }
 

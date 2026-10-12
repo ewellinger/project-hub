@@ -12,6 +12,14 @@ pub struct RoleSummary {
     pub stage: Stage,
 }
 
+/// A frozen reference role: a read-only checkout pinned at `sha`, not a
+/// member with a change. Pinned open changes are members and stay in `roles`.
+#[derive(Debug, Clone, Serialize)]
+pub struct FrozenSummary {
+    pub role: String,
+    pub sha: String,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct FeatureSummary {
     pub name: String,
@@ -19,6 +27,8 @@ pub struct FeatureSummary {
     pub status: FeatureStatus,
     /// Latest change per role, in manifest order.
     pub roles: Vec<RoleSummary>,
+    /// Frozen reference roles, in record order.
+    pub frozen: Vec<FrozenSummary>,
 }
 
 /// Open features first, then finished, each group by name.
@@ -52,11 +62,21 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
                     });
                 }
             }
+            let frozen = f
+                .pins
+                .iter()
+                .filter(|p| p.worktree.is_some())
+                .map(|p| FrozenSummary {
+                    role: p.role.clone(),
+                    sha: p.sha.clone(),
+                })
+                .collect();
             FeatureSummary {
                 name: f.name,
                 checkout: f.checkout,
                 status: f.status,
                 roles,
+                frozen,
             }
         })
         .collect();
@@ -72,6 +92,7 @@ pub fn render_table(summaries: &[FeatureSummary]) -> Vec<String> {
                 .roles
                 .iter()
                 .map(|r| format!("{}:{}", r.role, r.stage.as_str()))
+                .chain(s.frozen.iter().map(|f| format!("{}:frozen", f.role)))
                 .collect::<Vec<_>>()
                 .join(" ");
             let status = match s.status {

@@ -665,6 +665,7 @@ mod tests {
                 branch: format!("feature/{name}"),
                 stage: Stage::Working,
             }],
+            frozen: Vec::new(),
         }
     }
 
