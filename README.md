@@ -199,6 +199,9 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature start-review URL [--name N] [--checkout C]` | Review feature for the one role whose remote the GitLab MR or GitHub PR URL names: its real source branch at the verified head, base = the MR's target, stage `review`, workspace and session; refuses forks, closed reviews, and occupied branches |
 | `hub feature add [ROLE] [--branch B] [--from REF] [--base B] [--worktree W]` | Bring one more role into the feature; prompts for the role and branch in a terminal |
 | `hub feature set-base ROLE BRANCH` | Record the branch the role's open change merges into; the member branch and its git upstream are untouched |
+| `hub feature freeze ROLE [--at REF]` | Pin a role that is not in the feature to the tip of its local base (or `REF`, a commit on it) in a detached reference worktree |
+| `hub feature unfreeze ROLE [--force]` | Release the pin and remove the reference worktree |
+| `hub feature refreeze ROLE` | Move the pin, and the reference worktree, to the local base's current tip |
 | `hub feature review ROLE [URL]` | Record that the role's change is in review |
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch |
@@ -244,6 +247,29 @@ feature record and re-derives `base_sha` as the merge base of the branch and
 the new base; it never checks out, rebases, or edits git's upstream, and
 git's upstream never changes the recorded base. Merge hints target the
 recorded base.
+
+### Frozen bases
+
+A busy base branch keeps moving while a feature is in progress. Freezing a
+role pins it, for one feature, to a single commit of its base: `hub feature
+freeze ROLE` checks the tip of the local base branch (the main clone's, so
+run `hub pull --base` first for the latest) out, detached, in a reference
+worktree named `<feature>-frozen`. The feature's workspace and tmux session
+include it, so you and your agent read that repo at a fixed state instead of
+whatever the main clone is on. Only a role without an open change can be
+frozen, and `feature add` refuses a frozen role until it is unfrozen.
+
+`hub status` lists the role with stage `frozen`, `frozen @<sha>`, and how
+many commits the local base has gained since the pin (`master +3 since
+pin`); `--json` carries `frozen_sha` and `base_moved`. A reference worktree
+moved off its pin is drift (`off-pin`, exit 30). `hub pull` leaves frozen
+worktrees alone. `hub feature refreeze ROLE` moves the pin to the base's
+current local tip when you decide to take those commits in; `hub feature
+unfreeze ROLE` removes the worktree and the feature reads the main clone
+again. `finish` removes frozen worktrees with everything else. Commits made
+on a reference worktree's detached HEAD are on no branch, so `refreeze`
+refuses to move it and `unfreeze` and `finish` refuse to remove it without
+`--force`; save the work with `git -C <path> branch <name>` first.
 
 ### Status
 
