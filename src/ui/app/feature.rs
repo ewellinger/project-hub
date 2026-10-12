@@ -148,6 +148,19 @@ impl App {
                 }
                 self.start_flow(Flow::AddRole(AddRole::new(name)))
             }
+            KeyCode::Char('z') => {
+                if self.busy() {
+                    return Vec::new();
+                }
+                if self.feature_report().is_none() {
+                    self.say("status not loaded yet; press r".into(), true);
+                    return Vec::new();
+                }
+                self.start_flow(Flow::Freeze {
+                    feature: name,
+                    roles: Vec::new(),
+                })
+            }
             KeyCode::Char('c') => {
                 if self.busy() {
                     return Vec::new();
@@ -391,6 +404,17 @@ pub(crate) mod tests {
         feature.pins.push(pin("ui", true));
         report.rows.push(frozen_status_row("ui"));
         Report::Feature { feature, report }
+    }
+
+    pub(crate) fn repo(role: &str) -> hub::manifest::RepoSpec {
+        hub::manifest::RepoSpec {
+            role: role.into(),
+            clone: format!("{role}-clone"),
+            remote: "origin".into(),
+            base: "main".into(),
+            branch_template: "{feature}".into(),
+            description: String::new(),
+        }
     }
 
     /// Dashboard app on the `suspense` row with its report cached.
@@ -1081,5 +1105,37 @@ pub(crate) mod tests {
         assert_eq!(a.cursor(), Some(3), "followed the role, not the index");
         let row = a.selected_role_row().expect("a row under the cursor");
         assert_eq!((row.role.as_str(), row.stage.as_str()), ("ui", "frozen"));
+    }
+
+    #[test]
+    fn z_opens_the_freeze_picker_and_enter_freezes_the_role_under_the_cursor() {
+        let mut a = on_feature();
+        a.repos = vec![repo("api"), repo("ui")];
+        assert!(a.update(key(KeyCode::Char('z'))).is_empty());
+        assert!(
+            matches!(a.overlay, Some(Overlay::Select { ref title, .. }) if title == "Freeze a role in suspense")
+        );
+        assert_eq!(
+            a.update(key(KeyCode::Enter)),
+            vec![Effect::Run(Action::Freeze {
+                feature: "suspense".into(),
+                role: "api".into()
+            })]
+        );
+        assert!(a.update(key(KeyCode::Char('z'))).is_empty(), "busy");
+        assert!(a.overlay.is_none());
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.text == "busy: freeze api…")
+        );
+        a.running = None;
+        a.cache.clear();
+        assert!(a.update(key(KeyCode::Char('z'))).is_empty());
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.text == "status not loaded yet; press r")
+        );
     }
 }

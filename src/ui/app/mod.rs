@@ -78,6 +78,11 @@ pub enum Action {
         role: String,
         force: bool,
     },
+    /// `feature freeze ROLE` at the local base tip; the dashboard never passes `--at`.
+    Freeze {
+        feature: String,
+        role: String,
+    },
     Finish {
         feature: String,
         force: bool,
@@ -97,6 +102,7 @@ impl Action {
             | Action::Review { feature, .. }
             | Action::SetBase { feature, .. }
             | Action::Merged { feature, .. }
+            | Action::Freeze { feature, .. }
             | Action::Finish { feature, .. }
             | Action::Pull {
                 row: RowId::Feature(feature),
@@ -113,6 +119,7 @@ impl fmt::Display for Action {
             Action::Review { role, .. } => write!(f, "review {role}"),
             Action::SetBase { role, .. } => write!(f, "set-base {role}"),
             Action::Merged { role, .. } => write!(f, "merged {role}"),
+            Action::Freeze { role, .. } => write!(f, "freeze {role}"),
             Action::Finish { feature, .. } => write!(f, "finish {feature}"),
             Action::Pull { row: RowId::Base } => write!(f, "pull base"),
             Action::Pull {
@@ -1582,6 +1589,30 @@ mod tests {
             a.footer
                 .as_ref()
                 .is_some_and(|f| f.is_error && f.text.contains("no clipboard available"))
+        );
+    }
+
+    #[test]
+    fn the_freeze_action_names_the_role_and_refreshes_its_feature() {
+        let action = Action::Freeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        assert_eq!(action.to_string(), "freeze api");
+        assert_eq!(action.feature(), Some("alpha"));
+        let mut a = app();
+        assert_eq!(a.run(action.clone()), vec![Effect::Run(action.clone())]);
+        let effects = a.update(Event::Done {
+            action,
+            result: Ok(vec!["api: frozen at 0123456".into()]),
+        });
+        assert!(a.running.is_none());
+        assert_eq!(
+            effects,
+            vec![Effect::Request {
+                row: RowId::Feature("alpha".into()),
+                r#gen: 1
+            }]
         );
     }
 }

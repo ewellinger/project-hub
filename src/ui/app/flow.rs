@@ -42,6 +42,11 @@ pub enum Flow {
         feature: String,
         role: String,
     },
+    Freeze {
+        feature: String,
+        /// Roles offered, in manifest order; filled at `Begin`.
+        roles: Vec<String>,
+    },
     Finish {
         feature: String,
     },
@@ -64,6 +69,7 @@ impl Flow {
             Flow::Review { feature, role } => review(feature, role, answer, app),
             Flow::SetBase { feature, role } => set_base(feature, role, answer, app),
             Flow::Merged { feature, role } => merged(feature, role, answer, app),
+            Flow::Freeze { feature, roles } => freeze(feature, roles, answer, app),
             Flow::Finish { feature } => finish(feature, answer, app),
             Flow::Copy {
                 feature,
@@ -300,6 +306,55 @@ fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
             role: role.to_string(),
             force,
         }),
+        _ => Step::Cancel("unexpected answer".into()),
+    }
+}
+
+/// Pick a role to freeze: every manifest role without a pin. A role with an
+/// open change gets that change pinned; any other gets a reference
+/// checkout. The role under the view's cursor is preselected.
+fn freeze(feature: &str, roles: &mut Vec<String>, answer: Answer, app: &App) -> Step {
+    match answer {
+        Answer::Begin => {
+            let Some(record) = feature_record(app, feature) else {
+                return Step::Cancel("status not loaded yet; press r".into());
+            };
+            let free: Vec<&hub::manifest::RepoSpec> = app
+                .repos
+                .iter()
+                .filter(|r| record.pin(&r.role).is_none())
+                .collect();
+            if free.is_empty() {
+                return Step::Cancel(format!("every role is already frozen in {feature}"));
+            }
+            *roles = free.iter().map(|r| r.role.clone()).collect();
+            let labels = free
+                .iter()
+                .map(|r| {
+                    let what = if record.open_change(&r.role).is_some() {
+                        "pins its open change"
+                    } else {
+                        "reference checkout"
+                    };
+                    format!("{}  ({what})", role_label(r))
+                })
+                .collect();
+            let mut overlay = Overlay::select(format!("Freeze a role in {feature}"), labels);
+            let under_cursor = app.selected_role_row().map(|r| r.role.as_str());
+            if let Overlay::Select { cursor, .. } = &mut overlay
+                && let Some(i) = roles.iter().position(|r| Some(r.as_str()) == under_cursor)
+            {
+                *cursor = i;
+            }
+            Step::Show(overlay)
+        }
+        Answer::Picked(i) => match roles.get(i) {
+            Some(role) => Step::Run(Action::Freeze {
+                feature: feature.to_string(),
+                role: role.clone(),
+            }),
+            None => Step::Cancel("unexpected answer".into()),
+        },
         _ => Step::Cancel("unexpected answer".into()),
     }
 }
@@ -803,8 +858,10 @@ fn new_feature(state: &mut NewFeature, answer: Answer, app: &App) -> Step {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ui::app::feature::tests::{change, on_feature, status_row, suspense};
-    use crate::ui::app::{Cached, Loaded, Preview, Report, RowId};
+    use crate::ui::app::feature::tests::{
+        change, frozen_ui, on_feature, on_report, status_row, suspense,
+    };
+    use crate::ui::app::{Cached, Loaded, Preview, Report, RowId, Screen, Selected};
     use hub::feature::{Feature, FeatureStatus, Owner, Stage};
     use hub::ops::status::StatusReport;
     use hub::ops::suggest::{BranchRow, Suggestion};
@@ -1642,6 +1699,79 @@ mod tests {
         assert!(
             !text.iter().any(|l| l.contains("/wt/api/old-api")),
             "the merged api row must not be previewed: {text:?}"
+        );
+    }
+
+    #[test]
+    fn freeze_offers_every_unfrozen_role_with_the_cursor_role_preselected() {
+        let mut app = on_feature();
+        app.repos = vec![
+            repo("api", "api-clone", ""),
+            repo("ui", "ui-clone", "web ui"),
+            repo("bff", "bff-clone", ""),
+        ];
+        app.screen = Screen::Feature {
+            name: "suspense".into(),
+            selected: Some(Selected::Change(1)), // the merged ui row
+        };
+        let mut flow = Flow::Freeze {
+            feature: "suspense".into(),
+            roles: Vec::new(),
+        };
+        let Step::Show(Overlay::Select {
+            title,
+            rows: labels,
+            cursor,
+            ..
+        }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert_eq!(title, "Freeze a role in suspense");
+        assert_eq!(
+            labels,
+            vec![
+                "api  api-clone  (pins its open change)",
+                "ui  ui-clone  web ui  (reference checkout)",
+                "bff  bff-clone  (reference checkout)",
+            ]
+        );
+        assert_eq!(cursor, 1, "the role under the view's cursor");
+        assert_eq!(
+            flow.advance(Answer::Picked(2), &app),
+            Step::Run(Action::Freeze {
+                feature: "suspense".into(),
+                role: "bff".into()
+            })
+        );
+    }
+
+    #[test]
+    fn freeze_leaves_out_frozen_roles_and_cancels_when_none_are_left() {
+        let mut app = on_report(frozen_ui());
+        app.repos = vec![repo("api", "api-clone", ""), repo("ui", "ui-clone", "")];
+        let mut flow = Flow::Freeze {
+            feature: "suspense".into(),
+            roles: Vec::new(),
+        };
+        let Step::Show(Overlay::Select {
+            rows: labels,
+            cursor,
+            ..
+        }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert_eq!(labels, vec!["api  api-clone  (pins its open change)"]);
+        assert_eq!(cursor, 0);
+        app.repos = vec![repo("ui", "ui-clone", "")];
+        let mut flow = Flow::Freeze {
+            feature: "suspense".into(),
+            roles: Vec::new(),
+        };
+        assert_eq!(
+            flow.advance(Answer::Begin, &app),
+            Step::Cancel("every role is already frozen in suspense".into())
         );
     }
 }
