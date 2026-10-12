@@ -2,11 +2,12 @@ use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 
 use crate::error::{HubError, Result};
-use crate::feature::{Change, Feature, Owner, Stage, Worktree};
+use crate::feature::{Change, Feature, Owner, Pin, Stage, Worktree, short_sha};
 use crate::git::{Git, same_path};
 use crate::hub::Hub;
 use crate::manifest::RepoSpec;
 use crate::names;
+use crate::ops::freeze::change_pin;
 
 const LOCAL_CONFIG_FILES: [&str; 2] = [".vscode/settings.json", ".env"];
 
@@ -109,12 +110,26 @@ pub struct AddOptions<'a> {
     /// Branch the change merges into, without `origin/`; the role's
     /// manifest base when `None`.
     pub base: Option<&'a str>,
+    /// Start a new branch for a frozen role from `origin/<base>` instead of
+    /// the pin, and drop the pin. No effect on a role that is not frozen.
+    pub from_latest: bool,
+}
+
+impl AddOptions<'_> {
+    /// Whether a frozen role's pin carries onto the change: only when the
+    /// caller chose no other start point. `--from` never meets an existing
+    /// branch here: `open_change` refuses that on a frozen role.
+    pub fn keeps_pin(&self) -> bool {
+        !self.from_latest && self.from.is_none()
+    }
 }
 
 #[derive(Debug)]
 pub struct Opened {
     pub change: Change,
     pub path: PathBuf,
+    /// The pin the change carries over from a frozen reference worktree.
+    pub pin: Option<Pin>,
     pub lines: Vec<String>,
 }
 
@@ -166,6 +181,11 @@ pub fn open_change(
         }
         None => repo.base.clone(),
     };
+    // A frozen reference role hands its pin to the change unless the caller
+    // chose another start (`--from`, `--from-latest`). `add` has already
+    // refused a change base that differs from the pin's base.
+    let frozen = feature.pin(opts.role).filter(|p| p.worktree.is_some());
+    let carried = frozen.filter(|_| opts.keeps_pin());
     git.fetch("origin")?;
     let base_ref = format!("origin/{base}");
     let base_tip = git.rev_parse(&base_ref).map_err(|_| {
@@ -202,6 +222,22 @@ pub fn open_change(
         .find(|w| w.branch.as_deref() == Some(branch.as_str()))
         .map(|w| w.path);
 
+    // `--from` is ignored for an existing branch; on a frozen role that
+    // would silently drop the pin.
+    if let Some(frozen) = frozen
+        && opts.from.is_some()
+        && (local || remote)
+    {
+        return Err(HubError::Precondition(format!(
+            "--from only starts a new branch, and {branch} already exists; \
+             on frozen role '{}' it would drop the pin at {} without using --from. \
+             Leave out --from to keep a pin at {branch}'s merge base with {}, or pass --from-latest to drop the pin",
+            opts.role,
+            frozen.short(),
+            frozen.base
+        )));
+    }
+
     match (local, remote) {
         (true, true) => {
             let remote_ref = format!("origin/{branch}");
@@ -227,21 +263,58 @@ pub fn open_change(
             lines.push(format!("Created branch {branch} tracking origin/{branch}"));
         }
         (false, false) => {
-            let start = opts
-                .from
-                .map(str::to_string)
-                .unwrap_or_else(|| base_ref.clone());
+            let start = match (opts.from, carried) {
+                (Some(from), _) => from.to_string(),
+                (None, Some(pin)) => pin.sha.clone(),
+                (None, None) => base_ref.clone(),
+            };
             git.create_branch(&branch, &start)?;
             created.branches.push((clone_dir.clone(), branch.clone()));
             lines.push(format!("Created branch {branch} from {start}"));
         }
     }
 
-    // The fork point: a branch created from --from, or reused with work of
-    // its own, records where it actually left the base. A fresh branch from
-    // origin/<base> has the base tip as its merge base. Unrelated histories
-    // fall back to the tip so an adopted branch is never refused here.
-    let base_sha = git.merge_base(&branch, &base_ref)?.unwrap_or(base_tip);
+    let pin = match carried {
+        Some(frozen) => {
+            // A branch made here starts at the pin; an existing branch keeps
+            // a pin where it left the local base.
+            let sha = if !local && !remote {
+                frozen.sha.clone()
+            } else {
+                change_pin(&git, &branch, &frozen.base)?
+            };
+            lines.push(format!("Pinned to {} ({})", short_sha(&sha), frozen.base));
+            Some(Pin {
+                role: opts.role.to_string(),
+                clone: repo.clone.clone(),
+                base: frozen.base.clone(),
+                sha,
+                worktree: None,
+            })
+        }
+        None => {
+            if let Some(frozen) = frozen {
+                lines.push(format!(
+                    "Dropped the pin at {}; the change compares against origin/{base}",
+                    frozen.short()
+                ));
+            }
+            None
+        }
+    };
+
+    // The fork point. A change that carries a pin left the base at the pin:
+    // a local-only pin is not on origin/<base>, and the merge base with
+    // origin/<base> would be older, so `status` would call the untouched
+    // branch merged once the local base is pushed. Otherwise a branch
+    // created from --from, or reused with work of its own, records where it
+    // actually left the base, and a fresh branch from origin/<base> has the
+    // base tip as its merge base. Unrelated histories fall back to the tip
+    // so an adopted branch is never refused here.
+    let base_sha = match &pin {
+        Some(pin) => pin.sha.clone(),
+        None => git.merge_base(&branch, &base_ref)?.unwrap_or(base_tip),
+    };
 
     let (worktree, path) = match checked_out {
         Some(existing) => {
@@ -316,6 +389,7 @@ pub fn open_change(
             base_sha: Some(base_sha),
         },
         path,
+        pin,
         lines,
     })
 }

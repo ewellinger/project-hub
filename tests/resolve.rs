@@ -43,6 +43,7 @@ fn opts(role: &str) -> AddOptions<'_> {
         from: None,
         worktree: None,
         base: None,
+        from_latest: false,
     }
 }
 
@@ -135,6 +136,7 @@ fn refuses_worktree_names_that_are_paths_before_touching_anything() {
             from: None,
             worktree: Some(bad),
             base: None,
+            from_latest: false,
         };
         let err = open_change(&w.hub, &w.feature, &o, &mut created).unwrap_err();
         assert!(
@@ -173,6 +175,7 @@ fn uses_branch_template_and_explicit_overrides() {
         from: Some("start-here"),
         worktree: Some("custom"),
         base: None,
+        from_latest: false,
     };
     let opened = open_change(&w.hub, &w.feature, &o, &mut created).unwrap();
     assert_eq!(opened.change.branch, "feature/ACME-1/x");
@@ -190,6 +193,7 @@ fn flattens_slashes_in_created_worktree_names() {
         from: None,
         worktree: None,
         base: None,
+        from_latest: false,
     };
     let opened = open_change(&w.hub, &w.feature, &o, &mut created).unwrap();
     assert_eq!(opened.change.worktree.unwrap().name, "feature-acme-x");
@@ -243,6 +247,7 @@ fn reuses_a_local_branch_and_fast_forwards_when_behind() {
         from: None,
         worktree: None,
         base: None,
+        from_latest: false,
     };
     let ui = w.fx.project_home.join("ui-clone");
     w.fx.git(&ui, &["branch", "local-only"]);
@@ -317,6 +322,7 @@ fn adopts_a_review_worktree_under_worktree_dir() {
         from: None,
         worktree: Some("other"),
         base: None,
+        from_latest: false,
     };
     let err = open_change(&w.hub, &w.feature, &o, &mut created).unwrap_err();
     assert!(
@@ -369,6 +375,7 @@ fn refuses_path_collisions_and_bad_preconditions() {
         from: None,
         worktree: None,
         base: None,
+        from_latest: false,
     };
     assert!(matches!(
         open_change(&w.hub, &w.feature, &o, &mut created).unwrap_err(),
@@ -403,6 +410,7 @@ fn rollback_removes_only_what_was_created() {
         from: None,
         worktree: None,
         base: None,
+        from_latest: false,
     };
     let ui_opened = open_change(&w.hub, &w.feature, &o, &mut created).unwrap();
     assert!(ui_opened.path.exists());
@@ -446,6 +454,7 @@ fn explicit_base_is_recorded_separately_from_the_start_point() {
         from: Some("start-here"),
         worktree: None,
         base: Some("feature/canonical"),
+        from_latest: false,
     };
     let mut created = Created::new();
     let opened = open_change(&w.hub, &w.feature, &o, &mut created).unwrap();
@@ -492,6 +501,7 @@ fn refuses_a_bad_or_absent_base_before_touching_anything() {
             from: None,
             worktree: None,
             base: Some(bad),
+            from_latest: false,
         };
         let mut created = Created::new();
         let err = open_change(&w.hub, &w.feature, &o, &mut created).unwrap_err();
@@ -507,6 +517,7 @@ fn refuses_a_bad_or_absent_base_before_touching_anything() {
         from: None,
         worktree: None,
         base: Some("not-there"),
+        from_latest: false,
     };
     let mut created = Created::new();
     let err = open_change(&w.hub, &w.feature, &o, &mut created).unwrap_err();

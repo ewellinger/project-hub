@@ -164,6 +164,7 @@ fn start_inner(
             from: None,
             worktree: None,
             base: None,
+            from_latest: false,
         };
         let opened = open_change(hub, &feature, &add, created)?;
         lines.push(format!(

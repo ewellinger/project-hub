@@ -126,6 +126,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                             from: None,
                             worktree: None,
                             base: None,
+                            from_latest: false,
                         },
                     )
                 }

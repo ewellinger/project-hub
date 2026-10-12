@@ -521,6 +521,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         from: from.as_deref(),
                         worktree: worktree.as_deref(),
                         base: base.as_deref(),
+                        from_latest: false,
                     };
                     hub.with_lock(|hub| {
                         let mut f = hub.resolve_feature(feature.as_deref())?;
