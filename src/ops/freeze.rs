@@ -41,15 +41,20 @@ pub fn resolve_pin(git: &Git, base: &str, at: Option<&str>) -> Result<String> {
     Ok(sha)
 }
 
-/// Pin a role with no open change to its local base (or `at`) and check
-/// the commit out, detached, in a hub-owned reference worktree.
-pub fn freeze(
+/// The step `freeze` and `start --freeze` share: add a frozen pin and its
+/// reference worktree to `feature`. Refuses a role that is already frozen,
+/// has an open change, or whose clone or worktree path is unusable. Checks
+/// the local base tip (or `at`) out, detached, in a new worktree, records
+/// that worktree in `created` so the caller can roll it back, and pushes
+/// the `Pin` onto `feature.pins`. Does not save. On error nothing was
+/// created and `feature` is unchanged.
+pub fn add_frozen(
     hub: &Hub,
     feature: &mut Feature,
     role: &str,
     at: Option<&str>,
-) -> Result<Vec<String>> {
-    feature.require_open()?;
+    created: &mut Created,
+) -> Result<String> {
     let repo = hub.manifest.require_repo(role)?.clone();
     if let Some(pin) = feature.pin(role) {
         return Err(HubError::Precondition(format!(
@@ -80,25 +85,41 @@ pub fn freeze(
             path.display()
         )));
     }
+    git.worktree_add_detached(&path, &sha)?;
+    created.worktrees.push((clone_dir, path.clone()));
+    let line = format!(
+        "{role}: frozen at {} ({}) in {}",
+        short_sha(&sha),
+        repo.base,
+        path.display()
+    );
+    feature.pins.push(Pin {
+        role: role.to_string(),
+        clone: repo.clone,
+        base: repo.base,
+        sha,
+        worktree: Some(Worktree {
+            name,
+            owner: Owner::Hub,
+        }),
+    });
+    Ok(line)
+}
 
+/// Pin a role with no open change to its local base (or `at`) and check
+/// the commit out, detached, in a hub-owned reference worktree.
+pub fn freeze(
+    hub: &Hub,
+    feature: &mut Feature,
+    role: &str,
+    at: Option<&str>,
+) -> Result<Vec<String>> {
+    feature.require_open()?;
     // Transaction: worktree and record write succeed together or the
     // worktree is removed again. Workspace and tmux come after the write.
     let mut created = Created::new();
-    let saved = git.worktree_add_detached(&path, &sha).and_then(|()| {
-        created.worktrees.push((clone_dir.clone(), path.clone()));
-        feature.pins.push(Pin {
-            role: role.to_string(),
-            clone: repo.clone.clone(),
-            base: repo.base.clone(),
-            sha: sha.clone(),
-            worktree: Some(Worktree {
-                name,
-                owner: Owner::Hub,
-            }),
-        });
-        hub.save_feature(feature)
-    });
-    if let Err(err) = saved {
+    let mut lines = vec![add_frozen(hub, feature, role, at, &mut created)?];
+    if let Err(err) = hub.save_feature(feature) {
         feature.remove_pin(role);
         let mut warnings = created.rollback();
         if warnings.is_empty() {
@@ -108,12 +129,10 @@ pub fn freeze(
         return Err(HubError::Precondition(warnings.join("\n")));
     }
 
-    let mut lines = vec![format!(
-        "{role}: frozen at {} ({}) in {}",
-        short_sha(&sha),
-        repo.base,
-        path.display()
-    )];
+    let path = feature
+        .pin(role)
+        .and_then(|p| pin_path(hub, p))
+        .expect("add_frozen pushed a pin with a worktree");
     after_save(
         &mut lines,
         write_workspace(hub, feature).map(|_| Vec::new()),
