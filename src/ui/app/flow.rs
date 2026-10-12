@@ -631,6 +631,21 @@ impl BranchPick {
         }
     }
 
+    /// Whether `branch` names no existing ref: the default row marked
+    /// `new`, or a typed name no loaded row has. `suggestions` lists every
+    /// local and origin branch the hub could adopt, so a name missing from
+    /// the rows does not exist (or could not be added anyway).
+    pub fn is_new(&self, branch: &str) -> bool {
+        self.rows.iter().all(|r| match r {
+            BranchRow::Default {
+                branch: b,
+                existing,
+            } => b != branch || existing.is_none(),
+            BranchRow::Suggested(s) => s.branch != branch,
+            BranchRow::Other => true,
+        })
+    }
+
     /// Text answered on the branch step: the typed name once `Other` is
     /// open, or else the filter the user typed before picking `Other`, which
     /// opens the name input prefilled with it.
@@ -666,6 +681,9 @@ pub struct AddRole {
     /// Addable roles in manifest order, filled at `Begin`.
     pub roles: Vec<String>,
     pub pick: Option<BranchPick>,
+    /// The new branch picked for a frozen role, waiting on the
+    /// from-frozen / from-latest choice.
+    pub branch: Option<String>,
 }
 
 impl AddRole {
@@ -674,6 +692,7 @@ impl AddRole {
             feature,
             roles: Vec::new(),
             pick: None,
+            branch: None,
         }
     }
 }
@@ -688,8 +707,54 @@ pub fn role_label(repo: &hub::manifest::RepoSpec) -> String {
     s
 }
 
+/// The add for `branch`. For a new branch of a frozen role, first ask
+/// whether it starts from the pinned commit (keeping the pin) or from
+/// `origin/<base>` (dropping it). An existing branch never asks and keeps
+/// the pin, as `hub feature add` does.
+fn add_or_ask_from(state: &mut AddRole, app: &App, branch: String) -> Step {
+    let pick = state.pick.as_ref().expect("picking");
+    let role = pick.role.clone();
+    let pin = feature_record(app, &state.feature)
+        .and_then(|f| f.pin(&role))
+        .filter(|p| p.worktree.is_some() && pick.is_new(&branch));
+    let Some(pin) = pin else {
+        return Step::Run(Action::Add {
+            feature: state.feature.clone(),
+            role,
+            branch,
+            from_latest: false,
+        });
+    };
+    // `from_latest` starts at origin/<the role's current base>, which a
+    // `hub repo set --base` after the freeze may have moved off `pin.base`.
+    let base = app
+        .repos
+        .iter()
+        .find(|r| r.role == role)
+        .map_or(pin.base.as_str(), |r| r.base.as_str());
+    let rows = vec![
+        format!("frozen {}  (keeps the pin)", pin.short()),
+        format!("latest origin/{base}  (drops the pin)"),
+    ];
+    let title = format!("Start {branch} from");
+    state.branch = Some(branch);
+    Step::Show(Overlay::select(title, rows))
+}
+
 fn add_role(state: &mut AddRole, answer: Answer, app: &App) -> Step {
     let feature = state.feature.clone();
+    if let Some(branch) = state.branch.clone() {
+        let role = state.pick.as_ref().expect("picking").role.clone();
+        return match answer {
+            Answer::Picked(i @ (0 | 1)) => Step::Run(Action::Add {
+                feature,
+                role,
+                branch,
+                from_latest: i == 1,
+            }),
+            _ => Step::Cancel("unexpected answer".into()),
+        };
+    }
     // Match on whether a branch pick is in progress, not on `&mut state.pick`
     // itself: the arms below assign to `state.pick` and read `state.roles`.
     let picking = state.pick.is_some();
@@ -709,7 +774,13 @@ fn add_role(state: &mut AddRole, answer: Answer, app: &App) -> Step {
                 ));
             }
             state.roles = addable.iter().map(|r| r.role.clone()).collect();
-            let labels = addable.iter().map(|r| role_label(r)).collect();
+            let labels = addable
+                .iter()
+                .map(|r| match record.pin(&r.role) {
+                    Some(pin) => format!("{}  (frozen @{})", role_label(r), pin.short()),
+                    None => role_label(r),
+                })
+                .collect();
             Step::Show(Overlay::select(format!("Role to add to {feature}"), labels))
         }
         (false, Answer::Picked(i)) => {
@@ -728,24 +799,16 @@ fn add_role(state: &mut AddRole, answer: Answer, app: &App) -> Step {
         }
         (true, Answer::Loaded(Err(e))) => Step::Cancel(e),
         (true, Answer::Picked(i)) => {
-            let pick = state.pick.as_mut().expect("picking");
-            match pick.picked(i) {
-                Ok(branch) => Step::Run(Action::Add {
-                    feature,
-                    role: pick.role.clone(),
-                    branch,
-                }),
+            let picked = state.pick.as_mut().expect("picking").picked(i);
+            match picked {
+                Ok(branch) => add_or_ask_from(state, app, branch),
                 Err(step) => step,
             }
         }
         (true, Answer::Text(text)) => {
-            let pick = state.pick.as_mut().expect("picking");
-            match pick.text(text) {
-                Ok(branch) => Step::Run(Action::Add {
-                    feature,
-                    role: pick.role.clone(),
-                    branch,
-                }),
+            let typed = state.pick.as_mut().expect("picking").text(text);
+            match typed {
+                Ok(branch) => add_or_ask_from(state, app, branch),
                 Err(step) => step,
             }
         }
@@ -1318,7 +1381,8 @@ mod tests {
             Step::Run(Action::Add {
                 feature: "suspense".into(),
                 role: "ui".into(),
-                branch: "main-ish".into()
+                branch: "main-ish".into(),
+                from_latest: false
             })
         );
     }
@@ -1352,7 +1416,8 @@ mod tests {
             Step::Run(Action::Add {
                 feature: "suspense".into(),
                 role: "ui".into(),
-                branch: "feature/z".into()
+                branch: "feature/z".into(),
+                from_latest: false
             })
         );
     }
@@ -1424,7 +1489,8 @@ mod tests {
             Step::Run(Action::Add {
                 feature: "suspense".into(),
                 role: "ui".into(),
-                branch: "fix/zz".into()
+                branch: "fix/zz".into(),
+                from_latest: false
             })
         );
     }
@@ -2056,5 +2122,139 @@ mod tests {
             )),
             "{lines:?}"
         );
+    }
+
+    #[test]
+    fn adding_a_frozen_role_asks_whether_to_start_from_the_pin_or_the_latest_base() {
+        let mut app = on_report(frozen_ui());
+        app.repos = vec![
+            repo("api", "api-clone", ""),
+            repo("ui", "ui-clone", "web ui"),
+        ];
+        let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
+        let Step::Show(Overlay::Select { rows: labels, .. }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert_eq!(labels, vec!["ui  ui-clone  web ui  (frozen @0123456)"]);
+        flow.advance(Answer::Picked(0), &app);
+        flow.advance(
+            Answer::Loaded(Ok(Loaded::Branches {
+                role: "ui".into(),
+                rows: rows(),
+            })),
+            &app,
+        );
+        let Step::Show(Overlay::Select {
+            title,
+            rows: labels,
+            ..
+        }) = flow.advance(Answer::Picked(0), &app)
+        else {
+            panic!()
+        };
+        assert_eq!(title, "Start feature/y from");
+        assert_eq!(
+            labels,
+            vec![
+                "frozen 0123456  (keeps the pin)",
+                "latest origin/main  (drops the pin)"
+            ]
+        );
+        let mut keep = flow.clone();
+        assert_eq!(
+            keep.advance(Answer::Picked(0), &app),
+            Step::Run(Action::Add {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                branch: "feature/y".into(),
+                from_latest: false
+            })
+        );
+        assert_eq!(
+            flow.advance(Answer::Picked(1), &app),
+            Step::Run(Action::Add {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                branch: "feature/y".into(),
+                from_latest: true
+            })
+        );
+    }
+
+    #[test]
+    fn a_typed_branch_for_a_frozen_role_asks_too() {
+        let mut app = on_report(frozen_ui());
+        app.repos = vec![repo("ui", "ui-clone", "")];
+        let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
+        flow.advance(Answer::Begin, &app);
+        flow.advance(Answer::Picked(0), &app);
+        flow.advance(
+            Answer::Loaded(Ok(Loaded::Branches {
+                role: "ui".into(),
+                rows: rows(),
+            })),
+            &app,
+        );
+        flow.advance(Answer::Picked(2), &app); // type another name
+        let Step::Show(Overlay::Select { title, .. }) =
+            flow.advance(Answer::Text("feature/z".into()), &app)
+        else {
+            panic!()
+        };
+        assert_eq!(title, "Start feature/z from");
+    }
+
+    /// Like `hub feature add`, an existing branch never asks: it keeps the
+    /// pin (at the branch's merge base), so `from_latest` is false.
+    #[test]
+    fn an_existing_branch_for_a_frozen_role_adds_without_asking() {
+        let mut app = on_report(frozen_ui());
+        app.repos = vec![repo("ui", "ui-clone", "")];
+        let run = |branch: &str| {
+            Step::Run(Action::Add {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                branch: branch.into(),
+                from_latest: false,
+            })
+        };
+        let start = |rows: Vec<BranchRow>| {
+            let mut flow = Flow::AddRole(AddRole::new("suspense".into()));
+            flow.advance(Answer::Begin, &app);
+            flow.advance(Answer::Picked(0), &app);
+            flow.advance(
+                Answer::Loaded(Ok(Loaded::Branches {
+                    role: "ui".into(),
+                    rows,
+                })),
+                &app,
+            );
+            flow
+        };
+        // A suggested branch git already knows.
+        let mut flow = start(rows());
+        assert_eq!(flow.advance(Answer::Picked(1), &app), run("main-ish"));
+        // A typed name that matches a loaded branch.
+        let mut flow = start(rows());
+        flow.advance(Answer::Picked(2), &app); // type another name
+        assert_eq!(
+            flow.advance(Answer::Text("main-ish".into()), &app),
+            run("main-ish")
+        );
+        // The default branch when it already exists.
+        let mut flow = start(vec![
+            BranchRow::Default {
+                branch: "feature/y".into(),
+                existing: Some(Suggestion {
+                    branch: "feature/y".into(),
+                    local: false,
+                    origin: true,
+                    worktree: None,
+                }),
+            },
+            BranchRow::Other,
+        ]);
+        assert_eq!(flow.advance(Answer::Picked(0), &app), run("feature/y"));
     }
 }

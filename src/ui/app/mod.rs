@@ -62,6 +62,9 @@ pub enum Action {
         feature: String,
         role: String,
         branch: String,
+        /// For a frozen role: branch from the latest base and drop the
+        /// pin, instead of branching from the pin and keeping it.
+        from_latest: bool,
     },
     Review {
         feature: String,
@@ -865,7 +868,8 @@ mod tests {
             Action::Add {
                 feature: "x".into(),
                 role: "ui".into(),
-                branch: "b".into()
+                branch: "b".into(),
+                from_latest: false
             }
             .to_string(),
             "add ui to x"

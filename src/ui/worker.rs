@@ -115,6 +115,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                     feature,
                     role,
                     branch,
+                    from_latest,
                 } => {
                     let mut f = hub.load_feature(feature)?;
                     ops::add::add(
@@ -126,7 +127,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                             from: None,
                             worktree: None,
                             base: None,
-                            from_latest: false,
+                            from_latest: *from_latest,
                         },
                     )
                 }
