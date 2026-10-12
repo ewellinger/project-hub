@@ -205,7 +205,9 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
         // The branch is the distinguishing name; never truncate it.
         Constraint::Length(width_of(&|r| r.branch.chars().count(), 6, usize::MAX)),
         Constraint::Length(width_of(&|r| r.stage.chars().count(), 5, 8)),
-        Constraint::Length(width_of(&|r| state_text(r).chars().count(), 5, 40)),
+        // Wide enough for a pinned change's whole state, such as
+        // `behind pin <sha> by <n>, <base> +N since pin`.
+        Constraint::Length(width_of(&|r| state_text(r).chars().count(), 5, 56)),
         Constraint::Min(4),
     ];
     let header = TableRow::new(["ROLE", "BRANCH", "STAGE", "STATE", "PATH"])
