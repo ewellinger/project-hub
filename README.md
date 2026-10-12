@@ -182,7 +182,9 @@ hub feature finish
 
 `--checkout-template` names each feature's hub worktree and tmux session; it
 takes `{feature}`, `{feature_snake}` (dashes become underscores), and
-`{hub}`. A role's `--branch-template` names the branch `feature start`
+`{hub}`. `hub tmux` from the main hub renders it with `main` as the feature
+to name the base checkouts' session, so `feature start` refuses that
+checkout name. A role's `--branch-template` names the branch `feature start`
 creates in that repo, with `{feature}` substituted; it defaults to
 `{feature}`, and `ROLE:BRANCH` overrides it for one feature.
 
@@ -209,7 +211,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
 | `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
-| `hub tmux` / `hub open` / `hub sync` | Repair the session / open the workspace / regenerate it; from the main hub, `open` uses all base checkouts |
+| `hub tmux` / `hub open` / `hub sync` | Repair the session / open the workspace / regenerate it; from the main hub, `tmux` and `open` use all base checkouts |
 
 Feature commands infer the feature from the hub worktree you are in, or take
 `--feature NAME`. From the main hub without `--feature`, `hub open` opens a

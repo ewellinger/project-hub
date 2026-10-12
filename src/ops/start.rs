@@ -6,7 +6,7 @@ use crate::hub::Hub;
 use crate::names;
 use crate::ops::freeze::add_frozen;
 use crate::ops::resolve::{AddOptions, Created, open_change};
-use crate::ops::session::{after_save, converge_tmux, write_workspace};
+use crate::ops::session::{after_save, base_session_name, converge_tmux, write_workspace};
 use crate::skill;
 
 pub struct StartOptions {
@@ -28,6 +28,11 @@ pub fn preflight(hub: &Hub, name: &str, checkout: Option<&str>) -> Result<String
         names::checkout_name(hub.manifest.checkout_template(), name, &hub.manifest.name)
     });
     names::validate_name("checkout name", &checkout)?;
+    if checkout == base_session_name(hub) {
+        return Err(HubError::Usage(format!(
+            "checkout name '{checkout}' is the tmux session `hub tmux` uses for the base checkouts; pass a different --checkout"
+        )));
+    }
     if hub.feature_path(name).exists() {
         return Err(HubError::Precondition(format!(
             "feature '{name}' already exists"

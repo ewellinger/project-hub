@@ -54,6 +54,60 @@ fn tmux_adds_missing_fixed_windows_to_an_existing_session() {
 }
 
 #[test]
+fn tmux_on_main_converges_a_base_session() {
+    let fx = Fixture::new();
+    let project = fx.project_home.join("acme");
+    std::fs::create_dir_all(&project).unwrap();
+    fx.hub(
+        &project,
+        &["init", "--checkout-template", "dm-{feature_snake}"],
+    )
+    .assert()
+    .success();
+    fx.make_repo("api-clone", "master");
+    fx.add_repo(&project, "api", "api-clone");
+    fx.hub(&project, &["tmux"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Created tmux session dm-main"))
+        .stdout(predicate::str::contains(
+            "Attach with: tmux attach -t dm-main",
+        ));
+    let windows = fx.windows("dm-main");
+    let names: Vec<&str> = windows.iter().map(|(n, _)| n.as_str()).collect();
+    assert_eq!(names, vec!["hub", "ai", "api"]);
+    assert!(windows[0].1.ends_with("/acme"), "{windows:?}");
+    assert!(windows[1].1.ends_with("/acme"), "{windows:?}");
+    assert!(windows[2].1.ends_with("/api-clone"), "{windows:?}");
+    assert!(
+        fx.tmux_log()
+            .contains("send-keys -t =dm-main:hub hub Enter")
+    );
+
+    std::fs::write(
+        fx.tmux_state.join("dm-main/windows"),
+        format!("hub\t{}\n", windows[0].1),
+    )
+    .unwrap();
+    fx.hub(&project, &["tmux"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Added tmux window api"));
+    assert_eq!(fx.window_names("dm-main"), vec!["hub", "ai", "api"]);
+}
+
+#[test]
+fn start_rejects_the_base_session_name_as_a_checkout() {
+    let fx = Fixture::new();
+    let hub = fx.init_hub("acme");
+    fx.hub(&hub, &["feature", "start", "feat-1", "--checkout", "main"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("base checkouts"));
+    assert!(!hub.join(".git/hub/features/feat-1.json").exists());
+}
+
+#[test]
 fn finished_features_are_read_only() {
     let (fx, hub) = world();
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])

@@ -57,7 +57,7 @@ enum Command {
         #[command(subcommand)]
         command: FeatureCommand,
     },
-    /// Create or repair the feature's tmux session (never attaches)
+    /// Create or repair the feature's tmux session, or the base session from the main hub (never attaches)
     Tmux {
         /// Feature name; inferred from the hub worktree when omitted
         #[arg(long)]
@@ -603,6 +603,9 @@ fn run(cli: Cli) -> Result<Vec<String>> {
             let hub = locate()?;
             if let Some(off) = &hub.tmux_off {
                 return Err(HubError::Usage(format!("tmux is off ({})", off.reason)));
+            }
+            if feature.is_none() && hub.cwd_feature.is_none() {
+                return ops::session::converge_base_tmux(&hub);
             }
             let f = hub.resolve_feature(feature.as_deref())?;
             f.require_open()?;
