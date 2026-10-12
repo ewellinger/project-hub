@@ -131,7 +131,8 @@ fn freeze_removes_its_worktree_when_the_record_write_fails() {
     fx.block_feature_writes(&hub);
     fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
         .assert()
-        .failure();
+        .failure()
+        .stderr(predicate::str::contains("Permission denied"));
     fx.allow_feature_writes(&hub);
     assert!(!frozen_wt(&fx).exists());
     let api = fx.project_home.join("api-clone");
@@ -285,6 +286,43 @@ fn unfreeze_refuses_commits_off_the_pin_unless_forced() {
 }
 
 #[test]
+fn refreeze_puts_the_worktree_back_when_the_record_write_fails() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let pin = head(&fx, &frozen_wt(&fx));
+    fx.commit_file(&api, "u1.txt", "u1");
+
+    fx.block_feature_writes(&hub);
+    fx.hub(&hub_wt(&fx), &["feature", "refreeze", "api"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("Permission denied"));
+    fx.allow_feature_writes(&hub);
+    assert_eq!(head(&fx, &frozen_wt(&fx)), pin);
+    assert_eq!(fx.feature_json(&hub, "feat-1")["pins"][0]["sha"], pin);
+}
+
+#[test]
+fn unfreeze_reports_the_stray_commits_before_the_dirt() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.commit_file(&frozen_wt(&fx), "work.txt", "work on the detached head");
+    std::fs::write(frozen_wt(&fx).join("scratch.txt"), "x\n").unwrap();
+
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("is off its pin"));
+    assert!(frozen_wt(&fx).exists());
+    assert_eq!(fx.feature_json(&hub, "feat-1")["pins"][0]["role"], "api");
+}
+
+#[test]
 fn status_lists_the_frozen_role_with_its_pin_and_base_movement() {
     let (fx, _hub) = world();
     let api = fx.project_home.join("api-clone");
@@ -409,6 +447,26 @@ fn finish_refuses_commits_off_the_pin_unless_forced() {
     .success();
     assert!(!frozen_wt(&fx).exists());
     assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "finished");
+}
+
+#[test]
+fn finish_reports_stray_commits_before_a_dirty_change_worktree() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.commit_file(&frozen_wt(&fx), "work.txt", "work on the detached head");
+    let ui_wt = fx.worktree_dir.join("ui-clone").join("feat-1");
+    std::fs::write(ui_wt.join("scratch.txt"), "x\n").unwrap();
+
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("is off its pin"));
+    assert!(frozen_wt(&fx).exists());
+    assert!(ui_wt.exists());
+    assert!(hub_wt(&fx).exists(), "nothing was removed");
+    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "open");
 }
 
 #[test]

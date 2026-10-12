@@ -34,6 +34,13 @@ pub fn finish(
 
     // Check every tree before touching any of them.
     if !force {
+        // Stray commits first: the answer to a dirty refusal is --force,
+        // which would discard them.
+        for pin in &feature.pins {
+            if let Some(path) = pin_path(hub, pin).filter(|p| p.exists()) {
+                require_on_pin(&path, pin)?;
+            }
+        }
         for change in ordered_open_changes(hub, feature) {
             if change.worktree.is_none() {
                 continue;
@@ -60,7 +67,6 @@ pub fn finish(
                     status: git.status_short()?,
                 });
             }
-            require_on_pin(&path, pin)?;
         }
         if hub_wt.exists() {
             let git = Git::new(&hub_wt);

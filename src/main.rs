@@ -239,7 +239,7 @@ enum FeatureCommand {
         /// Feature name; inferred from the hub worktree when omitted
         #[arg(long)]
         feature: Option<String>,
-        /// Remove the frozen worktree even if dirty
+        /// Remove the frozen worktree even if dirty or off its pin (discards commits on its detached HEAD)
         #[arg(long)]
         force: bool,
     },
@@ -277,7 +277,7 @@ enum FeatureCommand {
         /// Feature name; inferred from the hub worktree when omitted
         #[arg(long)]
         feature: Option<String>,
-        /// Remove dirty and adopted worktrees without asking
+        /// Remove dirty, adopted, and off-pin frozen worktrees without asking (discards commits on a frozen worktree's detached HEAD)
         #[arg(long)]
         force: bool,
     },

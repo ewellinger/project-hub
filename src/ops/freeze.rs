@@ -180,6 +180,9 @@ pub fn unfreeze(hub: &Hub, feature: &mut Feature, role: &str, force: bool) -> Re
     let path = pin_path(hub, &pin).filter(|p| p.exists());
     if let Some(path) = &path {
         if !force {
+            // Stray commits first: the answer to a dirty refusal is --force,
+            // which would discard them.
+            require_on_pin(path, &pin)?;
             let git = Git::new(path);
             if git.is_dirty()? {
                 return Err(HubError::Dirty {
@@ -187,7 +190,6 @@ pub fn unfreeze(hub: &Hub, feature: &mut Feature, role: &str, force: bool) -> Re
                     status: git.status_short()?,
                 });
             }
-            require_on_pin(path, &pin)?;
         }
         lines.extend(hub.tmux_warning());
         after_save(
