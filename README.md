@@ -268,7 +268,8 @@ or `--from-latest` is given; an existing branch never asks. `--from` with
 an existing branch is refused on a frozen role, since it would drop the
 pin. A change that keeps the pin must merge into the pin's base: if
 `--base`, or a base changed in `hub.json` since the freeze, says otherwise,
-pass `--from-latest`. The reference worktree is removed once the change is
+pass `--from-latest`. `hub repo set ROLE --base` refuses while an open
+feature has the role frozen, either kind; unfreeze it first. The reference worktree is removed once the change is
 recorded. A dirty one, or one moved off its pin, stops `add` before
 anything is created; if a process still runs in it, `add` undoes the new
 branch and worktree and stops with exit 21. Like `unfreeze`, `add` re-points

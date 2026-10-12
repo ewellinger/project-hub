@@ -139,11 +139,21 @@ pub fn set(hub: &Hub, opts: &SetRepoOptions) -> Result<Vec<String>> {
         note("branch_template", &repo.branch_template, template);
         repo.branch_template = template.clone();
     }
-    if let Some(base) = &opts.base {
+    if let Some(base) = opts.base.as_ref().filter(|b| **b != repo.base) {
         if base.is_empty() || base.starts_with("origin/") {
             return Err(HubError::Usage(format!(
                 "--base '{base}' must be a branch name without origin/"
             )));
+        }
+        // A pin was taken from the current base; moving the base under it
+        // would split the pin's base from the change's.
+        for feature in hub.list_features()? {
+            if feature.is_open() && feature.pin(&opts.role).is_some() {
+                return Err(HubError::Precondition(format!(
+                    "feature '{}' has role '{}' frozen on {}; unfreeze it or finish the feature before changing the base",
+                    feature.name, opts.role, repo.base
+                )));
+            }
         }
         note("base", &repo.base, base);
         repo.base = base.clone();

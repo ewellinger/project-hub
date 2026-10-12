@@ -722,6 +722,19 @@ fn set_base_refuses_a_pinned_change_until_it_is_unfrozen() {
 }
 
 #[test]
+fn set_base_on_a_frozen_reference_role_reports_no_open_change() {
+    let (fx, _hub) = world();
+    fx.remote_branch("api-clone", "release");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(&hub_wt(&fx), &["feature", "set-base", "api", "release"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("no open change for role 'api'"));
+}
+
+#[test]
 fn merged_drops_the_pin_with_the_change() {
     let (fx, hub) = world();
     fx.hub(&hub_wt(&fx), &["feature", "freeze", "ui"])
@@ -910,6 +923,15 @@ fn add_refuses_a_frozen_worktree_moved_off_its_pin() {
         .code(1)
         .stderr(predicate::str::contains("is off its pin"));
     assert_still_frozen(&fx, &hub);
+
+    // Dirty as well: the stray commit is still what gets reported, since
+    // `unfreeze --force`, the way out of a dirty worktree, would lose it.
+    std::fs::write(frozen_wt(&fx).join("scratch.txt"), "x\n").unwrap();
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("is off its pin"));
+    assert_still_frozen(&fx, &hub);
 }
 
 #[test]
@@ -1023,16 +1045,56 @@ fn add_compares_the_pin_with_the_roles_current_base() {
     fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
         .assert()
         .success();
-    // The role's base moves after the freeze; a plain add would merge into
+    // The role's base moves after the freeze (a hub.json pulled from another
+    // machine; `repo set --base` refuses); a plain add would merge into
     // release while the pin came from master.
-    fx.hub(&hub, &["repo", "set", "api", "--base", "release"])
-        .assert()
-        .success();
+    let manifest = hub.join("hub.json");
+    let text = std::fs::read_to_string(&manifest).unwrap();
+    assert_eq!(text.matches("\"base\": \"master\"").count(), 1, "{text}");
+    std::fs::write(
+        &manifest,
+        text.replace("\"base\": \"master\"", "\"base\": \"release\""),
+    )
+    .unwrap();
     fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
         .assert()
         .failure()
         .stderr(predicate::str::contains("--from-latest"));
     assert_still_frozen(&fx, &hub);
+}
+
+#[test]
+fn repo_set_base_refuses_while_the_role_is_frozen_until_unfrozen() {
+    let (fx, hub) = world();
+    fx.remote_branch("api-clone", "release");
+    fx.remote_branch("ui-clone", "release");
+    // api is a frozen reference role, ui a pinned change.
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "ui"])
+        .assert()
+        .success();
+    for role in ["api", "ui"] {
+        fx.hub(&hub, &["repo", "set", role, "--base", "release"])
+            .assert()
+            .code(1)
+            .stderr(predicate::str::contains(format!(
+                "feature 'feat-1' has role '{role}' frozen"
+            )))
+            .stderr(predicate::str::contains("unfreeze"));
+        fx.hub(&hub_wt(&fx), &["feature", "unfreeze", role])
+            .assert()
+            .success();
+        fx.hub(&hub, &["repo", "set", role, "--base", "release"])
+            .assert()
+            .success();
+    }
+    let manifest: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(hub.join("hub.json")).unwrap()).unwrap();
+    for repo in manifest["repos"].as_array().unwrap() {
+        assert_eq!(repo["base"], "release", "{repo}");
+    }
 }
 
 #[test]

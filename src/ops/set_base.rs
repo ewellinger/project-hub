@@ -7,11 +7,11 @@ use crate::hub::Hub;
 /// `base_sha` as the merge base of the feature branch and `origin/<branch>`.
 /// Touches only the feature file: no checkout, reset, merge, rebase, or
 /// change to git's upstream configuration.
-/// Refuses a pinned role: the pin was taken from the current base.
+/// Refuses a pinned change: the pin was taken from the current base.
 pub fn set_base(hub: &Hub, feature: &mut Feature, role: &str, branch: &str) -> Result<Vec<String>> {
     feature.require_open()?;
     hub.manifest.require_repo(role)?;
-    if let Some(pin) = feature.pin(role) {
+    if let Some(pin) = feature.pin(role).filter(|p| p.worktree.is_none()) {
         return Err(HubError::Precondition(format!(
             "role '{role}' is frozen at {} on {}; unfreeze first (`hub feature unfreeze {role}`), then set the base",
             pin.short(),

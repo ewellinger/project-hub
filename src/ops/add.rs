@@ -23,8 +23,8 @@ pub fn add(hub: &Hub, feature: &mut Feature, opts: &AddOptions) -> Result<Vec<St
     if let Some(pin) = &frozen
         && opts.keeps_pin()
     {
-        // The effective change base: a `hub repo set --base` after the
-        // freeze moves it as surely as `--base` does.
+        // The effective change base: a hub.json pulled since the freeze
+        // can move it as surely as `--base` does (`repo set --base` refuses).
         let base = match opts.base {
             Some(b) => b.to_string(),
             None => hub.manifest.require_repo(opts.role)?.base.clone(),
@@ -41,6 +41,10 @@ pub fn add(hub: &Hub, feature: &mut Feature, opts: &AddOptions) -> Result<Vec<St
         }
     }
     if let (Some(pin), Some(path)) = (&frozen, &frozen_path) {
+        // Same rule as EW-95's refreeze/unfreeze/finish: commits made on
+        // the detached HEAD would be orphaned by the removal below, so they
+        // are reported before the dirt that `unfreeze --force` would clear.
+        require_on_pin(path, pin)?;
         let git = Git::new(path);
         if git.is_dirty()? {
             return Err(HubError::Dirty {
@@ -48,9 +52,6 @@ pub fn add(hub: &Hub, feature: &mut Feature, opts: &AddOptions) -> Result<Vec<St
                 status: git.status_short()?,
             });
         }
-        // Same rule as EW-95's refreeze/unfreeze/finish: commits made on
-        // the detached HEAD would be orphaned by the removal below.
-        require_on_pin(path, pin)?;
     }
 
     // Transaction: branch, worktree, and the record write succeed together or
