@@ -9,6 +9,7 @@ All notable changes to `hub` are recorded here. The format follows
 ### Added
 - `hub feature freeze ROLE [--at REF]` pins a role outside the feature to a commit of its local base in a detached reference worktree that joins the feature's workspace and tmux session; `unfreeze` releases it and `refreeze` moves it to the base's current local tip. `hub status` shows frozen roles with their pin and how far the base has moved since (`frozen_sha`, `base_moved` in `--json`).
 - `hub feature start --freeze ROLE` (repeatable) freezes roles at their local base tip as part of the start; a role given to both `--repo` and `--freeze` is refused. In a terminal, the start prompt offers to freeze the roles you didn't choose. Frozen worktrees are rolled back with the rest if the start fails.
+- `hub feature freeze` also pins an open change at its branch's merge base with the local base; `status` measures `base_behind` against the pin, shows it as `behind pin <sha> by <n>`, and reports `frozen_sha` and `base_moved` on the change row, `refreeze` reports the new lag, and `merged` drops the pin. `hub feature add` on a frozen role replaces its reference worktree with the change and carries the pin onto it: a new branch starts at the pin unless `--from-latest` (or `--from REF`), and an adopted branch keeps a pin at its merge base; in a terminal it asks which start a new branch takes, also with `--branch`. `--from` with an existing branch is refused on a frozen role. `set-base` refuses a pinned change until it is unfrozen.
 
 ## [0.22.1] - 2026-10-08
 
