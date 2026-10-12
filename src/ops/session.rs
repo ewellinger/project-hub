@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 use crate::error::{HubError, Result};
 use crate::feature::{Change, Feature, Pin};
 use crate::hub::Hub;
+use crate::names;
 use crate::workspace::{Folder, relative_path, render};
 
 /// Where a change lives on disk: its worktree, or the main clone. Uses the
@@ -75,10 +76,20 @@ pub fn ordered_open_changes<'a>(hub: &Hub, feature: &'a Feature) -> Vec<&'a Chan
 }
 
 pub fn attach_line(feature: &Feature) -> String {
-    format!("Attach with: tmux attach -t {}", feature.checkout)
+    attach_session_line(&feature.checkout)
+}
+
+fn attach_session_line(session: &str) -> String {
+    format!("Attach with: tmux attach -t {session}")
 }
 
 pub const TMUX_OFF_LINE: &str = "tmux is off; no session created";
+
+/// The session `hub tmux` makes on `main`: `checkout_template` rendered
+/// with `main` as the feature.
+pub fn base_session_name(hub: &Hub) -> String {
+    names::checkout_name(hub.manifest.checkout_template(), "main", &hub.manifest.name)
+}
 
 /// Ensure the session exists with windows `hub`, `ai`, then one per open
 /// change or frozen role in manifest order. Existing windows are never moved or killed, so
@@ -86,27 +97,52 @@ pub const TMUX_OFF_LINE: &str = "tmux is off; no session created";
 /// a fresh session is guaranteed the documented order. A session it creates
 /// starts `hub` in the `hub` window.
 pub fn converge_tmux(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
+    let hub_wt = hub.hub_worktree_path(&feature.checkout);
+    converge_session(
+        hub,
+        &feature.checkout,
+        &hub_wt,
+        role_checkouts(hub, feature),
+    )
+}
+
+/// `converge_tmux` for the base checkouts: `hub` and `ai` in the hub's main
+/// clone, then every registered repo's main clone in manifest order.
+pub fn converge_base_tmux(hub: &Hub) -> Result<Vec<String>> {
+    let roles = hub
+        .manifest
+        .repos
+        .iter()
+        .map(|r| (r.role.clone(), hub.env.clone_path(&r.clone)))
+        .collect();
+    converge_session(hub, &base_session_name(hub), &hub.root, roles)
+}
+
+fn converge_session(
+    hub: &Hub,
+    session: &str,
+    hub_dir: &Path,
+    roles: Vec<(String, PathBuf)>,
+) -> Result<Vec<String>> {
     let Some(tmux) = &hub.tmux else {
         let mut lines = hub.tmux_warning();
         lines.push(TMUX_OFF_LINE.to_string());
         return Ok(lines);
     };
-    let session = &feature.checkout;
-    let hub_wt = hub.hub_worktree_path(session);
     let mut lines = Vec::new();
     let created = !tmux.has_session(session)?;
     if created {
-        tmux.new_session(session, "hub", &hub_wt)?;
+        tmux.new_session(session, "hub", hub_dir)?;
         lines.push(format!("Created tmux session {session}"));
     }
     let existing = tmux.windows(session)?;
     for name in ["hub", "ai"] {
         if !existing.iter().any(|w| w == name) {
-            tmux.new_window(session, name, &hub_wt)?;
+            tmux.new_window(session, name, hub_dir)?;
             lines.push(format!("Added tmux window {name}"));
         }
     }
-    for (role, path) in role_checkouts(hub, feature) {
+    for (role, path) in roles {
         if !existing.iter().any(|w| w == &role) {
             tmux.new_window(session, &role, &path)?;
             lines.push(format!("Added tmux window {role}"));
@@ -118,7 +154,7 @@ pub fn converge_tmux(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
             "warning: {err}; run hub in the session's hub window"
         ));
     }
-    lines.push(attach_line(feature));
+    lines.push(attach_session_line(session));
     Ok(lines)
 }
 

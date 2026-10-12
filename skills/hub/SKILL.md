@@ -35,14 +35,14 @@ A hub is a git repo, shared through a remote when the project has one, whose `hu
 | Remove every worktree and the session; keep every branch | `hub feature finish [--force]` |
 | Open features with the stage of each role, and frozen roles; `--all` includes finished ones | `hub feature list [--all] [--json]` |
 | Compare feature state, or all base checkouts from the main hub, with reality; `--base` forces base status from a feature worktree; merged roles list under `Completed`; exit 30 on structural drift | `hub status [--base] [--json]` |
-| Create or repair the tmux session (never attaches) | `hub tmux` |
+| Create or repair the tmux session, or from the main hub the base checkouts' session (never attaches) | `hub tmux` |
 | Open the VS Code workspace (all base clones from the main hub) | `hub open` |
 | Regenerate the workspace file | `hub sync` |
 | Show each config key's value and where it comes from; change or remove a key in `config.toml` | `hub config [--json]`, `hub config set KEY VALUE`, `hub config unset KEY` |
 
 Commands that act on a feature infer it from the hub worktree you are in. Anywhere else, pass `--feature NAME`. `hub <command> --help` explains each flag. `hub` never prompts when stdin is not a terminal, so pass every role and branch explicitly; `hub feature add` needs its role, and `hub feature start` without `--repo` is a docs-only start. Bare `hub` opens an interactive dashboard only in a terminal; the skill always passes a subcommand.
 
-`hub open` and `hub status` are the exceptions. From the main hub without `--feature`, `open` opens a workspace containing the hub and every registered repo's main clone in manifest order, while `status` reports those base checkouts.
+`hub open`, `hub tmux`, and `hub status` are the exceptions. From the main hub without `--feature`, `open` opens a workspace containing the hub and every registered repo's main clone in manifest order, `tmux` creates or repairs a session over those same checkouts named by `checkout_template` with `main` as the feature, while `status` reports those base checkouts.
 
 ## Reading output
 

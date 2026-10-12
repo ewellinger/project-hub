@@ -6,6 +6,10 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+- `hub tmux` from the main hub creates or repairs a session for the base checkouts instead of erroring: `hub` and `ai` windows in the hub's main clone, then one window per registered repo's main clone in manifest order, with `hub` started in the `hub` window. It is named by `checkout_template` with `main` as the feature (e.g. `dm-main`); `feature start` refuses that checkout name.
+- Dashboard: the feature list colours each role's stage: `working` green, `review` yellow, `frozen` grey.
+
 ## [0.23.0] - 2026-10-12
 
 ### Added
