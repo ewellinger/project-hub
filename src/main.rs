@@ -232,6 +232,25 @@ enum FeatureCommand {
         #[arg(long)]
         feature: Option<String>,
     },
+    /// Release a role's pin; removes its frozen reference worktree
+    Unfreeze {
+        /// Role to unfreeze
+        role: String,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+        /// Remove the frozen worktree even if dirty
+        #[arg(long)]
+        force: bool,
+    },
+    /// Move a role's pin to the current tip of its local base branch
+    Refreeze {
+        /// Role to refreeze
+        role: String,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+    },
     /// Mark a role's open change as in review and record its MR/PR URL
     Review {
         /// Role whose change is in review
@@ -507,6 +526,18 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 FeatureCommand::Freeze { role, at, feature } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::freeze::freeze(hub, &mut f, &role, at.as_deref())
+                }),
+                FeatureCommand::Unfreeze {
+                    role,
+                    feature,
+                    force,
+                } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::freeze::unfreeze(hub, &mut f, &role, force)
+                }),
+                FeatureCommand::Refreeze { role, feature } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::freeze::refreeze(hub, &mut f, &role)
                 }),
                 FeatureCommand::Review { role, url, feature } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;

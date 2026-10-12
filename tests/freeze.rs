@@ -138,3 +138,148 @@ fn freeze_removes_its_worktree_when_the_record_write_fails() {
     assert_eq!(fx.git(&api, &["worktree", "list"]).lines().count(), 1);
     assert!(fx.feature_json(&hub, "feat-1").get("pins").is_none());
 }
+
+#[test]
+fn refreeze_moves_the_pin_and_worktree_to_the_local_tip() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let old = head(&fx, &frozen_wt(&fx));
+
+    fx.hub(&hub_wt(&fx), &["feature", "refreeze", "api"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("already frozen at the tip"));
+
+    fx.commit_file(&api, "u1.txt", "u1");
+    let tip = fx.commit_file(&api, "u2.txt", "u2");
+    fx.hub(&hub_wt(&fx), &["feature", "refreeze", "api"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "api: refrozen at {}",
+            &tip[..7]
+        )))
+        .stdout(predicate::str::contains(format!("+2 since {}", &old[..7])));
+    assert_eq!(head(&fx, &frozen_wt(&fx)), tip);
+    assert_eq!(fx.feature_json(&hub, "feat-1")["pins"][0]["sha"], tip);
+}
+
+#[test]
+fn refreeze_refuses_a_dirty_frozen_worktree() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let old = head(&fx, &frozen_wt(&fx));
+    fx.commit_file(&api, "u1.txt", "u1");
+    std::fs::write(frozen_wt(&fx).join("scratch.txt"), "x\n").unwrap();
+
+    fx.hub(&hub_wt(&fx), &["feature", "refreeze", "api"])
+        .assert()
+        .code(20);
+    assert_eq!(head(&fx, &frozen_wt(&fx)), old);
+    assert_eq!(fx.feature_json(&hub, "feat-1")["pins"][0]["sha"], old);
+}
+
+#[test]
+fn unfreeze_removes_the_worktree_and_points_the_window_at_the_main_clone() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("api: unfrozen"));
+    assert!(!frozen_wt(&fx).exists());
+    assert!(fx.feature_json(&hub, "feat-1").get("pins").is_none());
+    let api_dir = fx.project_home.join("api-clone");
+    assert!(
+        fx.windows("feat-1")
+            .iter()
+            .any(|(n, d)| n == "api" && Path::new(d) == api_dir),
+        "{:?}",
+        fx.windows("feat-1")
+    );
+    let workspace = std::fs::read_to_string(hub_wt(&fx).join("acme.code-workspace")).unwrap();
+    assert!(!workspace.contains("feat-1-frozen"), "{workspace}");
+
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("is not frozen"));
+}
+
+#[test]
+fn unfreeze_needs_force_for_a_dirty_worktree() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    std::fs::write(frozen_wt(&fx).join("scratch.txt"), "x\n").unwrap();
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api"])
+        .assert()
+        .code(20);
+    assert!(frozen_wt(&fx).exists());
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api", "--force"])
+        .assert()
+        .success();
+    assert!(!frozen_wt(&fx).exists());
+    assert!(fx.feature_json(&hub, "feat-1").get("pins").is_none());
+}
+
+#[test]
+fn refreeze_refuses_a_frozen_worktree_with_commits_off_its_pin() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let pin = head(&fx, &frozen_wt(&fx));
+    let work = fx.commit_file(&frozen_wt(&fx), "work.txt", "work on the detached head");
+    fx.commit_file(&api, "u1.txt", "u1");
+
+    fx.hub(&hub_wt(&fx), &["feature", "refreeze", "api"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("role 'api'"))
+        .stderr(predicate::str::contains(&work[..7]))
+        .stderr(predicate::str::contains("git -C"));
+    assert_eq!(
+        head(&fx, &frozen_wt(&fx)),
+        work,
+        "the commit is still checked out"
+    );
+    assert_eq!(fx.feature_json(&hub, "feat-1")["pins"][0]["sha"], pin);
+}
+
+#[test]
+fn unfreeze_refuses_commits_off_the_pin_unless_forced() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let work = fx.commit_file(&frozen_wt(&fx), "work.txt", "work on the detached head");
+
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains(&work[..7]))
+        .stderr(predicate::str::contains("git -C"));
+    assert_eq!(
+        head(&fx, &frozen_wt(&fx)),
+        work,
+        "worktree and commit survive"
+    );
+    assert_eq!(fx.feature_json(&hub, "feat-1")["pins"][0]["role"], "api");
+
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api", "--force"])
+        .assert()
+        .success();
+    assert!(!frozen_wt(&fx).exists());
+    assert!(fx.feature_json(&hub, "feat-1").get("pins").is_none());
+}
