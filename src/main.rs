@@ -169,7 +169,7 @@ enum RepoCommand {
 
 #[derive(Subcommand)]
 enum FeatureCommand {
-    /// Create the hub branch and worktree, open a change per --repo, and the tmux session
+    /// Create the hub branch and worktree, open a change per --repo, freeze each --freeze role, and the tmux session
     Start {
         /// Feature name
         name: String,
@@ -179,6 +179,9 @@ enum FeatureCommand {
         /// Role to include, optionally with a branch: --repo ui --repo api:feature/x
         #[arg(long = "repo", value_name = "ROLE[:BRANCH]")]
         repos: Vec<String>,
+        /// Role to freeze at the tip of its local base in a detached reference worktree; repeatable
+        #[arg(long = "freeze", value_name = "ROLE")]
+        freeze: Vec<String>,
     },
     /// Create a review feature for one role from a GitLab merge request or GitHub pull request URL
     StartReview {
@@ -451,6 +454,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     name,
                     checkout,
                     repos,
+                    freeze,
                 } => {
                     let mut repos: Vec<(String, Option<String>)> =
                         repos.iter().map(|r| parse_repo_flag(r)).collect();
@@ -462,6 +466,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         name,
                         checkout,
                         repos,
+                        freeze,
                     };
                     hub.with_lock(|hub| ops::start::start(hub, &opts))
                 }

@@ -4,6 +4,7 @@ use crate::error::{HubError, Result};
 use crate::feature::Feature;
 use crate::hub::Hub;
 use crate::names;
+use crate::ops::freeze::add_frozen;
 use crate::ops::resolve::{AddOptions, Created, open_change};
 use crate::ops::session::{after_save, converge_tmux, write_workspace};
 use crate::skill;
@@ -13,6 +14,8 @@ pub struct StartOptions {
     pub checkout: Option<String>,
     /// `(role, branch override)` as given on the command line.
     pub repos: Vec<(String, Option<String>)>,
+    /// Roles to freeze at their local base tip in reference worktrees.
+    pub freeze: Vec<String>,
 }
 
 /// The checks `start` runs before touching anything: feature-name validation,
@@ -40,35 +43,60 @@ pub fn preflight(hub: &Hub, name: &str, checkout: Option<&str>) -> Result<String
     Ok(checkout)
 }
 
-pub fn start(hub: &Hub, opts: &StartOptions) -> Result<Vec<String>> {
-    let checkout = preflight(hub, &opts.name, opts.checkout.as_deref())?;
-    let mut seen = HashSet::new();
-    for (role, _) in &opts.repos {
+/// The role checks `start` runs before touching anything: every role is in
+/// the manifest, none repeats, and none is both worked on and frozen.
+pub fn check_roles(hub: &Hub, repos: &[(String, Option<String>)], freeze: &[String]) -> Result<()> {
+    let mut worked = HashSet::new();
+    for (role, _) in repos {
         hub.manifest.require_repo(role)?;
-        if !seen.insert(role.as_str()) {
+        if !worked.insert(role.as_str()) {
             return Err(HubError::Usage(format!(
                 "role '{role}' given more than once"
             )));
         }
     }
+    let mut frozen = HashSet::new();
+    for role in freeze {
+        hub.manifest.require_repo(role)?;
+        if worked.contains(role.as_str()) {
+            return Err(HubError::Usage(format!(
+                "role '{role}' is given to both --repo and --freeze; a role is either worked on or frozen"
+            )));
+        }
+        if !frozen.insert(role.as_str()) {
+            return Err(HubError::Usage(format!(
+                "role '{role}' given more than once"
+            )));
+        }
+    }
+    Ok(())
+}
+
+pub fn start(hub: &Hub, opts: &StartOptions) -> Result<Vec<String>> {
+    let checkout = preflight(hub, &opts.name, opts.checkout.as_deref())?;
+    check_roles(hub, &opts.repos, &opts.freeze)?;
+    let by_manifest = |role: &str| hub.manifest.role_index(role).unwrap_or(usize::MAX);
     let mut repos = opts.repos.clone();
-    repos.sort_by_key(|(role, _)| hub.manifest.role_index(role).unwrap_or(usize::MAX));
+    repos.sort_by_key(|(role, _)| by_manifest(role));
+    let mut freeze = opts.freeze.clone();
+    freeze.sort_by_key(|role| by_manifest(role));
 
     // Transaction: everything up to and including the record write is
     // rolled back on failure. After the write, workspace and tmux failures
     // are warnings (see `after_save`), never a rollback.
     let mut created = Created::new();
-    let (feature, mut lines) = match start_inner(hub, opts, &checkout, &repos, &mut created) {
-        Ok(done) => done,
-        Err(err) => {
-            let mut warnings = created.rollback();
-            if warnings.is_empty() {
-                return Err(err);
+    let (feature, mut lines) =
+        match start_inner(hub, opts, &checkout, &repos, &freeze, &mut created) {
+            Ok(done) => done,
+            Err(err) => {
+                let mut warnings = created.rollback();
+                if warnings.is_empty() {
+                    return Err(err);
+                }
+                warnings.insert(0, err.to_string());
+                return Err(HubError::Precondition(warnings.join("\n")));
             }
-            warnings.insert(0, err.to_string());
-            return Err(HubError::Precondition(warnings.join("\n")));
-        }
-    };
+        };
     after_save(
         &mut lines,
         write_workspace(hub, &feature).map(|_| Vec::new()),
@@ -94,6 +122,7 @@ fn start_inner(
     opts: &StartOptions,
     checkout: &str,
     repos: &[(String, Option<String>)],
+    freeze: &[String],
     created: &mut Created,
 ) -> Result<(Feature, Vec<String>)> {
     let mut lines = Vec::new();
@@ -144,6 +173,11 @@ fn start_inner(
         ));
         lines.extend(opened.lines.into_iter().map(|l| format!("  {l}")));
         feature.push_change(opened.change)?;
+    }
+    // Frozen worktrees go into `created` with everything else, so a later
+    // failure (another freeze, the record write) removes them too.
+    for role in freeze {
+        lines.push(add_frozen(hub, &mut feature, role, None, created)?);
     }
 
     hub.save_feature(&feature)?;

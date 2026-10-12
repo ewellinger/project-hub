@@ -108,6 +108,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                         name: name.clone(),
                         checkout: None,
                         repos: repos.clone(),
+                        freeze: Vec::new(),
                     },
                 ),
                 Action::Add {
