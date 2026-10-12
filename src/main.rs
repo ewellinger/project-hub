@@ -458,9 +458,16 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 } => {
                     let mut repos: Vec<(String, Option<String>)> =
                         repos.iter().map(|r| parse_repo_flag(r)).collect();
+                    let mut freeze = freeze;
                     // Prompts finish before the lock; cancelling touches nothing.
                     if prompt::is_interactive() {
-                        repos = prompt::pick_start_repos(&hub, &name, checkout.as_deref(), repos)?;
+                        (repos, freeze) = prompt::pick_start_repos(
+                            &hub,
+                            &name,
+                            checkout.as_deref(),
+                            repos,
+                            freeze,
+                        )?;
                     }
                     let opts = ops::start::StartOptions {
                         name,

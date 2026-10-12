@@ -20,24 +20,34 @@ pub fn is_interactive() -> bool {
     std::io::stdin().is_terminal() && std::io::stderr().is_terminal()
 }
 
+/// Roles to work on, each with its branch when already known.
+type StartRepos = Vec<(String, Option<String>)>;
+
 /// `start`: when no `--repo` was given, ask which roles take part (none is
-/// a docs-only start); then ask for a branch for every role that has none.
+/// a docs-only start) and then which of the remaining roles to freeze on
+/// top of any `--freeze` roles (default none); then ask for a branch for
+/// every role that has none. Returns the roles to work on and the roles to
+/// freeze.
 pub fn pick_start_repos(
     hub: &Hub,
     name: &str,
     checkout: Option<&str>,
-    given: Vec<(String, Option<String>)>,
-) -> Result<Vec<(String, Option<String>)>> {
+    given: StartRepos,
+    freeze: Vec<String>,
+) -> Result<(StartRepos, Vec<String>)> {
     // Fail the way `start` would before asking anything.
     start::preflight(hub, name, checkout)?;
+    start::check_roles(hub, &given, &freeze)?;
     let mut repos = given;
+    let mut freeze = freeze;
     if repos.is_empty() {
-        if hub.manifest.repos.is_empty() {
-            // No manifest options: `MultiSelect` refuses an empty list, but
-            // a docs-only start is valid here just as it is non-interactively.
+        let frozen: Vec<&str> = freeze.iter().map(String::as_str).collect();
+        let rows = role_rows(&hub.manifest.repos, &frozen);
+        if rows.is_empty() {
+            // `MultiSelect` refuses an empty list, but a docs-only start is
+            // valid here just as it is non-interactively.
             eprintln!("No roles selected: docs-only start");
         } else {
-            let rows: Vec<RoleRow> = hub.manifest.repos.iter().map(RoleRow).collect();
             let chosen = MultiSelect::new(&format!("Roles for {name}:"), rows)
                 .with_help_message(
                     "space toggles, enter confirms; nothing selected = docs-only start",
@@ -51,6 +61,23 @@ pub fn pick_start_repos(
                 .into_iter()
                 .map(|r| (r.0.role.clone(), None))
                 .collect();
+            // Roles already worked on or frozen by `--freeze` aren't offered.
+            let taken: Vec<&str> = repos
+                .iter()
+                .map(|(r, _)| r.as_str())
+                .chain(freeze.iter().map(String::as_str))
+                .collect();
+            let rest = role_rows(&hub.manifest.repos, &taken);
+            if !rest.is_empty() {
+                let picked =
+                    MultiSelect::new("Freeze any other roles at their local base tip?", rest)
+                        .with_help_message(
+                            "space toggles, enter confirms; nothing selected = freeze none",
+                        )
+                        .prompt()
+                        .map_err(prompt_error)?;
+                freeze.extend(picked.into_iter().map(|r| r.0.role.clone()));
+            }
         }
     }
     // The feature does not exist yet; only its name matters to suggestions.
@@ -60,7 +87,16 @@ pub fn pick_start_repos(
             *branch = Some(pick_branch(hub, &feature, role)?);
         }
     }
-    Ok(repos)
+    Ok((repos, freeze))
+}
+
+/// Manifest roles not named in `taken`, as prompt rows in manifest order.
+fn role_rows<'a>(repos: &'a [RepoSpec], taken: &[&str]) -> Vec<RoleRow<'a>> {
+    repos
+        .iter()
+        .filter(|r| !taken.contains(&r.role.as_str()))
+        .map(RoleRow)
+        .collect()
 }
 
 /// `add`: ask for the role when missing (only roles without an open change),
@@ -224,5 +260,24 @@ mod tests {
             ..repo
         };
         assert_eq!(RoleRow(&bare).to_string(), "api  api-clone");
+    }
+
+    #[test]
+    fn role_rows_leave_out_taken_roles_in_manifest_order() {
+        let spec = |role: &str| hub::manifest::RepoSpec {
+            role: role.into(),
+            clone: format!("{role}-clone"),
+            remote: "git@example.com:x.git".into(),
+            base: "master".into(),
+            branch_template: "{feature}".into(),
+            description: String::new(),
+        };
+        let repos = vec![spec("api"), spec("bff"), spec("ui")];
+        fn names(rows: Vec<RoleRow<'_>>) -> Vec<String> {
+            rows.iter().map(|r| r.0.role.clone()).collect()
+        }
+        assert_eq!(names(role_rows(&repos, &[])), ["api", "bff", "ui"]);
+        assert_eq!(names(role_rows(&repos, &["ui", "api"])), ["bff"]);
+        assert!(role_rows(&repos, &["api", "bff", "ui"]).is_empty());
     }
 }
