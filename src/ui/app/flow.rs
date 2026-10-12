@@ -47,6 +47,7 @@ pub enum Flow {
     },
     Copy {
         feature: String,
+        /// The cursor index (see `App::cursor`): a change or a frozen reference row.
         change: usize,
         /// `(label, text)` pairs shown by the last `Show`, snapshotted at
         /// `Begin` so a background refresh landing while the overlay is
@@ -107,18 +108,22 @@ fn review(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
     }
 }
 
-/// `(label, text)` pairs offered for change `change`: the branch always, the
-/// worktree path when it exists, the review URL when the change has one.
+/// `(label, text)` pairs offered for row `change`: a change's branch, or a
+/// frozen reference's pinned commit; the path when it exists; the review
+/// URL when the change has one.
 fn copy_options(app: &App, feature: &str, change: usize) -> Option<Vec<(&'static str, String)>> {
     let (record, report) = app.feature_report().filter(|(f, _)| f.name == feature)?;
-    let c = record.changes.get(change)?;
     let row = App::change_rows(report).get(change)?;
-    let mut out = vec![("branch", c.branch.clone())];
+    let c = record.changes.get(change);
+    let mut out = match c {
+        Some(c) => vec![("branch", c.branch.clone())],
+        None => vec![("commit", row.frozen_sha.clone()?)],
+    };
     if row.exists {
         out.push(("path", row.path.display().to_string()));
     }
-    if let Some(url) = &c.review_url {
-        out.push(("review", url.clone()));
+    if let Some(url) = c.and_then(|c| c.review_url.clone()) {
+        out.push(("review", url));
     }
     Some(out)
 }

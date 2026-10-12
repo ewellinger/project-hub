@@ -25,14 +25,23 @@ pub use overlay::{Outcome, Overlay, Preview, Tone};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Screen {
     Dashboard,
-    /// One open feature. `selected` is an index into `feature.changes`
-    /// (changes are append-only, so it is a stable key); `None` means the
-    /// first change in display order, so a fresh view lands on an open
-    /// role and stays there across refreshes.
+    /// One open feature. `selected` is the row under the cursor (see
+    /// `Selected`); `None` means the first row in display order, so a
+    /// fresh view lands on an open role and stays there across refreshes.
     Feature {
         name: String,
-        selected: Option<usize>,
+        selected: Option<Selected>,
     },
+}
+
+/// The feature view's cursor, stored by a key that survives refreshes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Selected {
+    /// An index into `feature.changes`: append-only, so a stable key.
+    Change(usize),
+    /// A frozen reference row, by role. Its position moves whenever a
+    /// change is added or another role is unfrozen; the role does not.
+    Frozen(String),
 }
 
 /// A row of the list pane: the hub's base checkouts, or one feature.

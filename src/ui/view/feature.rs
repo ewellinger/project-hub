@@ -35,8 +35,9 @@ pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
     let table = status_table(&rows, home_dir().as_deref())
         .highlight_symbol("▸ ")
         .row_highlight_style(Style::new().add_modifier(Modifier::BOLD | Modifier::REVERSED));
-    // The cursor is a change index; its table row is that change's
-    // position in the display order (row = change + 1).
+    // The cursor indexes the rows after the hub row (a change or a frozen
+    // reference); its table row is that row's position in the display
+    // order (row = cursor + 1).
     let highlighted = app
         .cursor()
         .and_then(|change| order.iter().position(|&row| row == change + 1));
