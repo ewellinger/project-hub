@@ -483,23 +483,6 @@ fn pull_leaves_frozen_worktrees_alone() {
 }
 
 #[test]
-fn add_refuses_a_frozen_role_until_it_is_unfrozen() {
-    let (fx, _hub) = world();
-    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
-        .assert()
-        .success();
-    fx.hub(
-        &hub_wt(&fx),
-        &["feature", "add", "api", "--branch", "feat-1"],
-    )
-    .assert()
-    .failure()
-    .stderr(predicate::str::contains("is frozen"))
-    .stderr(predicate::str::contains("hub feature unfreeze api"));
-    assert!(frozen_wt(&fx).exists());
-}
-
-#[test]
 fn repo_remove_and_clone_change_refuse_while_a_role_is_frozen() {
     let (fx, hub) = world();
     fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
@@ -758,4 +741,348 @@ fn merged_drops_the_pin_with_the_change() {
     let f = fx.feature_json(&hub, "feat-1");
     assert_eq!(f["changes"][0]["stage"], "merged");
     assert!(f.get("pins").is_none(), "the role is back to absent");
+}
+
+fn api_wt(fx: &Fixture) -> PathBuf {
+    fx.worktree_dir.join("api-clone").join("feat-1")
+}
+
+#[test]
+fn add_on_a_frozen_role_starts_from_the_pin_and_keeps_it() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    // The pin is a commit only the local master has.
+    let pin = fx.commit_file(&api, "local.txt", "local only");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.commit_file(&api, "later.txt", "master moves past the pin");
+
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("api: removed frozen worktree"));
+    assert_eq!(fx.git(&api, &["rev-parse", "feat-1"]), pin);
+    assert_eq!(head(&fx, &api_wt(&fx)), pin);
+    assert!(!frozen_wt(&fx).exists());
+    assert_eq!(fx.git(&api, &["worktree", "list"]).lines().count(), 2);
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"][1]["role"], "api");
+    assert_eq!(f["pins"][0]["sha"], pin);
+    assert!(f["pins"][0]["worktree"].is_null());
+    assert_eq!(
+        f["changes"][1]["base_sha"], pin,
+        "the change left the base at the pin"
+    );
+    let row = status_row(&fx, "api");
+    assert_eq!(row["frozen_sha"], pin);
+    assert_eq!(row["base_behind"], 0);
+    assert_eq!(row["base_moved"], 1);
+    assert!(
+        fx.windows("feat-1")
+            .iter()
+            .any(|(n, d)| n == "api" && Path::new(d) == api_wt(&fx)),
+        "{:?}",
+        fx.windows("feat-1")
+    );
+}
+
+#[test]
+fn add_from_a_local_only_pin_is_not_called_merged_after_the_base_is_pushed() {
+    let (fx, _hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.commit_file(&api, "local.txt", "local only");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.commit_file(&api, "later.txt", "master moves past the pin");
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .assert()
+        .success();
+
+    // The pin and the commit after it reach origin; feat-1 has no work.
+    fx.git(&api, &["push", "-q", "origin", "master"]);
+    let row = status_row(&fx, "api");
+    assert!(
+        row["hint"].is_null(),
+        "untouched branch called merged: {row}"
+    );
+}
+
+#[test]
+fn add_from_latest_starts_from_origin_and_drops_the_pin() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.commit_file(&api, "local.txt", "local only");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let latest = fx.remote_sha("api-clone", "master");
+
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api", "--from-latest"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Dropped the pin"));
+    assert_eq!(fx.git(&api, &["rev-parse", "feat-1"]), latest);
+    assert!(!frozen_wt(&fx).exists());
+    assert!(fx.feature_json(&hub, "feat-1").get("pins").is_none());
+    assert!(status_row(&fx, "api")["frozen_sha"].is_null());
+}
+
+#[test]
+fn add_adopting_a_branch_rederives_the_pin_from_its_merge_base() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let old = head(&fx, &frozen_wt(&fx));
+    let fork = fx.commit_file(&api, "m1.txt", "master moves");
+    fx.git(&api, &["checkout", "-q", "-b", "work"]);
+    fx.commit_file(&api, "w1.txt", "work");
+    fx.git(&api, &["checkout", "-q", "master"]);
+
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api", "--branch", "work"])
+        .assert()
+        .success();
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["pins"][0]["sha"], fork);
+    assert_ne!(f["pins"][0]["sha"], old);
+    assert!(f["pins"][0]["worktree"].is_null());
+    assert_eq!(status_row(&fx, "api")["base_behind"], 0);
+}
+
+/// The frozen role is exactly as `freeze` left it.
+fn assert_still_frozen(fx: &Fixture, hub: &Path) {
+    let api = fx.project_home.join("api-clone");
+    assert!(frozen_wt(fx).exists());
+    assert!(!api_wt(fx).exists());
+    assert_eq!(fx.git(&api, &["branch", "--list", "feat-1"]), "");
+    assert_eq!(fx.git(&api, &["worktree", "list"]).lines().count(), 2);
+    let f = fx.feature_json(hub, "feat-1");
+    assert_eq!(f["changes"].as_array().unwrap().len(), 1);
+    assert_eq!(f["pins"][0]["worktree"]["name"], "feat-1-frozen");
+}
+
+#[test]
+fn add_refuses_a_dirty_or_busy_frozen_worktree_and_changes_nothing() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let scratch = frozen_wt(&fx).join("scratch.txt");
+    std::fs::write(&scratch, "x\n").unwrap();
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .assert()
+        .code(20);
+    assert_still_frozen(&fx, &hub);
+    std::fs::remove_file(&scratch).unwrap();
+
+    // Busy is found after open_change: the new branch and worktree roll back.
+    let procs = format!("4242\tvite\t{}", frozen_wt(&fx).display());
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .env("FAKE_LSOF_CWDS", &procs)
+        .assert()
+        .code(21)
+        .stderr(predicate::str::contains("4242"));
+    assert_still_frozen(&fx, &hub);
+    assert!(
+        fx.windows("feat-1")
+            .iter()
+            .any(|(n, d)| n == "api" && Path::new(d) == frozen_wt(&fx)),
+        "window sent back to the reference worktree: {:?}",
+        fx.windows("feat-1")
+    );
+}
+
+#[test]
+fn add_refuses_a_frozen_worktree_moved_off_its_pin() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    // A commit on the detached HEAD: removing the worktree would orphan it.
+    fx.commit_file(&frozen_wt(&fx), "hand.txt", "committed by hand");
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("is off its pin"));
+    assert_still_frozen(&fx, &hub);
+}
+
+#[test]
+fn add_leaves_the_window_alone_when_open_change_fails() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let taken = fx.worktree_dir.join("api-clone").join("taken");
+    std::fs::create_dir_all(&taken).unwrap();
+    let log_before = fx.tmux_log().len();
+    // A process runs in the reference worktree; open_change fails first, so
+    // the user sees that error and the process keeps running.
+    let procs = format!("4242\tvite\t{}", frozen_wt(&fx).display());
+    fx.hub(
+        &hub_wt(&fx),
+        &["feature", "add", "api", "--worktree", "taken"],
+    )
+    .env("FAKE_LSOF_CWDS", &procs)
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("already exists"));
+    assert!(
+        !fx.tmux_log()[log_before..].contains("respawn-pane"),
+        "window re-pointed: {}",
+        &fx.tmux_log()[log_before..]
+    );
+    assert!(
+        fx.windows("feat-1")
+            .iter()
+            .any(|(n, d)| n == "api" && Path::new(d) == frozen_wt(&fx)),
+        "{:?}",
+        fx.windows("feat-1")
+    );
+    assert_still_frozen(&fx, &hub);
+}
+
+#[test]
+fn add_refuses_from_with_an_existing_branch_on_a_frozen_role() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.git(&api, &["branch", "work"]);
+    fx.hub(
+        &hub_wt(&fx),
+        &[
+            "feature", "add", "api", "--branch", "work", "--from", "master",
+        ],
+    )
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("--from only starts a new branch"));
+    assert!(!fx.worktree_dir.join("api-clone").join("work").exists());
+    assert_still_frozen(&fx, &hub);
+}
+
+#[test]
+fn add_rolls_back_and_keeps_the_frozen_worktree_when_the_record_write_fails() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.block_feature_writes(&hub);
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .assert()
+        .failure();
+    fx.allow_feature_writes(&hub);
+    assert_still_frozen(&fx, &hub);
+}
+
+#[test]
+fn add_with_another_base_needs_from_latest_to_leave_the_pin() {
+    let (fx, hub) = world();
+    fx.remote_branch("api-clone", "release");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(
+        &hub_wt(&fx),
+        &["feature", "add", "api", "--base", "release"],
+    )
+    .assert()
+    .failure()
+    .stderr(predicate::str::contains("--from-latest"));
+    assert_still_frozen(&fx, &hub);
+
+    fx.hub(
+        &hub_wt(&fx),
+        &[
+            "feature",
+            "add",
+            "api",
+            "--base",
+            "release",
+            "--from-latest",
+        ],
+    )
+    .assert()
+    .success();
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"][1]["base"], "release");
+    assert!(f.get("pins").is_none());
+}
+
+#[test]
+fn add_compares_the_pin_with_the_roles_current_base() {
+    let (fx, hub) = world();
+    fx.remote_branch("api-clone", "release");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    // The role's base moves after the freeze; a plain add would merge into
+    // release while the pin came from master.
+    fx.hub(&hub, &["repo", "set", "api", "--base", "release"])
+        .assert()
+        .success();
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("--from-latest"));
+    assert_still_frozen(&fx, &hub);
+}
+
+#[test]
+fn add_refuses_an_adopted_branch_with_no_history_in_common_with_the_base() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.git(&api, &["checkout", "-q", "--orphan", "stray"]);
+    fx.commit_file(&api, "stray.txt", "unrelated root");
+    fx.git(&api, &["checkout", "-q", "-f", "master"]);
+
+    fx.hub(
+        &hub_wt(&fx),
+        &["feature", "add", "api", "--branch", "stray"],
+    )
+    .assert()
+    .failure()
+    .stderr(predicate::str::contains("share no history"));
+    assert!(frozen_wt(&fx).exists());
+    assert!(!fx.worktree_dir.join("api-clone").join("stray").exists());
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"].as_array().unwrap().len(), 1);
+    assert_eq!(f["pins"][0]["worktree"]["name"], "feat-1-frozen");
+}
+
+#[test]
+fn add_tracking_a_remote_only_branch_rederives_the_pin_from_its_merge_base() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let old = head(&fx, &frozen_wt(&fx));
+    // The local master moves past the pin; origin/work forks from there.
+    let fork = fx.commit_file(&api, "m1.txt", "master moves");
+    fx.remote_branch("api-clone", "work");
+    assert_eq!(fx.git(&api, &["branch", "--list", "work"]), "");
+
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api", "--branch", "work"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("tracking origin/work"));
+    assert_eq!(
+        fx.git(&api, &["rev-parse", "work"]),
+        fx.remote_sha("api-clone", "work")
+    );
+    assert!(!frozen_wt(&fx).exists());
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["pins"][0]["sha"], fork);
+    assert_ne!(f["pins"][0]["sha"], old);
+    assert!(f["pins"][0]["worktree"].is_null());
+    assert_eq!(f["changes"][1]["base_sha"], fork);
 }

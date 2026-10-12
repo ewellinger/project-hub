@@ -204,9 +204,12 @@ enum FeatureCommand {
         /// Branch name; defaults to the role's template, or the previous branch plus -<n> after a merge
         #[arg(long)]
         branch: Option<String>,
-        /// Start point for a brand-new branch; defaults to origin/<base>
+        /// Start point for a brand-new branch; defaults to the pin of a frozen role, else origin/<base>
         #[arg(long)]
         from: Option<String>,
+        /// Start a frozen role's new branch from origin/<base> instead of its pin, and drop the pin
+        #[arg(long, conflicts_with = "from")]
+        from_latest: bool,
         /// Branch this change merges into; defaults to the role's base in hub.json
         #[arg(long)]
         base: Option<String>,
@@ -494,6 +497,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     feature,
                     branch,
                     from,
+                    from_latest,
                     base,
                     worktree,
                 } => {
@@ -521,7 +525,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         from: from.as_deref(),
                         worktree: worktree.as_deref(),
                         base: base.as_deref(),
-                        from_latest: false,
+                        from_latest,
                     };
                     hub.with_lock(|hub| {
                         let mut f = hub.resolve_feature(feature.as_deref())?;
