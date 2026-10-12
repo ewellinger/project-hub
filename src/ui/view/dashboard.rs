@@ -19,6 +19,12 @@ use hub::ops::status::{StateColour, StatusRow, state_colour, state_text};
 
 pub(super) const SPINNER: [&str; 4] = ["⠋", "⠙", "⠸", "⠴"];
 
+/// Frozen reference roles: read-only checkouts, not members. Dim alone
+/// already means merged or finished; italic marks "reference".
+pub(super) fn read_only() -> Style {
+    Style::new().add_modifier(Modifier::DIM | Modifier::ITALIC)
+}
+
 pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
     let dim = Style::new().add_modifier(Modifier::DIM);
     // Borders (2) and the highlight symbol `▸ ` (2), which ratatui reserves
@@ -39,6 +45,11 @@ pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
                         .iter()
                         .filter(|r| r.stage != Stage::Merged)
                         .map(|r| Line::from(role_line(&r.role, r.stage.as_str(), inner))),
+                );
+                text.extend(
+                    s.frozen
+                        .iter()
+                        .map(|f| Line::styled(role_line(&f.role, "frozen", inner), read_only())),
                 );
                 ListItem::new(text)
             }
@@ -229,6 +240,8 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
         ]);
         if r.stage == "merged" {
             row.style(Style::new().add_modifier(Modifier::DIM))
+        } else if r.stage == "frozen" {
+            row.style(read_only())
         } else {
             row
         }

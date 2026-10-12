@@ -1145,4 +1145,73 @@ mod tests {
             joined(&out)
         );
     }
+
+    #[test]
+    fn the_feature_list_shows_frozen_roles_as_read_only() {
+        let mut s = summary("suspense", FeatureStatus::Open);
+        s.frozen.push(hub::ops::list::FrozenSummary {
+            role: "bff".into(),
+            sha: "0123456789abcdef0123456789abcdef01234567".into(),
+        });
+        let a = App::new("acme", vec![s]);
+        let rows = lines(100, 30, &a);
+        assert!(
+            rows.iter()
+                .any(|l| l.contains("  bff ") && l.contains("frozen│")),
+            "{}",
+            joined(&rows)
+        );
+        let style = find_style(100, 30, &a, "frozen│");
+        assert!(
+            style.add_modifier.contains(Modifier::ITALIC)
+                && style.add_modifier.contains(Modifier::DIM),
+            "{style:?}"
+        );
+        let member = find_style(100, 30, &a, "working│");
+        assert!(
+            !member.add_modifier.contains(Modifier::ITALIC),
+            "{member:?}"
+        );
+    }
+
+    #[test]
+    fn frozen_rows_in_the_feature_view_are_read_only_and_say_so_under_the_cursor() {
+        use crate::ui::app::feature::tests::{frozen_ui, on_report};
+        let mut a = on_report(frozen_ui());
+        let style = find_style(120, 30, &a, "ui/suspense-frozen");
+        assert!(
+            style.add_modifier.contains(Modifier::ITALIC)
+                && style.add_modifier.contains(Modifier::DIM),
+            "{style:?}"
+        );
+        assert!(
+            !joined(&lines(120, 30, &a)).contains("read-only reference checkout"),
+            "only shown with the cursor on the frozen row"
+        );
+        a.update(Event::Key(KeyEvent::new(
+            KeyCode::Char('j'),
+            KeyModifiers::NONE,
+        )));
+        let text = joined(&lines(120, 30, &a));
+        assert!(
+            text.contains("ui: read-only reference checkout at 0123456; u unfreezes"),
+            "{text}"
+        );
+    }
+
+    #[test]
+    fn a_pinned_open_change_keeps_member_styling() {
+        use crate::ui::app::feature::tests::{on_report, pinned_api};
+        let mut a = on_report(pinned_api());
+        a.update(Event::Key(KeyEvent::new(
+            KeyCode::Char('j'),
+            KeyModifiers::NONE,
+        ))); // cursor off api, so its row has no highlight style
+        let text = joined(&lines(120, 30, &a));
+        assert!(text.contains("frozen @0123456"), "the pin marker: {text}");
+        assert!(!text.contains("read-only"), "{text}");
+        let style = find_style(120, 30, &a, "feature/x");
+        assert!(!style.add_modifier.contains(Modifier::ITALIC), "{style:?}");
+        assert!(!style.add_modifier.contains(Modifier::DIM), "{style:?}");
+    }
 }

@@ -2,6 +2,7 @@
 //! the selected role's review URL, the attach line, and the refresh line.
 //! The block/placeholder prologue and the warnings/hints/attach/refresh
 //! tail are shared with the dashboard status pane via `view::dashboard`.
+//! Frozen reference rows are styled read-only (`dashboard::read_only`).
 
 use ratatui::Frame;
 use ratatui::layout::{Constraint, Layout, Rect};
@@ -11,8 +12,9 @@ use ratatui::widgets::{Paragraph, TableState, Wrap};
 
 use crate::ui::app::feature::display_order;
 use crate::ui::app::{App, RowId, Screen};
-use crate::ui::view::dashboard::{report_tail, status_prologue, status_table};
+use crate::ui::view::dashboard::{read_only, report_tail, status_prologue, status_table};
 use hub::env::home_dir;
+use hub::feature::short_sha;
 use hub::ops::status::StatusRow;
 
 pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
@@ -52,6 +54,23 @@ pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
         .collect();
     let attach = (feature.is_open() && app.tmux_on)
         .then(|| format!("Attach with: tmux attach -t {}", report.checkout));
-    let tail = report_tail(app, &id, &report.rows, &report.warnings, attach, review);
+    let reference: Vec<Line> = app
+        .selected_role_row()
+        .filter(|r| r.stage == "frozen")
+        .and_then(|r| r.frozen_sha.as_deref().map(|sha| (r, sha)))
+        .map(|(r, sha)| {
+            Line::styled(
+                format!(
+                    "{}: read-only reference checkout at {}; u unfreezes",
+                    r.role,
+                    short_sha(sha)
+                ),
+                read_only(),
+            )
+        })
+        .into_iter()
+        .collect();
+    let extra = review.into_iter().chain(reference).collect();
+    let tail = report_tail(app, &id, &report.rows, &report.warnings, attach, extra);
     frame.render_widget(Paragraph::new(tail).wrap(Wrap { trim: false }), tail_area);
 }
