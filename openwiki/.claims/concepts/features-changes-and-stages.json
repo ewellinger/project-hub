@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:3ec1a5bcd232bd99071b18d8424813ea96be9818b821d180af1691c52255baf1",
+  "claims": [
+    {
+      "id": "claim_74e704fcf7e1408d8bcef3756feb5fd3",
+      "statement": "A Change records role, clone (copied from the manifest so it outlives repo remove), branch, an optional worktree (None means the main clone), stage, review_url, merged_at, origin_seen, base, and base_sha.",
+      "evidence": [
+        {
+          "resource": "repo://src/feature.rs#L38-L72",
+          "version": "repo-lines-v1:sha256:18af23f8891ae64c7b5f7a2834c5351ba663dbf5dff87ecf629643d2a84559bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YzE4Nzk4OTAzNDUzYzYwYTUxN2Y0M2JhYTRlOTNmZGMzYTBmMWQ0ZGQ4N2FhMjNlYjY3MDA5NzNkMTM0MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmNDMzYWQwMTQ5OTJmODgyOTllODBlZWQ5MGI2N2IzMzRiMDQwMGI1MTUxNzdiM2Q5NmU4MmNjM2Y1YmEyN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5YTNhMGIzYzQ2NTRlMDM4OTAxMDVkNjI0OWI4YjJiMzgzZjA4NmJjNWQ3NDRkNTU1YmRmZDkyZmYwNzY5MjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0915f0d651a246b8bced6e2d0fbce5d7",
+      "statement": "Stages are working, review, and merged; a change is open while its stage is not merged.",
+      "evidence": [
+        {
+          "resource": "repo://src/feature.rs#L13-L29",
+          "version": "repo-lines-v1:sha256:49107fde53b5e1220fa92d99e5dda7c8c5b7d692cf4bf29bf8443e501c54be56:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwZGY2ZTI1Mjc5ZTYyMGNjMzkxNzNjMDUxYWI4OGI3ODY4MzM2ZjU5Mjc1NWQ0YTlhYTI5ZWE1NWU4ZWZiNmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmOGM1NDg0MTgwNjg1ZjNmN2E0NWM1OWJkMzI4OTI0ZTMzNDAwMTZjYmQwMzA0MDU0MWNiOGMzOGI3OGQzMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzODg4MWU4ZGNkM2ZiZmM1ODBkMDg1MjIzMTdjNTA3YzdlYjIwYTg5NDkxODA2MjQ0NWRiYmQ4NjkxZjFhZmMifQ"
+        },
+        {
+          "resource": "repo://src/feature.rs#L74-L77",
+          "version": "repo-lines-v1:sha256:159040c1274494204931ead3d85d3612f1f0f1f73faeed795ac871f3216e98a1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGUyZTFkYzZhN2U3MGZhNzVhMzVkYTAwNWVkNTJmM2M4Y2JlZmMwZTVlYjg4ZmE2ZDk4YWY0Y2E5ZjcwMDRkNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTJiMGRkNWY0MTY5Mzk0OGMzNGYwNzg0YWUxZDc1MTVkYjcxNzljNzdkYjIxNDc0N2U3MzMxN2U5NWY0NGRjOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDA4OWI5Yzk0NzgwM2YzMjY1OTJkODA0OWFlZjZmY2VjODk1MjRjZDE3YWI3NTZjNTA5MTQ5YzI4MmE1MTllNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d5058e59b1324c7f94642fdd75140d9c",
+      "statement": "A feature may hold at most one open change per role: push_change refuses a second one and validate rejects records that contain one.",
+      "evidence": [
+        {
+          "resource": "repo://src/feature.rs#L151-L188",
+          "version": "repo-lines-v1:sha256:7ad3b400b329617d4614f311762be30e0fa111a040d3b8bcd78dba4f4a584932:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhYmVhNTk0ZWU2MjQ4MWIxZGJiNjJlN2UzYTU5OWE5OWQ5NzdlZWFmZjcxMzc0ODQ1NTYyZGQ4NTkxOTY1NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkMTBjOGZlOTA4NjIzMWM4ODYwNGQ5YzA5ZGZjM2NjZDZjZWVmNDUwMDhlYzQ2ZTU2NWYwYTE2ODQzOTMzMTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzNmViOTk5Mjc4M2EyYjYwNTEwYWQ1ODUyYmEyYWExYzM4YWVmZTc5YmU0OTAzMGNkMGQzY2UwNGQyY2FjOWMifQ"
+        },
+        {
+          "resource": "repo://src/feature.rs#L235-L247",
+          "version": "repo-lines-v1:sha256:4430b388396b4992358af62fe3416ed3a6c58858fb04673adc6871ee2dd3d044:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4MjQ1OWIxNmI5OGEyZjZjYTk1MzZjMzc5ZTc4MjZkZGFkYmRkNjMzOTQ2N2ViMTQ2MjZlMzA3ZmJhM2ZlNTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMDVhNDI2YWE2MDk1ZjE2ODYyNTRkYTViNGVmMjgwMWQ2MGYyMmVjZTQyYTQyZmVmYWRmNTlmMGIwM2VmYjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c71364d372aa44adb35aebec903b836a",
+      "statement": "A change's base must be a branch name without `origin/`, and effective_base falls back to the role's manifest base for records lacking it.",
+      "evidence": [
+        {
+          "resource": "repo://src/feature.rs#L172-L182",
+          "version": "repo-lines-v1:sha256:856ba5efa16012e171b4300f84106b71340b1464507df0946c51943926f12407:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3MjUzYWFkZDgwZDQwM2Q4NWRkNDI1ZjI4MzlmZjFhNTAyMTIyOTRhNjVkY2VkMzQ0MWNkNzA1NjkwMzM2NGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1MDU3MzFmOWNmNzMzZWUxYmZiZTBmOTBhNjMzNTBjM2MxYjJmODk1ZmQ5NWQwMDI5YWNkMjcyZTFiNzdiOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiOGRiMDBhMzUzYzBiYTZkOTJhNzg4MmNhODJiODNjOGUzZTM5NzhmNDQ3MGEwZGU3N2RlMmRjMTkzNjU0OWYifQ"
+        },
+        {
+          "resource": "repo://src/feature.rs#L62-L86",
+          "version": "repo-lines-v1:sha256:2455836a9782bd1e6538ea962c0b3b93a0f56ef82072a5f3a3aa71a421a55d7f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkYWU0NzY1NTg3NTViYzBlYzhmOTc1ZjMxY2Y2MmQxYjNkNmE0ZTI0OTA5MTY3ZjAwMzhiOGVlNGFiNzhkOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkMTEyZTViYjQ3ODNmMWQwNjc1YmNlOWYxNTU1MjlkNGEzMWExNjk1YzNkMDlkNTY1Nzg4ZjllMTY4NTgxOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyNmRhNjhlM2ZlMzMzYjBlN2M4MzJjNGE1ZTA1MzUxODVmMTk3YzRhMWY1OTJhMzFlZTYwMjRhNDY3YmFkYWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_878f943b2f984f0dbd4cb0d4aa71b5aa",
+      "statement": "status reports a merge into origin/<base> only when the branch is an ancestor of the base and has work beyond base_sha, and uses origin_seen to distinguish a fast-forward sync and to report branches gone from origin.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/status.rs#L464-L501",
+          "version": "repo-lines-v1:sha256:d410df8164c3fcd605e21e559355333488777fc523e26e520b91811ff7cc9f3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMThhZDE3MjJjZWU0MTlmMjc4Y2NhNzQ1ZGU5ZTQ1NDk5YmNjMzI0NWVkY2I2YmMwZTE4NGU1NWYwMzIwNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiNmExN2Q2ZmY0MTEyMjk3MTEyNjZjMTcyYjZkMDQyYjg4MDQ5NThkMWE1NmI5M2Q1M2Y5NzNjYWM4NDc4MjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2Yzg3Y2VjNDZiNmNlMjRjOTk3ZjU1NGI4MTFjZGM3ZDgwYmNkNWQ5ODQxNjIxZjMyY2I0NWRhZjZlMWJiM2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_47d12bc0656c4295ba9f04e4cce8fb8d",
+      "statement": "set-base only edits the feature record: it fetches origin, requires origin/<branch> and the local feature branch, recomputes base_sha as their merge base, and never checks out, rebases, or edits git's upstream.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/set_base.rs#L6-L69",
+          "version": "repo-lines-v1:sha256:4934ade57bb94d66f14558a85fc05e8de4f530d022d8e6c158c1b43f0c989adc:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0ZTQxMTkwMTBiYzYyMjc4NGVmM2ZjMzZmZDBmOTg2ZGExYzIzYTRiNGViM2M2MGRjNzY0OGNkMDY3YjZkYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjZWFlMTIyMDY1ZDVmMGZkNGYxZDg2MmY3OGFjMjhhZjEwOWFkMTVhZjY1NzdkYWVmMjY2ZTExNGU0YWNmMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a4cd19365d8d48ab9e79c13f5043229d",
+      "statement": "Finished features are rejected by require_open, which gates commands such as set-base, tmux, open, and sync.",
+      "evidence": [
+        {
+          "resource": "repo://src/feature.rs#L197-L207",
+          "version": "repo-lines-v1:sha256:6fefa80c1624a9fd61bb75970e5163be1d51125522d64419946bd4d82e0e5386:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmI5NGQ1N2M1YzQyZWI2YTZmZDM3NWY3NTQzOGMwZjFlMGQ0OWNjMDIxM2EwOThlYjY4M2UxNzk3MDFiOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlNDhiNjVmMzhlOTlkOGUyNzM2Y2M3Nzk0ZDBiMDJlMmQ4NjA0YzE0OTY4YmRmMDVmNGNmYjMxM2NlOGQ2YWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4M2VlZTE3ZGE1ZDJkMGQ0N2Q4MTk1Y2YwNWEwMDdkZDBiMTcwMWMzNDIwYzNmODQxZGQyMTc1OWVjYzAyYWMifQ"
+        },
+        {
+          "resource": "repo://src/main.rs#L527-L560",
+          "version": "repo-lines-v1:sha256:d1476de67547e11e0a44f061924b28c3207851958c77f7c6e082e89b80944aaa:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4YTc2YzhiOTUwOTNhNjVlNTM1ZGM4MGVlZmE1N2NlNGZkMTI2Mjk4MDhhYTc2ZWNmYzJkODlhNmI0YThhNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1MmZlMmJiYjIyYmVhNGZhMDQ5OGU4YTEwNGFmY2Q5ZTZhMDE3N2MyMDQ5YzI5MGRmODA3OTYxMTY4MGMyMWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2YmVjYWQ0ZmY4NjRhOTQ1ZDA5ZWY3NDM0MDZkYTEyZDQxNjliY2Y0NGVhNjJlNzQxNWFhNjk3ZTQwY2RhMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyNGE3YmI1YTY0NjJjOTQxNTBkMDY5NjQ1YmFkYzFkMzAyNWIxNWE4OGJmMzQ2YWE2ZmNjZDdkNTc2YzBmYmEifQ"
+        },
+        {
+          "resource": "repo://src/ops/set_base.rs#L10-L12",
+          "version": "repo-lines-v1:sha256:e23678d14cda4e0e1c2cbd7b241e641bbfb53c1994e9c490dc0a997c9dd1acfa:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTg3YWNjNDc2N2EzMjc0ZGFmZjNhZDE4MDIxYWJhNzAxYmI5NzUxYzY4MjIzMmU2MmE3ODc5MTg5ZTI0NTY3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IxOWEyODUwYzg4MDliMDI0Nzk1MWVhODU3N2IwMmEwZjRhMTdjZDA5YzI5NDEyMjQ3NGU2ZWYyMzgyOTRmYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzY5Yzc2MTQ1YThlNzMxZTIzNjVlYTZjMDFmZThkYWQ0Mzc3OGEzNTM5MjQ4ZDVhZTMwMGZmYjZjYjkwNDdkYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjNlZjllNjliMDg2M2FkMTNiY2IyMTM0MDEwYWUxYTJhZWVjNmQ2ZWM1MjExMTk4ZTQ5MzA5ZTNlYTBkYWNmYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_09c4145972d0401b8771aacf6bcc885e",
+      "statement": "Feature and checkout names must match ^[A-Za-z0-9][A-Za-z0-9_-]*$, roles ^[A-Za-z][A-Za-z0-9_-]*$ with hub and ai reserved, and clones [A-Za-z0-9-]+.",
+      "evidence": [
+        {
+          "resource": "repo://src/names.rs#L9-L54",
+          "version": "repo-lines-v1:sha256:e37f07d06cb85e73a271401cba732043602bd48df24e043b89ade000449b3460:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNDIxNjc3OThlMTM2MWMwZWVkN2JkYjQyNmE5ZmZkNjM0MWRiZjc4YmM4ZmEwYmY4OTVhODlhYWQ3MWZlOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MGVkN2U2N2UxMWE4NGRlNDU0NmM3ZDJjNWNiYWIyYjYwOGQ5NGYzYjM3NTdiZmJhZmVjODJjOTZiN2ZjYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlZjZhOTNiY2QzZTJjYzQ5MWM0ZTM4NTVhOTYyZjRlZDY3Mzc5MWVmZDUxMWQ4NGQwMTBhYmMzMTA0ZWQ1OTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8f196fda0f74faeaa7d545f2a4f2e72",
+      "statement": "Checkout templates substitute {feature}, {feature_snake} (dashes to underscores), and {hub}; branch templates substitute {feature}; both default to {feature}.",
+      "evidence": [
+        {
+          "resource": "repo://src/names.rs#L5-L7",
+          "version": "repo-lines-v1:sha256:06d5918c09a6b98a2ef528767551c5ce9dbc2fa6322bf07daa6c3a01773d2ec6:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzg3OWZkMGRkOTU2OTE1MGM1ZjUzNWYzMWIxMjUxMGQ1ZTNiMzJmMTc5M2M2MzFiZTA0MzI4YWQ3ODgxMGEwMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWNlOGQ1ODgyZDAwODk1OTAzODEwOWNhZTdjNzRmNDE1NDQwNThmNDkzYmM4MWJkZjFjMTg5NWViYjk2Y2M1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzc2MDI0MDk5YjAyZjA2NzE5MGUyNWJkMThjOTdiYTM5YjQ2OWVhMGI1Yjk4MmI1MTQ2ZmRiM2M4MWQxNjU5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2Q1YjhkNjZjOGJkOWI3MGEwODhhMDkzZDVmYTFiNmVjYzE5NDRjZjZlMDk1OTA4NjZmOGIwZWM5ZDMyZjNiNSJ9"
+        },
+        {
+          "resource": "repo://src/names.rs#L74-L87",
+          "version": "repo-lines-v1:sha256:59f26420d73893b198a3a0bb3823edf98352a740ae1e13ec80841eadf0c82b84:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZWNkNTE3MzdiODZmY2ViMGVmNTA0NGJmZGQxZDNlYWMyNjAxMWM4NWUwZDg0YjgzMzU2MWRiNmI1MTU1ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjMmM2YWU4MmYxMTg5NjAzYTkwYTkwYjY5OGE2MTc0ZjNmNGIyNjg1ZDBlNmVjZWFhOGY3YjE3ZTg2ZTliZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5MDdiNmQ3MmY5ZjJiMjBhMjVjODkwNTdkMzg5MmQxYmNlNzg3ODY5MGFhYzNkOGE4ZGJmMDk0YWZlOWJhNGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_58907de24a184a94a244c09b006dc45d",
+      "statement": "next_branch proposes a follow-up branch name by appending or incrementing a -<n> suffix until it finds a name that does not exist.",
+      "evidence": [
+        {
+          "resource": "repo://src/names.rs#L94-L116",
+          "version": "repo-lines-v1:sha256:ad1fdea4e677bc02ff7313795bd70c429206395cee22746df88ad43c3a28bb17:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNGViYWVjZTJhMzEwMjYwODU0OWIyMzE5NmY3MDc5MmY5OTgxNTdmMmIwZTZhZDBjYmJlNjljZDg0MzE0MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjNWI3MDQ3Njg0YzcwZDMxMjQyMGNiYWI1ZDlmY2M2MDM2NWFiZTY0YzZmMWUwYTlkNzg2MDc2NDUxMzNiZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0ZmQxNjFiM2ZlNzRmMGYxMGVkOWRlMzI4Y2MzNTU1MzQ4ZTJjNDExY2E1ZDIxODg5MTBlOWE2NTA4YWRlZWUifQ"
+        },
+        {
+          "resource": "repo://src/ops/resolve.rs#L340-L350",
+          "version": "repo-lines-v1:sha256:41c3a034504116de1e77e3ac78191457748300f03d84d4fa2a3b90dc25df8311:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3NDFlNzIyY2YyNmZhZjJlYjAxZTAyNGUyM2QzNTAwOWI0YjM2ODcwYzdhM2Y2NWY3ZGJmY2UxM2ZlMzc4ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMjg3M2U2NzBlNGMzYTM2MGMyYzYwMzAzNGVkNjg1ZTExYzVlN2U1NjBhYzgxMzY4NWE4YjIxNWJmNDUxMjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0OTU1NGZiODhkZTg3MWNhNmQyZTQ4MTkyMzZlOWQ1M2JjNjVmMWI3YWI3Njg2ZTU5ZGEzZDZlYmE4MTRmM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3MGFlYTg2ZDA5ZmM3ODBkNGQ4ZjdlODRkMjA0MDE3YTJmYzE0MTMwMGNiN2FiM2NhMTAzOWZkNWNjYWZkYjkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}

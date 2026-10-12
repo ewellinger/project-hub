@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:70c47f902c214be00edc431854e4054351b10eb927e6ab36983fe413a01a9bc9",
+  "claims": [
+    {
+      "id": "claim_dd65511507be46818db4d4c49e20ca42",
+      "statement": "Flows advance on overlay answers or worker results and return a Step: show an overlay, show while loading an effect, run an action, dispatch a lock-free effect, cancel with a message, or ignore a stale result.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/flow.rs#L1-L30",
+          "version": "repo-lines-v1:sha256:d0ace97069633cfc7e63f5b5cd8f3417f8673752ea275988077f414d75ebbf1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyYjY0ZTgzZTE0NTM0OWY5Y2RiYWVlMTBiNjFiZDc1MzJkNGQwYTI1NWU3NDdmZWE2ZDNkY2Q1YmJkZGZjZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3MmQzMGJhM2FkZjQ1MmU4MDE2MDExNDc2Nzk0NzdlODI5M2VjMDEyMzVkMDQyMDJkMDJlZDRhZDcyNjIyNzkifQ"
+        },
+        {
+          "resource": "repo://src/ui/app/mod.rs#L432-L469",
+          "version": "repo-lines-v1:sha256:46b070513d9a429e00114e46cf8a8107cff2e349f92d6b970e4a211ed3b0bd3d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMmIxMGM2ODRmZTNkYThhNjU0NmZmMTgxMTZmOWZkZGU0NDY2M2YzZDY4OGRiZThjMmM0NzY1ZGJjNmEwMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4YzI1NDc4N2ZkNjAyZDdlMTM0ODFhMWQ3ZDliZTBjMzdkZjc2YzRjMGNlNTFlMWQzNGMyNjQxMjQ0YmM3NmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExNGU4YzVmODM4MWJhYjM3NDFmNmRlMDY1MTk4YTA3OGE0YjA1YzVkNjM3MjU3YTE0MmM4MGRmMWM0NWE3MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4MDY0YTQ2OTNiYmI5MDYxMDZmOWM5M2EwYzcyNzgxNTg2NTJhNDNjODg1OTBlM2MwMDcxYjAyZDNjNWFkNWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1958e56c82854a0eb7cee0158c238b74",
+      "statement": "Esc in any overlay cancels the active flow with nothing changed; a Result overlay is dismissed instead.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/mod.rs#L425-L441",
+          "version": "repo-lines-v1:sha256:3722bfd465c7ef0edc26406a655871d491b83b8e28d3126ea403a01194f121dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMzFiY2MwMDI2M2M5MmE3ZTZmOGYzMDY5MzQ0NDJkZDY5NzAyY2NiNTI0MDQyNmM4MGM0MzBhZmJlMWFhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2NDE1MzQ2MDk4YjdmOGRhODYyMzBkMmJmY2IzM2UzYmRlYjhhNjA5YjFmZjNkZGUxM2VjMjc2MTMyZDI5YTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NjVkNzM4OTQ3NDA5ZTA3MTRhYjczOGMyNTEyZDdiMGIxYjhjNTRkNjU0N2RkOTc3YTBkNzhlNjIyMmJlOTkifQ"
+        },
+        {
+          "resource": "repo://src/ui/app/overlay.rs#L217-L223",
+          "version": "repo-lines-v1:sha256:dda8beba9cd1980653ff9c234f9092d2ec4867c4e3a70aadca9725e5fd94c369:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM5MWVkZmE3OTk3ODBjYTE4ODIxNWFjOTQ5OGMzNzA1NmM5NjJiNzIxOWVjYTc3MTc1ODY1ZDRhYzRhYWMyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjYxNGNmNDk0MDEwMzc4NWU4OGZhMjgzNTlmMjIyZjViNDBkMmI3YmI4YWQwOGI1NDIxMGU2NWU0NDM5MGRmNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7660a9bb343c4f49b6c81df51a32d81f",
+      "statement": "A Confirm overlay accepts with Enter, accepts with force on F only when force is offered, and ignores both when blocked.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/overlay.rs#L309-L320",
+          "version": "repo-lines-v1:sha256:f8c312de133a61a9bb3437b8932dd27e09823701f67deec7a79552c6938fd0dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNjU1Y2ViZTZiYTAwNDllOTcyZTkwMDhlZWEyYTYxOGQyYWU3MTIwMjcxZjdlOGRlNjRhYmRhOWZmNjMxMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5MWE1NjA1MWY0YWUyN2VmM2RhZGMxOTJiZTc0MmE3ODViZjc1NWY1NzMxNTU2MGU2Y2NhYWRiZmE3NjY4ZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxNTcxY2I0N2JkYzUwYWEzOWFlNDdjNGFiNTFlYmNjMzQ4YjJlNjEyZGI4MDgzNjIxZDM5NTViMjA5ZWUyZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cf03255cc7bd40f291298fcec401e0a1",
+      "statement": "In a Select overlay, Enter on the pinned row while a filter is typed answers with the filter text instead of a pick.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/overlay.rs#L238-L245",
+          "version": "repo-lines-v1:sha256:5da2a0c2e72643edff396861ad3114c052bfc38a4d71a9e044a97ecdc7827221:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjg5NjQ2NjI4MjUxNGEwODlhNjY4MmRiMGM5NTExMjdmMmE1ZDg3ZGY4YmEyZTRiNmMxZDE4MmE5NTAzYThjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUwOGZiMjY2ZGEyYzRlZTlkNWM5YzA1YTUwMTJjMjY4YTdkNWZmZjJkNjdmODQ4MDIxOTFhYjVlYWQ2NzVmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGQ1MDE4NzNlNDg1MDk5YzdjZGI5NDg0NjdjOTIyNWUwOTM3MWIwZGM1Njc5NDU5YTgyZjU5OTEzNDJjN2MzMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGY3ZDZlYmQ2NGI0OTU2Y2JkMDk0MDk2NjJkOGUwYWIwN2YwMmQ0YzVlYWUzNjc2Y2Q0N2ViY2EyZWQyNGJiOSJ9"
+        },
+        {
+          "resource": "repo://src/ui/app/overlay.rs#L24-L35",
+          "version": "repo-lines-v1:sha256:2f2f8e10476c019276bd2f99f770c498d28b3b769ceafa2a2ea97424a39ed6c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1ODVkNzE5ZWMwMjgyNzRkMjMwNDI4MjVjMGMwMWIyMGEzMjg3MTkyZjkyMTJlMzg0YTE0ZWRmYmU2ODNiMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzMWZhOGMwMGFhMWM2ZjlmZWY4N2Q3YmY5NzQ0OTNkMjYzOGFhMTNmZDE4YTNjNWE1Y2M2MGE5ZGZlNWIyOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1NWQzOTkzNmUyZDQyMDVjZmMxYTg5MTdlNGE2NGMyMjZlOTYyOGExNjVkYWI2OWM4YTY1NTRiMWYwNGIwYTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_167a0b8e9fa244d6945f03df1e4eccb1",
+      "statement": "The new-feature wizard asks for a name, preflights it off-thread, selects roles (none means docs-only), picks a branch per role, shows a summary, and runs Action::Start; stale preflight results are ignored.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/flow.rs#L701-L796",
+          "version": "repo-lines-v1:sha256:ea1bdc221d17cce37e40192c4bcc2e42269444d611f78660d09501216630b3f9:eyJzZWxlY3RlZExpbmVDb3VudCI6OTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzNDI4MDZiNDk5MzUwMjgxMDBjNGIwZjdmN2Y0ZDYwZWVmZjNmYjExYmY3ZmIzODRlZjAwNjdhOGYwZmI4Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a4f2118dcd1f47b8815c202a2ae6514b",
+      "statement": "The merged preview lists the change, worktree to remove, and kept branch, warning about dirty or adopted worktrees, and runs Action::Merged with the chosen force.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/flow.rs#L247-L300",
+          "version": "repo-lines-v1:sha256:9defae08c668a60a4f39409ee4859edfdc9dd7fe8bdd2539f1046b72c4d63ba8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlN2JhNGJlMmRiMzg2ZThkZTE3Mjg5NDljMjgwZWM1MDZmZTcxNTc1NjI4NWJlOGMzZDYyODA1ZGYzYTMxZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4ZTIyYWVmYjg3NDhlYjM1ODlmMDI4MTlhY2I1MzJkYTQzNTU2YjgzYjJhNDdlYjgzYWIyNDRmMzZjM2I1NWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhY2NiYmMyYjRhNmFiNDQ4NTI5ZTBkNzA2NzIwYjMwYmRkZWVmNDdkYjc5MGUyOWNkMmIyZDJjNjc3YTdmYmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eb9697f6c15c4f43be73e53e062b6c18",
+      "statement": "The finish preview lists the tmux session to kill when tmux is on, every worktree including the hub worktree, kept branches, and unmerged/dirty warnings, and is blocked when the dashboard runs inside that feature's own tmux session.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/flow.rs#L302-L403",
+          "version": "repo-lines-v1:sha256:642ea766310cafbfb40cc308994d64dd07924fed7d7b1346fbf23d6546274b9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiNWU1NmJlMTUxN2Y5MWM4MmNmYzVjOTM0MDlkNDBhNzA0YmQ1M2E1MmE3OGQzNGFhZGFiYjhhNzYyYjJjMDA2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxOWU3NjM1NWNmMTE5OTQ4MGMzZjk5ODM2YjE0ODZjODQxZDg5MWZhYWQ5MDRjNjA4ZTA5MzAyMmQzNzU3YWVlIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhNWVlZmQ5ZWQ4NmYwOThkNjdlYzA1M2ZlZTFhN2NmOWYwMWUzMTFjYmNkZjU5NTY3MDMwZDNmNjNmM2Q3M2ExIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_2cff1639ffa44a21bd60046eac126bf4",
+      "statement": "The set-base flow prefills the effective base and rejects empty or origin/-prefixed input inline; the review flow prefills the current review URL and treats empty input as no URL.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/flow.rs#L161-L197",
+          "version": "repo-lines-v1:sha256:010a9138768e66c97a4f6b4883193aacb57c286387ee5ec4a0cf885ceb6d2178:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1N2M0YWJkNTI2NjlkZjU1YzRkNjMxMTBjZDRkYjRlZTVmMjBmMWRhMWVkODMwOWJkZjhmYTcwYmVmNDE0MTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhZWQ5NWQ3NzBjNDRmZTFlOTRmZjc1ZDIyZWY0MWUyMDViNDZmYTU1MjRjYTJjY2UxM2Q0MGM3Njk2YzkwYjMifQ"
+        },
+        {
+          "resource": "repo://src/ui/app/flow.rs#L85-L108",
+          "version": "repo-lines-v1:sha256:1d824a7515ca0cce684f7404c036487566d7253c97af6789b42a20bb4aa76d72:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGYzMmYxYzZhZDAwNzgwZmU0MjExYWY1OTM3NDc3N2NkYTYwMThlNjhkOGM0ZmU1ZDVhZGU5OWM4Y2Q3NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1MzI0ZmQxNmRkZDVkZmEzMjM2ZjI1M2MyNmQyNDMyNDkwNGU3ZmQ3OTlkMDFiOTQ3ZjFjMzNkM2Q0MzI1NWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3NzFkMmVlMmJmYTBhY2E5MWU1ZmUzYjY4MDg3OTY4MDFmZGE2MzVhOWJhYmE4MzUzMDUyZWRmZGVhYTI5YjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc5cd20a49db419e95d328c3e604edb0",
+      "statement": "The feature screen orders rows as hub, open changes, then merged changes, and maps the cursor's change index to status row index+1 positionally rather than by role.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/feature.rs#L11-L23",
+          "version": "repo-lines-v1:sha256:9c51b36baa6fb19719d91d22f765a1df9c9fe8575ba49b1099ba0f6feea78a51:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNjFlZmUxOGFkMzc2NmE5MTlmNDA3OTQyN2M3YmEwZmFjNzk5YTdkOTFhNzNmM2FjOGEwNzIzMDNlOWRhYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlNWZiM2U4ZjdlNDQ1MjlmNzcyZmRiMmRkOTk4NTdkMjdhNjgyMWJkOWJjZjZkNDRjZjk2ZTY5ZWFjMDc1ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxMWY1MTJjYmNiZDM3ZjY0ZDJhYmM4MjI0NDI1MzZlZmJkNWNhODA1MGVmZTY4N2ZhMjFkYzBmYzBiOWMxZjcifQ"
+        },
+        {
+          "resource": "repo://src/ui/app/feature.rs#L74-L86",
+          "version": "repo-lines-v1:sha256:14a118c60b6f1c5cf2f48bbc1e06bcc31e0283f01da2aa65f67add4dad3f71ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxZmQ2NzI3N2NjZDBkM2VhNzYzM2JhOGFkYzNmMTNhNjAyMWVmNWUzYjAyNDZjYTc3NGI4NjU0OWM2MDVlODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3OGZkNDkzYzY1MzhmNDFjMmM3OTBjMDUyZWYxYzkwOTE1OGRhM2M2YmUzZDBhZDFlOWE5NjBjNTQzYzc0YmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_90e4079305d34ae9b447d6b7590f6868",
+      "statement": "Per-role feature-screen actions are refused while an action runs, before status loads, or when the selected change is merged.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/feature.rs#L160-L185",
+          "version": "repo-lines-v1:sha256:f6c8337f2b8b28915a9462586f3d126318f86550499800b10db1fbff4043310e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxZGQzZDUzYjc1MzY5OTYxYzgzODgzNTc0MzViOGNmYjQ0OTE1NDVmYWJkMjA4ZDU0NDBmMjlkNmI1NWZiMmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiMTViMjcyODdiOTQxZjg4OWRiMTQzZjVmYTQzOTZlM2M1MDQyNzg1MzRiNThmMTBlNjdkNjMxYTMyZmNmZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5NWI1NmQ4OGYyMzdiMmExYTcwMzU0OGVjOWE0ODk5MjFkNzM4ODJhMWVmODk1ZGVmZDE3OWU0ZDUzODlhZWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_96ed95d209b0458298bf9c1cbbb3c523",
+      "statement": "The add-role flow offers only roles without an open change and cancels when every role already has one.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/flow.rs#L523-L545",
+          "version": "repo-lines-v1:sha256:6eb730cb96dcb6cd197145e5b4128c8c9bd519c8b622889f6415dcbd00b1e3a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYjRkMTE0MTJkODM0ZDMxMjMzNTcwN2I1OGJjNTg0ZTE4ZTEwYWMyYjE3N2M4NWNhNDRhY2FjODI4ZGJiYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwNjZhY2UyY2NmY2I5M2JhNTA0NjNkZjEyYWUyNDZiYjhhOWE5NjllZTYwYmY5ODUzNzg1OTUyMmY5Mjg2OTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNDVhNmY2NDVlNDQ5ZmY3ODQzNzM1ZTM0YjE2ZDgzODJhODUzYTM1Yjk3MzFlZjhjODBkYjgxMWE1MDE0ZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjYmUzZjE4MzM1MGMwOTVmODkwYzFhYzNiNjFiNmYxOTMzZTJjZmJlYjIwMGU5ODc5NTQ2ZWNkMTE4MTNkMjQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}
