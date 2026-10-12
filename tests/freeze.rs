@@ -444,3 +444,100 @@ fn add_refuses_a_frozen_role_until_it_is_unfrozen() {
     .stderr(predicate::str::contains("hub feature unfreeze api"));
     assert!(frozen_wt(&fx).exists());
 }
+
+#[test]
+fn repo_remove_and_clone_change_refuse_while_a_role_is_frozen() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["repo", "remove", "api"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("frozen"));
+    fx.make_repo("api2-clone", "master");
+    fx.hub(&hub, &["repo", "set", "api", "--clone", "api2-clone"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("frozen"));
+}
+
+#[test]
+fn repo_rename_moves_the_pin_and_its_window() {
+    let (fx, hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["repo", "rename", "api", "backend"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "Renamed 0 changes and 1 pins in 1 features",
+        ));
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["pins"][0]["role"], "backend");
+    let names = fx.window_names("feat-1");
+    assert!(names.contains(&"backend".to_string()), "{names:?}");
+    assert!(!names.contains(&"api".to_string()), "{names:?}");
+    fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "backend"])
+        .assert()
+        .success();
+}
+
+#[test]
+fn repo_rename_records_only_refuses_to_give_a_role_two_checkouts() {
+    let (fx, hub) = world();
+    // feat-1 now has a frozen api worktree and an open ui change.
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let before = fx.feature_json(&hub, "feat-1");
+
+    // The api pin would land beside the open ui change.
+    fx.hub(&hub, &["repo", "rename", "api", "ui", "--records-only"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains(
+            "renaming its 'api' pin would give",
+        ));
+    // The open ui change would land beside the frozen api worktree.
+    fx.hub(&hub, &["repo", "rename", "ui", "api", "--records-only"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains(
+            "renaming its open 'ui' change would give",
+        ));
+
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1"),
+        before,
+        "no record was written"
+    );
+}
+
+#[test]
+fn repo_rename_records_only_refuses_to_give_a_role_two_pins() {
+    let (fx, hub) = world();
+    fx.make_repo("db-clone", "master");
+    fx.add_repo(&hub, "db", "db-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "db"])
+        .assert()
+        .success();
+    let before = fx.feature_json(&hub, "feat-1");
+
+    fx.hub(&hub, &["repo", "rename", "api", "db", "--records-only"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains(
+            "renaming its 'api' pin would give",
+        ));
+
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1"),
+        before,
+        "no record was written"
+    );
+}
