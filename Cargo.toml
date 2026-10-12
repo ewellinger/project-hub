@@ -9,7 +9,7 @@ repository = "https://github.com/ewellinger/project-hub"
 readme = "README.md"
 keywords = ["git", "worktree", "tmux", "monorepo", "cli"]
 categories = ["command-line-utilities", "development-tools"]
-exclude = ["/docs", "/tests", "/.github", "/dist-workspace.toml", "/rustfmt.toml", "/.gitignore"]
+exclude = ["/docs", "/tests", "/.github", "/dist-workspace.toml", "/rustfmt.toml", "/.gitignore", "/openwiki", "/AGENTS.md"]
 
 [lib]
 name = "hub"

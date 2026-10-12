@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8f63d4ccdc682c878e994bdc73b33bf3db78f513ab6e4f4f9c5f475d67e91ae1",
+  "claims": [
+    {
+      "id": "claim_e4ab32e300dd456aa6ca521e062a31b9",
+      "statement": "The agent skill is embedded in the binary at build time from skills/hub/SKILL.md and written to .claude/skills/hub/ and .agents/skills/hub/ in a worktree.",
+      "evidence": [
+        {
+          "resource": "repo://src/skill.rs#L10-L16",
+          "version": "repo-lines-v1:sha256:9de609ff065a419c5f9b6961e9bb8c591daa3a1be34083e857aa09dfce6ffed3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODJkN2FjY2U2NjQ2MWY3NjM5NGQwNGVlM2QxOWI4ZTVlYTljYjQwMTc3M2NjYzgyM2NiN2ZjNWYzY2VmNTcwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjcyNDhjNTE4MjI4NzkxNTZiMjA4NGQ3ZmNlZjc1NjkyMGVkNWI5MTk2NDE5Nzg2YTcyZThhOWQ1Y2YzNGU4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2NlYWUxMjIwNjVkNWYwZmQ0ZjFkODYyZjc4YWMyOGFmMTA5YWQxNWFmNjU3N2RhZWYyNjZlMTE0ZTRhY2YxZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGZmMDMwNzNiNzRmMGRlZjQyNzIxZjBkZDNiNjBmYTIxMDhmZGIyNjI1YThjYzE3Mjc1Yzc4NzgwN2E5OGNlZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac4c745d2d0f42a6ab5df2fac65617dc",
+      "statement": "skill::install writes SKILL.md only when a copy is missing or differs from the embedded text.",
+      "evidence": [
+        {
+          "resource": "repo://src/skill.rs#L18-L33",
+          "version": "repo-lines-v1:sha256:d32cff289b88153d92f79aae25f62ad1a7c58f08b9f3ff0d60e01c9664a17e8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwOWFiYjRlNjkwZTY0YjQ4ZjJiMDVhZDg5M2U1MTUwZDdiNGI4M2EyNzRkNGMxNmQxNWIyYWExZGFiZTE5MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2ZWE0MjkxNzU0ZGEyNjUzZGE5MjUzMGE1OWQxNThiNTU1YTJlMWZjNWQwYWEzMzVhYTQ4M2IwNjA4MmY0YTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OWFlODkxNGIyOTI2ZmM3YzllOWJhZjRkMThmYjViYTUwOGY0YjQ0M2UwYzRlYzcyNWU0MTg0Mjk1MzU0MjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_632fe8711b50459ca27bdc6a1c25bfdf",
+      "statement": "Both skill directories are added to the repository's local exclude file so generated copies stay untracked.",
+      "evidence": [
+        {
+          "resource": "repo://src/skill.rs#L35-L42",
+          "version": "repo-lines-v1:sha256:22aeab9157028f4f8dae3acb4429f2c84653211d002a15d38e950e551d70bd0d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjUxZWZjNDliYTc4NDNhMGQzY2M5MDI2NWViZWJjZDk0YjdlNDY0ZDAxODRhODdkNmE4YjNjNDU0ZGQ5MTM2ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzVmNmY0NjZlNTljZmMzMDcwM2M0NWY3MmFmNjVkZTU0YWMzNjNkMzU0Y2MxYTMzMzAzNTBhY2Q0NTI0MzRjNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGRiNzlhOGRjYTYxYmQ4MWYyOWUwNmI4NjVhZGJkYzRhYzRhNjk4NTY3YTI1NzgzYTAyNDA4YzIxZmRkZTEzMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_acef7928f69248cbafc5a85215c6f085",
+      "statement": "Every hub-scoped command refreshes the skill in all existing hub worktrees, collecting failures as warnings printed to stderr rather than failing the command.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L291-L300",
+          "version": "repo-lines-v1:sha256:6f524497c0611fae0a15c3772e835dd75e73c5e968c5c892d8b10fca170c6e3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZDMxYWM0NzhlYjY5NjkyNzA3OGZmYmIxYzY2ODVlYmMxNmI4YjkzODE2OTA5MTA3NjQ4ZTdhOGI3ZmIxMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkNDQ2NDE5ODBkMGY4ZjJiOWMyYjFjODQ2ZTBiNmNjMzJkYWEzNjIwZDUxYTAxMjc2N2M5OTZlNWM3NThiYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhZmUxMWE2ODc2MDQzMmFhMmRjNWVhNzYzNmYxNmFlNzNmMGM2M2U4ZTMzMGI5MDE5ZGIyZWMwNmE3NGU1ZTcifQ"
+        },
+        {
+          "resource": "repo://src/skill.rs#L44-L61",
+          "version": "repo-lines-v1:sha256:c7664af86c333244646a18c6f745743f81aed552bce2b4ced81e35dc17c3bc6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxYTI1MTk5ZDFkNzRmYjdhN2Y5Zjk5ODliZjZkNmQzNjQyMzBkMzVjYTM3MmE4OWE0Y2ExNTA3NWZiOWFhOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_96d81979e1ae484bbfe173fa4d104fee",
+      "statement": "hub init and feature start/start-review install the skill into the hub root or new hub worktree, treating failures as warnings.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/init.rs#L108-L118",
+          "version": "repo-lines-v1:sha256:eff8fe6202ff78ed52da22b427664aaac2fd8be50b4b1b9e588ebbb17835d39a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZWMxYTRiY2U3N2U5OWNhMjljOWE0MzRmYTVjYjcwMWMyNDlmNzc4ZmM5ZGU5OTQxN2VjZTg4NTA5MzBhY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzNzIxYTA4ZTYxY2QyYzdiOGUzMDU0MmVjMzE2ODA4NjA4OTQ0YWYzNTgzNTRjZjcyM2Q5NWE3YWIyNDk2MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhOTkzYWNlNjZiZjhhMzMzMTdmMWJjY2Y2MmZlNmUxMjhlNjk3ZjZkOTI3YjEwMzRjOGI1NjE1OWZmMGE5MTkifQ"
+        },
+        {
+          "resource": "repo://src/ops/start.rs#L80-L86",
+          "version": "repo-lines-v1:sha256:4731479b6182e334894f477357102f20b05f0a5c80a1ed86d10cc89ab00bed9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjFlMDg5ZGViM2IxOTBmYjRlNDU2MWUxNTUxZjA1MDc0YzNlYTQ1NzUxYzI0NTIzODhjOGU2YzcxNGM1ZTFkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2I2Y2YzYTEzNDljOGQ5NGE2NjYzOWIwZDUzZTNhMWFlN2NhOGI5MThiNzE5YzhmZTdmZWY3Y2U2MTAxMzVlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjUzMDhlODZkOWUxYTIwNzk2YzhjNGEzNjBhOTQ0NzMxOTlmNWYzZjg3NDJlNWQ5YzQ5NzcyZDczYmU4YmY0MSJ9"
+        },
+        {
+          "resource": "repo://src/ops/start_review.rs#L90-L96",
+          "version": "repo-lines-v1:sha256:4731479b6182e334894f477357102f20b05f0a5c80a1ed86d10cc89ab00bed9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjFlMDg5ZGViM2IxOTBmYjRlNDU2MWUxNTUxZjA1MDc0YzNlYTQ1NzUxYzI0NTIzODhjOGU2YzcxNGM1ZTFkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2I2Y2YzYTEzNDljOGQ5NGE2NjYzOWIwZDUzZTNhMWFlN2NhOGI5MThiNzE5YzhmZTdmZWY3Y2U2MTAxMzVlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjUzMDhlODZkOWUxYTIwNzk2YzhjNGEzNjBhOTQ0NzMxOTlmNWYzZjg3NDJlNWQ5YzQ5NzcyZDczYmU4YmY0MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9391524cccdb48f4bcff1ec27a6658fb",
+      "statement": "The skill integration test verifies every `hub` command listed in the skill's table exists in the binary.",
+      "evidence": [
+        {
+          "resource": "repo://tests/skill.rs#L8-L60",
+          "version": "repo-lines-v1:sha256:5acfe9dddb4a64954b159866806f47301863f683fded8ac1e2909cb594be91ef:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3NjlhNjllMTU2NGE0YzY2Nzc0OWM3OTBiYmJiY2E1ZWIxMWMzNTAzZmE1ODg2ZDAwMDFlY2FiZjAzNjg4NjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0MmE0MzUxODgxMDU1YTExOTg0OTljY2Q2NTE2YjI1YTVmNDUwMmM5ZDMwODc2ODk4MTE4Yzk3NWQ2OGNiZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1NDkyMWRlZTFiODc1YjUzNjc4MDUxYzAwNmU4Yjc2MDg0NGZjNDdmNjNmZTEyYWNkOWZmMGM2OTI5OTJiMTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3d2e907a89c5401b93d601b778fe9a1c",
+      "statement": "The skill instructs agents to treat hub status exit 30 as drift and stop, to refer to member repos by role, and to take paths from hub status --json rows.",
+      "evidence": [
+        {
+          "resource": "repo://skills/hub/SKILL.md#L10-L46",
+          "version": "repo-lines-v1:sha256:42215248a1a75a9a521ad4f3408d7e1efa52d9bdd067011befbe5c5c14cf794b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNGIwODdjNGMwNDIyZmE4NDQ1MTQ2ODA4OWE4YWM3M2MwZmIxYWM0Y2E4NzhmZTJlNDM1MDlmNDg2YWJiNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0MmM4YzVmOWJmNzUyODNhMzAzNmYzMWM1NDAzY2E5Mjk5ODBlM2Y4NGUwYTAwNTM5NTgyNzRjNTkwZGJjMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NWE1MzJiNDU5NjNjZGVhYTYwMWIyNWNjZjFmZDE0M2NlZTVjZDNiNDk4ODUwYzgyOTZlNjlkMDhlOWU0ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NWEyMzAzOTA3ZTZlZWFlMTUwMWVlOTQ1MzkyMDY3NzgyNTU4MTg3NjMwZDVhOWQzZTY3NTBlYTg4ZTYxODcifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-12T04:10:52.427Z"
+  }
+}
