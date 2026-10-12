@@ -154,6 +154,18 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                     let mut f = hub.load_feature(feature)?;
                     ops::freeze::freeze(hub, &mut f, role, None)
                 }
+                Action::Unfreeze {
+                    feature,
+                    role,
+                    force,
+                } => {
+                    let mut f = hub.load_feature(feature)?;
+                    ops::freeze::unfreeze(hub, &mut f, role, *force)
+                }
+                Action::Refreeze { feature, role } => {
+                    let mut f = hub.load_feature(feature)?;
+                    ops::freeze::refreeze(hub, &mut f, role)
+                }
                 Action::Finish { feature, force } => {
                     let mut f = hub.load_feature(feature)?;
                     ops::finish::finish(hub, &mut f, *force, &mut |_| true)

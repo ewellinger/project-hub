@@ -161,6 +161,14 @@ impl App {
                     roles: Vec::new(),
                 })
             }
+            KeyCode::Char('u') => match self.frozen_role() {
+                Some((feature, role)) => self.start_flow(Flow::Unfreeze { feature, role }),
+                None => Vec::new(),
+            },
+            KeyCode::Char('Z') => match self.frozen_role() {
+                Some((feature, role)) => self.run(Action::Refreeze { feature, role }),
+                None => Vec::new(),
+            },
             KeyCode::Char('c') => {
                 if self.busy() {
                     return Vec::new();
@@ -221,6 +229,30 @@ impl App {
             return None;
         }
         Some((name, change.role.clone()))
+    }
+
+    /// The feature and role of the frozen reference or pinned change under
+    /// the cursor, or `None` after saying why not.
+    fn frozen_role(&mut self) -> Option<(String, String)> {
+        if self.busy() {
+            return None;
+        }
+        let name = self.feature_name()?.to_string();
+        let Some((role, frozen)) = self
+            .selected_role_row()
+            .map(|r| (r.role.clone(), r.frozen_sha.is_some()))
+        else {
+            self.say("status not loaded yet; press r".into(), true);
+            return None;
+        };
+        if !frozen {
+            self.say(
+                format!("role '{role}' is not frozen in feature '{name}'"),
+                true,
+            );
+            return None;
+        }
+        Some((name, role))
     }
 
     /// Step the cursor through the display order and clamp at its ends.
@@ -403,6 +435,22 @@ pub(crate) mod tests {
         };
         feature.pins.push(pin("ui", true));
         report.rows.push(frozen_status_row("ui"));
+        Report::Feature { feature, report }
+    }
+
+    /// `suspense` with its open `api` change pinned; no reference worktree.
+    pub(crate) fn pinned_api() -> Report {
+        let Report::Feature {
+            mut feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        feature.pins.push(pin("api", false));
+        report.rows[1].base = Some("main".into());
+        report.rows[1].frozen_sha = Some(PIN.into());
+        report.rows[1].base_moved = Some(3);
         Report::Feature { feature, report }
     }
 
@@ -1136,6 +1184,98 @@ pub(crate) mod tests {
             a.footer
                 .as_ref()
                 .is_some_and(|f| f.text == "status not loaded yet; press r")
+        );
+    }
+
+    #[test]
+    fn u_and_shift_z_act_on_a_frozen_row_and_are_refused_elsewhere() {
+        let mut a = on_report(frozen_ui());
+        for code in [KeyCode::Char('u'), KeyCode::Char('Z')] {
+            assert!(a.update(key(code)).is_empty(), "{code:?}");
+            assert!(a.overlay.is_none(), "{code:?}");
+            assert!(
+                a.footer
+                    .as_ref()
+                    .is_some_and(|f| f.is_error
+                        && f.text == "role 'api' is not frozen in feature 'suspense'"),
+                "{code:?}: {:?}",
+                a.footer.as_ref().map(|f| f.text.clone())
+            );
+        }
+        a.update(key(KeyCode::Char('j'))); // ui, frozen
+        assert!(a.update(key(KeyCode::Char('u'))).is_empty());
+        assert!(
+            matches!(a.overlay, Some(Overlay::Confirm { ref title, .. }) if title == "Unfreeze ui in suspense")
+        );
+        assert_eq!(
+            a.update(key(KeyCode::Char('F'))),
+            vec![Effect::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: true
+            })]
+        );
+        assert!(a.update(key(KeyCode::Char('Z'))).is_empty(), "busy");
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.text == "busy: unfreeze ui…")
+        );
+        a.running = None;
+        assert_eq!(
+            a.update(key(KeyCode::Char('Z'))),
+            vec![Effect::Run(Action::Refreeze {
+                feature: "suspense".into(),
+                role: "ui".into()
+            })]
+        );
+    }
+
+    #[test]
+    fn enter_on_a_dirty_unfreeze_preview_does_not_force() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        report.rows[3].dirty = true;
+        let mut a = on_report(Report::Feature { feature, report });
+        a.update(key(KeyCode::Char('j'))); // ui, frozen
+        a.update(key(KeyCode::Char('u')));
+        assert_eq!(
+            a.update(key(KeyCode::Enter)),
+            vec![Effect::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: false
+            })]
+        );
+    }
+
+    #[test]
+    fn u_and_shift_z_on_a_pinned_open_change_run_directly() {
+        let mut a = on_report(pinned_api());
+        assert_eq!(
+            a.update(key(KeyCode::Char('u'))),
+            vec![Effect::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "api".into(),
+                force: false
+            })]
+        );
+        assert!(
+            a.overlay.is_none(),
+            "no preview: nothing on disk is removed"
+        );
+        a.running = None;
+        assert_eq!(
+            a.update(key(KeyCode::Char('Z'))),
+            vec![Effect::Run(Action::Refreeze {
+                feature: "suspense".into(),
+                role: "api".into()
+            })]
         );
     }
 }

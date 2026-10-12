@@ -83,6 +83,15 @@ pub enum Action {
         feature: String,
         role: String,
     },
+    Unfreeze {
+        feature: String,
+        role: String,
+        force: bool,
+    },
+    Refreeze {
+        feature: String,
+        role: String,
+    },
     Finish {
         feature: String,
         force: bool,
@@ -103,6 +112,8 @@ impl Action {
             | Action::SetBase { feature, .. }
             | Action::Merged { feature, .. }
             | Action::Freeze { feature, .. }
+            | Action::Unfreeze { feature, .. }
+            | Action::Refreeze { feature, .. }
             | Action::Finish { feature, .. }
             | Action::Pull {
                 row: RowId::Feature(feature),
@@ -120,6 +131,8 @@ impl fmt::Display for Action {
             Action::SetBase { role, .. } => write!(f, "set-base {role}"),
             Action::Merged { role, .. } => write!(f, "merged {role}"),
             Action::Freeze { role, .. } => write!(f, "freeze {role}"),
+            Action::Unfreeze { role, .. } => write!(f, "unfreeze {role}"),
+            Action::Refreeze { role, .. } => write!(f, "refreeze {role}"),
             Action::Finish { feature, .. } => write!(f, "finish {feature}"),
             Action::Pull { row: RowId::Base } => write!(f, "pull base"),
             Action::Pull {
@@ -1607,6 +1620,76 @@ mod tests {
             result: Ok(vec!["api: frozen at 0123456".into()]),
         });
         assert!(a.running.is_none());
+        assert_eq!(
+            effects,
+            vec![Effect::Request {
+                row: RowId::Feature("alpha".into()),
+                r#gen: 1
+            }]
+        );
+    }
+
+    #[test]
+    fn unfreeze_and_refreeze_name_the_role_and_refresh_their_feature() {
+        let unfreeze = Action::Unfreeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+            force: true,
+        };
+        let refreeze = Action::Refreeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        assert_eq!(unfreeze.to_string(), "unfreeze api");
+        assert_eq!(refreeze.to_string(), "refreeze api");
+        for action in [unfreeze, refreeze] {
+            assert_eq!(action.feature(), Some("alpha"));
+            let mut a = app();
+            assert_eq!(a.run(action.clone()), vec![Effect::Run(action.clone())]);
+            let effects = a.update(Event::Done {
+                action: action.clone(),
+                result: Ok(vec!["api: unfrozen (was 0123456)".into()]),
+            });
+            assert!(a.running.is_none());
+            assert_eq!(
+                effects,
+                vec![Effect::Request {
+                    row: RowId::Feature("alpha".into()),
+                    r#gen: 1
+                }],
+                "{action}"
+            );
+        }
+    }
+
+    /// EW-95 refuses to move or release a frozen worktree whose HEAD left
+    /// its pin. The dashboard shows that refusal like any other op error
+    /// and refreshes, so the row's `off-pin` state is current.
+    #[test]
+    fn an_off_pin_refusal_shows_in_the_error_overlay() {
+        // EW-95's `require_on_pin` wording: one line, `\` continuations.
+        let refusal = "role 'api': frozen worktree /wt/api/alpha-frozen is off its pin 0123456 \
+                       (HEAD is 89abcde); it may hold commits that are on no branch. Keep them with \
+                       `git -C /wt/api/alpha-frozen branch <name> 89abcde` first; unfreeze and \
+                       finish discard them with --force";
+        let refreeze = Action::Refreeze {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        let mut a = app();
+        a.run(refreeze.clone());
+        let effects = a.update(Event::Done {
+            action: refreeze,
+            result: Err(HubError::Precondition(refusal.into())),
+        });
+        assert_eq!(
+            a.overlay,
+            Some(Overlay::result(
+                "refreeze api".into(),
+                vec![refusal.into()],
+                true
+            ))
+        );
         assert_eq!(
             effects,
             vec![Effect::Request {

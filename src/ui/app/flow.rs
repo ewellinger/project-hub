@@ -3,7 +3,7 @@
 //! wait on, the action to run, or a cancellation.
 
 use hub::env::{home_dir, shorten_home};
-use hub::feature::{Change, Feature, Owner};
+use hub::feature::{Feature, Owner, Worktree};
 use hub::names;
 use hub::ops::status::StatusRow;
 use hub::ops::suggest::BranchRow;
@@ -47,6 +47,10 @@ pub enum Flow {
         /// Roles offered, in manifest order; filled at `Begin`.
         roles: Vec<String>,
     },
+    Unfreeze {
+        feature: String,
+        role: String,
+    },
     Finish {
         feature: String,
     },
@@ -70,6 +74,7 @@ impl Flow {
             Flow::SetBase { feature, role } => set_base(feature, role, answer, app),
             Flow::Merged { feature, role } => merged(feature, role, answer, app),
             Flow::Freeze { feature, roles } => freeze(feature, roles, answer, app),
+            Flow::Unfreeze { feature, role } => unfreeze(feature, role, answer, app),
             Flow::Finish { feature } => finish(feature, answer, app),
             Flow::Copy {
                 feature,
@@ -207,16 +212,16 @@ fn set_base(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
     }
 }
 
-/// Two lines describing a change's worktree for a confirm overlay:
+/// Two lines describing a worktree for a confirm overlay:
 /// `label  path` then `owner · state`. A change checked out in the main
 /// clone has no worktree to remove and gets a single dim line.
 pub fn worktree_lines(
     label: &str,
-    change: &Change,
+    worktree: Option<&Worktree>,
     row: Option<&StatusRow>,
 ) -> Vec<(String, Tone)> {
     let pad = " ".repeat(label.chars().count() + 2);
-    let Some(wt) = &change.worktree else {
+    let Some(wt) = worktree else {
         return vec![(format!("{label}  main clone, not removed"), Tone::Dim)];
     };
     let path = row
@@ -255,6 +260,42 @@ fn open_row<'a>(
     App::change_rows(report).get(i)
 }
 
+/// The status row of `role`'s frozen reference worktree. A role has at
+/// most one pin, so the role name is enough.
+fn frozen_status<'a>(
+    report: &'a hub::ops::status::StatusReport,
+    role: &str,
+) -> Option<&'a StatusRow> {
+    App::change_rows(report)
+        .iter()
+        .find(|r| r.role == role && r.stage == "frozen")
+}
+
+/// `!` lines for a frozen worktree that `op` refuses without force: a dirty
+/// one, or one whose HEAD left its pin (`status` reports that as an
+/// existing, registered row with `branch_matches == false`, shown as `off-pin`).
+fn frozen_warnings(role: &str, row: Option<&StatusRow>, op: &str) -> Vec<(String, Tone)> {
+    let Some(r) = row else {
+        return Vec::new();
+    };
+    let mut out = Vec::new();
+    if r.dirty {
+        out.push((
+            format!("! {role} is dirty; {op} will refuse without force"),
+            Tone::Warn,
+        ));
+    }
+    // Same test as `state_text`'s `off-pin`: a missing or unregistered
+    // worktree also has `branch_matches == false` but is not off its pin.
+    if r.exists && r.registered && !r.branch_matches {
+        out.push((
+            format!("! {role} is off its pin; {op} may refuse without force"),
+            Tone::Warn,
+        ));
+    }
+    out
+}
+
 fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
     match answer {
         Answer::Begin => {
@@ -272,7 +313,10 @@ fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
                 format!("Close change     {role}: {}", change.branch),
                 Tone::Plain,
             )];
-            for (i, (text, tone)) in worktree_lines(role, change, row).into_iter().enumerate() {
+            for (i, (text, tone)) in worktree_lines(role, change.worktree.as_ref(), row)
+                .into_iter()
+                .enumerate()
+            {
                 let prefix = if i == 0 {
                     "Remove worktree  "
                 } else {
@@ -359,6 +403,57 @@ fn freeze(feature: &str, roles: &mut Vec<String>, answer: Answer, app: &App) -> 
     }
 }
 
+/// Release a pin. A reference worktree is removed, so preview it the way
+/// `merged` does, `F` forcing a dirty or off-pin one; a pinned open change
+/// has nothing on disk to remove and runs straight away.
+fn unfreeze(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
+    let run = |force| {
+        Step::Run(Action::Unfreeze {
+            feature: feature.to_string(),
+            role: role.to_string(),
+            force,
+        })
+    };
+    match answer {
+        Answer::Begin => {
+            let Some((record, report)) = app.feature_report().filter(|(f, _)| f.name == feature)
+            else {
+                return Step::Cancel("status not loaded yet; press r".into());
+            };
+            let Some(pin) = record.pin(role) else {
+                return Step::Cancel(format!(
+                    "role '{role}' is not frozen in feature '{feature}'"
+                ));
+            };
+            let Some(wt) = &pin.worktree else {
+                return run(false);
+            };
+            let row = frozen_status(report, role);
+            let mut lines = vec![(
+                format!("Release pin      {role} @{}", pin.short()),
+                Tone::Plain,
+            )];
+            for (i, (text, tone)) in worktree_lines(role, Some(wt), row).into_iter().enumerate() {
+                let prefix = if i == 0 {
+                    "Remove worktree  "
+                } else {
+                    "                 "
+                };
+                lines.push((format!("{prefix}{text}"), tone));
+            }
+            lines.push((String::new(), Tone::Plain));
+            lines.extend(frozen_warnings(role, row, "unfreeze"));
+            Step::Show(Overlay::confirm(
+                format!("Unfreeze {role} in {feature}"),
+                lines,
+                true,
+            ))
+        }
+        Answer::Confirmed { force } => run(force),
+        _ => Step::Cancel("unexpected answer".into()),
+    }
+}
+
 fn finish(feature: &str, answer: Answer, app: &App) -> Step {
     match answer {
         Answer::Begin => {
@@ -385,7 +480,16 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
             };
             for change in record.open_changes() {
                 let row = open_row(record, report, &change.role);
-                for (text, tone) in worktree_lines(&change.role, change, row) {
+                for (text, tone) in worktree_lines(&change.role, change.worktree.as_ref(), row) {
+                    push_wt(&mut lines, text, tone);
+                }
+            }
+            for pin in &record.pins {
+                if pin.worktree.is_none() {
+                    continue;
+                }
+                let row = frozen_status(report, &pin.role);
+                for (text, tone) in worktree_lines(&pin.role, pin.worktree.as_ref(), row) {
                     push_wt(&mut lines, text, tone);
                 }
             }
@@ -435,6 +539,10 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
                         Tone::Warn,
                     ));
                 }
+            }
+            for pin in &record.pins {
+                let row = frozen_status(report, &pin.role);
+                lines.extend(frozen_warnings(&pin.role, row, "finish"));
             }
             if report.rows.first().is_some_and(|r| r.dirty) {
                 lines.push((
@@ -859,7 +967,7 @@ fn new_feature(state: &mut NewFeature, answer: Answer, app: &App) -> Step {
 mod tests {
     use super::*;
     use crate::ui::app::feature::tests::{
-        change, frozen_ui, on_feature, on_report, status_row, suspense,
+        change, frozen_ui, on_feature, on_report, pinned_api, status_row, suspense,
     };
     use crate::ui::app::{Cached, Loaded, Preview, Report, RowId, Screen, Selected};
     use hub::feature::{Feature, FeatureStatus, Owner, Stage};
@@ -1465,7 +1573,7 @@ mod tests {
         let mut c = change("api", "feature/x", Stage::Working);
         let mut row = status_row("api", "feature/x", "working");
         assert_eq!(
-            worktree_lines("api", &c, Some(&row)),
+            worktree_lines("api", c.worktree.as_ref(), Some(&row)),
             vec![
                 ("api  /wt/api/feature/x".to_string(), Tone::Plain),
                 ("     hub-created · clean".to_string(), Tone::Dim),
@@ -1474,16 +1582,16 @@ mod tests {
         row.dirty = true;
         c.worktree.as_mut().unwrap().owner = Owner::Adopted;
         assert_eq!(
-            worktree_lines("api", &c, Some(&row))[1],
+            worktree_lines("api", c.worktree.as_ref(), Some(&row))[1],
             ("     adopted · dirty".to_string(), Tone::Warn)
         );
         assert_eq!(
-            worktree_lines("api", &c, None)[1],
+            worktree_lines("api", c.worktree.as_ref(), None)[1],
             ("     adopted · unknown".to_string(), Tone::Dim)
         );
         c.worktree = None;
         assert_eq!(
-            worktree_lines("api", &c, Some(&row)),
+            worktree_lines("api", c.worktree.as_ref(), Some(&row)),
             vec![("api  main clone, not removed".to_string(), Tone::Dim)]
         );
     }
@@ -1772,6 +1880,181 @@ mod tests {
         assert_eq!(
             flow.advance(Answer::Begin, &app),
             Step::Cancel("every role is already frozen in suspense".into())
+        );
+    }
+
+    #[test]
+    fn unfreeze_previews_the_reference_worktree_and_runs_with_the_chosen_force() {
+        let app = on_report(frozen_ui());
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        let Step::Show(Overlay::Confirm {
+            title,
+            lines,
+            force,
+            blocked,
+        }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!("expected a confirm");
+        };
+        assert_eq!(title, "Unfreeze ui in suspense");
+        assert!(force && blocked.is_none());
+        let text: Vec<&str> = lines.iter().map(|(t, _)| t.as_str()).collect();
+        assert_eq!(text[0], "Release pin      ui @0123456");
+        assert_eq!(text[1], "Remove worktree  ui  /wt/ui/suspense-frozen");
+        assert_eq!(text[2].trim(), "hub-created · clean");
+        assert!(!text.iter().any(|t| t.contains("dirty")), "{text:?}");
+        assert_eq!(
+            flow.advance(Answer::Confirmed { force: false }, &app),
+            Step::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: false
+            })
+        );
+    }
+
+    #[test]
+    fn unfreeze_warns_when_the_reference_worktree_is_dirty() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        report.rows[3].dirty = true;
+        let app = on_report(Report::Feature { feature, report });
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        assert_eq!(lines[2].0.trim(), "hub-created · dirty");
+        assert!(
+            lines.contains(&(
+                "! ui is dirty; unfreeze will refuse without force".to_string(),
+                Tone::Warn
+            )),
+            "{lines:?}"
+        );
+        assert_eq!(
+            flow.advance(Answer::Confirmed { force: true }, &app),
+            Step::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "ui".into(),
+                force: true
+            })
+        );
+    }
+
+    #[test]
+    fn unfreezing_a_pinned_open_change_runs_without_a_preview() {
+        let app = on_report(pinned_api());
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "api".into(),
+        };
+        assert_eq!(
+            flow.advance(Answer::Begin, &app),
+            Step::Run(Action::Unfreeze {
+                feature: "suspense".into(),
+                role: "api".into(),
+                force: false
+            })
+        );
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        assert_eq!(
+            flow.advance(Answer::Begin, &app),
+            Step::Cancel("role 'ui' is not frozen in feature 'suspense'".into())
+        );
+    }
+
+    #[test]
+    fn finish_previews_frozen_worktrees_and_warns_when_one_is_dirty() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        report.rows[3].dirty = true;
+        let app = on_report(Report::Feature { feature, report });
+        let mut flow = Flow::Finish {
+            feature: "suspense".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        let text: Vec<&str> = lines.iter().map(|(t, _)| t.trim()).collect();
+        let frozen = text
+            .iter()
+            .position(|t| *t == "ui  /wt/ui/suspense-frozen")
+            .unwrap_or_else(|| panic!("frozen worktree not previewed: {text:?}"));
+        let hub = text
+            .iter()
+            .position(|t| *t == "hub  /wt/hub/suspense")
+            .unwrap();
+        assert!(frozen < hub, "the hub worktree stays last: {text:?}");
+        assert_eq!(text[frozen + 1], "hub-created · dirty");
+        assert!(
+            lines.contains(&(
+                "! ui is dirty; finish will refuse without force".to_string(),
+                Tone::Warn
+            )),
+            "{lines:?}"
+        );
+    }
+
+    #[test]
+    fn unfreeze_and_finish_warn_when_the_reference_worktree_is_off_its_pin() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = frozen_ui()
+        else {
+            unreachable!()
+        };
+        // `status` reports a frozen worktree whose HEAD left the pin as an
+        // existing, registered row with `branch_matches == false` (`off-pin`).
+        report.rows[3].branch_matches = false;
+        let app = on_report(Report::Feature { feature, report });
+        let mut flow = Flow::Unfreeze {
+            feature: "suspense".into(),
+            role: "ui".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, force, .. }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!()
+        };
+        assert!(force, "F is offered");
+        assert!(
+            lines.contains(&(
+                "! ui is off its pin; unfreeze may refuse without force".to_string(),
+                Tone::Warn
+            )),
+            "{lines:?}"
+        );
+        let mut flow = Flow::Finish {
+            feature: "suspense".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        assert!(
+            lines.contains(&(
+                "! ui is off its pin; finish may refuse without force".to_string(),
+                Tone::Warn
+            )),
+            "{lines:?}"
         );
     }
 }
