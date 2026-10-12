@@ -849,6 +849,8 @@ fn add_adopting_a_branch_rederives_the_pin_from_its_merge_base() {
     assert_eq!(f["pins"][0]["sha"], fork);
     assert_ne!(f["pins"][0]["sha"], old);
     assert!(f["pins"][0]["worktree"].is_null());
+    assert_eq!(f["changes"][1]["base_sha"], fork);
+    assert!(!frozen_wt(&fx).exists());
     assert_eq!(status_row(&fx, "api")["base_behind"], 0);
 }
 
@@ -1085,4 +1087,48 @@ fn add_tracking_a_remote_only_branch_rederives_the_pin_from_its_merge_base() {
     assert_ne!(f["pins"][0]["sha"], old);
     assert!(f["pins"][0]["worktree"].is_null());
     assert_eq!(f["changes"][1]["base_sha"], fork);
+}
+
+#[test]
+fn add_from_a_ref_starts_there_and_drops_the_pin() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    let start = fx.remote_sha("api-clone", "master");
+    // The pin is a local commit past `start`.
+    fx.commit_file(&api, "local.txt", "local only");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+
+    fx.hub(&hub_wt(&fx), &["feature", "add", "api", "--from", &start])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Dropped the pin"));
+    assert_eq!(fx.git(&api, &["rev-parse", "feat-1"]), start);
+    assert!(!frozen_wt(&fx).exists());
+    let f = fx.feature_json(&hub, "feat-1");
+    assert!(f.get("pins").is_none());
+    assert_eq!(f["changes"][1]["base_sha"], start);
+}
+
+#[test]
+fn add_adopting_a_branch_from_latest_drops_the_pin() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.git(&api, &["branch", "work"]);
+
+    fx.hub(
+        &hub_wt(&fx),
+        &["feature", "add", "api", "--branch", "work", "--from-latest"],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains("Dropped the pin"));
+    assert!(!frozen_wt(&fx).exists());
+    let f = fx.feature_json(&hub, "feat-1");
+    assert!(f.get("pins").is_none());
+    assert_eq!(f["changes"][1]["branch"], "work");
 }
