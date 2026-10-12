@@ -41,17 +41,18 @@ impl App {
     }
 
     /// A feature report's rows after the hub worktree row: one per change,
-    /// in record order.
+    /// in record order, then one per frozen role.
     pub fn change_rows(report: &StatusReport) -> &[StatusRow] {
         report.rows.get(1..).unwrap_or(&[])
     }
 
     /// Change indices (into `feature.changes`) in display order: open
-    /// changes first, then merged ones. Row `i + 1` is change `i`.
+    /// changes first, then merged ones. Row `i + 1` is change `i`; frozen
+    /// rows follow the changes and are left out.
     pub fn change_order(report: &StatusReport) -> Vec<usize> {
         display_order(&report.rows)
             .into_iter()
-            .filter(|&row| row > 0)
+            .filter(|&row| row > 0 && report.rows[row].stage != "frozen")
             .map(|row| row - 1)
             .collect()
     }
@@ -74,8 +75,8 @@ impl App {
 
     /// The change under the cursor and its status row. The mapping is
     /// positional: `status` emits one row per change in `feature.changes`
-    /// order after the hub row, and returns `Err` if any row fails, so row
-    /// `i + 1` is always change `i`. Looking the change up by the row's role
+    /// order after the hub row (frozen rows come after them), and returns
+    /// `Err` if any row fails, so row `i + 1` is always change `i`. Looking the change up by the row's role
     /// would pick the wrong one for a role that was merged and reopened.
     pub fn selected_change(&self) -> Option<(&Change, &StatusRow)> {
         let i = self.cursor()?;
@@ -644,6 +645,30 @@ pub(crate) mod tests {
         assert_eq!(a.cursor(), Some(1));
         a.update(key(KeyCode::Char('k')));
         assert_eq!(a.cursor(), Some(1), "clamps at the first row");
+    }
+
+    #[test]
+    fn j_and_k_skip_frozen_rows() {
+        let Report::Feature {
+            feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        report.rows.push(status_row("bff", "master", "frozen"));
+        let mut a = on_report(Report::Feature { feature, report });
+        assert_eq!(a.cursor(), Some(0));
+        a.update(key(KeyCode::Char('j')));
+        assert_eq!(
+            a.cursor(),
+            Some(1),
+            "down from the open change reaches merged"
+        );
+        a.update(key(KeyCode::Char('j')));
+        assert_eq!(a.cursor(), Some(1), "clamps at the merged change");
+        a.update(key(KeyCode::Char('k')));
+        assert_eq!(a.cursor(), Some(0), "back up to the open change");
     }
 
     #[test]
