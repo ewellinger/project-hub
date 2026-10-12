@@ -23,7 +23,7 @@ A hub is a git repo, shared through a remote when the project has one, whose `hu
 | Rename a role in `hub.json` and this machine's records; `--records-only` catches up records after pulling a rename | `hub repo rename OLD NEW [--records-only [--clone C]]` |
 | Unregister a role (clone untouched) | `hub repo remove ROLE` |
 | Show the member repos | `hub repo list [--json]` |
-| Start a feature: hub branch and worktree, one change per `--repo`, tmux session | `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]...` |
+| Start a feature: hub branch and worktree, one change per `--repo`, one frozen reference worktree per `--freeze`, tmux session | `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]...` |
 | Set up an isolated review of a GitLab MR or GitHub PR: its role from the URL, the real source branch at the verified head, base = the MR's target, stage `review` | `hub feature start-review URL [--name NAME] [--checkout C]` |
 | Bring one more role into the feature | `hub feature add ROLE [--branch B] [--from REF] [--base B] [--worktree W]` (the role is required without a terminal) |
 | Record the branch a role's open change merges into, when it is not the role's base | `hub feature set-base ROLE BRANCH` |
@@ -50,7 +50,7 @@ After any command that changes state, run `hub status --json` (with `--feature N
 
 ## Workflow
 
-- **Starting a feature:** ask which roles participate if the request does not say; zero roles is a valid docs-only start. Run `hub feature start`, then `hub status --json`, and report the hub branch, each role's branch and worktree path, and the attach command. Stop there: do not attach and do not launch anything in the `ai` window.
+- **Starting a feature:** ask which roles participate if the request does not say; zero roles is a valid docs-only start. Run `hub feature start`, then `hub status --json`, and report the hub branch, each role's branch and worktree path, and the attach command. Stop there: do not attach and do not launch anything in the `ai` window. Pass `--freeze ROLE` only for roles the user asks to pin at a fixed base for this feature; a role goes in `--repo` or `--freeze`, never both.
 - **Setting up a review from a URL:** a request such as "set up a feature for reviewing https://gitlab.com/group/project/-/merge_requests/486" inside a hub means `hub feature start-review URL`. Follow **Reviewing a merge request or pull request** below.
 - **Extending, reviewing, merging:** `feature add` opens one more role's change; `feature review` records the MR or PR URL; `feature merged` removes that role's worktree and keeps its branch. A later `feature add` for the same role gets a follow-up branch automatically.
 - **A change that merges into a branch other than the role's base:** pass `--base BRANCH` to `hub feature add`, or run `hub feature set-base ROLE BRANCH` on an open change. Never use `git branch --set-upstream-to` for this; the hub ignores git's upstream. When `hub status` shows `behind base <branch> by <n>`, report it; update the branch only when the user asks, following **Updating from the base** below.

@@ -195,7 +195,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub repo set ROLE [--clone C] [--base B] [--branch-template T] [--description D]` | Change a role's fields in place, keeping its position |
 | `hub repo rename OLD NEW [--records-only [--clone C]]` | Rename a role in `hub.json` and this machine's feature records |
 | `hub repo remove ROLE` / `hub repo list [--json]` | Unregister / show the member repos |
-| `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]...` | Hub branch + worktree, one change per `--repo`, tmux session; prompts for roles and branches in a terminal |
+| `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]...` | Hub branch + worktree, one change per `--repo`, one frozen reference worktree per `--freeze` (local base tip), tmux session; prompts for roles, roles to freeze, and branches in a terminal |
 | `hub feature start-review URL [--name N] [--checkout C]` | Review feature for the one role whose remote the GitLab MR or GitHub PR URL names: its real source branch at the verified head, base = the MR's target, stage `review`, workspace and session; refuses forks, closed reviews, and occupied branches |
 | `hub feature add [ROLE] [--branch B] [--from REF] [--base B] [--worktree W]` | Bring one more role into the feature; prompts for the role and branch in a terminal |
 | `hub feature set-base ROLE BRANCH` | Record the branch the role's open change merges into; the member branch and its git upstream are untouched |
@@ -270,6 +270,12 @@ again. `finish` removes frozen worktrees with everything else. Commits made
 on a reference worktree's detached HEAD are on no branch, so `refreeze`
 refuses to move it and `unfreeze` and `finish` refuse to remove it without
 `--force`; save the work with `git -C <path> branch <name>` first.
+
+To freeze roles from the start, pass `--freeze ROLE` (repeatable) to `hub
+feature start`; each pins its local base tip exactly as `freeze` does. A role
+is either worked on or frozen, so naming it in both `--repo` and `--freeze`
+is an error (exit 1). If anything fails before the feature record is
+written, the frozen worktrees are removed along with everything else.
 
 ### Status
 
@@ -454,7 +460,10 @@ add`, `remove`, `set`, or `rename`.
 
 When stdin and stderr are both a terminal, `feature start` and `feature add`
 prompt for whatever you left out: the roles (`start` with no `--repo`, or
-`add` with no role) and then a branch per role. The branch prompt lists the
+`add` with no role), then for `start` with no `--repo` which of the remaining
+roles to freeze (none by default, added to any `--freeze` roles), and then a
+branch per role. The roles prompt leaves out `--freeze` roles. The branch
+prompt lists the
 default first (marked `new` when it does not exist yet), then branches git
 already knows in that clone, each showing whether it is local, on origin, or
 checked out in a worktree the hub can adopt, and finally a free-text row.
