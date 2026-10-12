@@ -3,9 +3,6 @@ type: integration
 title: Bundled agent skill
 description: How `skills/hub/SKILL.md` is embedded into the `hub` binary, written into every hub worktree for Claude Code and Codex on every command, kept untracked through Git's local exclude file, and guarded by the `skill` integration test.
 tags: [agent-skill, claude-code, codex, generated-files, integration]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-e4a8b7a4fbda1ff7b227f6cf
     resource: repo://skills/hub/SKILL.md
@@ -21,7 +18,10 @@ sources:
     resource: repo://src/skill.rs
   - id: openwiki-source-ec32cfd44569eaa164e68020
     resource: repo://tests/skill.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Bundled agent skill
@@ -74,9 +74,16 @@ hub command retries.
 - **Commands** table mapping intents to `hub` subcommands.
 - **Reading output**: take paths from `hub status --json` `rows[].path` and
   the attach command from `checkout`; field meanings such as `base`,
-  `base_behind`, `custom_base`, `review_url`.
+  `base_behind`, `custom_base`, `review_url`, and for frozen bases
+  `frozen_sha`, `base_moved`, and `feature list --json`'s `frozen` array.
 - **Workflow** responses to exit codes 20/21, `warning:` lines, tmux-off,
   adopted worktrees, and finished features.
+- **Frozen roles**: a `stage` `frozen` row is a read-only reference checkout
+  the agent must never edit, commit in, or `git checkout`; `refreeze` runs
+  only when the user asks; choosing between starting from the pin and
+  `--from-latest` on `feature add` is the user's call. An "is off its pin"
+  refusal means commits on no branch, and `--force` past it needs the user's
+  explicit yes (`add` has no `--force`).
 - Procedures for **reviewing a merge/pull request**, handling **dirty
   worktrees**, and **updating from the base** (a local `git merge --ff` of
   `origin/<base>` only on explicit request, never push).

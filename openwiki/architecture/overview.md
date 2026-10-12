@@ -3,9 +3,6 @@ type: architecture
 title: Architecture overview
 description: Crate layout of project-hub (library `hub` plus binary `hub`), how modules are layered, how `src/main.rs` dispatches CLI subcommands to `ops::*`, and how `HubError` maps to process exit codes.
 tags: [architecture, cli, modules, errors, exit-codes]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-651d1fb6c9e49916a916ab51
     resource: repo://Cargo.toml
@@ -15,7 +12,10 @@ sources:
     resource: repo://src/lib.rs
   - id: openwiki-source-b55a21a31ede1b56cd31a6a6
     resource: repo://src/main.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Architecture overview
@@ -43,7 +43,7 @@ touches, an optional tmux session, and a VS Code workspace.
 |---|---|---|
 | Core state | `hub`, `manifest`, `feature`, `env`, `names`, `error` | Locate a hub, load/validate `hub.json` and feature records, resolve configuration, validate names, define errors. See [Hub state](hub-state-and-locking.md) and [Features](../concepts/features-changes-and-stages.md). |
 | External tools | `git`, `tmux`, `code`, `procs`, `review`, `workspace`, `skill` | Thin wrappers that shell out to `git`, `tmux`, the editor, `lsof`, `glab`/`gh`, and generate workspace/skill files. See [Git, tmux, and editor](../integrations/git-tmux-editor.md). |
-| Operations | `ops::*` (`init`, `config`, `repo`, `start`, `start_review`, `add`, `resolve`, `set_base`, `review`, `merged`, `finish`, `list`, `status`, `pull`, `session`, `suggest`) | One module per command family. Each returns `Result<Vec<String>>` of output lines, or a report struct that a renderer turns into lines/JSON. |
+| Operations | `ops::*` (`init`, `config`, `repo`, `start`, `start_review`, `add`, `resolve`, `freeze`, `set_base`, `review`, `merged`, `finish`, `list`, `status`, `pull`, `session`, `suggest`) | One module per command family. Each returns `Result<Vec<String>>` of output lines, or a report struct that a renderer turns into lines/JSON. |
 | Presentation (binary only) | `prompt`, `ui::*` | Interactive pickers and the TUI dashboard. Both call the same `ops` functions the CLI does. |
 
 `ops/mod.rs` also hosts the shared table renderer (`table`, `styled_table`)
@@ -66,8 +66,11 @@ error prints `Error: <message>` to stderr and exits with `err.exit_code()`.
   skill problems become `warning:` lines on stderr so `--json` stdout stays
   clean (see [Bundled agent skill](../integrations/agent-skill.md)).
 - Mutating commands run inside `hub.with_lock(...)`. Interactive prompts for
-  `feature start` / `feature add` run **before** the lock is taken, so
-  cancelling touches nothing.
+  `feature start` (roles, then which other roles to freeze) and `feature add`
+  (role, branch, and for a new branch of a frozen role whether to start from
+  the pin or the latest base) run **before** the lock is taken, so cancelling
+  touches nothing. In a terminal `feature add` always goes through its prompt,
+  even when the role and branch are given.
 - `status` prints its table or JSON itself and then returns `HubError::Drift`
   when the report has structural drift, giving exit 30 after full output.
 - `merged` and `finish` receive a `confirm_removal` callback that asks on a
@@ -94,6 +97,7 @@ Clap itself uses exit 2 for argument errors.
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](../workflows/frozen-bases.md)
 - [Hub state, manifest, and locking](hub-state-and-locking.md)
 - [Dashboard architecture](../ui/dashboard-architecture.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)

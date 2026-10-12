@@ -3,9 +3,6 @@ type: integration
 title: Git, tmux, and editor integration
 description: The thin subprocess wrappers project-hub uses for git (worktrees, refs, fetches, conditional ref updates), tmux (sessions and windows addressed exactly), and the editor, plus how feature sessions converge and how `.code-workspace` files are generated and kept local.
 tags: [integration, git, tmux, editor, vscode, workspace, subprocess]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-f0e955d5976d950d845e5025
     resource: repo://src/code.rs
@@ -17,7 +14,10 @@ sources:
     resource: repo://src/tmux.rs
   - id: openwiki-source-fbbd34a2cb4fd0a8355f1f33
     resource: repo://src/workspace.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Git, tmux, and editor integration
@@ -47,6 +47,9 @@ groups:
   `start-review` use these so a branch another process moved meanwhile is
   left alone.
 - **Worktrees**: `worktree_add` creates the parent directory first.
+  `worktree_add_detached(path, commit)` does the same for a detached checkout
+  (a frozen reference worktree), and `checkout_detached(commit)` moves a
+  detached worktree's HEAD (used by `refreeze`).
   `worktree_remove` distinguishes a clean removal from `ResidueLeft(reason)`:
   git unregisters a worktree before deleting its directory, so a failed
   removal whose worktree is no longer registered is reported as residue (the
@@ -83,7 +86,8 @@ A feature's session is named after its `checkout`. Converging:
 1. With tmux off, return the optional warning plus `tmux is off; no session created`.
 2. Create the session (window `hub`, cwd = hub worktree) if missing.
 3. Add any missing `hub` and `ai` windows (both in the hub worktree), then one
-   window per **open** change, named after its role and rooted at the change's
+   window per role checkout — each open change and each frozen reference
+   worktree, from `role_checkouts` — named after its role and rooted at that
    path, in manifest order.
 4. Existing windows are never moved or killed, so a pre-existing session only
    gets missing windows appended.
@@ -93,15 +97,23 @@ A feature's session is named after its `checkout`. Converging:
 
 `hub tmux` runs exactly this to repair a session.
 
+`repoint_window(hub, feature, role, dir)` respawns a role's existing window
+in another directory, killing whatever ran there. `merged`, `unfreeze`, and
+`feature add` on a frozen role call it before removing a worktree, so the
+window's own shell does not count as a process still using it.
+
 ## Editor and workspace files
 
 `ops::session::write_workspace` writes `<hub name>.code-workspace` into the
-feature's hub worktree, with folders: the hub worktree (`.`) and each open
-change (role name, path relative to the hub worktree) in manifest order.
+feature's hub worktree, with folders: the hub worktree (`.`) and each role
+checkout from `role_checkouts` — open changes and frozen reference worktrees
+(role name, path relative to the hub worktree) — in manifest order.
 `write_base_workspace` writes the same file into the hub root with every
 registered repo's main clone. `change_path` resolves a change to its worktree
 or, when `worktree` is `None`, the main clone, using the clone recorded on the
-change so it works after `repo remove`.
+change so it works after `repo remove`. `pin_path` resolves a frozen pin to
+its reference worktree, and is `None` for a pin that belongs to an open
+change.
 
 `workspace::render` only replaces the top-level `folders` key; every other key
 in an existing workspace file (settings, extensions) survives. It refuses an
@@ -122,6 +134,7 @@ because the recorded state is authoritative.
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](../workflows/frozen-bases.md)
 - [Environment and configuration](../configuration/environment-and-config.md)
 - [Starting features and adding roles](../workflows/feature-start-and-add.md)
 - [Testing and the integration harness](../testing/integration-test-harness.md)

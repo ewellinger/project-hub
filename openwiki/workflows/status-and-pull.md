@@ -3,9 +3,6 @@ type: workflow
 title: Status, list, and pull
 description: How `hub status` compares recorded feature or base state with git (rows, drift and exit 30, merge hints, base lag, the Completed table, JSON fields), how `hub feature list` summarizes features, and how `hub pull` fast-forwards checkouts concurrently while refusing anything that is not a clean fast-forward.
 tags: [workflow, status, drift, list, pull, json, concurrency]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-a3a32cb165bec89fdae31522
     resource: repo://src/git.rs
@@ -17,7 +14,10 @@ sources:
     resource: repo://src/ops/pull.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Status, list, and pull
@@ -43,7 +43,9 @@ Produces a `StatusReport { feature, checkout, status, rows, warnings, drift }`:
   copy (so a pushed teammate change shows as `behind`).
 - **Then one row per change, in record order** (merged ones included). Paths
   come from the change's recorded clone, so rows survive `hub repo remove`.
-  The dashboard relies on this positional order.
+- **Then one row per frozen reference role** (`frozen_row`), appended after
+  every change row. The dashboard relies on this positional order: row `i + 1`
+  is change `i`, and rows beyond the changes are frozen references.
 
 Per change row:
 
@@ -53,14 +55,26 @@ Per change row:
 | `dirty` | uncommitted changes |
 | `ahead`, `behind` | vs. `origin/<branch>`; `null` without a remote copy |
 | `base`, `custom_base` | effective base of an open change; whether it differs from the role's manifest base |
-| `base_behind` | commits on `origin/<base>` the branch lacks; `null` (plus a warning) when `origin/<base>` is missing |
+| `base_behind` | commits on `origin/<base>` the branch lacks; `null` (plus a warning) when `origin/<base>` is missing. For a **pinned** open change, commits on the pin the branch lacks |
+| `frozen_sha` | the pin's commit, for a pinned change or a frozen reference row; otherwise `null` |
+| `base_moved` | commits the local `refs/heads/<base>` gained since the pin; `null` when not pinned |
 | `hint` | merge hints (below) |
 | `review_url` | recorded MR/PR URL |
 | `drift` | structural problem |
 
+**Frozen reference rows** have `stage` `frozen` and `branch` = the base. Their
+`branch_matches` is true only for a registered, detached worktree at the pin.
+The state reads, for example, `ok, frozen @abc1234, master +3 since pin`; a
+moved base stays green. A worktree whose HEAD left the pin shows `off-pin`. A
+**pinned open change** reads `behind pin <short> by <n>` while it lags the pin,
+and shows `frozen @<short>` only when nothing is missing. See
+[Frozen bases](frozen-bases.md).
+
 **Drift** = an *open* change (in an open feature) whose checkout is missing,
 unregistered, on the wrong branch, or whose clone is missing; for the hub row,
-an open feature whose hub worktree is missing/unregistered/off-branch. Merged
+an open feature whose hub worktree is missing/unregistered/off-branch; for a
+frozen reference row in an open feature, a reference worktree that is missing,
+unregistered, or off its pin. Merged
 changes and finished features cannot drift. Dirtiness and base lag are
 operational state and never drift. If any row drifts, `main.rs` prints the
 output and exits **30**.
@@ -101,10 +115,13 @@ reads paths from `rows[].path`).
 
 ## `hub feature list [--all] [--json]` (`src/ops/list.rs`)
 
-One `FeatureSummary { name, checkout, status, roles }` per feature, open
-features first, then finished, each by name. `roles` holds the **latest**
-change per role in manifest order, with roles since removed from `hub.json`
-appended. Without `--all`, finished features are hidden (with a note when that
+One `FeatureSummary { name, checkout, status, roles, frozen }` per feature,
+open features first, then finished, each by name. `roles` holds the
+**latest** change per role in manifest order, with roles since removed from
+`hub.json` appended. `frozen` lists the feature's frozen reference roles
+(`{role, sha}`, from pins with a worktree) in record order; a pinned open
+change stays in `roles` only. The table shows them as `ROLE:frozen` after the
+members, and `--json` always includes `frozen`, empty or not. Without `--all`, finished features are hidden (with a note when that
 leaves nothing). It reads records only — no git calls.
 
 ## `hub pull [--feature N] [--base]` (`src/ops/pull.rs`)
@@ -112,7 +129,9 @@ leaves nothing). It reads records only — no git calls.
 Fast-forward only. From the main hub (or with `--base`), `pull_base` targets
 every registered role's main clone on its base branch; from a feature (or with
 `--feature`), `pull_feature` targets each **open** change's checkout on its
-branch, in manifest order. The hub's own clone is never pulled.
+branch, in manifest order, and reports each frozen reference worktree as
+`frozen at <sha>; not pulled` instead of pulling it. The hub's own clone is
+never pulled.
 
 For each target (`pull_one`):
 
@@ -141,6 +160,7 @@ skip case.
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](frozen-bases.md)
 - [Review, merged, set-base, and finish](review-merged-finish.md)
 - [Dashboard architecture](../ui/dashboard-architecture.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)

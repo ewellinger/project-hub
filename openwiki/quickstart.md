@@ -3,9 +3,6 @@ type: quickstart
 title: Quickstart
 description: Orientation for project-hub, the Rust `hub` CLI and TUI that coordinates features spanning several git repositories through a shared hub repo, worktrees, tmux sessions, and VS Code workspaces — with build/test commands and a map from common tasks to the right wiki page.
 tags: [quickstart, overview, navigation, rust, cli]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-651d1fb6c9e49916a916ab51
     resource: repo://Cargo.toml
@@ -13,7 +10,12 @@ sources:
     resource: repo://CONTRIBUTING.md
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+  - id: openwiki-source-c17c8e3e271a8329ed7a5e63
+    resource: repo://src/feature.rs
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Quickstart
@@ -67,6 +69,7 @@ terminal opens the dashboard.
 | Work on `feature start`/`add`, adoption, rollback, prompts, branch suggestions | [Starting features and adding roles](workflows/feature-start-and-add.md) |
 | Work on `feature start-review` and GitLab/GitHub handling | [Reviewing a merge or pull request](workflows/start-review.md) |
 | Work on `review`, `set-base`, `merged`, `finish`, dirty/in-use refusals | [Review, merged, set-base, and finish](workflows/review-merged-finish.md) |
+| Work on frozen bases: `freeze`/`unfreeze`/`refreeze`, pins, `start --freeze`, `add` on a frozen role | [Frozen bases: freeze, unfreeze, and refreeze](workflows/frozen-bases.md) |
 | Work on `status`, drift, hints, `feature list`, or `pull` | [Status, list, and pull](workflows/status-and-pull.md) |
 | Touch git/tmux/editor calls or workspace files | [Git, tmux, and editor integration](integrations/git-tmux-editor.md) |
 | Edit the agent skill or its distribution | [Bundled agent skill](integrations/agent-skill.md) |
@@ -79,12 +82,16 @@ terminal opens the dashboard.
 
 - Mutating commands take a non-blocking lock in `.git/hub/hub.lock`; a second
   concurrent command fails immediately.
-- A feature has at most one open change per role.
+- A feature has at most one open change per role, and a role resolves to
+  exactly one checkout: its open change, a frozen reference worktree, or the
+  main clone.
 - Creation is transactional up to the feature-record write and rolls back only
   what it created; workspace and tmux steps after the write are warnings with a
   retry command.
 - Nothing ever deletes a branch, pushes, or rebases; removals refuse dirty
   (exit 20) or in-use (exit 21) worktrees without `--force`; `status` exits 30
-  on structural drift.
+  on structural drift. A frozen worktree whose detached HEAD left its pin is
+  refused (exit 1) before any dirty check, so `--force` never silently
+  discards commits on no branch.
 - Editing `skills/hub/SKILL.md` changes the binary, and the `skill` test
   requires every command it lists to exist.

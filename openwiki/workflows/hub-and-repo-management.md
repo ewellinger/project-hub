@@ -3,15 +3,15 @@ type: workflow
 title: Hub init and repo registration
 description: How `hub init` creates a hub (and `--force` refreshes init-owned files), and how `hub repo add`, `set`, `remove`, `rename` (including `--records-only` repair), and `list` edit `hub.json` with one commit on main while keeping per-machine feature records consistent.
 tags: [workflow, init, repo, manifest, rename, records]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-03561c75d5622526b12cd559
     resource: repo://src/ops/init.rs
   - id: openwiki-source-70c2e2f99d62af87dfbdb300
     resource: repo://src/ops/repo.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Hub init and repo registration
@@ -69,14 +69,18 @@ after upgrading `hub`; it cannot be combined with `--name` or
 
 Changes any of `--clone`, `--base`, `--branch-template`, `--description` in
 place, keeping the role's position, in one commit. Needs at least one flag;
-`--base` must not be empty or `origin/`-prefixed. Changing the clone requires
-the new clone to be free, refuses while any open feature has an open change for
-the role, and re-reads the new clone's `origin` as the remote. A no-op change
-commits nothing.
+`--base` must not be empty or `origin/`-prefixed. Changing the base refuses
+while any open feature has the role frozen (either kind of pin), since the pin
+was taken from the old base. Changing the clone requires the new clone to be
+free, refuses while any open feature has an open change for the role or has it
+frozen, and re-reads the new clone's `origin` as the remote. A no-op change
+(including `--base` set to its current value) commits nothing and is never
+refused.
 
 ## `hub repo remove ROLE`
 
-Refuses while any open feature has an open change for the role; otherwise
+Refuses while any open feature has an open change for the role or has it
+frozen ([Frozen bases](frozen-bases.md)); otherwise
 removes it from the manifest and commits. The clone and its branches are
 untouched, and existing feature records keep their `clone` field so history and
 paths still resolve.
@@ -86,18 +90,23 @@ paths still resolve.
 Feature records are per machine, so a rename touches both shared and local state:
 
 1. Refuse if `NEW` is already registered or any local feature already records
-   changes for `NEW`.
-2. Rewrite every local record's changes for `OLD` to `NEW`; rename the role in
-   the manifest in place and commit.
+   changes or a pin for `NEW`.
+2. Rewrite every local record's changes and pins for `OLD` to `NEW`; rename the
+   role in the manifest in place and commit. The summary counts changes and,
+   when any were renamed, pins.
 3. Save the rewritten records. If that fails, the error explains how to finish
    with `--records-only`.
-4. For open features with an open change for `NEW`: rename the tmux window
-   `OLD` → `NEW` and regenerate the workspace (warnings only).
+4. For open features with an open change or a frozen reference worktree for
+   `NEW`: rename the tmux window `OLD` → `NEW` and regenerate the workspace
+   (warnings only).
 
 `--records-only` catches up **another machine's** records after pulling a
 rename, and never commits. `NEW` must already be in `hub.json`; `OLD` and
-`NEW` must differ; it refuses if the rewrite would give a feature two open
-changes for `NEW`. `--clone C` (only with `--records-only`) limits the rewrite
+`NEW` must differ. Before writing anything, it refuses a rewrite that would
+give a feature two open changes for `NEW`, move a pin onto a role that already
+has a pin or an open change, or move an open change onto a role frozen with a
+reference worktree: each would leave a role with two checkouts. Because records
+are saved one feature at a time, refusing up front avoids a half-renamed set. `--clone C` (only with `--records-only`) limits the rewrite
 to changes recorded with clone `C`, which repairs records left by an earlier
 remove and re-add. A sequence of renames should be replayed in the order it was
 made.
@@ -115,5 +124,6 @@ fixture's `block_commits`; see
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](frozen-bases.md)
 - [Hub state, manifest, and locking](../architecture/hub-state-and-locking.md)
 - [Bundled agent skill](../integrations/agent-skill.md)

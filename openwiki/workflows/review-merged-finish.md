@@ -3,9 +3,6 @@ type: workflow
 title: Review, merged, set-base, and finish
 description: The lifecycle commands that advance or close a feature's changes — `feature review`, `feature set-base`, `feature merged`, `feature finish` — including the dirty-worktree (exit 20) and in-use (exit 21, via lsof) refusals, adopted-worktree confirmation, tmux handling, irreversible-first ordering, and leftover-directory warnings.
 tags: [workflow, review, merged, finish, set-base, safety, lsof]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-95f84abff7e2ed283d50b3fb
     resource: repo://src/error.rs
@@ -17,7 +14,10 @@ sources:
     resource: repo://src/ops/review.rs
   - id: openwiki-source-023f2a1cda1b07809c0aa015
     resource: repo://src/procs.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Review, merged, set-base, and finish
@@ -43,7 +43,9 @@ Requires an open change for the role. Fetches the role's clone, then:
 Record-only: changes the open change's `base` and recomputes `base_sha` as the
 merge base of the branch and `origin/BRANCH`. It refuses `origin/`-prefixed
 input, a base missing from origin, a missing local branch, and unrelated
-histories, and never checks out, rebases, or touches git's upstream. Details
+histories, and never checks out, rebases, or touches git's upstream. It also
+refuses a pinned open change ("unfreeze first"), since the pin was taken from
+the current base. Details
 are on the [concepts page](../concepts/features-changes-and-stages.md#bases).
 
 ## `hub feature merged ROLE [--force]` (`src/ops/merged.rs`)
@@ -53,9 +55,9 @@ Closes one role's open change:
 1. **Dirty check first** (unless `--force`): a dirty worktree fails with
    `HubError::Dirty` (exit 20) **before** anything else, because the next step
    kills processes.
-2. **Re-point tmux**: if the session has a window named after the role, it is
-   respawned in the main clone so its shell (and anything started from it)
-   cannot block removal.
+2. **Re-point tmux** (`session::repoint_window`): if the session has a window
+   named after the role, it is respawned in the main clone so its shell (and
+   anything started from it) cannot block removal.
 3. **In-use check** (unless `--force`): `refuse_in_use` fails with
    `HubError::InUse` (exit 21) when any process has its working directory
    inside the worktree.
@@ -66,8 +68,9 @@ Closes one role's open change:
      (CLI asks on a terminal, otherwise declines; a decline aborts with
      "no worktree was removed. Rerun with --force");
    - otherwise `git worktree remove [--force]`.
-5. Set the stage to `merged` with `merged_at`, save, rewrite the workspace
-   (warning on failure).
+5. Set the stage to `merged` with `merged_at`, drop the role's pin if the
+   change was pinned (printing `pin at <sha> dropped`), save, and rewrite the
+   workspace (warning on failure).
 
 A later `feature add ROLE` opens a follow-up change, defaulting to a `-<n>`
 branch name.
@@ -79,13 +82,17 @@ Takes the whole feature down:
 1. **Refuse inside its own session**: if the command runs in the tmux session
    it would kill, it fails and tells you to run
    `hub feature finish --feature NAME` from another terminal.
-2. **Dirty check of every tree first** (unless `--force`): each open change's
-   worktree and the hub worktree; the first dirty one fails with exit 20 before
-   anything is touched.
+2. **Pin check, then dirty check** (unless `--force`): every frozen reference
+   worktree must still be at its pin (`require_on_pin`, exit 1, "is off its
+   pin"), checked before any dirt because the answer to a dirty refusal is
+   `--force`, which would discard commits on a detached HEAD. Then each open
+   change's worktree, each frozen worktree, and the hub worktree; the first
+   dirty one fails with exit 20 before anything is touched.
 3. **Kill the tmux session** so its shells cannot block removals.
-4. **In-use check** across all remaining worktree paths and the hub worktree (exit 21).
-5. Close every open change (`close_change`, as above), then remove the hub
-   worktree.
+4. **In-use check** across all remaining worktree paths, frozen worktrees, and
+   the hub worktree (exit 21).
+5. Close every open change (`close_change`, as above), remove each frozen
+   reference worktree, clear the pins, then remove the hub worktree.
 6. Mark the feature `finished` and save. Change stages are left as they were
    (not set to merged), and every branch — including the hub branch — is kept.
 
@@ -129,6 +136,7 @@ adopted, residue via `block_deletion`, own-session refusal), `tests/set_base.rs`
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](frozen-bases.md)
 - [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 - [Status, list, and pull](status-and-pull.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)

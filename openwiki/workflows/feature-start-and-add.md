@@ -3,9 +3,6 @@ type: workflow
 title: Starting features and adding roles
 description: How `hub feature start` and `hub feature add` create or adopt the hub branch, hub worktree, and per-role branches and worktrees through `ops::resolve::open_change`, roll back exactly what they created on failure, treat workspace and tmux steps as post-save warnings, and prompt for roles and branches in a terminal.
 tags: [workflow, feature-start, feature-add, adoption, rollback, prompts]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-b55a21a31ede1b56cd31a6a6
     resource: repo://src/main.rs
@@ -19,14 +16,18 @@ sources:
     resource: repo://src/ops/suggest.rs
   - id: openwiki-source-fcdf0f9c4361c1ee384f2689
     resource: repo://src/prompt.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-12T18:18:24.526Z
 ---
 
 # Starting features and adding roles
 
-`hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]...` creates a
-feature; `hub feature add [ROLE] [--branch B] [--from REF] [--base B]
-[--worktree W]` brings one more role into an open feature. Both share
+`hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]...
+[--freeze ROLE]...` creates a feature; `hub feature add [ROLE] [--branch B]
+[--from REF | --from-latest] [--base B] [--worktree W]` brings one more role
+into an open feature. Both share
 `ops::resolve::open_change` for the per-role work and run under the hub lock
 (see [Hub state, manifest, and locking](../architecture/hub-state-and-locking.md)).
 
@@ -37,8 +38,11 @@ feature; `hub feature add [ROLE] [--branch B] [--from REF] [--base B]
    manifest checkout template), validate it, and refuse if the feature record
    already exists or the hub worktree path
    `<worktree_dir>/<hub dir>/<checkout>` already exists.
-2. Validate every `--repo` role against the manifest and refuse duplicates;
-   process roles in **manifest order** regardless of flag order.
+2. `start::check_roles` validates every `--repo` and `--freeze` role against
+   the manifest and refuses a role given twice, or given to both `--repo` and
+   `--freeze`, as `HubError::Usage` (exit 1). The check lives in `ops`, not
+   clap, so the dashboard's call to `start` gets it too. Both lists are then
+   processed in **manifest order** regardless of flag order.
 3. **Transaction** (`start_inner`):
    - If the hub has remotes, fetch `origin` (failure is a `warning:` and the
      last fetched refs are used) so a hub branch a teammate pushed can be adopted.
@@ -46,6 +50,10 @@ feature; `hub feature add [ROLE] [--branch B] [--from REF] [--base B]
      tracking branch from `origin/NAME`; else create it from `main`.
    - Add the hub worktree on that branch.
    - For each role, `open_change` (below), then `Feature::push_change`.
+   - For each `--freeze` role, `freeze::add_frozen`: pin the local base tip
+     and add a detached reference worktree, recorded in the same `Created`
+     set, so a later failure removes it too (see
+     [Frozen bases](frozen-bases.md)).
    - Write the feature record.
 4. **After the write**: write the workspace file and converge tmux
    (failures become `warning: …; run \`hub sync --feature NAME\`` /
@@ -59,8 +67,32 @@ branch, worktree, workspace, and session.
 Requires an open feature. `open_change`, `push_change`, and the record write
 form one transaction. After the write it rewrites the workspace and converges
 tmux; if the session already had a window named after the role (left over
-from a merged change and still pointing at the main clone), it **respawns that
-window** in the new worktree.
+from a merged change or a frozen role and pointing elsewhere), it **respawns
+that window** in the new worktree.
+
+On a role frozen with a reference worktree, `add` replaces that worktree with
+the change's:
+
+1. Cheap checks first, before anything is created:
+   - **Base.** When the pin carries over (`AddOptions::keeps_pin`: no
+     `--from`, no `--from-latest`), the change's effective base (`--base`, or
+     the role's base in `hub.json`) must equal `pin.base`. Otherwise `add`
+     refuses and names `--from-latest`.
+   - **Pin.** `require_on_pin` refuses a reference worktree whose HEAD left
+     the pin (exit 1, "is off its pin").
+   - **Dirt.** A dirty reference worktree is refused with exit 20. The pin
+     check comes first, and `add` has no `--force`.
+2. `open_change` creates the branch and worktree. Nothing touches tmux until
+   it succeeds.
+3. Re-point the role's tmux window at the main clone, then `refuse_in_use`
+   on the reference worktree (exit 21).
+4. Write the record: push the change and replace the reference pin with the
+   pin `open_change` returns, if any.
+5. Remove the reference worktree. A failure here leaves a stray directory and
+   a warning, never a wrong record.
+
+A failure before the write rolls back what `open_change` created, and
+re-points the window back at the reference worktree only if it was moved.
 
 ## Opening one change (`ops::resolve::open_change`)
 
@@ -86,11 +118,23 @@ For a role:
 | yes | yes, diverged | refuse: reconcile first |
 | yes | no | reuse |
 | no | yes | create a tracking branch |
-| no | no | create from `--from` or `origin/<base>` |
+| no | no | create from `--from`, else the carried pin's commit, else `origin/<base>` |
 
-6. Record `base_sha` as the merge base of the branch and `origin/<base>`
-   (falling back to the base tip for unrelated histories so adoption never fails here).
-7. Worktree:
+   On a frozen role, `--from` with a branch that already exists (locally or
+   on origin) is refused before anything is created, since it would silently
+   drop the pin.
+6. The pin. When a frozen reference role's pin carries over, a branch created
+   here takes the pin's commit as-is; an existing branch gets a pin re-derived
+   as its merge base with the local base (`freeze::change_pin`). Either way
+   `Opened.pin` is a pin with no worktree, and a "Pinned to …" line is printed.
+   When the pin is dropped (`--from` or `--from-latest`), a "Dropped the pin…"
+   line says the change now compares against `origin/<base>`.
+7. Record `base_sha`: the pin's commit when a pin carries over (a local-only
+   pin is not on `origin/<base>`, so a merge base there would be older and
+   `status` would call an untouched branch merged once the base is pushed);
+   otherwise the merge base of the branch and `origin/<base>` (falling back to
+   the base tip for unrelated histories so adoption never fails here).
+8. Worktree:
    - Branch already checked out in the **main clone** → use the main clone
      (`worktree: None`).
    - Checked out directly under `<worktree_dir>/<clone>/` → **adopt** it
@@ -102,8 +146,9 @@ For a role:
      the directory exists, and copy `.vscode/settings.json` and `.env` from the
      main clone **only if the clone ignores them** (an unignored copy would
      make the worktree dirty immediately).
-8. Return a `Change` with stage `working`, `origin_seen` = whether the branch
-   was on origin, and the recorded `base` and `base_sha`.
+9. Return a `Change` with stage `working`, `origin_seen` = whether the branch
+   was on origin, and the recorded `base` and `base_sha`, plus the carried
+   pin, if any.
 
 See [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 for these fields.
@@ -130,11 +175,19 @@ When stdin and stderr are both terminals (`prompt::is_interactive`), `main.rs`
 fills in missing input **before taking the lock**, so cancelling changes
 nothing:
 
-- `start` with no `--repo`: preflight first (fail as `start` would), then a
-  multi-select of roles (none = docs-only start), then a branch per role.
-- `add` with no role: select from roles without an open change
-  (`suggest::addable_roles`); then a branch if `--branch` is missing. The
-  feature is loaded and `require_open` checked before asking.
+- `start` with no `--repo`: preflight and `check_roles` first (fail as
+  `start` would), then a multi-select of roles (none = docs-only start, with
+  any `--freeze` roles left out). If roles remain, a second multi-select asks
+  which to freeze at their local base tip, defaulting to none, and its picks
+  are added to `--freeze`. Then a branch per role. With `--repo` neither role
+  question is asked.
+- `add`: in a terminal every `add` goes through `pick_add`, even with the
+  role and branch given. With no role, select from roles without an open
+  change (`suggest::addable_roles`); then a branch if `--branch` is missing.
+  For a **new** branch of a frozen reference role, unless `--from` or
+  `--from-latest` was given, `pick_start` asks "from frozen <sha>" or "from
+  latest origin/<base>". It never asks for an existing branch. The feature is
+  loaded and `require_open` checked before asking.
 - Esc or Ctrl-C exits 1 with nothing changed. Without a terminal nothing
   prompts and `add` requires its role (clap error, exit 2).
 
@@ -161,6 +214,7 @@ rollback cases using the fixture's fault injection), and `tests/suggest.rs`;
 
 ## Related pages
 
+- [Frozen bases: freeze, unfreeze, and refreeze](frozen-bases.md)
 - [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
 - [Reviewing a merge or pull request](start-review.md)

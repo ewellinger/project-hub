@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:478f5960c8fb6ede7277c8a4848ba6a1ebe8ca24426a7df2ace4e362ffd58635",
+  "pageVersion": "sha256:e327f7a6b741eac612489f5cc33d51e4d47bad48d47adb4d3e1556724e60d5ea",
   "claims": [
     {
       "id": "claim_edd1b80e67eb4d53b00113e164c9aa54",
@@ -35,7 +35,7 @@
       "statement": "Bare `hub` opens the dashboard only when stdin and stdout are terminals; otherwise it exits with clap's missing-subcommand error.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L302-L316",
+          "resource": "repo://src/main.rs#L338-L352",
           "version": "repo-lines-v1:sha256:45370418202725a60952c037437b2e5412c6a9b709de21a6febfc97acb17c9ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjODFiMGM2Mjc2OGU5ZDI3MjVjOWVhZDFkOWUwZTBjNmY5ZWNhYjI1NGQ2YTZlNjg5MTBmYjE2ZDcwMmVhOTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMDQ1MGEzYjhlZWUwZDUxOThjMDY2OGI4M2I3NjUxZjMzMmU2ZWQwNTVkODAwNjIzMzY1ZTNmYjQxNWYxN2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3MTZmM2EwZDhmNzAyMTAxZWMwYWNjYTAzNWRlMThhYmU3Y2JiOGM3OWE3NTFhYzM4MDcwNTIyM2VhN2ZkOTMifQ"
         }
       ]
@@ -45,18 +45,18 @@
       "statement": "Every hub-scoped command locates the hub and then refreshes the generated agent skill, printing skill problems as stderr warnings so JSON stdout stays clean.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L291-L300",
+          "resource": "repo://src/main.rs#L327-L336",
           "version": "repo-lines-v1:sha256:6f524497c0611fae0a15c3772e835dd75e73c5e968c5c892d8b10fca170c6e3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZDMxYWM0NzhlYjY5NjkyNzA3OGZmYmIxYzY2ODVlYmMxNmI4YjkzODE2OTA5MTA3NjQ4ZTdhOGI3ZmIxMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkNDQ2NDE5ODBkMGY4ZjJiOWMyYjFjODQ2ZTBiNmNjMzJkYWEzNjIwZDUxYTAxMjc2N2M5OTZlNWM3NThiYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhZmUxMWE2ODc2MDQzMmFhMmRjNWVhNzYzNmYxNmFlNzNmMGM2M2U4ZTMzMGI5MDE5ZGIyZWMwNmE3NGU1ZTcifQ"
         }
       ]
     },
     {
       "id": "claim_1ff6c55194d74b9487c955a04330287b",
-      "statement": "Interactive prompts for feature start and feature add run before the hub lock is taken.",
+      "statement": "Interactive prompts for feature start and feature add run before the hub lock is taken; in a terminal feature add always goes through its prompt, which asks where a new branch of a frozen role starts.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L420-L486",
-          "version": "repo-lines-v1:sha256:b0c69bc766196c3519afca736a03c316acbfe7272ce0e992decc69d1f28edaca:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0MGY2ZGZlN2Q0ZWU2OTlhZjllNTBjZThkNTBiNDI2YjBlMTI0YzgzMjIwYjU3ZWU3OTVkYmU3OThlMDU2YzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiM2EyMTlhZTQxMmU2MjA3MjgxMTRkZDhlZTgyOGQ1YmZkZTBmODViMjJjYTc3NTMxNDk1ZDcyODIyOTVjYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjOGRmMWZiMDBiMThkY2NhMTU0MzQwMzk2Y2ZjYzdjNDM4NDJjNGE1ZjY5YWFiYWE5Nzg5N2U0ZjRkMDA4YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5YThkZGFjY2Q0NDIzZDRkMDU3YjJjZDBhODY4Y2MyZjUwMTY3MmQ1ZTNmN2ExMzYwNmFjNWIzYmQ3Y2RlNDIifQ"
+          "resource": "repo://src/main.rs#L455-L540",
+          "version": "repo-lines-v1:sha256:1c28779272dd312d5af4839545aacc8eaa24cada4de0a1b63923942f314e242b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNzQ3OWU3NzNlMWIwMDJiNTI2MGJkNzgyMzJkMWI5ZTBmOWQ2ODFlZjIzYTM3N2JiMmNmNDU2NjcyYTBiZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzNTljNjA5Njc3OWVjMmRkMDA2NjkxN2E5NDkxZDExYTNlZDdhZDI5NDhlMDQ3NTgzMjdhNmQ3YjViYjU3ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNTRjNWYyMmQzYzZjYjdmN2U4MjYwZDUwMDEyZGQ4ODI4YWVmNTA4ODMxOTRlMjJlNzA0OThlODMyMTZiMDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2YzA2MzhhY2JlOTkwYTNhZGVjNDI0NjFmZWJlODFhM2UwOWVmOTZhNGE0Yjc5ZmM3M2FlNWNiM2RlYWI5Y2IifQ"
         }
       ]
     },
@@ -69,7 +69,7 @@
           "version": "repo-lines-v1:sha256:6fc68ca4f135f5f8fa7a6ce197c11c65ab04d53e57b56b078f9d02ed57690f36:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDIyYzk1OTJkYjA3MDgzZTkwZmM2OTYyMTY0NDhjMjViMjNhNjg4NTE2OTZhMzlmNTFlZGRiMzkyODI4NmFiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjc2YTU0NGNjMDIzZWQ0MDVlM2I5OGI4YTM1NDA5MGZhZDE2ZTllMThkNWVlOWY3YmE2YzNlNzAwNTMwMDlkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjQ3MTFlMTA2MjMyYmM5ZWJiNDYyODkzYTAwMDVhNTg1OTAyZDI4YWM5YmEwMzA2ZmFhNzE2ZGE3ZDk3MWFmYyJ9"
         },
         {
-          "resource": "repo://src/main.rs#L574-L605",
+          "resource": "repo://src/main.rs#L641-L672",
           "version": "repo-lines-v1:sha256:c2109a8199f5e029b4cbd974eee3291a5dd1c82e6758f49f96a4d9d69d08cb8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwY2Q1N2RhMWUzOWRmMGMxMzEwYTFjNzdhMTNlMjhiMmU1YThhYWY0YmIyN2E0MmRhMjA2ZWU2N2E3ODM0YjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkZjI0OTg3N2YyMmFkYmJlN2Y2MWIyYTY5ZmQ0NjNjMDRlMzdiYmNiOGVjNTdjNTU3MmExZjdlMDZiYzgxZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTRkMDJhODEyMTk0NGQxNzZkMjY1ZTliYjljYzU5ZjZhYjg5MGJjYWRmOGFlZmRlYmRiYmI0ZjJlYTg0NDQifQ"
         }
       ]
@@ -83,7 +83,7 @@
           "version": "repo-lines-v1:sha256:d3df4daa1de4e21507de221dac23211c06719324f2efd5063cf93c282102d9ec:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MzE5ZDljYmNiY2E4Yjk2YWI3YzFjMjNlYjA3ZjM3MzJlYWY2Mzk1MTk4YTA0MDBkMjU1ZDI3NDA3ZGI4MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1ODJhMTMyZGQyMTkzZjgzNzZlMWI5Y2Y4NThkODc2ZWYzZGE0M2JlMWU2MjYzOTE0ODJmNDhkODdlZGFlMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NzExZTEwNjIzMmJjOWViYjQ2Mjg5M2EwMDA1YTU4NTkwMmQyOGFjOWJhMDMwNmZhYTcxNmRhN2Q5NzFhZmMifQ"
         },
         {
-          "resource": "repo://src/main.rs#L272-L285",
+          "resource": "repo://src/main.rs#L308-L321",
           "version": "repo-lines-v1:sha256:9f3991c28e2d13f7111cdee83ace1b9226fe342c024071931333a3f483f2597e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwYjllZWU5MWJjMGIxYTc3YjVmMjI0ZmQ2OTQ1ZjNkZWMyMzRlNTU5NmI5NDc1YzkwYzVhZWM5ZTZhZTIwYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmN2JjMmQ5NGI3ZWZkODliYzc5NzMxOWIzMDg4Y2I1ZmUxNDgwZmEyOTg0M2RhMzViNGI3ZGUwYTYwMDY1MDAifQ"
         }
       ]
@@ -93,11 +93,11 @@
       "statement": "merged and finish receive a confirm_removal callback that only removes an adopted worktree after a terminal yes, answering no when stdin is not a terminal.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L318-L330",
+          "resource": "repo://src/main.rs#L354-L366",
           "version": "repo-lines-v1:sha256:9b11e0096f19923e27536944f04f4ecb3053667611540a04abc9d380ca2a95a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljYWQ3NDNmN2JlM2JkYjczMGVmOWY3MzVhMTFkYjgzNzI0NTVjMTQ5OGRjMGQ0Mjc0NjlmNDRiOTQxZDU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiZmU1YzMyZGU5YmFhM2NlZTM5MjdiYTJiNjcyMDViNDdmYTg0ODUxZTljMGYxODQxYjhhN2ZjZmZhNjAwMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkMTg0MjFmYWM5ZWE3NjI3ZmU1Y2U0MmYwMzYyOGE0NmUwYTJjYTRkZjIyNWRmNGNmM2YzMWVkMmMyYmZkNzYifQ"
         },
         {
-          "resource": "repo://src/main.rs#L500-L511",
+          "resource": "repo://src/main.rs#L567-L578",
           "version": "repo-lines-v1:sha256:9ec520dc90f878601958833fd75a235af9c11981a12f6fdd4197cd34edf110be:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyNDM2NTRmZjhhYzJiNGQ1NjMzN2ExZTUyMGQ0OTVjOTAzZjJmNWUyNmU3ZmUzODliMGY0ODY5M2Y3MGY4ZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlNjE5MDcwOWE1MmYxNTI0OWQ5YjgzMmNiM2M4MTJlY2ZkZWQyOWVhOGJlODkwZjMxMGZhNmZkNjc5Njk0MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5MmI1MzMzNTE3YTRkODM3ZWQ0ZjljMzEzOWJkZTdhZjNlNTY2NmY5MWJlY2UyNDc2NWM5MzI3NDdlYmNiNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMGEyMmQwOWFjZjQyYzQwYWMwN2EwYmM4MGE5NGUzNTA1YWM1N2ViN2I5ZTliMzlkODUwZmExODFjNzI1YzgifQ"
         }
       ]
@@ -105,6 +105,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T04:10:52.427Z"
+    "at": "2026-10-12T18:18:24.526Z"
   }
 }

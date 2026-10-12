@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:608dd1a4848deb11c7340567a4f54da48619cca70300941e02aaead97d16513e",
+  "pageVersion": "sha256:f52304dea485ba370fcb49ed8b2e5df6e29a2fbc20c82bdcb3fc028684e9c306",
   "claims": [
     {
       "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
@@ -75,10 +75,20 @@
           "version": "repo-lines-v1:sha256:ca3ed9063136715416d4a96defbb8696318c9d9e55224377eeb67b1fd358d95f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMWU2NmNlYTNlMDQxMWQ4NzljYmQzN2U2MDRjY2UyZTc3NWMyMDU4OGVhZjVhZTJkZGRhOGRjMjk5ZGJjNTA2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlNTJhNjUzY2YyOWI4NmYwOTk5MGQ4ODljNjZkOTBjODQ5NTgxMjJmMTMzOGQyYmEyZDIyMWMyNmQ5MTNhYzQ2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkM2Q1NjEwYjhkNWI4N2NlMTI2ZTMxOTZkODA0OTIxNGNlMWU2ZWMyMDZmN2M2ZGVjOWRjOWE4YTA2NDFmMjAyIn0"
         }
       ]
+    },
+    {
+      "id": "claim_a23f611283b6498790d887d42afea0fc",
+      "statement": "tests/freeze.rs runs the real binary against a fixture hub with api (master) and ui (develop) roles where feat-1 works on ui only, and covers freeze, unfreeze, refreeze, frozen status rows, off-pin refusals, add on a frozen role, repo command guards, and feature list frozen roles.",
+      "evidence": [
+        {
+          "resource": "repo://tests/freeze.rs#L1-L35",
+          "version": "repo-lines-v1:sha256:0297ad6d759a3a5512f8152837d580b8450f4f3632e0c9f902fe90f29dfa1a7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyMGEzZmNjY2Y4YjFkZDYzYWY1NjQzZmMzMGFkMjljZWVjNGFkY2U1MTNmYzY2MzZhODUzZDNhOWM5ZTAxODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlMDY4MTUzMWM4M2RhYTk3NzI3YmZlOTJiNWFlODY4MjJjYTRmYjZiNmZlNjIwZGRlNGJlYjFjNmM2NGI0NTQifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T04:10:52.427Z"
+    "at": "2026-10-12T18:18:24.526Z"
   }
 }
