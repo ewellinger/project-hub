@@ -271,25 +271,30 @@ fn frozen_status<'a>(
         .find(|r| r.role == role && r.stage == "frozen")
 }
 
-/// `!` lines for a frozen worktree that `op` refuses without force: a dirty
-/// one, or one whose HEAD left its pin (`status` reports that as an
-/// existing, registered row with `branch_matches == false`, shown as `off-pin`).
+/// `!` lines for a frozen worktree that `op` refuses without force: one whose
+/// HEAD left its pin (`status` reports that as an existing, registered row
+/// with `branch_matches == false`, shown as `off-pin`), or a dirty one.
 fn frozen_warnings(role: &str, row: Option<&StatusRow>, op: &str) -> Vec<(String, Tone)> {
     let Some(r) = row else {
         return Vec::new();
     };
     let mut out = Vec::new();
-    if r.dirty {
+    // Same test as `state_text`'s `off-pin`: a missing or unregistered
+    // worktree also has `branch_matches == false` but is not off its pin.
+    // Listed before dirty, as the backend checks it: F answers a dirty
+    // refusal but skips the pin check and removes the worktree. "may": a
+    // branch checked out at the pin commit reads off-pin yet loses nothing.
+    if r.exists && r.registered && !r.branch_matches {
         out.push((
-            format!("! {role} is dirty; {op} will refuse without force"),
+            format!(
+                "! {role} is off its pin; commits on its detached HEAD may be on no branch, and F discards them"
+            ),
             Tone::Warn,
         ));
     }
-    // Same test as `state_text`'s `off-pin`: a missing or unregistered
-    // worktree also has `branch_matches == false` but is not off its pin.
-    if r.exists && r.registered && !r.branch_matches {
+    if r.dirty {
         out.push((
-            format!("! {role} is off its pin; {op} may refuse without force"),
+            format!("! {role} is dirty; {op} will refuse without force"),
             Tone::Warn,
         ));
     }
@@ -2098,6 +2103,7 @@ mod tests {
         // `status` reports a frozen worktree whose HEAD left the pin as an
         // existing, registered row with `branch_matches == false` (`off-pin`).
         report.rows[3].branch_matches = false;
+        report.rows[3].dirty = true;
         let app = on_report(Report::Feature { feature, report });
         let mut flow = Flow::Unfreeze {
             feature: "suspense".into(),
@@ -2108,11 +2114,22 @@ mod tests {
             panic!()
         };
         assert!(force, "F is offered");
+        // Off-pin comes first: F, the answer to the dirty refusal, discards
+        // the detached commits.
+        let off_pin = lines.iter().position(|l| {
+            *l == (
+                "! ui is off its pin; commits on its detached HEAD may be on no branch, and F discards them".to_string(),
+                Tone::Warn,
+            )
+        });
+        let dirty = lines.iter().position(|l| {
+            *l == (
+                "! ui is dirty; unfreeze will refuse without force".to_string(),
+                Tone::Warn,
+            )
+        });
         assert!(
-            lines.contains(&(
-                "! ui is off its pin; unfreeze may refuse without force".to_string(),
-                Tone::Warn
-            )),
+            off_pin.is_some() && dirty.is_some() && off_pin < dirty,
             "{lines:?}"
         );
         let mut flow = Flow::Finish {
@@ -2121,11 +2138,22 @@ mod tests {
         let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
             panic!()
         };
+        // Off-pin comes first: F, the answer to the dirty refusal, discards
+        // the detached commits.
+        let off_pin = lines.iter().position(|l| {
+            *l == (
+                "! ui is off its pin; commits on its detached HEAD may be on no branch, and F discards them".to_string(),
+                Tone::Warn,
+            )
+        });
+        let dirty = lines.iter().position(|l| {
+            *l == (
+                "! ui is dirty; finish will refuse without force".to_string(),
+                Tone::Warn,
+            )
+        });
         assert!(
-            lines.contains(&(
-                "! ui is off its pin; finish may refuse without force".to_string(),
-                Tone::Warn
-            )),
+            off_pin.is_some() && dirty.is_some() && off_pin < dirty,
             "{lines:?}"
         );
     }

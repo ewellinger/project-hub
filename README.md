@@ -476,7 +476,7 @@ nothing.
 | `+` | `feature add`: pick a role, then a branch; for a new branch of a frozen role, then whether it starts from the frozen commit (keeping the pin) or from `origin/<base>` (dropping it). An existing branch keeps the pin without asking |
 | `z` | `feature freeze`: pick any role that is not frozen yet, with the role under the cursor preselected. A role with an open change has it pinned; any other role, including one not in the feature, gets a reference checkout at its local base tip |
 | `u` | `feature unfreeze` for the frozen role or pinned change under the cursor. A reference worktree is previewed first, with a warning when it is dirty or off its pin; `F` in the preview forces. A pinned open change is unpinned at once |
-| `Z` | `feature refreeze` for the frozen role or pinned change under the cursor: move its pin to the base's current local tip. A dirty or off-pin reference worktree is refused, and the error is shown |
+| `Z` | `feature refreeze` for the frozen role or pinned change under the cursor: move its pin to the base's current local tip. An off-pin reference worktree is refused, and a dirty one is refused when the pin would move; the error is shown |
 | `f` | `feature finish`, after a preview of every worktree it removes and a warning for roles not yet merged; `F` forces |
 | `o` | open the feature's workspace |
 | `p` | `hub pull` for the feature: fast-forward every open role |

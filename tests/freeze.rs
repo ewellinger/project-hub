@@ -1202,11 +1202,16 @@ fn feature_list_shows_frozen_roles_apart_from_members() {
         .assert()
         .success();
     let pin = head(&fx, &frozen_wt(&fx));
+    // ui is an open change: pinning it keeps it a member, not a frozen role.
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "ui"])
+        .assert()
+        .success();
 
     fx.hub(&hub, &["feature", "list"])
         .assert()
         .success()
-        .stdout(predicate::str::contains("api:frozen"));
+        .stdout(predicate::str::contains("api:frozen"))
+        .stdout(predicate::str::contains("ui:frozen").not());
 
     let out = fx
         .hub(&hub, &["feature", "list", "--json"])
@@ -1233,6 +1238,14 @@ fn feature_list_shows_frozen_roles_apart_from_members() {
             .iter()
             .any(|r| r["role"] == "api"),
         "a frozen role is not a member: {f}"
+    );
+    assert!(
+        f["roles"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|r| r["role"] == "ui"),
+        "a pinned open change stays a member: {f}"
     );
 
     fx.hub(&hub_wt(&fx), &["feature", "unfreeze", "api"])
