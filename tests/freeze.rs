@@ -283,3 +283,73 @@ fn unfreeze_refuses_commits_off_the_pin_unless_forced() {
     assert!(!frozen_wt(&fx).exists());
     assert!(fx.feature_json(&hub, "feat-1").get("pins").is_none());
 }
+
+#[test]
+fn status_lists_the_frozen_role_with_its_pin_and_base_movement() {
+    let (fx, _hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    let pin = head(&fx, &frozen_wt(&fx));
+    for n in 1..=3 {
+        fx.commit_file(&api, &format!("u{n}.txt"), "upstream");
+    }
+
+    let out = fx
+        .hub(&hub_wt(&fx), &["status", "--json"])
+        .assert()
+        .success()
+        .get_output()
+        .stdout
+        .clone();
+    let report: serde_json::Value = serde_json::from_slice(&out).unwrap();
+    let row = report["rows"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|r| r["role"] == "api")
+        .expect("frozen api row");
+    assert_eq!(row["stage"], "frozen");
+    assert_eq!(row["branch"], "master");
+    assert_eq!(row["frozen_sha"], pin);
+    assert_eq!(row["base_moved"], 3);
+    assert_eq!(row["drift"], false);
+    assert_eq!(
+        Path::new(row["path"].as_str().unwrap()),
+        frozen_wt(&fx).as_path()
+    );
+
+    fx.hub(&hub_wt(&fx), &["status"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!("frozen @{}", &pin[..7])))
+        .stdout(predicate::str::contains("master +3 since pin"));
+}
+
+#[test]
+fn status_reports_drift_when_the_frozen_worktree_leaves_its_pin() {
+    let (fx, _hub) = world();
+    fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
+        .assert()
+        .success();
+    fx.commit_file(&frozen_wt(&fx), "oops.txt", "commit on the detached head");
+    fx.hub(&hub_wt(&fx), &["status"])
+        .assert()
+        .code(30)
+        .stdout(predicate::str::contains("off-pin"));
+
+    fx.git(
+        &fx.project_home.join("api-clone"),
+        &[
+            "worktree",
+            "remove",
+            "--force",
+            frozen_wt(&fx).to_str().unwrap(),
+        ],
+    );
+    fx.hub(&hub_wt(&fx), &["status"])
+        .assert()
+        .code(30)
+        .stdout(predicate::str::contains("missing"));
+}

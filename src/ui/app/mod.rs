@@ -1011,6 +1011,8 @@ mod tests {
                 base_behind: None,
                 hint: None,
                 review_url: None,
+                frozen_sha: None,
+                base_moved: None,
                 drift: false,
             }],
             warnings: vec![],

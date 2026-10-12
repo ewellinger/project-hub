@@ -9,11 +9,11 @@ use serde::Serialize;
 
 use crate::env::{home_dir, shorten_home};
 use crate::error::{HubError, Result};
-use crate::feature::{Change, Feature, FeatureStatus};
+use crate::feature::{Change, Feature, FeatureStatus, Pin, short_sha};
 use crate::git::{Git, same_path};
 use crate::hub::Hub;
 use crate::manifest::RepoSpec;
-use crate::ops::session::change_path;
+use crate::ops::session::{change_path, pin_path};
 use crate::ops::styled_table;
 
 #[derive(Debug, Serialize)]
@@ -38,6 +38,11 @@ pub struct StatusRow {
     /// Merge/pull request URL recorded on the change; `None` on hub and
     /// base rows and on changes without one.
     pub review_url: Option<String>,
+    /// Commit a frozen role is pinned to; `None` on other rows.
+    pub frozen_sha: Option<String>,
+    /// Commits the local base gained since the pin; `None` on other rows
+    /// and when the local base branch is missing.
+    pub base_moved: Option<u64>,
     pub drift: bool,
 }
 
@@ -132,6 +137,8 @@ fn base_hub_row(hub: &Hub) -> Result<StatusRow> {
         base_behind: None,
         hint: None,
         review_url: None,
+        frozen_sha: None,
+        base_moved: None,
         drift: false,
     })
 }
@@ -163,6 +170,8 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
                 base_behind: None,
                 hint: None,
                 review_url: None,
+                frozen_sha: None,
+                base_moved: None,
                 drift: true,
             },
             warnings,
@@ -201,6 +210,8 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
             base_behind: None,
             hint: None,
             review_url: None,
+            frozen_sha: None,
+            base_moved: None,
             drift: !branch_matches,
         },
         warnings,
@@ -247,6 +258,9 @@ pub fn status(hub: &Hub, feature: &Feature) -> Result<StatusReport> {
         let (row, change_warnings) = result?;
         rows.push(row);
         warnings.extend(change_warnings);
+    }
+    for pin in &feature.pins {
+        rows.extend(frozen_row(hub, feature, pin)?);
     }
     let drift = rows.iter().any(|r| r.drift);
     Ok(StatusReport {
@@ -338,6 +352,8 @@ fn hub_row(hub: &Hub, feature: &Feature) -> Result<StatusRow> {
         base_behind: None,
         hint: None,
         review_url: None,
+        frozen_sha: None,
+        base_moved: None,
         drift: open && (!exists || !registered || !branch_matches),
     })
 }
@@ -377,6 +393,8 @@ fn change_row(
             base_behind: None,
             hint: None,
             review_url: change.review_url.clone(),
+            frozen_sha: None,
+            base_moved: None,
             drift: open,
         });
     }
@@ -457,6 +475,8 @@ fn change_row(
         base_behind,
         hint,
         review_url: change.review_url.clone(),
+        frozen_sha: None,
+        base_moved: None,
         drift: open && (!exists || !registered || !branch_matches),
     })
 }
@@ -638,6 +658,54 @@ fn base_lag(row: &StatusRow) -> Option<(&str, u64)> {
     }
 }
 
+/// One row per frozen reference worktree; `None` for a pin that belongs to
+/// an open change, which its change row reports.
+fn frozen_row(hub: &Hub, feature: &Feature, pin: &Pin) -> Result<Option<StatusRow>> {
+    let Some(path) = pin_path(hub, pin) else {
+        return Ok(None);
+    };
+    let git = Git::new(hub.env.clone_path(&pin.clone));
+    let repo = git.is_repo();
+    let exists = path.is_dir();
+    let entry = if repo {
+        git.worktrees()?
+            .into_iter()
+            .find(|w| same_path(&w.path, &path))
+    } else {
+        None
+    };
+    let registered = entry.is_some();
+    let branch_matches = entry
+        .as_ref()
+        .is_some_and(|w| w.branch.is_none() && w.head == pin.sha);
+    let dirty = exists && registered && Git::new(&path).is_dirty()?;
+    let base_moved = if repo && git.local_branch_exists(&pin.base)? {
+        Some(git.missing_commits(&pin.sha, &format!("refs/heads/{}", pin.base))?)
+    } else {
+        None
+    };
+    Ok(Some(StatusRow {
+        role: pin.role.clone(),
+        branch: pin.base.clone(),
+        stage: "frozen".into(),
+        path,
+        exists,
+        registered,
+        branch_matches,
+        dirty,
+        ahead: None,
+        behind: None,
+        base: None,
+        custom_base: false,
+        base_behind: None,
+        hint: None,
+        review_url: None,
+        frozen_sha: Some(pin.sha.clone()),
+        base_moved,
+        drift: feature.is_open() && (!exists || !registered || !branch_matches),
+    }))
+}
+
 /// The `state` cell text: structural problem, dirtiness, divergence, base
 /// lag, hint, joined with `, `; `ok` when none of the first four apply.
 pub fn state_text(row: &StatusRow) -> String {
@@ -647,7 +715,11 @@ pub fn state_text(row: &StatusRow) -> String {
     } else if !row.registered {
         state.push("unregistered".to_string());
     } else if !row.branch_matches {
-        state.push("wrong-branch".to_string());
+        state.push(if row.frozen_sha.is_some() && row.stage == "frozen" {
+            "off-pin".to_string()
+        } else {
+            "wrong-branch".to_string()
+        });
     }
     if row.dirty {
         state.push("dirty".to_string());
@@ -660,6 +732,13 @@ pub fn state_text(row: &StatusRow) -> String {
     }
     if state.is_empty() {
         state.push("ok".to_string());
+    }
+    if let Some(sha) = &row.frozen_sha {
+        state.push(format!("frozen @{}", short_sha(sha)));
+    }
+    if let Some(n) = row.base_moved.filter(|n| *n > 0) {
+        let base = row.base.as_deref().unwrap_or(&row.branch);
+        state.push(format!("{base} +{n} since pin"));
     }
     if let Some(hint) = &row.hint {
         state.push(hint.clone());
@@ -765,8 +844,30 @@ mod tests {
             base_behind: None,
             hint: None,
             review_url: None,
+            frozen_sha: None,
+            base_moved: None,
             drift: false,
         }
+    }
+
+    #[test]
+    fn frozen_rows_name_the_pin_and_how_far_the_base_moved() {
+        let mut r = row();
+        r.stage = "frozen".into();
+        r.branch = "master".into();
+        r.frozen_sha = Some("0123456789abcdef0123456789abcdef01234567".into());
+        r.base_moved = Some(0);
+        assert_eq!(state_text(&r), "ok, frozen @0123456");
+        r.base_moved = Some(3);
+        assert_eq!(state_text(&r), "ok, frozen @0123456, master +3 since pin");
+        assert_eq!(
+            state_colour(&r),
+            StateColour::Green,
+            "a moving base is information, not a problem"
+        );
+        r.branch_matches = false;
+        assert!(state_text(&r).starts_with("off-pin"), "{}", state_text(&r));
+        assert_eq!(state_colour(&r), StateColour::Red);
     }
 
     #[test]
@@ -846,6 +947,8 @@ mod tests {
             base_behind: None,
             hint: hint.map(str::to_string),
             review_url: None,
+            frozen_sha: None,
+            base_moved: None,
             drift: !exists,
         }
     }
