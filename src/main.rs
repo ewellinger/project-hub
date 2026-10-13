@@ -287,6 +287,11 @@ enum FeatureCommand {
         #[arg(long)]
         force: bool,
     },
+    /// Delete a finished feature's merged branches and its record, freeing the name
+    Remove {
+        /// Feature name
+        name: String,
+    },
     /// Show open features with the stage of each role
     List {
         /// Include finished features
@@ -576,6 +581,9 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::finish::finish(hub, &mut f, force, &mut confirm_removal)
                 }),
+                FeatureCommand::Remove { name } => {
+                    hub.with_lock(|hub| ops::remove::remove(hub, &hub.load_feature(&name)?))
+                }
                 FeatureCommand::List { all, json } => {
                     let mut summaries = ops::list::list(&hub)?;
                     let hidden = if all {

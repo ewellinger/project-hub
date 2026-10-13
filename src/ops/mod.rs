@@ -6,6 +6,7 @@ pub mod init;
 pub mod list;
 pub mod merged;
 pub mod pull;
+pub mod remove;
 pub mod repo;
 pub mod resolve;
 pub mod review;
