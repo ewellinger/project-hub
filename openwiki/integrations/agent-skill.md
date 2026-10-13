@@ -18,10 +18,10 @@ sources:
     resource: repo://src/skill.rs
   - id: openwiki-source-ec32cfd44569eaa164e68020
     resource: repo://tests/skill.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:12:12.058Z
+    at: 2026-10-13T22:33:09.880Z
 ---
 
 # Bundled agent skill
@@ -71,7 +71,11 @@ hub command retries.
 - **Rules**: run `hub status` before trusting any path; exit 30 means drift —
   stop; refer to repos by role, not path; never push or pull the hub on the
   user's behalf.
-- **Commands** table mapping intents to `hub` subcommands.
+- **Commands** table mapping intents to `hub` subcommands. Its
+  `hub feature remove NAME` row is the one destructive entry: the agent runs
+  it only when the user asks, and on a refusal reports the listed branches
+  instead of deleting them itself. The workflow rule that `merged`,
+  `unfreeze`, `finish`, and `add` never delete a branch still holds.
 - **Reading output**: take paths from `hub status --json` `rows[].path` and
   the attach command from `checkout`; field meanings such as `base`,
   `base_behind`, `custom_base`, `review_url`, and for frozen bases

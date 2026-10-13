@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:f846fa82e484fa5b691ef6421e8e22aa7bfc5112f46642f6c62613f2fdf15e61",
+  "pageVersion": "sha256:94e3428e41eb15380a32b52d863ad12f180460f36a273c62eaa537506a7dbb4d",
   "claims": [
     {
       "id": "claim_555ff32dc81744febc68dab7920bdbd9",
@@ -153,10 +153,42 @@
           "version": "repo-lines-v1:sha256:d0c69691add75c103c4c7673e1b2601aa1b5c040e46927534a39c8cc12932145:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4YTIyMjhlN2UyYzRlMmRiNWY5ZWUwYmIxMDZhNGQwZWNiMThiZWY2MjkyZjJiZmI5ODM3ZDA1YWEzNWM2MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlM2U2MTI1NWRmMDIwMGI3NzljMzlmZDRhNjUyMWFiZWFjNzdmNDJlYTIyNGYwYTk1ZDI0NGJiZGRjYjUwMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMmJjZDgzMzdjZmM0MDIwNzNiZDRiZWM0YWYwYTNjOGFlNzkyMTMyOGFmNTAzN2UzOTNkMWFiZTkxYjgwMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3YmI2MDc4MDY2NzYyOGY4YmI0YTcxOGFhNDA0ODJkMjdmYmEzN2NmNTU5ZjA4OGMzMDUzZWFiNjVhNTE1YWMifQ"
         }
       ]
+    },
+    {
+      "id": "claim_5bfb943fbce94305b8df10fc124bab0e",
+      "statement": "`hub tmux` outside a feature worktree and without `--feature` converges a base session with `hub` and `ai` windows in the hub's main clone and one window per registered repo's main clone in manifest order, through the same converge_session used for feature sessions.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L612-L620",
+          "version": "repo-lines-v1:sha256:46652f00117450b39040e4e8d9eb34cd91d3976cdddb8286894348f2a872a0c7:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI0M2EzZjEyMTRhMDYyYWVhMDJlYWJhYTIzODk5ODE0Njc3MjRhNjUyMTljODllMTUzNjY2MmY0MTMxNTMwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjdlMzZhODMzZWQ3NThlZTUxNTAyYjUyZjFmYWE2YzFmODIxY2RkMWEyMDc3ZmU0ZmQ0N2Q2MWVkZTY0MDg4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTZmNDlhODk0ODE4NDBlNzNiYjI0MzU4NGM3NjEzZjQ4MjI5NWNhM2NkYjJkODRhZmRjZTU2OTY1NzhjMTE4YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjNkMWQ4YzgyZTZjMWQ2OTdlNWYwNzRkNDc0NDlkY2UzMmQyZmFhYWYwYzgxZTE5MDc5OTQ4NWVhOGY2MWZmMCJ9"
+        },
+        {
+          "resource": "repo://src/ops/session.rs#L108-L155",
+          "version": "repo-lines-v1:sha256:0a4cadf7abdab9887ffe7cd518063a7acdb706c8e5285ad04dbf9870bd47212a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YzAxYjExZWE5YjEzZmM4MmRhYzgwYjkzYzUwMjM4OWZkY2EwNmEzNDJlZmM2YTdlMjRhZWU5YjM1MWQxMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliNTM1ZGU4OWIxNGU1OWFhN2NiODZkNGMwYTc5ODllYjNlMTg4ZTJiNjBlYjMyOTVkNzljZmViN2VjZDU3YzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyN2U0ODUwZjExOTZhYjFjMjBjODgwMmJhNTdiYTNmZWJmMjMyOTVlM2M4YzBmMGQ4ODVmYjNjNjQ1OWM0MjQifQ"
+        },
+        {
+          "resource": "repo://tests/misc.rs#L57-L98",
+          "version": "repo-lines-v1:sha256:b86e1672cc25d252c5f916516c3fdb8728d2de5f8c0eae1abf84bffdba45f53f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4ZTg1NDQyMWM3ZTUzM2Y4YWIyMDE5M2JiYTc5ODdhZTNkMGJjNWE0MzZkMGIzYWU1OGRhOGI3NWYzNmRhOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmOTY4YTdjZDU3ZGFmODBkMTE1MTExNTM3MjM5NTliMzVjZjhmYzE2ODIxZTFjODRjNmY1MWZkNzMwY2JkNTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b141bea8c084d5e90919a560986c2f4",
+      "statement": "The base session is named by rendering the checkout_template with `main` as the feature, and `feature start` refuses a checkout name equal to it.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/session.rs#L88-L93",
+          "version": "repo-lines-v1:sha256:9e672b8674a9eaf14fd2b4dc87941101b2ec3d58f76fd6aa56f3784a58facc55:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTZjYzY5OTllYmUwN2U0N2IxNmQxZTU4MDJlMGRmOTQ5MmRhMGViYjJmNzBjZTA1Y2E4ZTUzZjkzMzQ4MDIxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmZiODE1ZWYxMzVlOGJjYTE2N2UxNjdhOWNhNWY4ZWQ1Y2FiZGVlMjgzMTY1OGZmMjMwOWNlMDBmNDg5N2Q3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzlmZTFhOGJhOGMwNDgzYmYwOGU2ZmRmOTVkNzg2ODdlZTUxOTYxZDkyZTY1NjU0ZGQxZjMzOTZlZjVjNzhlMiJ9"
+        },
+        {
+          "resource": "repo://src/ops/start.rs#L31-L35",
+          "version": "repo-lines-v1:sha256:f5a2f0698a1db6f6bdb2cf7622dc32cecf92e86cabac68195cdf102fac652073:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM5NDQzODRlYzlhNjI1NzA5YTk3NDA2Y2M2NDViY2RjMTJkNjU1NWM4NjE0MjliZmZlZDliNjc4ZDM3NjZiNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjEzZTQ3NDU5YzY0NGQ2YTAyMTU2YzM3NWJkZWYyMjIwNWIwYWZjZGZkMjJiYmVjNjgyNjZkYTQ5M2M1NTE5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2VlMDgwZWFhNjE2ZmRkYzM5NDM5YzlhZDM1ZGFiMzVjOTdmNzY5NDc1NThhNjFiMDk0NzYxYjJhZDIxMjMyNiJ9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:12:12.058Z"
+    "at": "2026-10-13T22:33:09.880Z"
   }
 }

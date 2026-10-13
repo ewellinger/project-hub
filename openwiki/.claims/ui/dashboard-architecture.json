@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:db180593bcb8582ff7481bff7b501442d60e376766b9e979e8de1aca7d012fdc",
+  "pageVersion": "sha256:d26c39e9e14e5fdb1edc3396199b4268f2ccca62806995c3bb5f649455e219b5",
   "claims": [
     {
       "id": "claim_17e3d0e433ec49f28691d71532ba3d2a",
@@ -139,10 +139,20 @@
           "version": "repo-lines-v1:sha256:067066f4e0a1e3f648cad79d8494d9369d83297864df18644b7cceefbda6f36d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxZjlkMDI3ZmFkZmFmY2E5YmE1ODVlMDdjNWY0MTc3MDkxYzUyYThmYTFkNmJlYjNlNmRjZjVkNDI2NmQ4YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNTNkMTAyMTBiNjdjYjI4ODhhN2FlYmJkYjVjZmYyNzA0YTc1OTQzMDAxMWM1NzA2OGI0ZTk5NjA2NWFkNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MDQxNGZhODk2ZTZlMjIxZjMxZmIwMTExYWY4YjBmNmU2ZmJiYjQyNTA2N2UwZWI2MDU1YjA3NGU2NWE5NzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiNzRmNzQyZWI2YWQ1NDAzY2IxZTRmNDdmNmE3YTZlZTg5MDYxODk2NzllYjkyNzgxMjdiNjM3YzkyZDkzY2QifQ"
         }
       ]
+    },
+    {
+      "id": "claim_9f2b49695cd746f9bda1e52924531069",
+      "statement": "The dashboard list pane colours only each role line's stage text: working green, review yellow, frozen dark grey, other stages default; merged roles are omitted from open features and finished features render as one dim line.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/view/dashboard.rs#L33-L80",
+          "version": "repo-lines-v1:sha256:b773d8fa2ad450e77cc767f03769e41c2b2a519bd610dd34bdbbcc2bc3d60d24:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxZjlkMDI3ZmFkZmFmY2E5YmE1ODVlMDdjNWY0MTc3MDkxYzUyYThmYTFkNmJlYjNlNmRjZjVkNDI2NmQ4YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MDQxNGZhODk2ZTZlMjIxZjMxZmIwMTExYWY4YjBmNmU2ZmJiYjQyNTA2N2UwZWI2MDU1YjA3NGU2NWE5NzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3ZjNhODE3NTg5MmU0Y2RmMTU1ZTMyZWZmNDAxOWViODZiYmIyNTNmNDg2NzdhNTEyYTM1MTg2ZGFhMWVjNzIifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:12:12.058Z"
+    "at": "2026-10-13T22:33:09.880Z"
   }
 }

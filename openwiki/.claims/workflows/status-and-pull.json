@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:b5f169dedac09bb8d3c4457b3e374661225919a8af99b09b275dec31ee98b407",
+  "pageVersion": "sha256:0307e51619e6e64ba25cc15618f277f1554f850c74c66a2a7c80fda4e45f1a76",
   "claims": [
     {
       "id": "claim_aa29ee8eb4c1484ca443d553ab3a40b7",
@@ -115,7 +115,7 @@
       "statement": "pull targets base checkouts of all registered roles from the main hub and each open change's checkout from a feature, never the hub's own clone, and reports frozen reference worktrees as not pulled; repos run concurrently while checkouts of one repo run sequentially, and output keeps input order.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L625-L640",
+          "resource": "repo://src/main.rs#L636-L651",
           "version": "repo-lines-v1:sha256:2bf8c2445385cb3a56f5cc7adb12ed39dc77c17b9a67a321624e9ccaa2959a11:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhNmI2ZDUxNzk1NGRhM2E0OWEwZDZmY2M2YTYzYTUyNjM4NWZmMzA1ODgxOTNjMGZhOWFlZTFkMGMwNjgzNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkYTZhODkzZjFhMWQxMjY1ZDVkMjA3MTY0ODkyMDQ2ZmRjNmFhOGY3MDA0YmFjYzlkY2YyZjRlMzdiOGEyMzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3ZTFhY2YyMDI1ODFlYzhiYTFhYWRlNzE4YmE4NTEzZDk0ZDY2YWM1NWM2ZmExZTA2NDMyNWZmNDQzYzQyODAifQ"
         },
         {
@@ -143,10 +143,24 @@
           "version": "repo-lines-v1:sha256:985f856b01ccc9d0d7387f6b929048998358e317c40a3a99389ae71fa0337a2f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZWYwOTg0MzQ5MjJlYzBjOTRmODkwOWJjZGIwOGJiYzNlZWY1NDY4NzM1NmM3NmY5MDhmYzRiNDczNDEwNGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMDZkNGMxN2EyZDFkN2QxY2NmZjU2MWVhMzU5NDZlZjY3MTIxOGEzMTk5MDE3M2M3NzljZDZiNWM5NzVlNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxYmVhOWRlZWZkNTYxMzFiOTQ4OWEzZTFmNGRmMWMyMGZhOTc2MDdjZjBkMzYyNTg4MGE0YmRlNTliYjQ0OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiOTlkMDY3YzM2YWQ0ODMyZjJkOGRiNzFlZDM0ZTlmMWYwZDdlMjZmYmI1YzU1MzJmMGM5MWYyYjFjZmY1OTgifQ"
         }
       ]
+    },
+    {
+      "id": "claim_05dd311d7cb64d8599d352856344e117",
+      "statement": "Feature list and status read the per-machine record store, so a finished feature stays listed until `feature remove` deletes its record file.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/list.rs#L34-L40",
+          "version": "repo-lines-v1:sha256:bec658ee465b6e5483b1a4815b67e994c7e14f535909129aa45f475bac1d90bd:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODQ1NjNjZjcwMDBiZDhmYmMxMWIyMGI4NTcyYjk1MDU5M2I0NzFlNDA2ZWFiYTVlYmQyMzMyODI0YzE0MjNiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjlhODYxNjNiYTM0YzA4ZGU3ZjE2NDhkNzFhYWE0NTA4MWM3NWFhNWFhNGY1OTIzYWIxZjgyNjE1MTAwZGExZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzEwYjRmODcyMmVmNzY5MjFlMjFkYTVkNTA1MjMxMDYwNzVlNDU0NzgyZDI5NjEwZWIyZDAyOWNlYjVmNGU2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzI0OGJhYmUwNTE0ZWFmNjEyYTFkMGJiYTg2YjIxZWI4MzFiMDI3YWUwMDhlOWU4ZWQ1Y2QzY2ExZGFkZWNiYyJ9"
+        },
+        {
+          "resource": "repo://src/ops/remove.rs#L92-L97",
+          "version": "repo-lines-v1:sha256:13c50813f1a7b96344a31e83000f8f5730bb13c669ee032258021836bd5ba8ba:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTIxZmQwYmQxZjQ2Mjc2NDc2ZjNmMDc0OGMzNzdmMmUyMWE2ZTE3YjczYjAzYTA2NWY3NDUzZGQ5YzI3NTk4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI3NmZjYWM2ZDczZmRkZGNjOTJlMjkzNDI4ZDAzZjc1N2I1YWZmMTU1MmI2MGExODM2MzMzNGFmMzdjNzE5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWM2MWI2MjE2NWUwOWRmNjdiMjA5Zjc4NzI0N2ZjMGU1ZDM1NmM3ZTA4NWY5NzY3MTU0MDM1MGI5OTc3ZTRlMSJ9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-13T22:33:09.880Z"
   }
 }

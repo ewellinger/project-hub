@@ -12,12 +12,14 @@ sources:
     resource: repo://src/ops/list.rs
   - id: openwiki-source-f9c1270d031f29e27a646bcd
     resource: repo://src/ops/pull.rs
+  - id: openwiki-source-d7623854325d1c8d971147e7
+    resource: repo://src/ops/remove.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:33:09.880Z
 ---
 
 # Status, list, and pull
@@ -123,6 +125,11 @@ open features first, then finished, each by name. `roles` holds the
 change stays in `roles` only. The table shows them as `ROLE:frozen` after the
 members, and `--json` always includes `frozen`, empty or not. Without `--all`, finished features are hidden (with a note when that
 leaves nothing). It reads records only — no git calls.
+
+Because both commands read the record store, a finished feature stays in
+`feature list --all` and in `status`'s `Completed` table until
+`hub feature remove` deletes its record; after that it appears nowhere (see
+[Review, merged, finish, and remove](review-merged-finish.md)).
 
 ## `hub pull [--feature N] [--base]` (`src/ops/pull.rs`)
 

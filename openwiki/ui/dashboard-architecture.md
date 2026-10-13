@@ -14,10 +14,10 @@ sources:
     resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:12:12.058Z
+    at: 2026-10-13T22:33:09.880Z
 ---
 
 # Dashboard architecture
@@ -142,6 +142,12 @@ gives way first when the terminal is narrow. Merged rows are dimmed, and
 frozen reference rows use the read-only style (dim + italic). The dashboard
 list pane also lists each open feature's frozen roles, after its members, in
 the read-only style.
+
+In that list pane each role line (`stage_line`) colours only the stage text:
+`working` green, `review` yellow, `frozen` dark grey, any other stage the
+default. Merged roles are left out of an open feature's lines, and a finished
+feature is a single dim `<name>  finished` line. On the selected row the
+`REVERSED` highlight turns the colour into the stage's background.
 
 ## Dashboard keys
 

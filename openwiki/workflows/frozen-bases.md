@@ -3,19 +3,23 @@ type: workflow
 title: "Frozen bases: freeze, unfreeze, and refreeze"
 description: How a feature pins a role's base to a fixed commit — the Pin record, reference worktrees versus pinned open changes, where pin commits come from, the freeze/unfreeze/refreeze transactions and their off-pin safeguard, how status, start, add, merged, set-base, finish, pull, and the repo commands treat pins, and the dashboard keys.
 tags: [workflow, freeze, pins, bases, worktrees, status]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
 sources:
+  - id: openwiki-source-2e469aed167f415af0005649
+    resource: repo://src/ops/finish.rs
   - id: openwiki-source-de3a6bb0f340e7d1caaf6a0d
     resource: repo://src/ops/freeze.rs
   - id: openwiki-source-663ac1b065deb6f67a90cc27
     resource: repo://src/ops/merged.rs
   - id: openwiki-source-f9c1270d031f29e27a646bcd
     resource: repo://src/ops/pull.rs
+  - id: openwiki-source-d7623854325d1c8d971147e7
+    resource: repo://src/ops/remove.rs
   - id: openwiki-source-70c2e2f99d62af87dfbdb300
     resource: repo://src/ops/repo.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-13T22:33:09.880Z
 ---
 
 # Frozen bases: freeze, unfreeze, and refreeze
@@ -165,6 +169,11 @@ These read pins without changing them; details are in
 - **`set-base`** refuses a pinned change until it is unfrozen. See
   [Review, merged, set-base, and finish](review-merged-finish.md).
 - **`finish`** removes frozen worktrees along with the rest.
+- **`remove`** looks only at the feature's changes and the hub branch.
+  A frozen reference role is a detached checkout with no branch, and `finish`
+  has already cleared the pins, so there is nothing to delete for it. A pinned
+  open change is still a change, so its branch is checked and deleted like any
+  other member branch.
 
 ## Repo commands
 
