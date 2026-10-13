@@ -99,6 +99,9 @@ pub enum Action {
         feature: String,
         force: bool,
     },
+    Remove {
+        feature: String,
+    },
     /// `hub pull` for one row: the base checkouts, or a feature's open changes.
     Pull {
         row: RowId,
@@ -118,6 +121,7 @@ impl Action {
             | Action::Unfreeze { feature, .. }
             | Action::Refreeze { feature, .. }
             | Action::Finish { feature, .. }
+            | Action::Remove { feature }
             | Action::Pull {
                 row: RowId::Feature(feature),
             } => Some(feature),
@@ -137,6 +141,7 @@ impl fmt::Display for Action {
             Action::Unfreeze { role, .. } => write!(f, "unfreeze {role}"),
             Action::Refreeze { role, .. } => write!(f, "refreeze {role}"),
             Action::Finish { feature, .. } => write!(f, "finish {feature}"),
+            Action::Remove { feature } => write!(f, "remove {feature}"),
             Action::Pull { row: RowId::Base } => write!(f, "pull base"),
             Action::Pull {
                 row: RowId::Feature(name),
@@ -638,6 +643,8 @@ impl App {
                 }
                 vec![Effect::ReloadList]
             }
+            // The row is gone on success; a refusal leaves it as it was.
+            Action::Remove { .. } => vec![Effect::ReloadList],
             Action::Pull { row } => self.request_fresh(row.clone()),
             other => {
                 let name = other.feature().expect("not a start").to_string();
@@ -993,6 +1000,71 @@ mod tests {
             a.footer
                 .as_ref()
                 .is_some_and(|f| f.is_error && f.text == "feature 'old' is finished")
+        );
+    }
+
+    #[test]
+    fn x_confirms_then_removes_a_finished_feature_and_reloads() {
+        let mut a = app();
+        a.show_finished = true;
+        a.rebuild_rows(None);
+        a.update(key(KeyCode::Char('j')));
+        a.update(key(KeyCode::Char('j'))); // old
+        assert!(a.update(key(KeyCode::Char('x'))).is_empty());
+        let Some(Overlay::Confirm {
+            title,
+            lines,
+            force,
+            ..
+        }) = &a.overlay
+        else {
+            panic!("{:?}", a.overlay)
+        };
+        assert_eq!(title, "Remove old");
+        assert!(!force);
+        let text: Vec<&str> = lines.iter().map(|(t, _)| t.as_str()).collect();
+        assert_eq!(
+            text[0],
+            "Delete branches     api feature/old, and hub branch old"
+        );
+        assert!(a.running.is_none(), "nothing runs before the confirm");
+
+        let remove = Action::Remove {
+            feature: "old".into(),
+        };
+        assert_eq!(
+            a.update(key(KeyCode::Enter)),
+            vec![Effect::Run(remove.clone())]
+        );
+        for result in [
+            Ok(vec!["Removed feature 'old'".into()]),
+            Err(HubError::Precondition("not removing".into())),
+        ] {
+            a.running = Some(remove.clone());
+            let effects = a.update(Event::Done {
+                action: remove.clone(),
+                result,
+            });
+            assert_eq!(effects, vec![Effect::ReloadList]);
+        }
+    }
+
+    #[test]
+    fn x_is_refused_on_an_open_feature_and_the_base() {
+        let mut a = app();
+        assert!(a.update(key(KeyCode::Char('x'))).is_empty()); // base
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.is_error && f.text == "base is not a feature")
+        );
+        a.update(key(KeyCode::Char('j'))); // alpha
+        assert!(a.update(key(KeyCode::Char('x'))).is_empty());
+        assert!(a.overlay.is_none());
+        assert!(
+            a.footer.as_ref().is_some_and(
+                |f| f.is_error && f.text == "feature 'alpha' is open; finish it first"
+            )
         );
     }
 

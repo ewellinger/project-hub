@@ -79,6 +79,10 @@ pub const DASHBOARD_HELP: &[(&str, &str)] = &[
     ("r", "reload the list and refresh the selected row"),
     ("o", "open the selected row's workspace"),
     ("p", "pull the selected row's checkouts, fast-forward only"),
+    (
+        "x",
+        "remove the selected finished feature: its merged branches and record",
+    ),
     ("?", "this help"),
     ("q Esc", "quit"),
 ];

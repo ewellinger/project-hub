@@ -54,6 +54,9 @@ pub enum Flow {
     Finish {
         feature: String,
     },
+    Remove {
+        feature: String,
+    },
     Copy {
         feature: String,
         /// The cursor index (see `App::cursor`): a change or a frozen reference row.
@@ -76,6 +79,7 @@ impl Flow {
             Flow::Freeze { feature, roles } => freeze(feature, roles, answer, app),
             Flow::Unfreeze { feature, role } => unfreeze(feature, role, answer, app),
             Flow::Finish { feature } => finish(feature, answer, app),
+            Flow::Remove { feature } => remove(feature, answer, app),
             Flow::Copy {
                 feature,
                 change,
@@ -570,6 +574,42 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
         Answer::Confirmed { force } => Step::Run(Action::Finish {
             feature: feature.to_string(),
             force,
+        }),
+        _ => Step::Cancel("unexpected answer".into()),
+    }
+}
+
+/// Confirm before removing a finished feature: the branches the op will
+/// try to delete, from the dashboard's list. The op checks each one again.
+fn remove(feature: &str, answer: Answer, app: &App) -> Step {
+    match answer {
+        Answer::Begin => {
+            let Some(summary) = app.feature_summary(feature) else {
+                return Step::Cancel(format!("no feature named '{feature}'"));
+            };
+            let mut branches: Vec<String> = summary
+                .roles
+                .iter()
+                .map(|r| format!("{} {}", r.role, r.branch))
+                .collect();
+            branches.push(format!("hub branch {feature}"));
+            let lines = vec![
+                (
+                    format!("Delete branches     {}", branches.join(", and ")),
+                    Tone::Plain,
+                ),
+                ("Delete the record; there is no undo".into(), Tone::Plain),
+                (String::new(), Tone::Plain),
+                (
+                    "Each branch must be merged and gone from origin; any refusal changes nothing"
+                        .into(),
+                    Tone::Dim,
+                ),
+            ];
+            Step::Show(Overlay::confirm(format!("Remove {feature}"), lines, false))
+        }
+        Answer::Confirmed { .. } => Step::Run(Action::Remove {
+            feature: feature.to_string(),
         }),
         _ => Step::Cancel("unexpected answer".into()),
     }

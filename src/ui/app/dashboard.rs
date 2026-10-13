@@ -66,6 +66,25 @@ impl App {
                     }
                 }
             }
+            KeyCode::Char('x') => {
+                if self.busy() {
+                    return Vec::new();
+                }
+                let row = self.selected_row().summary.as_ref();
+                match row.map(|s| (s.name.clone(), s.status)) {
+                    None => {
+                        self.say("base is not a feature".into(), true);
+                        Vec::new()
+                    }
+                    Some((name, FeatureStatus::Open)) => {
+                        self.say(format!("feature '{name}' is open; finish it first"), true);
+                        Vec::new()
+                    }
+                    Some((feature, FeatureStatus::Finished)) => {
+                        self.start_flow(Flow::Remove { feature })
+                    }
+                }
+            }
             KeyCode::Char('?') => {
                 if self.busy() {
                     return Vec::new();

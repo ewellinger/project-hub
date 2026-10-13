@@ -446,6 +446,7 @@ dashboard with that feature selected.
 | `r` | reload the feature list and refresh the selected row |
 | `o` | open the selected row's workspace in the editor (base workspace on the base row) |
 | `p` | `hub pull` for the selected row: the base checkouts, or the feature's open roles; each role's outcome is shown when it finishes |
+| `x` | `hub feature remove` for the selected finished feature, after a confirmation listing the branches it deletes |
 | `?` | list every key; `?`, `Esc`, or `q` closes the list |
 | `q` `Esc` | quit; refused with `busy: <action>…; Ctrl-C quits anyway` while an action runs |
 | `Ctrl-C` | quit at once, even mid-action: the worker is killed with the process |
