@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:f52304dea485ba370fcb49ed8b2e5df6e29a2fbc20c82bdcb3fc028684e9c306",
+  "pageVersion": "sha256:ad2a01b0179ff360d2b4241cf93216234ab82e9ef9464f1a64cf905788adf387",
   "claims": [
     {
       "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
@@ -71,8 +71,8 @@
       "statement": "tests/misc.rs covers tmux/open/sync, argument exit codes, the hub lock refusal, finished features being read-only, and feature records living under .git/hub.",
       "evidence": [
         {
-          "resource": "repo://tests/misc.rs#L19-L268",
-          "version": "repo-lines-v1:sha256:ca3ed9063136715416d4a96defbb8696318c9d9e55224377eeb67b1fd358d95f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMWU2NmNlYTNlMDQxMWQ4NzljYmQzN2U2MDRjY2UyZTc3NWMyMDU4OGVhZjVhZTJkZGRhOGRjMjk5ZGJjNTA2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlNTJhNjUzY2YyOWI4NmYwOTk5MGQ4ODljNjZkOTBjODQ5NTgxMjJmMTMzOGQyYmEyZDIyMWMyNmQ5MTNhYzQ2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkM2Q1NjEwYjhkNWI4N2NlMTI2ZTMxOTZkODA0OTIxNGNlMWU2ZWMyMDZmN2M2ZGVjOWRjOWE4YTA2NDFmMjAyIn0"
+          "resource": "repo://tests/misc.rs#L19-L320",
+          "version": "repo-lines-v1:sha256:03a4c404d190c6159b7e3ee3f1403d3f78757d892ab9b91ed9c0564141258e8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMWU2NmNlYTNlMDQxMWQ4NzljYmQzN2U2MDRjY2UyZTc3NWMyMDU4OGVhZjVhZTJkZGRhOGRjMjk5ZGJjNTA2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZjQ4OTFhZDBiMWVmY2M4ODY2ZmQ4ZGEwNGI2MTkxOGVjNTAyYzMxMDYzNGY5NzM1N2VkMDBhMzMxYWZlYjQwIn0"
         }
       ]
     },
@@ -85,10 +85,20 @@
           "version": "repo-lines-v1:sha256:0297ad6d759a3a5512f8152837d580b8450f4f3632e0c9f902fe90f29dfa1a7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyMGEzZmNjY2Y4YjFkZDYzYWY1NjQzZmMzMGFkMjljZWVjNGFkY2U1MTNmYzY2MzZhODUzZDNhOWM5ZTAxODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlMDY4MTUzMWM4M2RhYTk3NzI3YmZlOTJiNWFlODY4MjJjYTRmYjZiNmZlNjIwZGRlNGJlYjFjNmM2NGI0NTQifQ"
         }
       ]
+    },
+    {
+      "id": "claim_2c46174f9cc1466ba383ef930760cedd",
+      "statement": "tests/remove.rs covers `feature remove`: a removed name restarts with fresh branches, and open features, unmerged or still-on-origin branches, and a hub branch with commits are refused without deleting anything.",
+      "evidence": [
+        {
+          "resource": "repo://tests/remove.rs",
+          "version": "repo-file-v1:sha256:13a327f8968e360729bc97fc5ec64db88be8dcdd686ee14ff28b2aa46b607c33"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-13T22:12:12.058Z"
   }
 }

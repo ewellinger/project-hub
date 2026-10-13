@@ -5,7 +5,7 @@ description: How `hub` locates a hub repository, what state is committed (`hub.j
 tags: [architecture, state, manifest, locking, persistence]
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:12:12.058Z
 sources:
   - id: openwiki-source-a9fddfa72ce7af0e031fedf8
     resource: repo://src/hub.rs
@@ -13,9 +13,11 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-cfc759a7da3457809607f5ab
     resource: repo://src/manifest.rs
+  - id: openwiki-source-d7623854325d1c8d971147e7
+    resource: repo://src/ops/remove.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
 ---
 
 # Hub state, manifest, and locking
@@ -90,6 +92,10 @@ are validated on both load and save (`Feature::load` / `Feature::save`). See
 [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 for the record's contents.
 
+The only command that deletes a record is `hub feature remove`
+(`src/ops/remove.rs`), and only for a finished feature after its branches are
+deleted. Since records are not in git, that deletion cannot be undone.
+
 ## Atomic writes
 
 `manifest::write_json` and `manifest::write_atomic` are shared by the manifest,
@@ -114,7 +120,7 @@ Every mutating command runs inside `hub.with_lock(|hub| ...)`:
 
 The CLI wraps `repo add/set/rename/remove`, `feature start`, `start-review`,
 `add`, `set-base`, `freeze`, `unfreeze`, `refreeze`, `review`, `merged`,
-`finish`, and `pull` in the lock
+`finish`, `remove`, and `pull` in the lock
 (`src/main.rs`); read-only commands such as `status` and `list` do not take it.
 The dashboard runs its actions through the same lock from a worker thread
 (`src/ui/worker.rs`). Interactive prompts run before the lock is taken.

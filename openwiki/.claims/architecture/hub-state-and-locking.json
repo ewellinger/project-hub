@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:374898b6242fdddc233bb72eb2a4ecd78dd44663a5b4be596e80639ec590e98e",
+  "pageVersion": "sha256:1a1f4f060c4e429813ee8bc1272b2d562ace5fd3d05e551b5e61a40cd35ca33f",
   "claims": [
     {
       "id": "claim_7faf23742e7d45059c90a46f52411633",
@@ -80,11 +80,11 @@
     },
     {
       "id": "claim_f3f0cb91c718425e9a7a4d061bfd9be4",
-      "statement": "Mutating CLI commands (repo add/set/rename/remove, feature start/start-review/add/set-base/freeze/unfreeze/refreeze/review/merged/finish, pull) run under the hub lock, as do dashboard actions.",
+      "statement": "Mutating CLI commands (repo add/set/rename/remove, feature start/start-review/add/set-base/freeze/unfreeze/refreeze/review/merged/finish/remove, pull) run under the hub lock, as do dashboard actions.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L405-L640",
-          "version": "repo-lines-v1:sha256:40bc28fdcb8169fb32bf7a904cf5641391db6d4b6fb344f6f04076bac27176db:eyJzZWxlY3RlZExpbmVDb3VudCI6MjM2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5NWI5NTNlMzY5MjU0ZTBiNTlhZDI4YWQ3ZDAxMzJlNTRhYWZlYmM0MGY0MjhhZjM4ZTNlZDJiNTIxYTQ5YTU4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlNmIwNDQ5MTQ2OTcyMmU4MzYzYTk0ZTQwNDQ1MzhlMDEzYTJhMjE3ZTM2YjFlNTY4YmE2MGFjYjdiNGM4ZjJlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwYzBhODkxZDI2NDUwNGU2NWZmNGE0ZjM5MWU4ZWEwYjNiZDk3ODViZTdlNGRlMTdhZGE0OGZiNTUxZmFmZDM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4N2UxYWNmMjAyNTgxZWM4YmExYWFkZTcxOGJhODUxM2Q5NGQ2NmFjNTVjNmZhMWUwNjQzMjVmZjQ0M2M0MjgwIn0"
+          "resource": "repo://src/main.rs#L405-L650",
+          "version": "repo-lines-v1:sha256:9a989ccc46666d3205ec9c0e418744677fef4ab1fceff1151dd3c91c66176b85:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQ2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjZTViM2YyMmM3MGEyZWZiOGEyNTkwOTdjYTk3OTA0MDg4OWZiMzIxNzk3Njc4M2Q1ZDkwOGY5OWEyYzEzNjI2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1NTIyYzQyY2QxOWM2ZDAzZDgwOGM0NTI3MjA1NTI4MjViN2VhMWM1YjQ5MWIyMTg1MTFjYWM3NDE1Y2Y5ZDliIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwZDk4OGIxNzYyZDFlMDVjZmY1MzQ2OTdhYTRmYThhYjlmMDhmOWE0YTAwNzkyZGU2MThmYjFiMDA5ODI5NWIzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjMGM1NWVkNjY1ZTFhYjUyYjJkZDRhY2IxOWEzZWI5NGEzNjQ0MGU3NzVlMWJiOTFiN2I1MDEzOTk4ZWE2N2RhIn0"
         },
         {
           "resource": "repo://src/ui/worker.rs#L100-L110",
@@ -111,10 +111,24 @@
           "version": "repo-lines-v1:sha256:2066452c6237a5ff904635164f9bc4c1357f6e58904bc7353e6d836a8ffad652:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzZDNiOGYxZTMwYzNjOGU3NDllMzUzMmQxZTM0MWYwODE5NTlkZjAwOWJhMGIzZGRhYmY1MWJhZDllZGQ0MzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
+    },
+    {
+      "id": "claim_3cc285fdf69a4422af58f2012e0fa316",
+      "statement": "`hub feature remove` is the only command that deletes a feature record, and it does so only for a finished feature after deleting its branches; records are not tracked in git, so the deletion is permanent.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L242-L250",
+          "version": "repo-lines-v1:sha256:7304811a82e8ec4bd738a75f317bd9b5d69eace7c4f23d6930770e8b7bdc666b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQzMGMxNDg5OTZlNGJhMDg2MTEwODgxYTgwOTRmMzFkZTBlY2U4NTAwYjBkZTRjZTYyYzYyNjQ4ZmE2ZGIxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTYyZWU1N2U0MWE4YzIwYWUwMTY0ZGYyNjE0MzlkY2M0OTlkMzUyMDgzNDE1MTUxNmQwNDdlOGRlYWU4YTQ2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzgxNTE3OTRiMjNmODgxOTg3NjY4MzIwZWQzMzk1NDYwZDY3NzcwZTRhN2IwNjM0Y2RmMzcwODIzYjkzMTQ0MCJ9"
+        },
+        {
+          "resource": "repo://src/ops/remove.rs#L15-L100",
+          "version": "repo-lines-v1:sha256:5423e0d06298b546d995564cb22e765ac4ef005b9dd821628e886e8adec84bc2:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMjZiNTM4N2FhMWFkYjFlOWQ0MmJkMjkyMmU1ZTJmMjhmZjY4N2I2YmI4OWVmYzU0MTFkNGU5NTU1ZWI5NjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZmQ0ZTM3MTc1N2EyMTk1OGRiZjc3Nzc0NGQ3OTg3MWU4NjMwZmU0ZGMwNGM0MGYxMDA1Y2MzMGE3MmZjNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyZWE3ZWJlMGYzYjc5NWM5NTA0NDJmMWI4OTEwM2ViMDI2NjAwMWY2ZTQ4OWY3MjJjZTI3OGI5YWQxZjg2N2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4MmFiZjYyMmZkOTUxY2UxNGE0ZmQ3NmFlMTM4ZWVkZmNmZGQ2NGIzMmIzMTJkZWE3YjkwM2Y5ODIyNzdkNTgifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-13T22:12:12.058Z"
   }
 }

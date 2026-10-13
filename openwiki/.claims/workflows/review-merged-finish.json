@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2f6862668110de2cd631414fadacc92f1927419b810f40b14929b155be70a620",
+  "pageVersion": "sha256:9d8937269e13aa93ba7ceb0e1092de8dcb350cc1759955aac04dedb17ad6f8f5",
   "claims": [
     {
       "id": "claim_0f7be9383d424624981b0526642970c4",
@@ -99,10 +99,48 @@
           "version": "repo-lines-v1:sha256:e6a17af71cf407fbcfad7c127ba290adb86126036cdbd4e70c169c117dec3d99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZjI2ZDE1MGRhNjM3ZWVkZTRjN2I3MGVmYzkxOWRjM2Q2ODQxOGMwY2YzMDIyNjFkZDY2MzFiNGIwYWY3OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5OGFiMmY3NzBjZWUyMzExNDJiNzkyNDJmOTNlMTAzZmFlOTI4NTY5NWFiNTdiY2IwZDdjMWFiNWVkNDdlYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
+    },
+    {
+      "id": "claim_e4d4816aa2ea423ea745e1ee88937ecd",
+      "statement": "`hub feature remove` refuses a member branch that still exists on origin, deletes one only when its change's stage is `merged` or it is an ancestor of `origin/<base>`, skips branches already gone locally, and refuses branches checked out in a worktree.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/remove.rs#L108-L125",
+          "version": "repo-lines-v1:sha256:434652b1f51994015bc9edba5863e95b5112f20eb58dbb35e9a2d659f37c73ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiZGQyYjE5MWI2NjE3ZjE0ZjVhZGE2OWZjOTg2ZTg0MzM5ZjdmNGIyYWQwYzg0MTFhMjc2OWRmMjcyZWQ2MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/ops/remove.rs#L27-L62",
+          "version": "repo-lines-v1:sha256:03223a95d6d49b2e72e6585faf4526f9ef8b183d7194038fdc20c96874a370ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmOTAzOTA0ZjVjYzVjOGIwNTVkMjVhMTU1NGI1NzE3NTRlNWFhOWI3NWI2YjdiYmNiMWIwZjg0YjQ2MTQ2OTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxYjZjMWFjMjc4YjEzMzhmN2YxY2NlNDA3M2VmMzFkZGRiZTFjYzBlMTJlOTYwNWU3YTY1ODA3MmUyM2UwZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkYmMwNzQwMzEyMzAzNzZiY2NmOTk3OWZjYTU3OGFiYmJiZjQ2M2FlYzIwNmRiYjEwNzc4ODhmMTI3YWIyYTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_31852c512acb463790ac8a244501efbb",
+      "statement": "`hub feature remove` refuses the hub branch when it is still on origin or has commits not on `main`.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/remove.rs#L64-L83",
+          "version": "repo-lines-v1:sha256:917756443ab3c95bfe630665c7a2dd4b95d09b47aebf7472e67363c5c9549ea3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3YzgwMjMyZTg3MzczNGQ4ZGFhZTMxZjE2NzgzNDQ2MDJlOTE0YWY4MzdmNTA0NWUwNTIwNWExNTFkNmViNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhYTllMGMyMWI1OWNkYmQ1ZjkzZGE4NjIxM2E3MDdlNzhlY2NhYmNjY2FlM2YwOTQ1ZTY3ZDZjZTYxM2ZjMWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e2fbcb5f9172404584a6a809b394b987",
+      "statement": "`hub feature remove` is all-or-nothing: any refusal returns one error listing every refused branch before anything is deleted; otherwise it deletes member branches, then the hub branch, then the record last.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/remove.rs#L85-L98",
+          "version": "repo-lines-v1:sha256:f9c62da1ce1d172e35eeead703a447601de27d0a5b0921ab19a14a864d52ee8d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3YjZjMzQ3ZTY2ZDMxNTczNDQ4MmY0YzliMzdiNjUyMmNjNzAxOTVlMDY0YTUyYzAwMTkzMmIyOGQ5NGRhMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MzUyZWU5MjA5YTAzZmZmYzg3NzlmZjU5MzFkNGNjN2Y5Y2VjMTg4ZDY1NTQ2OWY2OTkyOTdmZTUyYjIxYjgifQ"
+        },
+        {
+          "resource": "repo://tests/remove.rs",
+          "version": "repo-file-v1:sha256:13a327f8968e360729bc97fc5ec64db88be8dcdd686ee14ff28b2aa46b607c33"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-13T22:12:12.058Z"
   }
 }

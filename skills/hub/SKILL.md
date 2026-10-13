@@ -33,6 +33,7 @@ A hub is a git repo, shared through a remote when the project has one, whose `hu
 | Record that a role's change is in review | `hub feature review ROLE [URL]` |
 | Close a role's change: remove its worktree, keep the branch | `hub feature merged ROLE [--force]` |
 | Remove every worktree and the session; keep every branch | `hub feature finish [--force]` |
+| Free a finished feature's name for reuse: delete its merged local branches, its hub branch, and its record, permanently. Run it only when the user asks; on a refusal, report the listed branches and do not delete them yourself | `hub feature remove NAME` |
 | Open features with the stage of each role, and frozen roles; `--all` includes finished ones | `hub feature list [--all] [--json]` |
 | Compare feature state, or all base checkouts from the main hub, with reality; `--base` forces base status from a feature worktree; merged roles list under `Completed`; exit 30 on structural drift | `hub status [--base] [--json]` |
 | Create or repair the tmux session, or from the main hub the base checkouts' session (never attaches) | `hub tmux` |

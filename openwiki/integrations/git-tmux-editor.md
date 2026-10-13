@@ -8,16 +8,22 @@ sources:
     resource: repo://src/code.rs
   - id: openwiki-source-a3a32cb165bec89fdae31522
     resource: repo://src/git.rs
+  - id: openwiki-source-b55a21a31ede1b56cd31a6a6
+    resource: repo://src/main.rs
   - id: openwiki-source-ec55c4ac9d71666850b1040d
     resource: repo://src/ops/session.rs
+  - id: openwiki-source-3f5c288f59bdbf6815ffcff1
+    resource: repo://src/ops/start.rs
   - id: openwiki-source-1b5cfaa33f22a91204f59602
     resource: repo://src/tmux.rs
   - id: openwiki-source-fbbd34a2cb4fd0a8355f1f33
     resource: repo://src/workspace.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+  - id: openwiki-source-f13236b3ab41e3f4cea296b6
+    resource: repo://tests/misc.rs
+generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:33:09.880Z
 ---
 
 # Git, tmux, and editor integration
@@ -96,6 +102,20 @@ A feature's session is named after its `checkout`. Converging:
 6. Print `Attach with: tmux attach -t <checkout>`. hub never attaches itself.
 
 `hub tmux` runs exactly this to repair a session.
+
+### The base session
+
+Run on `main`, outside any feature worktree and without `--feature`,
+`hub tmux` converges a session for the base checkouts instead
+(`converge_base_tmux`). Both paths share `converge_session`, so the base
+session follows the same rules: windows `hub` and `ai` in the hub's main
+clone, then one window per registered repo's main clone in manifest order,
+missing windows appended, nothing moved or killed, and `hub` started in the
+`hub` window of a new session. Its name is `base_session_name`: the
+`checkout_template` rendered with `main` as the feature (for example `dm-main`
+for `dm-{feature_snake}`). Because a feature's checkout could render to the
+same name, `feature start` refuses that checkout (see
+[Feature start and add](../workflows/feature-start-and-add.md)).
 
 `repoint_window(hub, feature, role, dir)` respawns a role's existing window
 in another directory, killing whatever ran there. `merged`, `unfreeze`, and

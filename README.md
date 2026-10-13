@@ -207,6 +207,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature review ROLE [URL]` | Record that the role's change is in review |
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch |
+| `hub feature remove NAME` | Free a finished feature's name for reuse: delete its local member branches (each marked merged or contained in its base, and gone from origin), its hub branch (nothing beyond `main`), and its record; any refusal changes nothing |
 | `hub feature list [--all] [--json]` | Open features with the stage of each role, and frozen roles as `ROLE:frozen`; `--all` includes finished ones |
 | `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
@@ -445,6 +446,7 @@ dashboard with that feature selected.
 | `r` | reload the feature list and refresh the selected row |
 | `o` | open the selected row's workspace in the editor (base workspace on the base row) |
 | `p` | `hub pull` for the selected row: the base checkouts, or the feature's open roles; each role's outcome is shown when it finishes |
+| `x` | `hub feature remove` for the selected finished feature, after a confirmation listing the branches it deletes |
 | `?` | list every key; `?`, `Esc`, or `q` closes the list |
 | `q` `Esc` | quit; refused with `busy: <action>…; Ctrl-C quits anyway` while an action runs |
 | `Ctrl-C` | quit at once, even mid-action: the worker is killed with the process |

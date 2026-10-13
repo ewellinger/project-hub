@@ -8,6 +8,8 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-f44614058892a27046d634e5
     resource: repo://src/ops/add.rs
+  - id: openwiki-source-d7623854325d1c8d971147e7
+    resource: repo://src/ops/remove.rs
   - id: openwiki-source-e0a6376d32dd6b3f48d01cbe
     resource: repo://src/ops/resolve.rs
   - id: openwiki-source-3f5c288f59bdbf6815ffcff1
@@ -16,10 +18,10 @@ sources:
     resource: repo://src/ops/suggest.rs
   - id: openwiki-source-fcdf0f9c4361c1ee384f2689
     resource: repo://src/prompt.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:12:12.058Z
 ---
 
 # Starting features and adding roles
@@ -35,9 +37,12 @@ into an open feature. Both share
 
 1. **Preflight** (`start::preflight`, also used by the dashboard wizard):
    validate the feature name, resolve the checkout name (`--checkout` or the
-   manifest checkout template), validate it, and refuse if the feature record
-   already exists or the hub worktree path
-   `<worktree_dir>/<hub dir>/<checkout>` already exists.
+   manifest checkout template), validate it, refuse a checkout equal to the
+   base tmux session name (`hub tmux` on `main`), and refuse if the feature
+   record already exists or the hub worktree path
+   `<worktree_dir>/<hub dir>/<checkout>` already exists. A finished feature
+   keeps its record, so its name stays taken until `hub feature remove`
+   deletes it (see [Review, merged, finish, and remove](review-merged-finish.md)).
 2. `start::check_roles` validates every `--repo` and `--freeze` role against
    the manifest and refuses a role given twice, or given to both `--repo` and
    `--freeze`, as `HubError::Usage` (exit 1). The check lives in `ops`, not
@@ -47,7 +52,9 @@ into an open feature. Both share
    - If the hub has remotes, fetch `origin` (failure is a `warning:` and the
      last fetched refs are used) so a hub branch a teammate pushed can be adopted.
    - Hub branch `NAME`: adopt a local branch if it exists; else create a
-     tracking branch from `origin/NAME`; else create it from `main`.
+     tracking branch from `origin/NAME`; else create it from `main`. Because
+     both hub and member branches are adopted rather than refused, reusing a
+     name without first running `remove` would resume the old branches.
    - Add the hub worktree on that branch.
    - For each role, `open_change` (below), then `Feature::push_change`.
    - For each `--freeze` role, `freeze::add_frozen`: pin the local base tip

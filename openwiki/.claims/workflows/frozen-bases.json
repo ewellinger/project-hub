@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:4b619ba1d33b523a254fe0a33aff71e31272650806427a20bf8b5fdd7d70d34e",
+  "pageVersion": "sha256:209f52b790d46c44c9e2e18e44fafa8f452db42844479909e14a17fd8e0f0734",
   "claims": [
     {
       "id": "claim_a78d6f229fc1491c81feeea40d788334",
@@ -99,10 +99,24 @@
           "version": "repo-lines-v1:sha256:4757bcae4ad6a9af7ab8f5997a800a16c2e14d262ff22b4e12df91179f8c137f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzNzhmYmM2MjE5ZjRmZTBmZGEyZmQ1N2YzY2I4ZTc1ODQzOGE2ZDc2YmZhYWE4MmZjYTAwZjRmMjNiMDI4ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzMTUyZDc0YTYxOTExYTgxYTkxMDA2ZDAyZWFiOTMyYWRmZmYwZmRhNjc2YjJiMTBhZDkxNTgwNzRlNzYxY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExNGRiNzM1ODQ3ZGE2NmIyOWJlOGVkNTBkYmI0OGZiYTA2MmViNjhkZWJkZWMwMWU4ZjJkZTk1NDE1Zjc4ZDkifQ"
         }
       ]
+    },
+    {
+      "id": "claim_74710551cd994dec8713d952ab375608",
+      "statement": "`feature remove` considers only the feature's changes and its hub branch; frozen reference roles have no branch and `finish` clears pins, so remove deletes nothing for them, while a pinned open change's branch is handled like any member branch.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/finish.rs#L119-L127",
+          "version": "repo-lines-v1:sha256:8cacec969eed63194bd3faadc1d91ce4574797d67b4179da9492a6b0471bad52:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFiNjA1YmZlM2EwNjE5MTcxZjdjYmMzZDI4NzIyYjM0NTFiZDEwMzFiZmE2YjFmMzk3ZDlhMWQ4OWI5YjE1NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmNlNmU5YjZkN2Y4YTVmZmNiOWU0M2VhZDRiMzc1ZDMxZjc0Nzk0NmJkNzk1MzI2YjIyN2Q0MmQyM2I4ZDljYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmQxZTBlZWEzZDlmZDI5MDM3MzJhMGE3NTVlMTFmYTA5ODVlNTZkNzgwOGY4NjJlZTY5ZGZjYmFkNzE2ZmYwNSJ9"
+        },
+        {
+          "resource": "repo://src/ops/remove.rs#L27-L83",
+          "version": "repo-lines-v1:sha256:82f3885b9a164e6c39dd826197791aae79b6ff1761e163a22dc1b8a7b873eed6:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxYjZjMWFjMjc4YjEzMzhmN2YxY2NlNDA3M2VmMzFkZGRiZTFjYzBlMTJlOTYwNWU3YTY1ODA3MmUyM2UwZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhYTllMGMyMWI1OWNkYmQ1ZjkzZGE4NjIxM2E3MDdlNzhlY2NhYmNjY2FlM2YwOTQ1ZTY3ZDZjZTYxM2ZjMWYifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-13T22:33:09.880Z"
   }
 }

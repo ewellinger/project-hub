@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:dabefc007aec3b97a9d422fcd19f0db8f016344019d1dc5ca83cda0d3b67c032",
+  "pageVersion": "sha256:c2d11985e29b3723266e2fbeb4b0060295953699492847cafa17d5861b1a00d4",
   "claims": [
     {
       "id": "claim_50edc17e96fd4bc182a2c240d4cff463",
-      "statement": "start's preflight validates the feature and checkout names and refuses when the feature record or the hub worktree path already exists.",
+      "statement": "start's preflight validates the feature and checkout names, refuses a checkout equal to the base tmux session name, and refuses when the feature record or the hub worktree path already exists.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start.rs#L21-L44",
-          "version": "repo-lines-v1:sha256:3137123ff0e7dfb6adbbd782c3f00d63aba30adb2f0e82df38d787f1ff272b09:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3OWViMzRjZDE0MmM2ZGI1YWUxYjU5MzExZWI4ZmRjMjkxYzQ0M2Q0ZjdmZjFkMjdhOTBmNGU4NzIyZmM0MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2OTc2NmE0NjdiNDNlYjcyNDMyMzNjM2E1MDIxNzhjOGJlMzUxMmFlZmE4YTIzMzk2YmQ1MTczZDc4YjMwZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhOTRlNTYzYzI3MDRlYThlM2UwNjZiODNhOGFmZGQ4OWFkMWIyNTdlYTMzMjdiMDQ4YjRmNzIyYzNmYWU4NTUifQ"
+          "resource": "repo://src/ops/start.rs#L21-L49",
+          "version": "repo-lines-v1:sha256:76e8d96334c807d037d1b72f56f52da56f8ee5133d6ed90ab8686890c1e80bb0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3OWViMzRjZDE0MmM2ZGI1YWUxYjU5MzExZWI4ZmRjMjkxYzQ0M2Q0ZjdmZjFkMjdhOTBmNGU4NzIyZmM0MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5ZTFjMjJjMjJmZGM3MWRjYWMzYTkxNjM2MzdkZjg3ODg2NzVhZjAxYWEwZTA0NTk4ZTZjYTJkYTY5MzMzMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4ZmY3ZDY5ZWY0MDdhMDg3NTg2MmIxMTg4MWFjYjE1MGI0YjIwZWE3NGVhOTM4YzMxNjhkNjc0NTQyMmU5MTEifQ"
         }
       ]
     },
@@ -17,7 +17,7 @@
       "statement": "feature start validates --repo and --freeze roles in check_roles, refusing unknown roles, duplicates, and a role given to both as usage errors, then processes both lists in manifest order.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start.rs#L48-L83",
+          "resource": "repo://src/ops/start.rs#L53-L88",
           "version": "repo-lines-v1:sha256:6a240054de72f0f174ee55de9b27bd53c9e4046a5742e9be9633afd7917d531a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkYjRkNDUwYjljZjQzYWY1MWJlMjM4YzhkZjZiZGRmNDFiOGI0MjVkNzhmNDhhMWNjNzVhMDhjOGFhNDM3OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4ZmY3ZDY5ZWY0MDdhMDg3NTg2MmIxMTg4MWFjYjE1MGI0YjIwZWE3NGVhOTM4YzMxNjhkNjc0NTQyMmU5MTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3YTA0ZjgzMTkzZjBkMTU4YmJjYzA1YTI3NjdmNTc1OGQwZmU4OTE2MjBiNGM3OTQxZjg1OGM3NzlhZTEwMDEifQ"
         }
       ]
@@ -27,7 +27,7 @@
       "statement": "feature start fetches the hub's origin (warning on failure) and adopts a local hub branch, else tracks origin/NAME, else creates the branch from main.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start.rs#L128-L157",
+          "resource": "repo://src/ops/start.rs#L133-L162",
           "version": "repo-lines-v1:sha256:00ba1aa5edfc4fecbbe3b3870f0985963a8a8d6a7c3025246f9775ed008d907e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMWNiNDk4YTYzOTE1MmY2NjUyMTJhNzZjM2NhNjg3YTE4MGE1YjYyMDRkYWFhOTljMjA0ZjAwYTYyNTJmOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyODExNWU5ZTM3Yjg1MDRlMmZhOTJiMTM4YTRlNzkxOGYxYzhiYTgxNjM0NWIwMjM3MzFhZjNkZDgxZGFmMDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmMjg3Yzg4Yzc5MWYyNGEyOWRlNWY0NzQ0ZmZkYTRmYjFkODM3MzUwNzE5ZGQ0NjU1Y2I5MjA1ZDQwZjNjODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4MGM3ZTE4ZmYyODFjZGFkNzVjNWFmZGMyMjRhNGRmMTAyNjA5YzZiZTY0OTBmMTVlMjcwZDA1YmFjODA2OWUifQ"
         }
       ]
@@ -41,7 +41,7 @@
           "version": "repo-lines-v1:sha256:a0a5d6e3d0f865707a08f4a1d3bf47b89ec983eae13bc90919bcc25b4393bfe6:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NTYzMDFhZDg1NDI4ZTM4MmI0Mzg2YzA5OGVhMDRhOTFjMjE0MjJiZmQyOGM2ODU5OGIyZjk4NGM4NWU5NTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3NmExM2MzMzE0MzRkODRiODE2ZTU2NmQzNGM4ZjFmYjA1YjU4ODM4NTVkYWM4Mzg1ZDg0OWMyNTM3ZjY3ODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkYjAyMjM5M2M0NWQ5OGE5ZmY2YTIwNjA4MDI3YTQxODI1YWU3YWI5M2Y3NDA0ZWUzOTRiZDk0ZDJhN2Q2MjIifQ"
         },
         {
-          "resource": "repo://src/ops/start.rs#L75-L118",
+          "resource": "repo://src/ops/start.rs#L80-L123",
           "version": "repo-lines-v1:sha256:94d5bf543e96705d6743802c0d26dfee5dcf32d8b6a1cd36540f9a8e3abff56c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmY2ZmMjQxZDE3Zjk1OTlhYWM0YWIwMzEyMzE5ZTNhNjc5ZTlkOTljOWY2NWJjODBiZTdhMmQwNzU2OTVjZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjlkMjI2MDIxNzg4ZGQ2NmRkOWEzNjQyNmU3YTNmMmYxMTdmMTU1YmI3MDIzNzcyMWM0ZjRkYjdkNzBjMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3OWQwZTk5OTlmMGY2OTU0NzAwMzEzMDgyOTVmNjRiN2Y2NzQwNjExNjlhNDZmZTAyMzY5YzExOTZhY2I2MGIifQ"
         }
       ]
@@ -121,7 +121,7 @@
       "statement": "Prompts run only when stdin and stderr are terminals, before the lock; start with no --repo asks for roles (none means docs-only), then which remaining roles to freeze, then branches; add always goes through its prompt in a terminal, asking for an addable role, a branch, and for a new branch of a frozen role whether to start from the pin or the latest base.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L455-L540",
+          "resource": "repo://src/main.rs#L460-L545",
           "version": "repo-lines-v1:sha256:1c28779272dd312d5af4839545aacc8eaa24cada4de0a1b63923942f314e242b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNzQ3OWU3NzNlMWIwMDJiNTI2MGJkNzgyMzJkMWI5ZTBmOWQ2ODFlZjIzYTM3N2JiMmNmNDU2NjcyYTBiZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzNTljNjA5Njc3OWVjMmRkMDA2NjkxN2E5NDkxZDExYTNlZDdhZDI5NDhlMDQ3NTgzMjdhNmQ3YjViYjU3ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNTRjNWYyMmQzYzZjYjdmN2U4MjYwZDUwMDEyZGQ4ODI4YWVmNTA4ODMxOTRlMjJlNzA0OThlODMyMTZiMDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2YzA2MzhhY2JlOTkwYTNhZGVjNDI0NjFmZWJlODFhM2UwOWVmOTZhNGE0Yjc5ZmM3M2FlNWNiM2RlYWI5Y2IifQ"
         },
         {
@@ -173,14 +173,28 @@
       "statement": "feature start adds each --freeze role's reference worktree with add_frozen inside the start transaction, so a later failure removes it.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start.rs#L120-L186",
+          "resource": "repo://src/ops/start.rs#L125-L191",
           "version": "repo-lines-v1:sha256:0a46396dafe6f0d03b92ef510c8bdea862a8962c77a69783d942e7ef56275d76:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNmQ2ODBhYWFmNzg3MWI3OWZkZGJlMWYxYTBhNmVjYTI0MzZiYTFlYTYwODQ0YTJkNjFmNGQ0ZmVkMDU3ZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwYjA4MDlhMTc5YmE5Y2U1NmU0NTA2ODg2ZWE2NTFhOTQxNWVjMWZhYzFkOGZjNjAxYTBhZWE4MGI3YzdlODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7dbcc3bfa554a578ed69d92a7b0b99b",
+      "statement": "start adopts an existing local or origin hub branch named after the feature instead of refusing it, so a reused feature name resumes old branches unless `feature remove` deleted them first.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/remove.rs#L1-L15",
+          "version": "repo-lines-v1:sha256:18e4ed7d2f614e5b29e46300768b87b10d2fd4692a6ef2d30bf0f1f914745486:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwZmQ5MThhMGJkZGUxZWVlY2YwZTVlZDNkYjY3NzAyNGM2NzQ5MDJiOTRhODlmNjZjM2VlODAyMDQ5MDdmNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMjZiNTM4N2FhMWFkYjFlOWQ0MmJkMjkyMmU1ZTJmMjhmZjY4N2I2YmI4OWVmYzU0MTFkNGU5NTU1ZWI5NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczNWNiNjkzZTFiMjEwMTA0YzU4MTlkNjg3YjU0MTc0NzA1N2FmMTQzNGVkZDVhMWZiYjY0ODBiMDUyMGNmNTYifQ"
+        },
+        {
+          "resource": "repo://src/ops/start.rs#L139-L148",
+          "version": "repo-lines-v1:sha256:a9d97ef462c529534af33a7cf3159f747ad4aab19285adaf7f15084b54ed1258:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5Y2E4OTFiZmY3YWMxZjdjZWFhZTQwZWYwNTEwNjZiZTllZmU0N2I0ZTQyODFlODZjMzE5YmUyYzU1ZWJjZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYzk5MWNjNzc5YWM4NmIyMTY1N2ZjZWE3MWEzODdhODFlZDlhNDc5MWJiOWJjM2M1NDcyYzEyYjMzYWI1NTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5MWRiMmNlMjQ0ZDY1MWY5ODYyZTU3YzY5ZGI1Nzk4NjRlZmU2YjAyOWJmOTJkYWVjZjljYjcxZjk0NGJjYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNDA0Mzc3ZTY0N2M5YzI3YTdkMTA5OWZhOTgzZjMyOWI1MTU4ZDJmOTA5MjMxZmU1OTFkNjk1ZGNiOGU4NTkifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-13T22:12:12.058Z"
   }
 }

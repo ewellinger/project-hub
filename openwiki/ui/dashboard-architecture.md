@@ -14,10 +14,10 @@ sources:
     resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:33:09.880Z
 ---
 
 # Dashboard architecture
@@ -71,7 +71,7 @@ for a row), `OpenWorkspace`, `Copy`, `ReloadList`, `Run(Action)`,
 
 `Action` is one hub operation with resolved arguments — `Start`, `Add`
 (carrying `from_latest` for a frozen role), `Review`, `SetBase`, `Merged`,
-`Freeze`, `Unfreeze { force }`, `Refreeze`, `Finish`, `Pull { row }` — and is
+`Freeze`, `Unfreeze { force }`, `Refreeze`, `Finish`, `Remove`, `Pull { row }` — and is
 the unit the worker executes. The dashboard never passes `--at`: `Freeze`
 always pins the local base tip.
 
@@ -121,7 +121,8 @@ runs (`Ctrl-C quits anyway`); `Ctrl-C` always quits immediately, killing the
 worker with the process. When an action completes (`done`), a single-line
 result goes to the footer, multi-line output or an error opens a result
 overlay, and the affected row is refreshed with `request_fresh` (or the list
-reloaded after `start`/`finish`; finishing the open feature returns to the
+reloaded after `start`/`finish`, and after every `remove`, whether it
+succeeded or was refused; finishing the open feature returns to the
 dashboard).
 
 ## Rendering
@@ -142,12 +143,20 @@ frozen reference rows use the read-only style (dim + italic). The dashboard
 list pane also lists each open feature's frozen roles, after its members, in
 the read-only style.
 
+In that list pane each role line (`stage_line`) colours only the stage text:
+`working` green, `review` yellow, `frozen` dark grey, any other stage the
+default. Merged roles are left out of an open feature's lines, and a finished
+feature is a single dim `<name>  finished` line. On the selected row the
+`REVERSED` highlight turns the colour into the stage's background.
+
 ## Dashboard keys
 
 `app/dashboard.rs`: `↑↓/jk` select (and request status), `Enter` opens a
 feature view (refused on the base row and finished features), `n` starts the
 new-feature flow, `a` toggles finished features, `r` reloads, `o` opens the
-workspace, `p` pulls the selected row, `?` shows help. Feature-screen keys are
+workspace, `p` pulls the selected row, `x` removes the selected finished
+feature after a confirmation (refused in the footer on the base row and on
+open features), `?` shows help. Feature-screen keys are
 covered in [Dashboard flows and overlays](dashboard-flows-and-overlays.md).
 
 ## Related pages

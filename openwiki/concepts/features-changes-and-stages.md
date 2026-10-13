@@ -10,16 +10,18 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-482a254fc9f19462c83aa694
     resource: repo://src/names.rs
+  - id: openwiki-source-d7623854325d1c8d971147e7
+    resource: repo://src/ops/remove.rs
   - id: openwiki-source-e0a6376d32dd6b3f48d01cbe
     resource: repo://src/ops/resolve.rs
   - id: openwiki-source-262e8a6df6df877411d7bc10
     resource: repo://src/ops/set_base.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:12:12.058Z
 ---
 
 # Features, changes, stages, and bases
@@ -40,7 +42,7 @@ Worktree { name, owner: hub|adopted }
 - **Feature** — a unit of cross-repo work. `checkout` is the name of its hub
   worktree and tmux session (rendered from the manifest's checkout template).
   `status` is `open` until `feature finish`, after which the record is kept
-  as history.
+  as history until `feature remove` deletes it.
 - **Change** — one branch in one member repo taking part in the feature.
   - `clone` is copied from the manifest when the change opens, so the
     change's location survives a later `hub repo remove`.
@@ -124,8 +126,15 @@ the ordinary "no open change" refusal.
 
 `Feature::require_open` gates lifecycle and environment commands (`add`,
 `set-base`, `tmux`, `open`, `sync`, ...) with "feature 'NAME' is finished".
-Only `feature list --all` and `status` accept finished features; `status`
-lists their rows under `Completed`.
+Only `feature list --all`, `status`, and `feature remove` accept finished
+features; `status` lists their rows under `Completed`.
+
+`feature remove` is the inverse: it refuses an open feature ("run hub feature
+finish ... first") and, for a finished one, deletes its merged local branches,
+its hub branch, and the record, freeing the name for a new `feature start`.
+A member branch counts as merged when its change's stage is `merged` (so
+squash merges qualify) or when it is contained in `origin/<base>`. See
+[Review, merged, finish, and remove](../workflows/review-merged-finish.md).
 
 ## Names and templates (`src/names.rs`)
 

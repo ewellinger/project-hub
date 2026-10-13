@@ -4,6 +4,8 @@ title: Dashboard flows and overlays
 description: How the dashboard's multi-step interactions work — the Flow state machines (new-feature wizard, add role, review, set-base, merged and finish previews, copy), the Overlay widgets and their key handling, the feature screen's keys and cursor mapping, and the busy, cancel, and blocked rules.
 tags: [ui, tui, dashboard, flows, overlays, keys]
 sources:
+  - id: openwiki-source-c55e62404e7071e7e42c91b9
+    resource: repo://src/ui/app/dashboard.rs
   - id: openwiki-source-79a1d0ec63169ed8c7724b38
     resource: repo://src/ui/app/feature.rs
   - id: openwiki-source-fdbe59e7e6e7d44bcc810416
@@ -14,10 +16,10 @@ sources:
     resource: repo://src/ui/app/overlay.rs
   - id: openwiki-source-99b08242c15df3bb83462c9d
     resource: repo://src/ui/view/mod.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:12:12.058Z
 ---
 
 # Dashboard flows and overlays
@@ -68,6 +70,7 @@ answers `Text(filter)`, which opens the name input prefilled with the typed text
 | `SetBase` | `b` | input prefilled with the effective base; rejects empty or `origin/`-prefixed input inline → `Action::SetBase` |
 | `Merged` | `m` | confirm preview: change to close, worktree to remove (path, owner, state), branch kept; warnings for dirty or adopted worktrees; `F` forces → `Action::Merged` |
 | `Finish` | `f` | confirm preview: tmux session to kill (when tmux is on), every worktree to remove (open changes, frozen reference worktrees, then the hub worktree), branches kept, warnings for unmerged roles, dirty worktrees, and frozen worktrees off their pin; `F` forces → `Action::Finish` |
+| `Remove` | `x` on a finished dashboard row (the base row and open features are refused in the footer) | confirm preview: each role's latest branch and the hub branch to delete, the record deleted with no undo, and a note that the op rechecks every branch and any refusal changes nothing; no force → `Action::Remove`. The list reloads after it completes, whether it succeeded or was refused |
 | `Freeze` | `z` | select among roles without a pin, each tagged `(pins its open change)` or `(reference checkout)`, the role under the cursor preselected (cancel if every role is frozen) → `Action::Freeze` (always the local base tip; never `--at`) |
 | `Unfreeze` | `u` on a frozen row | a pinned open change runs `Action::Unfreeze { force: false }` at once; a reference worktree gets a confirm preview (pin released, worktree to remove, off-pin and dirty warnings); `F` forces → `Action::Unfreeze` |
 | — | `Z` on a frozen row | no flow: runs `Action::Refreeze` directly; a refusal (off its pin, or dirty when the pin would move) shows in the result overlay |
