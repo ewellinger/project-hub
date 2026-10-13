@@ -16,10 +16,12 @@ sources:
     resource: repo://tests/freeze.rs
   - id: openwiki-source-f13236b3ab41e3f4cea296b6
     resource: repo://tests/misc.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+  - id: openwiki-source-1955dcb2c0b390eb78ee0044
+    resource: repo://tests/remove.rs
+generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:12:12.058Z
 ---
 
 # Testing and the integration harness
@@ -109,6 +111,7 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/set_base.rs` | `feature set-base` |
 | `tests/review_merged.rs` | `feature review`, `feature merged` |
 | `tests/finish.rs` | `feature finish` |
+| `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, and a hub branch with commits, all without partial deletion |
 | `tests/list_status.rs` | `feature list`, `status` |
 | `tests/pull.rs` | `hub pull` |
 | `tests/tmux_off.rs` | behavior with sessions off |

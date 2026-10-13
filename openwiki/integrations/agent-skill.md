@@ -21,7 +21,7 @@ sources:
 generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:12:12.058Z
 ---
 
 # Bundled agent skill

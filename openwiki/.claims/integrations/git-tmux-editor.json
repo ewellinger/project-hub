@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a5abe4010d70404dfe9155912a0c583dba6b7d6f1c9f550d630b828823c23832",
+  "pageVersion": "sha256:f846fa82e484fa5b691ef6421e8e22aa7bfc5112f46642f6c62613f2fdf15e61",
   "claims": [
     {
       "id": "claim_555ff32dc81744febc68dab7920bdbd9",
@@ -71,12 +71,12 @@
       "statement": "converge_tmux creates a missing session and appends missing hub, ai, and per-role-checkout windows (open changes and frozen reference worktrees) in manifest order without moving or killing existing windows, and starts `hub` in the hub window of a newly created session.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L25-L41",
-          "version": "repo-lines-v1:sha256:7c94ea0b37c8106c69bcc2a4f43a0440f597c939558c7042dd0cfb183a72e5df:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2YTdiZGYxNjNjOWNiYjVlOWM0NTQ2MzE3YjY0NzllMWZlOGU2MzQ5M2ZlNmE0OWFkMzIxMDliNzU4NDM1YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3MmVkYmRhZDU4MDI3YjEzNTQyZjE3MmNiODgxMzFiMTFmODE1NTc4OWQyYTUwZjkyNmNlYmQ2MWZkZDFhNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMjI0ZGEyNjVkYWM0OTQ0ZGQ5YzlhNGU3YzljNTlmYmMwNDQ3MTlhMTE4NTcyZDdjOWRiMTgzMGIzNzEzNDEifQ"
+          "resource": "repo://src/ops/session.rs#L26-L41",
+          "version": "repo-lines-v1:sha256:b1aaf27c4c11d336ef86c10badbe77f6059f5af8d4d3d908768f0475c0a867a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2YTdiZGYxNjNjOWNiYjVlOWM0NTQ2MzE3YjY0NzllMWZlOGU2MzQ5M2ZlNmE0OWFkMzIxMDliNzU4NDM1YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYjUzZDEyYTU5YWVhNmQ4NTcyYWE5NGQ2ODZkZTEzZWYwMTk5Njk1OTMyZmI3NjZjNmU0YzEyMWUwMDBiMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3MmVkYmRhZDU4MDI3YjEzNTQyZjE3MmNiODgxMzFiMTFmODE1NTc4OWQyYTUwZjkyNmNlYmQ2MWZkZDFhNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3ZTE2NjAyY2U0Y2UzMzcyM2MyYTA2OGM4NzUxOGJiZjE1NTlkYTAyMWZhN2IzOWU5ZTdkNWI3M2Y0ZmYyZmMifQ"
         },
         {
-          "resource": "repo://src/ops/session.rs#L86-L124",
-          "version": "repo-lines-v1:sha256:8174ff0eef08e5f12c39631f18a7f81f8a4b5adbf1ae960fc7095b25a709741e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1OTBjYjhiMWEwYWYwODIyYTdjNTkzZjQzMGFmOGVlYjg0YmQ4NGEzOGYxYzljNWVhMzBmYjczMTAwYzkxYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5ZmUxYThiYThjMDQ4M2JmMDhlNmZkZjk1ZDc4Njg3ZWU1MTk2MWQ5MmU2NTY1NGRkMWYzMzk2ZWY1Yzc4ZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3NjMzZmI4NWQ4YzI2MGYzNDRjMDNmMjBlNDY2MzYwNTA5NzRjNmYyNzJjMjUzMTM1NDI4NzNmNGY2MzE5MDQifQ"
+          "resource": "repo://src/ops/session.rs#L93-L155",
+          "version": "repo-lines-v1:sha256:75325f3a79391da1c1fbae2db19b4f00644b34bdefe945117ac40428fdc7adae:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YzAxYjExZWE5YjEzZmM4MmRhYzgwYjkzYzUwMjM4OWZkY2EwNmEzNDJlZmM2YTdlMjRhZWU5YjM1MWQxMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkMmE1NTdiMDZmZTI4MjFhODBhMmE4NzJiYzA0MWVjMzQ2MjA0MzEwNzY1MGVjZGU3Yjk1NDlkYzU1ZWI1MzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyN2U0ODUwZjExOTZhYjFjMjBjODgwMmJhNTdiYTNmZWJmMjMyOTVlM2M4YzBmMGQ4ODVmYjNjNjQ1OWM0MjQifQ"
         }
       ]
     },
@@ -85,11 +85,11 @@
       "statement": "Feature workspace files list the hub worktree plus each role checkout (open changes and frozen reference worktrees) relative to it in manifest order; the base workspace lists every registered repo's main clone.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L125-L171",
+          "resource": "repo://src/ops/session.rs#L161-L207",
           "version": "repo-lines-v1:sha256:b9c1dac481eb8c332a139a6774d0e8c58c8cce5a23d52d8293e077b31ebb9b2b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNGZkMjUwYmFlZWJmYWI0ZWU0ODg0YThmODUyMGRjYTBlNmM0YzM0MjljMjlhNWIwYjg5ZTFhNDRmYTcwNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwMGI3ZGZhZDExMzg4MGI1OGQzZDIyZGUzODM5MzFmYTNmNDQxMmM3MGJkNWE5NTBmZTg5YjRjMDMyOGY1NTAifQ"
         },
         {
-          "resource": "repo://src/ops/session.rs#L25-L41",
+          "resource": "repo://src/ops/session.rs#L26-L42",
           "version": "repo-lines-v1:sha256:7c94ea0b37c8106c69bcc2a4f43a0440f597c939558c7042dd0cfb183a72e5df:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2YTdiZGYxNjNjOWNiYjVlOWM0NTQ2MzE3YjY0NzllMWZlOGU2MzQ5M2ZlNmE0OWFkMzIxMDliNzU4NDM1YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3MmVkYmRhZDU4MDI3YjEzNTQyZjE3MmNiODgxMzFiMTFmODE1NTc4OWQyYTUwZjkyNmNlYmQ2MWZkZDFhNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMjI0ZGEyNjVkYWM0OTQ0ZGQ5YzlhNGU3YzljNTlmYmMwNDQ3MTlhMTE4NTcyZDdjOWRiMTgzMGIzNzEzNDEifQ"
         }
       ]
@@ -109,7 +109,7 @@
       "statement": "Workspace filenames are added to the local exclude file unless already ignored.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L173-L180",
+          "resource": "repo://src/ops/session.rs#L209-L216",
           "version": "repo-lines-v1:sha256:309542add6c2566698725cb84b43de569f1e0f4e06c74ec4fea7c5b818d55c85:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQ3ZmYwYmRlYTRjOTUxNTBmZjZmMzAxNTc4Y2MxMWQ5OTYyMmFkNWVkYzQ1ZDU1NWVhN2ZmZThjODFjYjdhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDA0ZGM1MmFlMDQ1YzgyNmM1YjZlZTNkZGFlZTYyNTg4YzE2OWU5ZmZlODliYTc0Y2I1ODgwMzY1YTgyODIwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
@@ -119,7 +119,7 @@
       "statement": "Workspace and tmux steps after a feature record is saved report failures as warnings naming a retry command instead of rolling back.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L60-L68",
+          "resource": "repo://src/ops/session.rs#L61-L69",
           "version": "repo-lines-v1:sha256:bddf4c80a62ebd8258469d8ed00974931919d6cf6a8e9c324ae6a830a1f1f99d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2RjMTM4OGExNGQxMmJkYmM0ZTQ3YWYxNWRhYzIxYWI0NzU3MjQzYjA4ZDM3NTFjMjUxOWVhODk3ZDY1NjA3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTIyNTNjMWFkYjgzNjk5ZDZlNzJjZjk3NTk3YjcwNzEwMDcwNjQyNmJhYzNjYTVkMWY0OTVmZjdlYzBlY2IxNCJ9"
         }
       ]
@@ -139,7 +139,7 @@
       "statement": "repoint_window respawns a role's existing tmux window in another directory, killing its process, and does nothing when tmux is off or the session or window is absent.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L43-L59",
+          "resource": "repo://src/ops/session.rs#L44-L60",
           "version": "repo-lines-v1:sha256:4e956dd21641147d1e465dd05bde1335b2577923bd24354918d15f5b1a1b3d50:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzNDQwOWNlMDYyMzY4MjliZmFiNTExYTlmMGM0MWMwMGVmYTVjZWMyMjM1MTM0MzU0MDlhODE2ZGIzYWViNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1Y2I0MzUwY2QyNWU4MjVmOTdiN2Y4MWIzODkzMzFiZWYwM2UxZjRjNzEzYzM2NjhjZmUxODU1YzdlNTU3YjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhYzM0MDZhMWVhZjY4YzU3YmExMDE3ZTk5NWVkOGYyY2VmMmZkMDQ1Y2MwY2Y5YTVjNjY5NDhmN2I2ZjhiMDQifQ"
         }
       ]
@@ -157,6 +157,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-13T22:12:12.058Z"
   }
 }

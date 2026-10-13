@@ -12,10 +12,10 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-c17c8e3e271a8329ed7a5e63
     resource: repo://src/feature.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-13T22:12:12.058Z
 ---
 
 # Quickstart
@@ -68,7 +68,7 @@ terminal opens the dashboard.
 | Work on `hub init` or `hub repo add/set/remove/rename` | [Hub init and repo registration](workflows/hub-and-repo-management.md) |
 | Work on `feature start`/`add`, adoption, rollback, prompts, branch suggestions | [Starting features and adding roles](workflows/feature-start-and-add.md) |
 | Work on `feature start-review` and GitLab/GitHub handling | [Reviewing a merge or pull request](workflows/start-review.md) |
-| Work on `review`, `set-base`, `merged`, `finish`, dirty/in-use refusals | [Review, merged, set-base, and finish](workflows/review-merged-finish.md) |
+| Work on `review`, `set-base`, `merged`, `finish`, `remove` (reusing a finished feature's name), dirty/in-use refusals | [Review, merged, set-base, finish, and remove](workflows/review-merged-finish.md) |
 | Work on frozen bases: `freeze`/`unfreeze`/`refreeze`, pins, `start --freeze`, `add` on a frozen role | [Frozen bases: freeze, unfreeze, and refreeze](workflows/frozen-bases.md) |
 | Work on `status`, drift, hints, `feature list`, or `pull` | [Status, list, and pull](workflows/status-and-pull.md) |
 | Touch git/tmux/editor calls or workspace files | [Git, tmux, and editor integration](integrations/git-tmux-editor.md) |
