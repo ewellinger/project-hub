@@ -6,6 +6,8 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-10-13
+
 ### Added
 - `hub feature remove NAME` frees a finished feature's name for reuse, for example for a recurring task. It deletes the feature's local member branches, its hub branch, and its record, so the next `hub feature start NAME` creates fresh branches instead of adopting the old ones. Each member branch must be marked merged (squash merges count) or contained in `origin/<base>`, and gone from origin; the hub branch must have nothing beyond `main`. Any refusal lists every refused branch and deletes nothing. Remote branches are never touched, and the record cannot be restored.
 - Dashboard: `x` on a finished feature's row removes it after a confirmation listing the branches it deletes.
