@@ -84,6 +84,18 @@ pub fn finish(
     // record is left in place (status still open) and rerunning `finish`
     // finds everything already gone and completes.
     let mut lines = hub.tmux_warning();
+    // Nothing merges the hub branch; say what stays on it so the gap is
+    // visible without a status call.
+    if hub.git().local_branch_exists(&feature.name)? {
+        let n = hub.git().missing_commits("main", &feature.name)?;
+        if n > 0 {
+            lines.push(format!(
+                "note: hub branch {} has {n} commit{} not on main; they stay on the branch",
+                feature.name,
+                if n == 1 { "" } else { "s" }
+            ));
+        }
+    }
     // The session's shells sit in the worktrees; kill it first so they, and
     // anything started from them, cannot block the removals.
     if let Some(tmux) = &hub.tmux

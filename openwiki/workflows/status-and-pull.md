@@ -16,10 +16,12 @@ sources:
     resource: repo://src/ops/remove.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
-generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
+  - id: openwiki-source-ca06566e1b7ac17d65e3380f
+    resource: repo://tests/list_status.rs
+generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:33:09.880Z
+    at: 2026-10-27T18:18:48.498Z
 ---
 
 # Status, list, and pull
@@ -42,7 +44,13 @@ Produces a `StatusReport { feature, checkout, status, rows, warnings, drift }`:
 
 - **Row 0 is the hub worktree**: path, whether it exists, is registered with
   git, and is on the feature branch; dirtiness; ahead/behind against its origin
-  copy (so a pushed teammate change shows as `behind`).
+  copy (so a pushed teammate change shows as `behind`). It also measures the
+  hub branch against the main clone's local `main`: `base` is `"main"`,
+  `base_behind` counts commits on `main` the branch lacks, and `base_ahead`
+  counts the branch's commits not on `main`, the feature's documents not yet
+  merged back. Both are `null` when the hub branch does not exist locally,
+  and they survive `finish` since the branch is kept. `custom_base` stays
+  false, so no `BASE` column appears for the hub row.
 - **Then one row per change, in record order** (merged ones included). Paths
   come from the change's recorded clone, so rows survive `hub repo remove`.
 - **Then one row per frozen reference role** (`frozen_row`), appended after
@@ -57,7 +65,8 @@ Per change row:
 | `dirty` | uncommitted changes |
 | `ahead`, `behind` | vs. `origin/<branch>`; `null` without a remote copy |
 | `base`, `custom_base` | effective base of an open change; whether it differs from the role's manifest base |
-| `base_behind` | commits on `origin/<base>` the branch lacks; `null` (plus a warning) when `origin/<base>` is missing. For a **pinned** open change, commits on the pin the branch lacks |
+| `base_behind` | commits on `origin/<base>` the branch lacks; `null` (plus a warning) when `origin/<base>` is missing. For a **pinned** open change, commits on the pin the branch lacks. On the hub row, commits on local `main` the hub branch lacks |
+| `base_ahead` | hub row only: commits on the hub branch not on `main`; `null` on every other row (member rows already have `ahead` against origin) |
 | `frozen_sha` | the pin's commit, for a pinned change or a frozen reference row; otherwise `null` |
 | `base_moved` | commits the local `refs/heads/<base>` gained since the pin; `null` when not pinned |
 | `hint` | merge hints (below) |
@@ -97,9 +106,10 @@ warning and the last fetched refs are used.
 
 ## Base status (`ops::status::base_status`)
 
-Row 0 is the hub's main clone on `main` (ahead/behind against origin); then
-one row per registered role's **main clone**, in manifest order, comparing it
-with the configured base branch. A missing clone or a clone not on its base is
+Row 0 is the hub's main clone on `main` (ahead/behind against origin; its
+`base` and `base_ahead` stay `null`, since it never measures against itself);
+then one row per registered role's **main clone**, in manifest order,
+comparing it with the configured base branch. A missing clone or a clone not on its base is
 drift. All repos and the hub are fetched concurrently.
 
 ## Rendering
@@ -109,7 +119,10 @@ only when tmux is on), the open rows, then a separate **`Completed`** table
 (role, branch, stage) for merged rows — or every row of a finished feature —
 since their worktrees are gone by design. A `BASE` column appears only when
 some change has a custom base; nonzero lag shows as `behind base <branch> by
-<n>` in yellow. Paths under `$HOME` print as `~/…`. Warnings follow.
+<n>` in yellow, which on the hub row reads `behind base main by <n>`. A
+nonzero `base_ahead` is appended to the hub row's state as
+`docs not on main: <n>` and, like a frozen marker, does not change the row's
+colour. Paths under `$HOME` print as `~/…`. Warnings follow.
 
 `--json` serializes the full report; `rows` always contains every row with
 absolute paths, which is the supported machine interface (the agent skill
@@ -162,7 +175,8 @@ procedure (see [Bundled agent skill](../integrations/agent-skill.md)).
 ## Tests
 
 `tests/list_status.rs` (drift, hints, base lag, Completed table, JSON shape,
-base status), `tests/pull.rs`; `pull.rs` has unit tests for grouping and each
+base status, the hub row's `base_ahead` before and after a merge into
+`main` and after `finish`), `tests/pull.rs`; `pull.rs` has unit tests for grouping and each
 skip case.
 
 ## Related pages

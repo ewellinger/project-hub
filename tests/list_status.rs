@@ -125,13 +125,16 @@ fn status_is_clean_after_start() {
         serde_json::Value::Null,
         "a fresh branch sits on the base but is not merged"
     );
-    assert_eq!(
-        rows[0]["base"],
-        serde_json::Value::Null,
-        "hub row has no base"
-    );
+    assert_eq!(rows[0]["base"], "main", "hub row measures against main");
+    assert_eq!(rows[0]["base_behind"], 0);
+    assert_eq!(rows[0]["base_ahead"], 0);
     assert_eq!(rows[1]["base"], "master");
     assert_eq!(rows[1]["base_behind"], 0);
+    assert_eq!(
+        rows[1]["base_ahead"],
+        serde_json::Value::Null,
+        "only the hub row counts documents not on main"
+    );
     assert_eq!(json["warnings"].as_array().unwrap().len(), 0);
     assert!(
         rows[1]["path"]
@@ -859,7 +862,8 @@ fn hub_rows_report_ahead_behind_against_origin() {
     assert_eq!(rows[0]["role"], "hub");
     assert_eq!(rows[0]["ahead"], 1);
     assert_eq!(rows[0]["behind"], 0);
-    assert_eq!(rows[0]["base_behind"], serde_json::Value::Null);
+    assert_eq!(rows[0]["base_behind"], 0);
+    assert_eq!(rows[0]["base_ahead"], 1);
     assert_eq!(json["warnings"].as_array().unwrap().len(), 0);
 
     // A teammate pushes to main: the base hub row is behind 1.
@@ -904,6 +908,68 @@ fn hub_rows_report_ahead_behind_against_origin() {
                     .contains("status uses the last fetched refs")),
         "{warnings:?}"
     );
+}
+
+#[test]
+fn hub_row_counts_documents_not_on_main() {
+    let (fx, hub) = world();
+    let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
+    fx.commit_file(&hub_wt, "plan.md", "plan");
+    fx.commit_file(&hub, "README.md", "shared");
+    let json: serde_json::Value = serde_json::from_str(&stdout(
+        &fx,
+        &hub,
+        &["status", "--feature", "feat-1", "--json"],
+    ))
+    .unwrap();
+    let rows = json["rows"].as_array().unwrap();
+    assert_eq!(rows[0]["role"], "hub");
+    assert_eq!(rows[0]["base"], "main");
+    assert_eq!(rows[0]["base_ahead"], 1);
+    assert_eq!(rows[0]["base_behind"], 1);
+    fx.hub(&hub_wt, &["status"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("behind base main by 1"))
+        .stdout(predicate::str::contains("docs not on main: 1"));
+
+    // The main hub row never measures against itself.
+    let json: serde_json::Value =
+        serde_json::from_str(&stdout(&fx, &hub, &["status", "--json"])).unwrap();
+    assert_eq!(json["rows"][0]["base"], serde_json::Value::Null);
+    assert_eq!(json["rows"][0]["base_ahead"], serde_json::Value::Null);
+
+    // Merging the documents into main clears the count; the hub branch
+    // still lacks nothing new, so only base_behind would move afterwards.
+    fx.git(&hub, &["merge", "-q", "--no-ff", "--no-edit", "feat-1"]);
+    let json: serde_json::Value = serde_json::from_str(&stdout(
+        &fx,
+        &hub,
+        &["status", "--feature", "feat-1", "--json"],
+    ))
+    .unwrap();
+    assert_eq!(json["rows"][0]["base_ahead"], 0);
+    assert_eq!(
+        json["rows"][0]["base_behind"], 2,
+        "the merge commit and the shared file"
+    );
+    fx.hub(&hub_wt, &["status"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("docs not on main").not());
+
+    // A finished feature keeps its branch, so the count survives finish.
+    fx.commit_file(&hub_wt, "handoff.md", "handoff");
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success();
+    let json: serde_json::Value = serde_json::from_str(&stdout(
+        &fx,
+        &hub,
+        &["status", "--feature", "feat-1", "--json"],
+    ))
+    .unwrap();
+    assert_eq!(json["rows"][0]["base_ahead"], 1);
 }
 
 #[test]

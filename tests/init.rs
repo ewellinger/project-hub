@@ -14,7 +14,7 @@ fn scaffolds_a_hub_and_commits() {
         .stdout(predicate::str::contains("Created hub 'acme'"));
     for file in [
         "hub.json",
-        "CLAUDE.md",
+        "AGENTS.md",
         ".gitignore",
         ".claude/skills/hub/SKILL.md",
         ".agents/skills/hub/SKILL.md",
@@ -44,12 +44,12 @@ fn scaffolds_a_hub_and_commits() {
     let committed = fx.git(&dir, &["show", "--name-only", "--format=", "HEAD"]);
     let mut files: Vec<&str> = committed.lines().collect();
     files.sort();
-    assert_eq!(files, vec![".gitignore", "CLAUDE.md", "hub.json"]);
-    let claude = std::fs::read_to_string(dir.join("CLAUDE.md")).unwrap();
+    assert_eq!(files, vec![".gitignore", "AGENTS.md", "hub.json"]);
+    let claude = std::fs::read_to_string(dir.join("AGENTS.md")).unwrap();
     for (index, line) in claude.lines().enumerate() {
         assert!(
             line.chars().count() <= 100,
-            "CLAUDE.md line {} exceeds the configured print width: {line}",
+            "AGENTS.md line {} exceeds the configured print width: {line}",
             index + 1
         );
     }
@@ -69,8 +69,12 @@ fn scaffolds_a_hub_and_commits() {
         );
     }
     assert!(
+        claude.contains("Merging feature documents into main"),
+        "AGENTS.md points at the merge-back workflow:\n{claude}"
+    );
+    assert!(
         claude.contains(".claude/skills/hub/") && claude.contains("do not edit it"),
-        "CLAUDE.md names the generated skill:\n{claude}"
+        "AGENTS.md names the generated skill:\n{claude}"
     );
 }
 
@@ -174,6 +178,10 @@ fn init_preserves_existing_files_and_staged_work_in_a_local_repo() {
     assert_eq!(
         std::fs::read_to_string(dir.join("CLAUDE.md")).unwrap(),
         "# mine\n"
+    );
+    assert!(
+        !dir.join("AGENTS.md").exists(),
+        "a hub with a CLAUDE.md does not get a second instructions file"
     );
     assert_eq!(
         std::fs::read_to_string(dir.join(".prettierrc.json")).unwrap(),
