@@ -6,6 +6,8 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-10-27
+
 ### Added
 - `hub status` measures a feature's hub branch against the main clone's `main`: the hub row carries `base: "main"`, `base_behind` (shown as `behind base main by <n>`), and a new `base_ahead`, the commits not yet merged back, shown as `docs not on main: <n>`. `base_ahead` is `null` on every other row. `hub feature finish` prints `note: hub branch <branch> has <n> commits not on main; they stay on the branch` when that count is nonzero; it still deletes and merges nothing.
 - Agent skill: a **Merging feature documents into main** workflow (explicit request or a one-time offer before `finish`; a merge commit in the hub's main clone; no push, no state change; works for finished features by branch name) and the reverse "update the hub branch from `main`". The README and the `hub init` instructions template point at it, and the README recommends one folder per feature with shared documents changed on `main`.
