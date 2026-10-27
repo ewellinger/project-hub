@@ -343,6 +343,7 @@ pub(crate) mod tests {
             base: None,
             custom_base: false,
             base_behind: None,
+            base_ahead: None,
             hint: None,
             review_url: None,
             frozen_sha: None,

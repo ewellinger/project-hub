@@ -62,6 +62,25 @@ fn finish_removes_worktrees_and_session_but_keeps_branches() {
 }
 
 #[test]
+fn finish_notes_hub_commits_not_on_main_and_keeps_them() {
+    let (fx, hub) = world();
+    let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
+    fx.commit_file(&hub_wt, "plan.md", "plan");
+    fx.commit_file(&hub_wt, "handoff.md", "handoff");
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "note: hub branch feat-1 has 2 commits not on main; they stay on the branch",
+        ));
+    assert_eq!(
+        fx.git(&hub, &["rev-list", "--count", "main..feat-1"])
+            .trim(),
+        "2"
+    );
+}
+
+#[test]
 fn finish_checks_every_tree_before_removing_anything() {
     let (fx, hub) = world();
     let ui_wt = fx.worktree_dir.join("ui-clone").join("feat-1");

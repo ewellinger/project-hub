@@ -33,7 +33,11 @@ pub struct StatusRow {
     /// `base` differs from the role's base in `hub.json`.
     pub custom_base: bool,
     /// Commits on `origin/<base>` the branch lacks; `None` when unknown.
+    /// The hub row of a feature measures against the main clone's `main`.
     pub base_behind: Option<u64>,
+    /// Commits on the feature's hub branch not on `main`, its documents not
+    /// yet merged back; `None` on every other row.
+    pub base_ahead: Option<u64>,
     pub hint: Option<String>,
     /// Merge/pull request URL recorded on the change; `None` on hub and
     /// base rows and on changes without one.
@@ -135,6 +139,7 @@ fn base_hub_row(hub: &Hub) -> Result<StatusRow> {
         base: None,
         custom_base: false,
         base_behind: None,
+        base_ahead: None,
         hint: None,
         review_url: None,
         frozen_sha: None,
@@ -168,6 +173,7 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
                 base: None,
                 custom_base: false,
                 base_behind: None,
+                base_ahead: None,
                 hint: None,
                 review_url: None,
                 frozen_sha: None,
@@ -208,6 +214,7 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
             base: None,
             custom_base: false,
             base_behind: None,
+            base_ahead: None,
             hint: None,
             review_url: None,
             frozen_sha: None,
@@ -331,6 +338,17 @@ fn hub_row(hub: &Hub, feature: &Feature) -> Result<StatusRow> {
     } else {
         (None, None)
     };
+    // The hub branch keeps the feature's documents; count what main lacks
+    // (not merged back) and what the branch lacks (main moved on).
+    let (base_behind, base_ahead) = if hub.git().local_branch_exists(&feature.name)? {
+        let git = hub.git();
+        (
+            Some(git.missing_commits(&feature.name, "main")?),
+            Some(git.missing_commits("main", &feature.name)?),
+        )
+    } else {
+        (None, None)
+    };
     let open = feature.is_open();
     Ok(StatusRow {
         role: "hub".into(),
@@ -347,9 +365,10 @@ fn hub_row(hub: &Hub, feature: &Feature) -> Result<StatusRow> {
         dirty,
         ahead,
         behind,
-        base: None,
+        base: Some("main".into()),
         custom_base: false,
-        base_behind: None,
+        base_behind,
+        base_ahead,
         hint: None,
         review_url: None,
         frozen_sha: None,
@@ -391,6 +410,7 @@ fn change_row(
             base: None,
             custom_base: false,
             base_behind: None,
+            base_ahead: None,
             hint: None,
             review_url: change.review_url.clone(),
             frozen_sha: None,
@@ -486,6 +506,7 @@ fn change_row(
         base,
         custom_base,
         base_behind,
+        base_ahead: None,
         hint,
         review_url: change.review_url.clone(),
         frozen_sha: pin.map(|p| p.sha.clone()),
@@ -711,6 +732,7 @@ fn frozen_row(hub: &Hub, feature: &Feature, pin: &Pin) -> Result<Option<StatusRo
         base: None,
         custom_base: false,
         base_behind: None,
+        base_ahead: None,
         hint: None,
         review_url: None,
         frozen_sha: Some(pin.sha.clone()),
@@ -759,6 +781,9 @@ pub fn state_text(row: &StatusRow) -> String {
     if let Some(n) = row.base_moved.filter(|n| *n > 0) {
         let base = row.base.as_deref().unwrap_or(&row.branch);
         state.push(format!("{base} +{n} since pin"));
+    }
+    if let Some(n) = row.base_ahead.filter(|n| *n > 0) {
+        state.push(format!("docs not on main: {n}"));
     }
     if let Some(hint) = &row.hint {
         state.push(hint.clone());
@@ -862,6 +887,7 @@ mod tests {
             base: None,
             custom_base: false,
             base_behind: None,
+            base_ahead: None,
             hint: None,
             review_url: None,
             frozen_sha: None,
@@ -987,6 +1013,7 @@ mod tests {
             base: None,
             custom_base: false,
             base_behind: None,
+            base_ahead: None,
             hint: hint.map(str::to_string),
             review_url: None,
             frozen_sha: None,
