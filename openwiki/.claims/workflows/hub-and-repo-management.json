@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6085cfba4590e31ea76d29db25837ffa896f42d5a3c5274869fc1aa58d333b19",
+  "pageVersion": "sha256:35925ee1a30a3ad7a16b34d2a919782544436d9d0a30dc7cb059ad3b4c7a6f46",
   "claims": [
     {
       "id": "claim_2f2d2972de2546659ae66cd6e26567f1",
-      "statement": "hub init derives the hub name from --name or the directory, requires an existing repo to be on main (or runs git init -b main), refuses when hub.json exists, keeps an existing CLAUDE.md, merges .gitignore lines, and commits as `hub: init <name>`.",
+      "statement": "hub init derives the hub name from --name or the directory, requires an existing repo to be on main (or runs git init -b main), refuses when hub.json exists, writes a six-rule AGENTS.md only when neither AGENTS.md nor CLAUDE.md exists (reporting which existing file was left as is), merges .gitignore lines, and commits as `hub: init <name>`.",
       "evidence": [
         {
-          "resource": "repo://src/ops/init.rs#L48-L119",
-          "version": "repo-lines-v1:sha256:5f6d38d99f01ca14c4d83c00a00dfa1db7df396bbd90ea10c2ad897ccba262c8:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1MjgwOTVlMDM3Njg3MzYwOWI4MzJkNmI1NzdhMDRkZjg0Y2IwNDk5ZjdhYzE4OGJmYWNjYzY4MDJjN2YxZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NmY4Y2IwODNmYTgwMGE0ZGNkMjk2OTcyMmQ3YjkyNjg2YWRkOWViZTM2NTU0OTJmYTY3MmIxYTdjZWQyNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3MGVlYTFjNjdkMzE3YTVkN2M2YjM2MmU1ZDJkMjBmMWZkMGQyMTMyMGMwYmU0OWEyMWNhMjVmYjYwZTk5MGEifQ"
+          "resource": "repo://src/ops/init.rs#L26-L126",
+          "version": "repo-lines-v1:sha256:c9fd3268df9a78db4a2e0520fcbdda07b8f23d20a0ff3411277798a9be2f7480:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjZjU1NjBmNjZiNjlhOGZhYWQ2MGIwN2UwNDkzN2M3NjkyMWM3OTlkYzZlMmQ5ZDgxZGM2ZThlNjZiMGMyMzYyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyMjZmYmY4Y2UyYTFhYmVmMGU0ODM0ZGJjODAyMmZkYWE1NmRjYWFhOGY4NzlmY2QwYjVmNjE1YjE4MzU5ZGUyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0NzBlZWExYzY3ZDMxN2E1ZDdjNmIzNjJlNWQyZDIwZjFmZDBkMjEzMjBjMGJlNDlhMjFjYTI1ZmI2MGU5OTBhIn0"
         }
       ]
     },
@@ -21,18 +21,18 @@
           "version": "repo-lines-v1:sha256:529dd44104ad99bd02cee4a95943bd151371aba0fa6e6b65f515104000f1577c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjliNDYyN2FkNTliOGM3Njk4YWQxNDY3ZGFlN2I3YWExZTU1NzU3NzJlMDc1YWU5N2M2MjYyNDU2YmZkOGU0NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAyZDJjMGQ2ZGM1ZTc0ZDkyZmExNGI5MWRiZWEyNjQwOTBiZWIzNWZkYjkxODhkOWIzNDExODFkY2U5ZjRjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmU1ZDBmNzY1M2Q2NDNhNDVmNjQxZjAzOWYzNDYyZTQwNTU3ZTExODFjYTA1NWMxMjAzNTAyZDZkNmYwN2NiMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTFiODFhOGM0MjMyNTlkNWZlYWQ4NTRlZjYxMTc5ZmE2ZDAyYjg4NjE4MDVmODYyZjdlYTBjZGRjMTRlNGRjZCJ9"
         },
         {
-          "resource": "repo://src/ops/init.rs#L218-L237",
+          "resource": "repo://src/ops/init.rs#L226-L245",
           "version": "repo-lines-v1:sha256:c7cec2a9dabf5c29802fb730d6f81248701fb74a7c9c86e0424a35d5f99d511a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjNGNjNTM5YTBlZjVkOGEzZWU1YjdmN2M3NDUyMmZmYTBkY2UxNzYyYTVlYzc4NTI1NzgxZDA1ZGE5NjVmZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzYTEwMzdmMDcxOTYxZmIzYjEzYTdkYWZmNjlhY2MyYmFiODEwZmU4YmRhMTZhMmIyMjcxNTU0MzcxNGNjNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2ZThmYzJhYTU2ZWY4ODkzMGRmNzczMzMwNWEyYzUxNTZjOWVhMzA5MDM0OGM5NmNmODk2YmViMjNhNmVmMzIifQ"
         }
       ]
     },
     {
       "id": "claim_20a26a024c6f4ea9b51a4610b5d28ad5",
-      "statement": "hub init --force merges ignore lines, untracks now-ignored files while leaving them on disk, commits as `hub: refresh init files`, removes a hub pre-push hook, and never modifies hub.json or CLAUDE.md.",
+      "statement": "hub init --force merges ignore lines, untracks now-ignored files while leaving them on disk, commits as `hub: refresh init files`, removes a hub pre-push hook, and never modifies hub.json or the instructions file (AGENTS.md or a legacy CLAUDE.md).",
       "evidence": [
         {
-          "resource": "repo://src/ops/init.rs#L133-L216",
-          "version": "repo-lines-v1:sha256:c0dd9655f59cbbff275c95cf9413dc1a71da2d6b65973c09eec1c3dbd5ff3a64:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxZWI0MTEzYjkyYWQzZWFiZGFmNGMzZWUwODcxYTgwMmQ5OGQ0ZWY2NWUzMDczOTYzMTViYzhiNzViMDk3NGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyZmQ5ZDhiZWU1NzU3ZDRjMzI4ZmE2MGFjNjE0OWIzNTk3NjkyOWQ3YjM0Y2FiNjkyOWI0Njc5MWJmYmZjMTIifQ"
+          "resource": "repo://src/ops/init.rs#L141-L198",
+          "version": "repo-lines-v1:sha256:e7fee2acd42ba17761fecafb632b600c452c82b43f6978f93668e428a6e5dfb4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2NDJhZjgyYjRhNTRiYjVjODRmZGJmOWIxMmI3OTRlZGFmOTJiMWE0OTk3NmU1ZTFjNGJlNjNiM2ZmYzRlMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmN2JjZGUxYTI0MWJmNDM2OWYwMWExNjFjYTFkODM5NzI1NzA4YjlmYzZhNTY4MGEwYWY5N2I3MzBmOTgzN2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1ZTY1MGVhZTE4YTAwMWM2YmE4M2Y3ZWQ5OWIwMWY3OTU3Zjc2NDliZDNhODYzYTFmOTcxYjNiNjNmYTlhOTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0YmFiOWQ2Y2I4Y2Q1NDA1ZGI4YjU0NDNhNTU4NmRiYzBmODUxODg5MmE1MGEwMjI3YTU4ZWNhYTZiMWRiMTgifQ"
         }
       ]
     },
@@ -97,6 +97,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T18:18:24.526Z"
+    "at": "2026-10-27T18:18:48.498Z"
   }
 }

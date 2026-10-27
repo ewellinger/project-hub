@@ -16,12 +16,14 @@ sources:
     resource: repo://src/ops/review.rs
   - id: openwiki-source-023f2a1cda1b07809c0aa015
     resource: repo://src/procs.rs
+  - id: openwiki-source-eb344340305bd2ffe774ba40
+    resource: repo://tests/finish.rs
   - id: openwiki-source-1955dcb2c0b390eb78ee0044
     resource: repo://tests/remove.rs
-generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
+generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:12:12.058Z
+    at: 2026-10-27T18:18:48.498Z
 ---
 
 # Review, merged, set-base, finish, and remove
@@ -93,16 +95,26 @@ Takes the whole feature down:
    `--force`, which would discard commits on a detached HEAD. Then each open
    change's worktree, each frozen worktree, and the hub worktree; the first
    dirty one fails with exit 20 before anything is touched.
-3. **Kill the tmux session** so its shells cannot block removals.
-4. **In-use check** across all remaining worktree paths, frozen worktrees, and
+3. **Note the hub branch's unmerged documents**: when the hub branch exists
+   and has commits not on `main` (`git rev-list --count main..<branch>`), the
+   first output line is `note: hub branch <branch> has <n> commit(s) not on
+   main; they stay on the branch`. It is informational, not a `warning:`
+   (which the agent skill treats as "rerun the named command") and never a
+   refusal: `finish` merges nothing, and `remove` later refuses the branch
+   until those documents are merged by the agent skill's
+   **Merging feature documents into main** procedure (see
+   [Bundled agent skill](../integrations/agent-skill.md)).
+4. **Kill the tmux session** so its shells cannot block removals.
+5. **In-use check** across all remaining worktree paths, frozen worktrees, and
    the hub worktree (exit 21).
-5. Close every open change (`close_change`, as above), remove each frozen
+6. Close every open change (`close_change`, as above), remove each frozen
    reference worktree, clear the pins, then remove the hub worktree.
-6. Mark the feature `finished` and save. Change stages are left as they were
+7. Mark the feature `finished` and save. Change stages are left as they were
    (not set to merged), and every branch — including the hub branch — is kept.
 
 A finished feature is history: only `feature list --all`, `status`, and
-`remove` accept it.
+`remove` accept it. `status` keeps counting the finished hub branch's commits
+not on `main` as `base_ahead` (see [Status, list, and pull](status-and-pull.md)).
 
 ## `hub feature remove NAME` (`src/ops/remove.rs`)
 
@@ -173,7 +185,8 @@ the preview is the confirmation (see
 ## Tests
 
 `tests/review_merged.rs`, `tests/finish.rs` (dirty, in-use via the fake `lsof`,
-adopted, residue via `block_deletion`, own-session refusal), `tests/remove.rs`
+adopted, residue via `block_deletion`, own-session refusal, the
+not-on-main note), `tests/remove.rs`
 (restart after remove adopts nothing; open, unmerged, still-pushed, and
 hub-commit refusals change nothing), `tests/set_base.rs`;
 `procs.rs` has parser unit tests.

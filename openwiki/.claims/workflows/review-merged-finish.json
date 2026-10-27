@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9d8937269e13aa93ba7ceb0e1092de8dcb350cc1759955aac04dedb17ad6f8f5",
+  "pageVersion": "sha256:c2d8e3b3824f2956004012013665dfd796c6d8706eb3bf59134dc10f99f499cb",
   "claims": [
     {
       "id": "claim_0f7be9383d424624981b0526642970c4",
@@ -51,8 +51,8 @@
       "statement": "merged and finish perform irreversible removals before writing the feature record, so a failed write can be completed by rerunning the command.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L86-L133",
-          "version": "repo-lines-v1:sha256:6ce63522303d0b7c7b7f0fd779b2cae59daed21735c889ef1e7c9e94d39fdd65:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMWM5NDA4YWRiNTA2ZmNlNjQwMTJmMWNjMDdjZWQ1YWUzMDhjOTEzZGNiZTkwYzAwMGIyOGMyM2FlOTY1ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNWFmMTFhYzBjYjc0NjgxM2E0OWE4ZjkwZmY2MGZiY2U4MjNhNDcxYTcyN2M3ZGRmNjExY2JmMWJlNGVhNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/ops/finish.rs#L82-L145",
+          "version": "repo-lines-v1:sha256:a6542f50cbfd7b3f638b9dd1f35fbe115d8dda902ffe9b4d9f645d9b7c3e5b30:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYWQzOWFhOTc2ODExYjk3YzM3Zjg2MTBjMzU3MDQyODQxYmMwOWVhNTU3MDNlNDI1MmJiNzAyZjZhZWRlYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
           "resource": "repo://src/ops/merged.rs#L170-L191",
@@ -65,8 +65,8 @@
       "statement": "feature finish refuses to run inside the feature's own tmux session, checks frozen worktrees for commits off their pin and then every worktree including the hub worktree for dirtiness before acting, kills the session, removes all worktrees including frozen ones, clears the pins, and marks the feature finished without changing stages or deleting branches.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L10-L133",
-          "version": "repo-lines-v1:sha256:1d34222d2a1f11ffd42a63864b8eaa88b6f7be5f4def87c52704bf40975cfc78:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjYzI5YTE3YWY4ZDUxZDZmNjkzMzk3NDE2ZGExNTAyMGFhZDVlZDI5NzBhYWFkZTEzYjhlODBhMjk5YTQ4YjBkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "resource": "repo://src/ops/finish.rs#L10-L145",
+          "version": "repo-lines-v1:sha256:97935e7ed4ed3c1d821f94604f94516517c1967cdfe11dc383f0009230fbf65b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjYzI5YTE3YWY4ZDUxZDZmNjkzMzk3NDE2ZGExNTAyMGFhZDVlZDI5NzBhYWFkZTEzYjhlODBhMjk5YTQ4YjBkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -137,10 +137,24 @@
           "version": "repo-file-v1:sha256:13a327f8968e360729bc97fc5ec64db88be8dcdd686ee14ff28b2aa46b607c33"
         }
       ]
+    },
+    {
+      "id": "claim_048fbad0ce464d1b88aa0c8a5ed85a94",
+      "statement": "feature finish prints an informational `note:` line (never a warning or refusal) naming how many commits the feature's hub branch has that are not on main, computed with git rev-list main..<branch> in the hub's main clone, and leaves those commits on the branch unmerged.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/finish.rs#L86-L98",
+          "version": "repo-lines-v1:sha256:62bd21bd992c8e193c037e62e3abdc54f5d2e36b2cad9d77f558b098546b2c7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMWM5NDA4YWRiNTA2ZmNlNjQwMTJmMWNjMDdjZWQ1YWUzMDhjOTEzZGNiZTkwYzAwMGIyOGMyM2FlOTY1ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNWFmMTFhYzBjYjc0NjgxM2E0OWE4ZjkwZmY2MGZiY2U4MjNhNDcxYTcyN2M3ZGRmNjExY2JmMWJlNGVhNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5N2IwMWUwZTQ0N2YzOWE4ZGEzYTg3YTViYTg1ZTU0ZDg2YWQ2NzE0OWY0ZTEzMjdjMDRhNzA3MGU2MWMwOTEifQ"
+        },
+        {
+          "resource": "repo://tests/finish.rs#L65-L81",
+          "version": "repo-lines-v1:sha256:1dd1f8a0b63486dd22f8b7fbc7d34561d2712214b160d6ec34fd874a8a0eaa1d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhMDE1ZWQzMWE2NmM1YTZiNzUyZmMyNzBlMzg1NzNjNWZkODg3Y2FhMjEzOTdmZTRiZWNjZjNjY2I0OGYwMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFiNGQzNmNiYzA0ZTA0YjQ3ZjcyZjNiM2UzY2FkNzFhNmM2ODNlNDM0NjE2MjJmYjQ2OTM3ZmViYjhlZDQyYzkifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:12:12.058Z"
+    "at": "2026-10-27T18:18:48.498Z"
   }
 }

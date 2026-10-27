@@ -8,10 +8,10 @@ sources:
     resource: repo://src/ops/init.rs
   - id: openwiki-source-70c2e2f99d62af87dfbdb300
     resource: repo://src/ops/repo.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-10-27T18:18:48.498Z
 ---
 
 # Hub init and repo registration
@@ -33,8 +33,14 @@ Fresh init:
 2. Refuse if `hub.json` already exists (suggesting `--force`).
 3. If the directory is already a git repo it must be on `main`; otherwise
    `git init -b main`.
-4. Write `hub.json`; write a default `CLAUDE.md` describing hub rules **only
-   if none exists**; merge the hub's lines into `.gitignore` (`.DS_Store`,
+4. Write `hub.json`; write a default `AGENTS.md` with six hub rules (status
+   before paths, roles not paths, what is committed vs local, per-repo docs
+   stay in their repo, the generated skill is not edited, and feature
+   documents reach `main` only through the skill's merge-back, with one
+   folder per feature under `docs/`) **only if neither `AGENTS.md` nor
+   `CLAUDE.md` exists**, so a hub never carries two instructions files and a
+   hub created before 0.26 keeps its `CLAUDE.md`; merge the hub's lines into
+   `.gitignore` (`.DS_Store`,
    `.tmp/`, `*.code-workspace`, `.claude/skills/hub/`, `.agents/skills/hub/`),
    keeping every existing line.
 5. Commit those paths as `hub: init <name>`, then exclude and install the agent
@@ -50,7 +56,8 @@ after upgrading `hub`; it cannot be combined with `--name` or
   deletion rather than re-adding them;
 - commits as `hub: refresh init files`;
 - deletes a pre-0.14.0 `pre-push` hook if it carries hub's marker;
-- reinstalls the skill. `hub.json` and `CLAUDE.md` are never modified.
+- reinstalls the skill. `hub.json` and the instructions file (`AGENTS.md`
+  or a legacy `CLAUDE.md`) are never modified.
 
 ## `hub repo add ROLE CLONE` (`src/ops/repo.rs`)
 

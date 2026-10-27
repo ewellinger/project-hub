@@ -18,10 +18,10 @@ sources:
     resource: repo://src/skill.rs
   - id: openwiki-source-ec32cfd44569eaa164e68020
     resource: repo://tests/skill.rs
-generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
+generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:33:09.880Z
+    at: 2026-10-27T18:18:48.498Z
 ---
 
 # Bundled agent skill
@@ -46,7 +46,7 @@ code that distributes it is `src/skill.rs`.
 | Trigger | Code | Behavior |
 |---|---|---|
 | Every hub-scoped command | `main.rs` `locate()` → `skill::refresh(&hub)` | Ensures both directories are in Git's local exclude file and installs the skill in every existing hub worktree directory |
-| `hub init` (and `--force`) | `ops::init` | Adds the directories to `.gitignore` and the local exclude, installs into the hub root |
+| `hub init` (and `--force`) | `ops::init` | Adds the directories to `.gitignore` and the local exclude, installs into the hub root; the generated `AGENTS.md` names the skill and its merge-back section |
 | `feature start`, `start-review` | `ops::start`, `ops::start_review` | Installs into the new hub worktree |
 
 `skill::install` only writes when a copy is missing or differs from the
@@ -78,10 +78,15 @@ hub command retries.
   `unfreeze`, `finish`, and `add` never delete a branch still holds.
 - **Reading output**: take paths from `hub status --json` `rows[].path` and
   the attach command from `checkout`; field meanings such as `base`,
-  `base_behind`, `custom_base`, `review_url`, and for frozen bases
-  `frozen_sha`, `base_moved`, and `feature list --json`'s `frozen` array.
+  `base_behind`, `custom_base`, `review_url`, for frozen bases
+  `frozen_sha`, `base_moved`, and `feature list --json`'s `frozen` array,
+  and on the feature's hub row `base_ahead`, the hub-branch commits not on
+  `main` (`docs not on main: <n>` in the table).
 - **Workflow** responses to exit codes 20/21, `warning:` lines, tmux-off,
-  adopted worktrees, and finished features.
+  adopted worktrees, and finished features. Two bullets cover the hub
+  branch's documents: nothing merges them into `main` automatically, so a
+  nonzero `base_ahead` is reported and, when the user asks to finish, the
+  merge is offered once and `finish` runs regardless of the answer.
 - **Frozen roles**: a `stage` `frozen` row is a read-only reference checkout
   the agent must never edit, commit in, or `git checkout`; `refreeze` runs
   only when the user asks; choosing between starting from the pin and
@@ -91,6 +96,20 @@ hub command retries.
 - Procedures for **reviewing a merge/pull request**, handling **dirty
   worktrees**, and **updating from the base** (a local `git merge --ff` of
   `origin/<base>` only on explicit request, never push).
+- **Merging feature documents into main**: the only route by which a hub
+  branch's documents reach `main`, since no `hub` command merges it. It is
+  authorized by an explicit request or a yes to the pre-`finish` offer, and
+  authorizes exactly one local `git merge --no-ff` of the hub branch into the
+  main clone's `main` (message `docs: merge <feature> documents into main`),
+  with clean-tree checks on both sides, hand-resolved conflicts, no push, no
+  branch deletion, and no feature-state change. A finished feature is merged
+  by branch name since its worktree is gone; a branch whose only extra
+  commits are earlier merges of `main` yields an empty merge commit that
+  `feature remove` still needs. The reverse direction (`main` into a
+  long-lived hub branch, `git merge --ff`) follows the same rules on request.
+  The procedure is layout-agnostic: the hub's own instructions file names the
+  per-feature folder layout and merge cadence that keep these merges
+  conflict-free.
 
 ## Test guard
 
