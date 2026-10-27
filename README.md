@@ -67,7 +67,7 @@ will likely get in your way more than it helps.
 
 ## What goes in a hub
 
-The hub's `CLAUDE.md` and its feature documents are where an agent learns
+The hub's `AGENTS.md` and its feature documents are where an agent learns
 how the member repos fit together. Keep them to what no single repo can say.
 
 Do put in the hub:
@@ -83,6 +83,16 @@ Don't put in the hub:
 - Guidance or context that already lives in a member repo, such as its own
   `CLAUDE.md`, `AGENTS.md`, or README. The agent reads those when it works in
   that repo, and a copy in the hub drifts out of date.
+
+Feature documents live on the feature's hub branch and reach `main` only
+when someone merges them (see [Pull and base updates](#pull-and-base-updates)).
+Those merges stay conflict-free when each feature owns one folder, say
+`docs/features/<feature>/`, and a hub branch adds documents there and edits
+nothing outside it. Documents shared across features, such as `hub.json`,
+the README, and `AGENTS.md`, change on `main` or in a docs-only feature
+started for that purpose. Put that layout and when to merge (after a review
+round, when the last role is merged, before `finish`) in the hub's
+`AGENTS.md`; the agent skill carries the merge procedure itself.
 
 ## Install
 
@@ -317,7 +327,9 @@ change merges into a branch other than its role's base, so a feature on
 default bases keeps the compact table. `--json` carries it as `base`,
 `custom_base`, and `base_behind` (counted against the pin for a pinned
 change, whose row also carries `frozen_sha`) next to `ahead`/`behind` against the
-branch's own origin copy, and reports `review_url` on every row.
+branch's own origin copy, and reports `review_url` on every row. The feature's
+hub row measures its hub branch against the main clone's `main` and adds
+`base_ahead`, the commits not yet merged back (`null` on every other row).
 
 Dirtiness and base lag are operational state, reported but never failing
 the command. Missing or unregistered checkouts and wrong branches are
@@ -345,6 +357,15 @@ each open change in turn, runs that repository's checks, and reruns
 `status` until every selected role shows zero lag. The merge is local:
 nothing is pushed, and the recorded base, stage, and worktree are unchanged.
 `ahead` normally grows after such a merge.
+
+Getting a feature's documents from its hub branch onto `main` is likewise a
+job for the agent skill: asked to, the agent merges the hub branch into the
+main clone's `main` with a merge commit, resolving conflicts by hand, and
+pushes nothing. No hub command does this, and `finish` does not need it (it
+prints a note with the count and keeps the branch), but `feature remove`
+refuses a hub branch with commits beyond `main` until it has happened. The
+feature's hub row in `status` shows the gap as `docs not on main: <n>`
+(`base_ahead` in `--json`) and `main` moving on as `behind base main by <n>`.
 
 ### Reviewing a merge or pull request
 
@@ -387,12 +408,13 @@ delete by hand. Finished features are history: only `feature list --all` and
 
 ### Hub files
 
-`hub init` keeps an existing `CLAUDE.md` and merges `.gitignore`. After
+`hub init` writes an `AGENTS.md` unless the directory already has one or a
+`CLAUDE.md`, and merges `.gitignore`. After
 upgrading `hub`, `hub init --force` in an existing hub brings the
 init-owned files up to date: it merges the current ignore lines into
 `.gitignore`, removes files they now match from the index (they stay on
 disk), and commits the result as `hub: refresh init files`; `hub.json` and
-`CLAUDE.md` are never modified. Generated workspace files remain local:
+the instructions file are never modified. Generated workspace files remain local:
 every workspace write adds its exact filename to Git's local exclude file.
 
 Feature records are plain JSON under `.git/hub/features/` in the hub's main
