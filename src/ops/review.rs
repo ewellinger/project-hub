@@ -23,7 +23,14 @@ pub fn review(
             ))
         })?;
     let git = Git::new(hub.env.clone_path(&clone));
-    git.fetch("origin")?;
+    // The fetch only feeds the origin note; offline is a warning, not an error.
+    let mut lines = Vec::new();
+    if let Err(err) = git.fetch("origin") {
+        lines.push(format!(
+            "warning: fetch failed in {}: {err}; using the last fetched refs",
+            git.dir().display()
+        ));
+    }
     let on_origin = git.remote_branch_exists(&branch)?;
     let change = feature.open_change_mut(role).expect("checked above");
     change.stage = Stage::Review;
@@ -32,7 +39,7 @@ pub fn review(
     }
     change.origin_seen = change.origin_seen || on_origin;
     hub.save_feature(feature)?;
-    let mut lines = vec![format!("{role}: {branch} is in review")];
+    lines.push(format!("{role}: {branch} is in review"));
     if let Some(url) = url {
         lines.push(format!("  {url}"));
     }

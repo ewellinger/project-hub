@@ -369,3 +369,47 @@ fn merged_repoints_the_tmux_window_before_checking_for_live_processes() {
         "the hub's own window no longer sits in the worktree"
     );
 }
+
+#[test]
+fn review_warns_and_records_the_stage_when_the_fetch_fails() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.git(
+        &api,
+        &[
+            "remote",
+            "set-url",
+            "origin",
+            fx.root.join("missing.git").to_str().unwrap(),
+        ],
+    );
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "review",
+            "api",
+            "https://gitlab.example/mr/1",
+            "--feature",
+            "feat-1",
+        ],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains("warning: fetch failed in"))
+    .stdout(predicate::str::contains("using the last fetched refs"))
+    .stdout(predicate::str::contains("api: feat-1 is in review"));
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"][0]["stage"], "review");
+    assert_eq!(f["changes"][0]["review_url"], "https://gitlab.example/mr/1");
+    assert_eq!(f["changes"][0]["origin_seen"], false);
+    // No URL, origin reachable: the stage is set and the note still prints.
+    fx.hub(&hub, &["feature", "review", "ui", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("not on origin yet"));
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][1]["stage"],
+        "review"
+    );
+}
