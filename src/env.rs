@@ -81,7 +81,8 @@ impl Config {
     }
 
     pub fn parse(text: &str, path: &Path) -> Result<Config> {
-        toml::from_str(text).map_err(|e| HubError::Usage(format!("{}: {e}", path.display())))
+        toml_edit::de::from_str(text)
+            .map_err(|e| HubError::Usage(format!("{}: {e}", path.display())))
     }
 }
 
