@@ -121,3 +121,53 @@ fn remove_refuses_a_hub_branch_with_commits_and_skips_gone_branches() {
         .success();
     assert!(!record_path(&hub).exists());
 }
+
+#[test]
+fn remove_fetches_each_clone_once() {
+    let (fx, hub) = world();
+    // A follow-up change on api: feat-1 merged, then feat-1-2.
+    fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "add", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.commit_file(
+        &fx.worktree_dir.join("api-clone").join("feat-1-2"),
+        "w2.txt",
+        "more",
+    );
+    for role in ["api", "ui"] {
+        fx.hub(&hub, &["feature", "merged", role, "--feature", "feat-1"])
+            .assert()
+            .success();
+    }
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success();
+    let api = fx.project_home.join("api-clone");
+    fx.git(
+        &api,
+        &[
+            "remote",
+            "set-url",
+            "origin",
+            fx.root.join("missing.git").to_str().unwrap(),
+        ],
+    );
+    let out = fx
+        .hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .success();
+    let stdout = String::from_utf8(out.get_output().stdout.clone()).unwrap();
+    assert_eq!(
+        stdout
+            .matches(&format!("fetch failed in {}", api.display()))
+            .count(),
+        1,
+        "{stdout}"
+    );
+    assert!(!branch_exists(&fx, &api, "feat-1"));
+    assert!(!branch_exists(&fx, &api, "feat-1-2"));
+    assert!(!record_path(&hub).exists());
+}
