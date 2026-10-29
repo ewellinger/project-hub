@@ -199,6 +199,15 @@ fn merged_keeps_an_adopted_worktree_unless_forced() {
     )
     .assert()
     .success();
+    // Dirty and adopted: the dirty refusal comes first and touches no window.
+    std::fs::write(review.join("scratch.txt"), "x").unwrap();
+    let log_before_dirty = fx.tmux_log();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .code(20);
+    assert_eq!(fx.tmux_log(), log_before_dirty);
+    std::fs::remove_file(review.join("scratch.txt")).unwrap();
+    let log_before = fx.tmux_log();
     fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
         .assert()
         .code(1)
@@ -207,6 +216,21 @@ fn merged_keeps_an_adopted_worktree_unless_forced() {
     assert_eq!(
         fx.feature_json(&hub, "feat-1")["changes"][2]["stage"],
         "working"
+    );
+    assert_eq!(
+        fx.tmux_log(),
+        log_before,
+        "a declined removal touches no tmux window"
+    );
+    let ui_window = fx
+        .windows("feat-1")
+        .into_iter()
+        .find(|(n, _)| n == "ui")
+        .unwrap();
+    assert_eq!(
+        ui_window.1,
+        review.display().to_string(),
+        "the window still sits in the adopted worktree"
     );
     fx.hub(
         &hub,

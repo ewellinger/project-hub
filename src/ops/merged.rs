@@ -144,6 +144,23 @@ pub fn merged(
         }
     }
 
+    // An adopted worktree is removed only on a yes; ask before the re-point
+    // below kills the shell in it, for the same reason as the dirty check.
+    let adopted = change
+        .worktree
+        .as_ref()
+        .is_some_and(|wt| wt.owner == Owner::Adopted);
+    if let Some(path) = &path
+        && adopted
+        && !force
+        && !confirm(path)
+    {
+        return Err(HubError::Precondition(format!(
+            "{role}: kept adopted worktree {}; no worktree was removed. Rerun with --force to remove it",
+            path.display()
+        )));
+    }
+
     // The role's tmux window sits in the worktree; re-point it first so its
     // shell, and anything started from it, cannot block the removal.
     if path.is_some() {
@@ -164,13 +181,8 @@ pub fn merged(
     // and the record write follows. If the write fails the previous record is
     // left in place (stage still open) and rerunning `merged` finds the
     // worktree already gone and completes.
-    let (outcome, closed) = close_change(hub, &change, force, confirm)?;
-    if outcome == CloseOutcome::Declined {
-        return Err(HubError::Precondition(format!(
-            "{}; no worktree was removed. Rerun with --force to remove it",
-            closed.join("; ")
-        )));
-    }
+    // The adopted-worktree question was asked above, so the answer here is yes.
+    let (_, closed) = close_change(hub, &change, force, &mut |_| true)?;
     lines.extend(closed);
     let open = feature.open_change_mut(role).expect("checked above");
     open.stage = Stage::Merged;
