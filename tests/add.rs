@@ -254,3 +254,52 @@ fn base_flag_refuses_a_branch_missing_from_origin_without_partial_state() {
     );
     assert_eq!(fx.window_names("feat-1"), vec!["hub", "ai", "ui"]);
 }
+
+#[test]
+fn from_starting_with_a_dash_is_a_revision_not_a_git_option() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.hub(
+        &hub,
+        &["feature", "add", "api", "--feature", "feat-1", "--from=-m"],
+    )
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("not a valid object name"));
+    assert_eq!(
+        fx.git(&api, &["symbolic-ref", "--short", "HEAD"]),
+        "master",
+        "the clone's base branch was not renamed"
+    );
+    assert_eq!(
+        fx.git(&api, &["branch", "--list", "feat-1"]),
+        "",
+        "nothing created"
+    );
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"]
+            .as_array()
+            .unwrap()
+            .len(),
+        1
+    );
+    // Ordinary revisions still work.
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "add",
+            "api",
+            "--feature",
+            "feat-1",
+            "--from",
+            "origin/master~0",
+        ],
+    )
+    .assert()
+    .success();
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][1]["branch"],
+        "feat-1"
+    );
+}
