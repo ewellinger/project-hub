@@ -6,6 +6,15 @@ All notable changes to `hub` are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+- `hub feature add --from` passes its value to git as a revision, never as an option: `--from=-m` used to rename the clone's base branch.
+- `hub feature review` records the stage and URL when the fetch fails (offline, moved remote), printing a warning like every other command instead of aborting.
+- `hub feature merged` asks about an adopted worktree before re-pointing its tmux window, so answering no leaves the window and its shell alone.
+
+### Changed
+- `hub feature remove` fetches each member clone once, not once per change.
+- `config.toml` is read and written by `toml_edit` alone; the `toml` crate is no longer a dependency.
+
 ## [0.26.0] - 2026-10-27
 
 ### Added
