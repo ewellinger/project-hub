@@ -22,12 +22,13 @@ pub fn finish(
     // Killing the session would hang up the shell this command runs in, and
     // this command with it, before anything below could happen.
     if let Some(tmux) = &hub.tmux
-        && tmux.current_session()?.as_deref() == Some(feature.checkout.as_str())
+        && tmux.current_session()? == Some(crate::tmux::session_name(&feature.checkout))
     {
         return Err(HubError::Precondition(format!(
             "running inside tmux session {}, which finish would kill along with this command; \
              run it from another terminal: hub feature finish --feature {}",
-            feature.checkout, feature.name
+            crate::tmux::session_name(&feature.checkout),
+            feature.name
         )));
     }
     let hub_wt = hub.hub_worktree_path(&feature.checkout);
@@ -102,7 +103,10 @@ pub fn finish(
         && tmux.has_session(&feature.checkout)?
     {
         tmux.kill_session(&feature.checkout)?;
-        lines.push(format!("Killed tmux session {}", feature.checkout));
+        lines.push(format!(
+            "Killed tmux session {}",
+            crate::tmux::session_name(&feature.checkout)
+        ));
     }
     let open: Vec<_> = ordered_open_changes(hub, feature)
         .into_iter()

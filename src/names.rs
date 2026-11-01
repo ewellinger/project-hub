@@ -6,20 +6,27 @@ pub const DEFAULT_CHECKOUT_TEMPLATE: &str = "{feature}";
 pub const DEFAULT_BRANCH_TEMPLATE: &str = "{feature}";
 const CHECKOUT_PLACEHOLDERS: [&str; 3] = ["{feature}", "{feature_snake}", "{hub}"];
 
-/// `^[A-Za-z0-9][A-Za-z0-9_-]*$`: valid as a git branch, a tmux session, and a directory.
+/// `^[A-Za-z0-9][A-Za-z0-9_.-]*$` minus what git refuses in a branch (`..`, a
+/// trailing `.`, a `.lock` suffix): valid as a git branch and a directory.
+/// tmux session names cannot hold a `.`, so [`crate::tmux::session_name`]
+/// maps it to `_` there.
 pub fn validate_name(kind: &str, value: &str) -> Result<()> {
     let mut chars = value.chars();
     let ok = match chars.next() {
-        Some(c) if c.is_ascii_alphanumeric() => chars.all(is_name_char),
+        Some(c) if c.is_ascii_alphanumeric() => chars.all(|c| is_name_char(c) || c == '.'),
         _ => false,
     };
-    if ok {
-        Ok(())
-    } else {
-        Err(HubError::Usage(format!(
-            "invalid {kind} '{value}': must match ^[A-Za-z0-9][A-Za-z0-9_-]*$"
-        )))
+    if !ok {
+        return Err(HubError::Usage(format!(
+            "invalid {kind} '{value}': must match ^[A-Za-z0-9][A-Za-z0-9_.-]*$"
+        )));
     }
+    if value.contains("..") || value.ends_with('.') || value.ends_with(".lock") {
+        return Err(HubError::Usage(format!(
+            "invalid {kind} '{value}': must not contain '..', end with '.', or end with '.lock'"
+        )));
+    }
+    Ok(())
 }
 
 /// `^[A-Za-z][A-Za-z0-9_-]*$`; `hub` and `ai` are reserved for the fixed tmux windows.
@@ -170,10 +177,19 @@ mod tests {
 
     #[test]
     fn names_accept_the_documented_pattern() {
-        for ok in ["feat-1", "acme-port_e2e", "9lives", "A"] {
+        for ok in [
+            "feat-1",
+            "acme-port_e2e",
+            "9lives",
+            "A",
+            "app-release-v1.0.1",
+            "a.lockx",
+        ] {
             validate_name("feature name", ok).unwrap();
         }
-        for bad in ["", "-x", "_x", "a.b", "a:b", "a/b", "a b"] {
+        for bad in [
+            "", "-x", "_x", ".a", "a.", "a..b", "a.lock", "a:b", "a/b", "a b",
+        ] {
             let err = validate_name("feature name", bad).unwrap_err();
             assert!(
                 matches!(err, HubError::Usage(m) if m.contains("feature name")),

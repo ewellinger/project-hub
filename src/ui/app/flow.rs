@@ -560,13 +560,14 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
                 ));
             }
             let mut overlay = Overlay::confirm(format!("Finish {feature}"), lines, true);
-            if app.current_session.as_deref() == Some(record.checkout.as_str())
+            if app.current_session == Some(hub::tmux::session_name(&record.checkout))
                 && let Overlay::Confirm { blocked, .. } = &mut overlay
             {
                 *blocked = Some(format!(
                     "running inside tmux session {}, which finish would kill along with this dashboard; \
                          run it from another terminal: hub feature finish --feature {}",
-                    record.checkout, record.name
+                    hub::tmux::session_name(&record.checkout),
+                    record.name
                 ));
             }
             Step::Show(overlay)
@@ -942,7 +943,8 @@ impl NewFeature {
         let checkout = if tmux_on {
             format!(
                 "Checkout  {} (tmux session {})",
-                self.checkout, self.checkout
+                self.checkout,
+                hub::tmux::session_name(&self.checkout)
             )
         } else {
             format!("Checkout  {}", self.checkout)

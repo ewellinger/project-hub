@@ -123,8 +123,12 @@ pub(super) fn render_status(app: &App, frame: &mut Frame, area: Rect) {
                     .map(|i| &f.rows[i])
                     .collect(),
                 &f.warnings,
-                (f.status == FeatureStatus::Open && app.tmux_on)
-                    .then(|| format!("Attach with: tmux attach -t {}", f.checkout)),
+                (f.status == FeatureStatus::Open && app.tmux_on).then(|| {
+                    format!(
+                        "Attach with: tmux attach -t {}",
+                        hub::tmux::session_name(&f.checkout)
+                    )
+                }),
             ),
         };
     let table_height = display_rows.len() as u16 + 1;

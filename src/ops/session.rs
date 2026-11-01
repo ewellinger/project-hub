@@ -76,7 +76,10 @@ pub fn ordered_open_changes<'a>(hub: &Hub, feature: &'a Feature) -> Vec<&'a Chan
 }
 
 fn attach_session_line(session: &str) -> String {
-    format!("Attach with: tmux attach -t {session}")
+    format!(
+        "Attach with: tmux attach -t {}",
+        crate::tmux::session_name(session)
+    )
 }
 
 pub const TMUX_OFF_LINE: &str = "tmux is off; no session created";
@@ -129,7 +132,10 @@ fn converge_session(
     let created = !tmux.has_session(session)?;
     if created {
         tmux.new_session(session, "hub", hub_dir)?;
-        lines.push(format!("Created tmux session {session}"));
+        lines.push(format!(
+            "Created tmux session {}",
+            crate::tmux::session_name(session)
+        ));
     }
     let existing = tmux.windows(session)?;
     for name in ["hub", "ai"] {

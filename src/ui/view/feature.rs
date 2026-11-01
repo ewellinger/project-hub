@@ -52,8 +52,12 @@ pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
         .map(|url| Line::from(format!("review: {url}")))
         .into_iter()
         .collect();
-    let attach = (feature.is_open() && app.tmux_on)
-        .then(|| format!("Attach with: tmux attach -t {}", report.checkout));
+    let attach = (feature.is_open() && app.tmux_on).then(|| {
+        format!(
+            "Attach with: tmux attach -t {}",
+            hub::tmux::session_name(&report.checkout)
+        )
+    });
     let reference: Vec<Line> = app
         .selected_role_row()
         .filter(|r| r.stage == "frozen")
