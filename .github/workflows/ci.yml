@@ -69,6 +69,23 @@ jobs:
           fetch-depth: 0
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       - run: uvx towncrier check --compare-with origin/main
+      # A release PR (one that edits CHANGELOG.md) carries the plain release
+      # version; every other PR carries a bumped beta of the next release.
+      - name: Check the version matches the PR kind
+        run: |
+          version=$(grep -m1 '^version = ' Cargo.toml | cut -d'"' -f2)
+          if git diff --quiet origin/main...HEAD -- CHANGELOG.md; then
+            main=$(git show origin/main:Cargo.toml | grep -m1 '^version = ' | cut -d'"' -f2)
+            [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$ ]] \
+              || { echo "version $version is not a -beta.N prerelease; see CONTRIBUTING.md"; exit 1; }
+            [[ "$version" != "$main" ]] \
+              || { echo "version $version was not bumped from main"; exit 1; }
+          else
+            [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+              || { echo "release version $version must be plain x.y.z"; exit 1; }
+            grep -q "^## \[$version\] " CHANGELOG.md \
+              || { echo "CHANGELOG.md has no section for $version"; exit 1; }
+          fi
 
   msrv:
     runs-on: ubuntu-latest
