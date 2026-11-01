@@ -138,7 +138,8 @@ fn check_hub(hub: &Hub, name: &str, checkout: &str) -> Result<()> {
         && tmux.has_session(checkout)?
     {
         return Err(HubError::Precondition(format!(
-            "tmux session {checkout} already exists; pass --checkout to choose another"
+            "tmux session {} already exists; pass --checkout to choose another",
+            crate::tmux::session_name(checkout)
         )));
     }
     Ok(())

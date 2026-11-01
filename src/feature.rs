@@ -510,7 +510,7 @@ mod tests {
 
     #[test]
     fn validation_rejects_bad_state() {
-        let mut f = Feature::new("bad.name", "x");
+        let mut f = Feature::new("bad:name", "x");
         assert_eq!(field_error(&f), "name");
         f.name = "ok".into();
         f.checkout = "a:b".into();

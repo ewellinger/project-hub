@@ -17,8 +17,19 @@ impl Default for Tmux {
     }
 }
 
+/// The tmux session for a checkout. tmux reserves `.` as the window/pane
+/// separator in targets and rewrites it to `_` on `new-session`, so hub
+/// addresses the session by the same rewritten name.
+pub fn session_name(checkout: &str) -> String {
+    checkout.replace('.', "_")
+}
+
 fn target(session: &str) -> String {
-    format!("={session}")
+    format!("={}", session_name(session))
+}
+
+fn window_target(session: &str, window: &str) -> String {
+    format!("={}:{window}", session_name(session))
 }
 
 /// Why session steps are skipped, and the warning to print when the
@@ -107,7 +118,7 @@ impl Tmux {
             "new-session",
             "-d",
             "-s",
-            name,
+            &session_name(name),
             "-n",
             window,
             "-c",
@@ -141,7 +152,7 @@ impl Tmux {
             "respawn-pane",
             "-k",
             "-t",
-            &format!("={session}:{window}"),
+            &window_target(session, window),
             "-c",
             &dir.to_string_lossy(),
         ])
@@ -150,14 +161,14 @@ impl Tmux {
 
     /// Type `keys` into the window's shell, as `send-keys` does; `Enter` is a key name.
     pub fn send_keys(&self, session: &str, window: &str, keys: &[&str]) -> Result<()> {
-        let target = format!("={session}:{window}");
+        let target = window_target(session, window);
         let mut args = vec!["send-keys", "-t", target.as_str()];
         args.extend_from_slice(keys);
         self.run(&args).map(|_| ())
     }
 
     pub fn rename_window(&self, session: &str, old: &str, new: &str) -> Result<()> {
-        self.run(&["rename-window", "-t", &format!("={session}:{old}"), new])
+        self.run(&["rename-window", "-t", &window_target(session, old), new])
             .map(|_| ())
     }
 
@@ -218,6 +229,20 @@ mod tests {
         assert!(log.contains("new-session -d -s s1 -n hub -c"));
         assert!(log.contains("has-session -t =s1"));
         assert!(log.contains("send-keys -t =s1:hub hub Enter"));
+    }
+
+    #[test]
+    fn dotted_checkout_is_addressed_by_the_name_tmux_gives_it() {
+        let (tmp, tmux) = fake();
+        tmux.new_session("rel-v1.0.1", "hub", tmp.path()).unwrap();
+        assert!(tmux.has_session("rel-v1.0.1").unwrap());
+        tmux.send_keys("rel-v1.0.1", "hub", &["x"]).unwrap();
+        tmux.kill_session("rel-v1.0.1").unwrap();
+        let log = std::fs::read_to_string(tmp.path().join("log")).unwrap();
+        assert!(log.contains("new-session -d -s rel-v1_0_1 -n hub -c"));
+        assert!(log.contains("has-session -t =rel-v1_0_1"));
+        assert!(log.contains("send-keys -t =rel-v1_0_1:hub x"));
+        assert!(!log.contains("v1.0.1"));
     }
 
     #[test]

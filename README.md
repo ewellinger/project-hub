@@ -194,7 +194,9 @@ hub feature finish
 takes `{feature}`, `{feature_snake}` (dashes become underscores), and
 `{hub}`. `hub tmux` from the main hub renders it with `main` as the feature
 to name the base checkouts' session, so `feature start` refuses that
-checkout name. A role's `--branch-template` names the branch `feature start`
+checkout name. Feature, checkout and hub names take letters, digits, `_`, `-` and
+`.` (no `..`, trailing `.` or `.lock` suffix); tmux cannot hold a `.` in a
+session name, so the session uses `_` in its place. A role's `--branch-template` names the branch `feature start`
 creates in that repo, with `{feature}` substituted; it defaults to
 `{feature}`, and `ROLE:BRANCH` overrides it for one feature.
 

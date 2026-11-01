@@ -433,7 +433,7 @@ fn apply_rename(
                     tmux.rename_window(&f.checkout, old, new)?;
                     return Ok(vec![format!(
                         "Renamed tmux window {old} to {new} in {}",
-                        f.checkout
+                        crate::tmux::session_name(&f.checkout)
                     )]);
                 }
                 Ok(Vec::new())

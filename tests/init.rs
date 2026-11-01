@@ -110,7 +110,7 @@ fn rejects_template_without_placeholder_and_bad_name() {
         .assert()
         .code(1)
         .stderr(predicate::str::contains("placeholder"));
-    fx.hub(&dir, &["init", "--name", "bad.name"])
+    fx.hub(&dir, &["init", "--name", "bad:name"])
         .assert()
         .code(1)
         .stderr(predicate::str::contains("hub name"));

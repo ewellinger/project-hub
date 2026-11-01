@@ -159,7 +159,7 @@ fn adopts_existing_hub_branch_and_existing_session() {
 #[test]
 fn refuses_bad_input_before_creating_anything() {
     let (fx, hub) = world();
-    fx.hub(&hub, &["feature", "start", "bad.name"])
+    fx.hub(&hub, &["feature", "start", "bad:name"])
         .assert()
         .code(1)
         .stderr(predicate::str::contains("feature name"));
@@ -202,7 +202,7 @@ fn preflight_matches_starts_checks() {
         "templated checkout name"
     );
 
-    let err = hub::ops::start::preflight(&h, "bad.name", None).unwrap_err();
+    let err = hub::ops::start::preflight(&h, "bad:name", None).unwrap_err();
     assert!(matches!(err, HubError::Usage(m) if m.contains("feature name")));
 
     fx.hub(&hub, &["feature", "start", "feat-1"])
@@ -627,4 +627,47 @@ fn start_rolls_back_an_earlier_frozen_worktree_when_a_later_freeze_fails() {
     assert!(!hub.join(".git/hub/features/feat-1.json").exists());
     assert_eq!(fx.git(&hub, &["branch", "--list", "feat-1"]), "");
     assert!(!fx.worktree_dir.join("acme").join("acme-feat_1").exists());
+}
+
+#[test]
+fn dotted_name_gets_a_dot_free_tmux_session() {
+    let (fx, hub) = world();
+    fx.hub(
+        &hub,
+        &["feature", "start", "app-release-v1.0.1", "--repo", "api"],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains(
+        "Attach with: tmux attach -t acme-app_release_v1_0_1",
+    ));
+    let f = fx.feature_json(&hub, "app-release-v1.0.1");
+    assert_eq!(f["checkout"], "acme-app_release_v1.0.1");
+    let hub_wt = fx.worktree_dir.join("acme").join("acme-app_release_v1.0.1");
+    assert_eq!(
+        fx.git(&hub_wt, &["symbolic-ref", "--short", "HEAD"]),
+        "app-release-v1.0.1"
+    );
+    assert_eq!(
+        fx.window_names("acme-app_release_v1_0_1"),
+        vec!["hub", "ai", "api"]
+    );
+    let log = fx.tmux_log();
+    assert!(!log.contains("=acme-app_release_v1.0.1"), "{log}");
+    assert!(!log.contains("-s acme-app_release_v1.0.1"), "{log}");
+    // The session is found again, not recreated, and finish can kill it.
+    fx.hub(&hub, &["tmux", "--feature", "app-release-v1.0.1"])
+        .assert()
+        .success();
+    assert_eq!(fx.tmux_log().matches("new-session").count(), 1);
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--feature", "app-release-v1.0.1"],
+    )
+    .assert()
+    .success();
+    assert!(
+        fx.tmux_log()
+            .contains("kill-session -t =acme-app_release_v1_0_1")
+    );
 }
