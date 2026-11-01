@@ -199,6 +199,15 @@ fn merged_keeps_an_adopted_worktree_unless_forced() {
     )
     .assert()
     .success();
+    // Dirty and adopted: the dirty refusal comes first and touches no window.
+    std::fs::write(review.join("scratch.txt"), "x").unwrap();
+    let log_before_dirty = fx.tmux_log();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .code(20);
+    assert_eq!(fx.tmux_log(), log_before_dirty);
+    std::fs::remove_file(review.join("scratch.txt")).unwrap();
+    let log_before = fx.tmux_log();
     fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
         .assert()
         .code(1)
@@ -207,6 +216,21 @@ fn merged_keeps_an_adopted_worktree_unless_forced() {
     assert_eq!(
         fx.feature_json(&hub, "feat-1")["changes"][2]["stage"],
         "working"
+    );
+    assert_eq!(
+        fx.tmux_log(),
+        log_before,
+        "a declined removal touches no tmux window"
+    );
+    let ui_window = fx
+        .windows("feat-1")
+        .into_iter()
+        .find(|(n, _)| n == "ui")
+        .unwrap();
+    assert_eq!(
+        ui_window.1,
+        review.display().to_string(),
+        "the window still sits in the adopted worktree"
     );
     fx.hub(
         &hub,
@@ -367,5 +391,49 @@ fn merged_repoints_the_tmux_window_before_checking_for_live_processes() {
         windows[2].1,
         api.display().to_string(),
         "the hub's own window no longer sits in the worktree"
+    );
+}
+
+#[test]
+fn review_warns_and_records_the_stage_when_the_fetch_fails() {
+    let (fx, hub) = world();
+    let api = fx.project_home.join("api-clone");
+    fx.git(
+        &api,
+        &[
+            "remote",
+            "set-url",
+            "origin",
+            fx.root.join("missing.git").to_str().unwrap(),
+        ],
+    );
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "review",
+            "api",
+            "https://gitlab.example/mr/1",
+            "--feature",
+            "feat-1",
+        ],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains("warning: fetch failed in"))
+    .stdout(predicate::str::contains("using the last fetched refs"))
+    .stdout(predicate::str::contains("api: feat-1 is in review"));
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"][0]["stage"], "review");
+    assert_eq!(f["changes"][0]["review_url"], "https://gitlab.example/mr/1");
+    assert_eq!(f["changes"][0]["origin_seen"], false);
+    // No URL, origin reachable: the stage is set and the note still prints.
+    fx.hub(&hub, &["feature", "review", "ui", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("not on origin yet"));
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][1]["stage"],
+        "review"
     );
 }

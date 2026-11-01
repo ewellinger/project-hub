@@ -75,10 +75,6 @@ pub fn ordered_open_changes<'a>(hub: &Hub, feature: &'a Feature) -> Vec<&'a Chan
     changes
 }
 
-pub fn attach_line(feature: &Feature) -> String {
-    attach_session_line(&feature.checkout)
-}
-
 fn attach_session_line(session: &str) -> String {
     format!("Attach with: tmux attach -t {session}")
 }

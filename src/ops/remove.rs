@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::path::PathBuf;
 
 use crate::error::{HubError, Result};
@@ -23,6 +24,8 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
     let mut refusals = Vec::new();
     // (repo dir, label, branch) for every branch to delete, hub last.
     let mut doomed: Vec<(PathBuf, String, String)> = Vec::new();
+    // Follow-up changes share a clone; fetch it once.
+    let mut fetched: HashSet<&str> = HashSet::new();
 
     for change in &feature.changes {
         let dir = hub.env.clone_path(&change.clone);
@@ -33,7 +36,9 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
             continue;
         }
         let git = Git::new(&dir);
-        fetch(&git, &dir, &mut lines);
+        if fetched.insert(change.clone.as_str()) {
+            fetch(&git, &dir, &mut lines);
+        }
         let branch = &change.branch;
         let label = format!("{}: {branch}", change.role);
         if git.remote_branch_exists(branch)? {

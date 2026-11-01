@@ -160,8 +160,10 @@ impl Git {
     }
 
     /// New branch at `start` with no upstream, so a later push targets the branch's own name.
+    /// `--` so a start point beginning with `-` is a revision, never an option.
     pub fn create_branch(&self, name: &str, start: &str) -> Result<()> {
-        self.run(&["branch", "--no-track", name, start]).map(|_| ())
+        self.run(&["branch", "--no-track", "--", name, start])
+            .map(|_| ())
     }
 
     pub fn create_tracking_branch(&self, name: &str) -> Result<()> {
