@@ -34,8 +34,16 @@ untracked, so a renamed or removed command needs a matching skill edit.
 ## Branches and pull requests
 
 - Work on a branch; open a PR against `main`. CI must be green before merge.
-- One logical change per PR. Update `CHANGELOG.md` under `Unreleased` in the
-  same PR when the change is user-visible.
+- One logical change per PR. When the change is user-visible, add a changelog
+  fragment in the same PR: one file under `changelog.d/` named
+  `+<slug>.<type>.md`, where `<type>` is one of `added`, `changed`,
+  `deprecated`, `removed`, `fixed`, `security` (the Keep a Changelog
+  sections) and the content is the one-line entry as it should read in
+  `CHANGELOG.md`. The leading `+` tells towncrier not to print an issue
+  number. `uvx towncrier create +<slug>.<type>.md --content "..."` writes
+  one, or create the file by hand. Never edit `CHANGELOG.md` directly for
+  unreleased work; `uvx towncrier build --draft --version x.y.z` previews
+  how the fragments will render.
 - PRs are squash-merged (the repository allows nothing else), so the PR title
   becomes the commit on `main` as `<title> (#<number>)`; write it as the
   summary of the whole change.
@@ -49,9 +57,16 @@ automated by `.github/workflows/release.yml`.
    fix. Anything that changes the binary (including `skills/hub/SKILL.md`,
    which is embedded in it) needs a bump.
 2. Set `version` in `Cargo.toml`, run `cargo build` so `Cargo.lock` follows.
-3. In `CHANGELOG.md`, rename `## [Unreleased]` to `## [<version>] - <YYYY-MM-DD>`,
-   add a fresh empty `## [Unreleased]` above it, and update the compare links
-   at the bottom.
+3. Compile the fragments into `CHANGELOG.md` (needs [uv](https://docs.astral.sh/uv/);
+   towncrier itself is fetched on demand):
+
+   ```bash
+   uvx towncrier build --yes --version <version>
+   ```
+
+   This writes a `## [<version>] - <today>` section under the
+   `<!-- towncrier release notes start -->` marker and deletes the fragments
+   it consumed. Read the result and fix wording there if needed.
 4. Commit as `Bump to <version>` in the PR, squash-merge it, then tag the
    resulting commit on `main` and push the tag:
 
