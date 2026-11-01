@@ -53,10 +53,10 @@ untracked, so a renamed or removed command needs a matching skill edit.
   `skip-changelog` PR leaves the version alone. CI rejects a non-release PR
   whose version is not a `-beta.N` prerelease or equals the one on `main`.
   Between releases, `cargo install --path .` installs the branch and
-  `hub --version` names the build. Beta versions are never tagged: a tag
-  ruleset refuses any `v*` tag that is not a plain `v<major>.<minor>.<patch>`,
-  so the release workflow and the crates.io publish only ever run for a
-  release.
+  `hub --version` names the build. Beta versions are never tagged: the
+  no-bypass "no prerelease tags" ruleset refuses to create any tag containing
+  a `-`, which every prerelease version has, so the release workflow and the
+  crates.io publish only ever run for a plain `v<major>.<minor>.<patch>`.
 - PRs are squash-merged (the repository allows nothing else), so the PR title
   becomes the commit on `main` as `<title> (#<number>)`; write it as the
   summary of the whole change.
