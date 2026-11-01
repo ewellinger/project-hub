@@ -43,7 +43,9 @@ untracked, so a renamed or removed command needs a matching skill edit.
   number. `uvx towncrier create +<slug>.<type>.md --content "..."` writes
   one, or create the file by hand. Never edit `CHANGELOG.md` directly for
   unreleased work; `uvx towncrier build --draft --version x.y.z` previews
-  how the fragments will render.
+  how the fragments will render. CI fails a PR that adds no fragment; label
+  the PR `skip-changelog` when nothing in it is user-visible (CI, docs,
+  refactors).
 - PRs are squash-merged (the repository allows nothing else), so the PR title
   becomes the commit on `main` as `<title> (#<number>)`; write it as the
   summary of the whole change.
