@@ -10,7 +10,7 @@ A hub is a git repo, shared through a remote when the project has one, whose `hu
 ## Rules
 
 1. Run `hub status` before acting on any path found in a document or a message. The feature file is authoritative; prose is not. Exit code 30 means structural drift (a missing or unregistered checkout, or a wrong branch); report the affected rows and stop. Dirtiness is reported independently and is handled according to the operation under **Dirty worktrees** below.
-2. In specs, plans, and handoffs, refer to member repos by role, never by filesystem path. Paths derive from each machine's `project_home` and `worktree_dir` configuration and change between machines and features.
+2. A role is a name private to this hub: another developer's hub registers the same repository under a different role or not at all. In documents that live in the hub repo (specs, plans, handoffs, feature documents), refer to member repos by role. In anything that leaves the hub (a member repo's own files such as its README, docs, or changelog; a commit message; a PR or MR title or description; an issue or review comment), name the repository by its real name, the one in the role's `remote` from `hub repo list --json`, for example `acme/billing-api` rather than `api`. Never use filesystem paths in either place: they derive from each machine's `project_home` and `worktree_dir` configuration and change between machines and features.
 3. A hub may have a remote. Push a hub branch only when the user asks. `hub.json` on `main` is pulled by the user, never by you; `hub status` shows the hub row behind its origin copy when a pull is due.
 
 ## Commands

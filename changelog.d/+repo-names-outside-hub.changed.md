@@ -1,0 +1,1 @@
+The bundled hub skill tells agents to use a member repo's real name (from the role's `remote`) in that repo's own docs, commit messages, and PR or MR descriptions, and to use the hub's role name only in documents that live in the hub repo.
