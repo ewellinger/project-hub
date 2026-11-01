@@ -46,6 +46,17 @@ untracked, so a renamed or removed command needs a matching skill edit.
   how the fragments will render. CI fails a PR that adds no fragment; label
   the PR `skip-changelog` when nothing in it is user-visible (CI, docs,
   refactors).
+- A PR that carries a fragment also bumps `version` in `Cargo.toml` to a beta
+  of the next release, then runs `cargo build` so `Cargo.lock` follows. The
+  first such PR after a release sets `<next minor>-beta.1` (after 0.26.0,
+  `0.27.0-beta.1`); each later one steps `beta.N` to `beta.N+1`. A
+  `skip-changelog` PR leaves the version alone. CI rejects a non-release PR
+  whose version is not a `-beta.N` prerelease or equals the one on `main`.
+  Between releases, `cargo install --path .` installs the branch and
+  `hub --version` names the build. Beta versions are never tagged: the
+  no-bypass "no prerelease tags" ruleset refuses to create any tag containing
+  a `-`, which every prerelease version has, so the release workflow and the
+  crates.io publish only ever run for a plain `v<major>.<minor>.<patch>`.
 - PRs are squash-merged (the repository allows nothing else), so the PR title
   becomes the commit on `main` as `<title> (#<number>)`; write it as the
   summary of the whole change.
@@ -57,8 +68,13 @@ automated by `.github/workflows/release.yml`.
 
 1. Decide the version: minor for a new capability or increment, patch for a
    fix. Anything that changes the binary (including `skills/hub/SKILL.md`,
-   which is embedded in it) needs a bump.
-2. Set `version` in `Cargo.toml`, run `cargo build` so `Cargo.lock` follows.
+   which is embedded in it) needs a bump. The beta on `main` is only a
+   guess at this number; a patch release may replace `0.27.0-beta.3` with
+   `0.26.1`.
+2. Set `version` in `Cargo.toml` to the plain release version, run
+   `cargo build` so `Cargo.lock` follows. CI checks that a PR editing
+   `CHANGELOG.md` carries a plain `x.y.z` matching the newest changelog
+   heading.
 3. Compile the fragments into `CHANGELOG.md` (needs [uv](https://docs.astral.sh/uv/);
    towncrier itself is fetched on demand):
 
