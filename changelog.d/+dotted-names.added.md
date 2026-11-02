@@ -1,1 +1,0 @@
-Feature, checkout and hub names may contain `.` (so `app-release-v1.0.1` works), except `..`, a trailing `.`, or a `.lock` suffix, which git refuses in a branch. tmux cannot hold a `.` in a session name, so the session is named with `_` in its place, and `v1.0.1` and `v1_0_1` share one.

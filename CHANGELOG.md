@@ -8,6 +8,24 @@ file by [towncrier](https://towncrier.readthedocs.io/) when a release is cut.
 
 <!-- towncrier release notes start -->
 
+## [0.27.0] - 2026-11-01
+
+### Added
+
+- Feature, checkout and hub names may contain `.` (so `app-release-v1.0.1` works), except `..`, a trailing `.`, or a `.lock` suffix, which git refuses in a branch. tmux cannot hold a `.` in a session name, so the session is named with `_` in its place, and `v1.0.1` and `v1_0_1` share one.
+
+### Changed
+
+- The bundled hub skill tells agents to use a member repo's real name (from the role's `remote`) in that repo's own docs, commit messages, and PR or MR descriptions, and to use the hub's role name only in documents that live in the hub repo.
+- `config.toml` is read and written by `toml_edit` alone; the `toml` crate is no longer a dependency.
+- `hub feature remove` fetches each member clone once, not once per change.
+
+### Fixed
+
+- `hub feature add --from` passes its value to git as a revision, never as an option: `--from=-m` used to rename the clone's base branch.
+- `hub feature merged` asks about an adopted worktree before re-pointing its tmux window, so answering no leaves the window and its shell alone.
+- `hub feature review` records the stage and URL when the fetch fails (offline, moved remote), printing a warning like every other command instead of aborting.
+
 ## [0.26.0] - 2026-10-27
 
 ### Added
