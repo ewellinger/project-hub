@@ -873,6 +873,46 @@ fn status_json_reports_the_saved_review_url_and_head() {
 }
 
 #[test]
+fn status_shows_commits_the_author_pushed_after_checkout_as_behind_origin() {
+    let (fx, hub) = world();
+    fx.remote_branch("api-clone", "feature/x");
+    let sha = fx.remote_sha("api-clone", "feature/x");
+    gitlab_mr(&fx, 9, "feature/x", "master", &sha);
+    fx.hub(&hub, &["feature", "start-review", &format!("{MR}9")])
+        .assert()
+        .success();
+
+    let author = fx.root.join("author-api");
+    let bare = fx.remotes.join("api-clone.git");
+    fx.git(
+        &fx.root,
+        &[
+            "clone",
+            "-q",
+            "-b",
+            "feature/x",
+            bare.to_str().unwrap(),
+            "author-api",
+        ],
+    );
+    fx.commit_file(&author, "fix-1.txt", "address review 1");
+    fx.commit_file(&author, "fix-2.txt", "address review 2");
+    fx.git(&author, &["push", "-q", "origin", "feature/x"]);
+
+    let out = fx
+        .hub(&hub, &["status", "--feature", "api-review-9"])
+        .output()
+        .unwrap();
+    assert!(out.status.success());
+    let stdout = String::from_utf8(out.stdout).unwrap();
+    let api_line = stdout
+        .lines()
+        .find(|l| l.starts_with("api "))
+        .unwrap_or_else(|| panic!("no api row:\n{stdout}"));
+    assert!(api_line.contains("+0/-2"), "{stdout}");
+}
+
+#[test]
 fn tmux_off_skips_the_session_collision_check() {
     let (fx, hub) = world();
     fx.write_config("tmux = false\n");
