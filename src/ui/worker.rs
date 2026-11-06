@@ -16,7 +16,7 @@ use hub::ops::review_state::{self, Source};
 use hub::ops::start::StartOptions;
 use hub::ops::suggest;
 
-use crate::ui::app::{Action, Event, Report, RowId};
+use crate::ui::app::{Action, Event, Report, RowId, SetupState};
 
 /// Run the row's status on a detached thread and send one `Event::Report`
 /// tagged with `gen`. A feature's review state is read from the forge when
@@ -117,6 +117,9 @@ fn set_clipboard(text: &str) -> Result<(), HubError> {
 pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
     let hub = hub.clone();
     thread::spawn(move || {
+        // `with_lock` consumes its hub; the setup scripts run on this copy
+        // after the lock is gone.
+        let after = hub.clone();
         let result = catch_unwind(AssertUnwindSafe(|| {
             hub.with_lock(|hub| match &action {
                 Action::Start { name, repos } => ops::start::start(
@@ -199,8 +202,41 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
             })
         }));
         let result = unwind_to_result(result, &action);
-        let _ = tx.send(Event::Done { action, result });
+        let ok = result.is_ok();
+        let _ = tx.send(Event::Done {
+            action: action.clone(),
+            result,
+        });
+        if ok {
+            run_setup(&after, &action, &tx);
+        }
     });
+}
+
+/// After a successful `Start` or `Add`, run the setup scripts of the
+/// worktrees it created, outside the lock, reporting each one twice.
+fn run_setup(hub: &Hub, action: &Action, tx: &Sender<Event>) {
+    let (feature, roles): (&str, Vec<String>) = match action {
+        Action::Start { name, repos } => (name, repos.iter().map(|(r, _)| r.clone()).collect()),
+        Action::Add { feature, role, .. } => (feature, vec![role.clone()]),
+        _ => return,
+    };
+    let Ok(f) = hub.load_feature(feature) else {
+        return;
+    };
+    for job in hub::setup::jobs(hub, &f, &roles, false) {
+        let send = |state| {
+            let _ = tx.send(Event::Setup {
+                feature: feature.to_string(),
+                role: job.role.clone(),
+                state,
+            });
+        };
+        send(SetupState::Running {
+            script: job.script_label.clone(),
+        });
+        send(SetupState::Done(hub::setup::run(&job)));
+    }
 }
 
 /// The op's result, or a `Precondition` error when the op thread panicked.
