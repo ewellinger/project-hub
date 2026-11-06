@@ -1347,6 +1347,48 @@ mod tests {
         assert!(text.contains("!12345"), "{text}");
     }
 
+    /// api on GitLab !12345 (failed, 2 threads) and ui on GitHub #31
+    /// (changes, running, 14 threads, conflicts).
+    fn two_review_rows() -> Vec<StatusRow> {
+        use hub::review_state::{Approval, Pipeline};
+        let mut api = review_row(true);
+        let url = MR.replace("412", "12345");
+        api.review_url = Some(url.clone());
+        api.review.as_mut().unwrap().url = url;
+        let mut ui = review_row(true);
+        ui.role = "ui".into();
+        let url = "https://github.com/o/r/pull/31".to_string();
+        ui.review_url = Some(url.clone());
+        let state = ui.review.as_mut().unwrap();
+        state.url = url;
+        state.fields.approved = Some(Approval::Changes);
+        state.fields.pipeline = Some(Pipeline::Running);
+        state.fields.threads = Some(14);
+        state.fields.conflicts = Some(true);
+        vec![api, ui]
+    }
+
+    #[test]
+    fn the_preview_keeps_review_values_whole_at_80_columns() {
+        let a = preview(FeatureStatus::Open, two_review_rows());
+        let text = joined(&lines(80, 24, &a));
+        for needle in [
+            "!12345", "failed", "changes", "running", "14 open", "2 open",
+        ] {
+            assert!(text.contains(needle), "{needle}: {text}");
+        }
+        assert!(!text.contains("CONFLICTS"), "headers clip: {text}");
+    }
+
+    #[test]
+    fn the_preview_keeps_full_review_headers_when_the_table_fits() {
+        let a = preview(FeatureStatus::Open, two_review_rows());
+        let text = joined(&lines(100, 30, &a));
+        for needle in ["APPROVED", "PIPELINE", "THREADS", "CONFLICTS"] {
+            assert!(text.contains(needle), "{needle}: {text}");
+        }
+    }
+
     #[test]
     fn the_preview_has_no_review_section_without_a_review_row() {
         let a = preview(

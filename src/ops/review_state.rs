@@ -177,6 +177,7 @@ pub enum ReviewWord {
     Conflicts,
     CiFailed,
     Threads(u64),
+    Changes,
     CiRunning,
     Approved,
     Draft,
@@ -191,6 +192,7 @@ impl std::fmt::Display for ReviewWord {
             ReviewWord::CiFailed => f.write_str("ci failed"),
             ReviewWord::Threads(1) => f.write_str("1 thread"),
             ReviewWord::Threads(n) => write!(f, "{n} threads"),
+            ReviewWord::Changes => f.write_str("changes"),
             ReviewWord::CiRunning => f.write_str("ci running"),
             ReviewWord::Approved => f.write_str("approved"),
             ReviewWord::Draft => f.write_str("draft"),
@@ -214,7 +216,9 @@ impl ReviewWord {
             ReviewWord::Closed | ReviewWord::Conflicts | ReviewWord::CiFailed => {
                 Some(StateColour::Red)
             }
-            ReviewWord::Threads(_) | ReviewWord::CiRunning => Some(StateColour::Yellow),
+            ReviewWord::Threads(_) | ReviewWord::Changes | ReviewWord::CiRunning => {
+                Some(StateColour::Yellow)
+            }
             ReviewWord::Draft => None,
         }
     }
@@ -235,6 +239,9 @@ pub fn word(fields: &Fields) -> Option<ReviewWord> {
     }
     if let Some(n @ 1..) = fields.threads {
         return Some(ReviewWord::Threads(n));
+    }
+    if fields.approved == Some(Approval::Changes) {
+        return Some(ReviewWord::Changes);
     }
     if fields.pipeline == Some(Pipeline::Running) {
         return Some(ReviewWord::CiRunning);
@@ -464,6 +471,23 @@ mod tests {
             ..open.clone()
         };
         assert_eq!(word(&running), Some(ReviewWord::CiRunning));
+        let changes_threads = Fields {
+            approved: Some(Approval::Changes),
+            threads: Some(2),
+            ..open.clone()
+        };
+        assert_eq!(word(&changes_threads), Some(ReviewWord::Threads(2)));
+        let changes_running = Fields {
+            approved: Some(Approval::Changes),
+            pipeline: Some(Pipeline::Running),
+            ..open.clone()
+        };
+        assert_eq!(word(&changes_running), Some(ReviewWord::Changes));
+        let changes = Fields {
+            approved: Some(Approval::Changes),
+            ..open.clone()
+        };
+        assert_eq!(word(&changes), Some(ReviewWord::Changes));
         let approved = Fields {
             approved: Some(Approval::Yes),
             ..open.clone()
@@ -487,6 +511,12 @@ mod tests {
             serde_json::to_string(&ReviewWord::CiFailed).unwrap(),
             "\"ci failed\""
         );
+        assert_eq!(ReviewWord::Changes.to_string(), "changes");
+        assert_eq!(
+            serde_json::to_string(&ReviewWord::Changes).unwrap(),
+            "\"changes\""
+        );
+        assert_eq!(ReviewWord::Changes.colour(), Some(StateColour::Yellow));
     }
 
     #[test]

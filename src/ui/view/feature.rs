@@ -34,7 +34,7 @@ pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
 
     let order = display_order(&report.rows);
     let rows: Vec<&StatusRow> = order.iter().map(|&i| &report.rows[i]).collect();
-    let review_section = review_table(&rows);
+    let review_section = review_table(&rows, inner.width);
     let table_height = rows.len() as u16 + 1;
     let [table_area, review_area, tail_area] = review_layout(inner, table_height, &review_section);
     let table = status_table(&rows, home_dir().as_deref())

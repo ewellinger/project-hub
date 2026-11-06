@@ -374,9 +374,9 @@ feature with no role in review prints no section, and `status --base` never
 reads the forge. `--json` carries the state as `review` on each row (`null`
 when there is none). `hub feature list` shows one word from the remembered
 state after the stage of a role in review: the first of `merged`, `closed`,
-`conflicts`, `ci failed`, `N threads`, `ci running`, `approved`, `draft` that
-applies; `--json` carries it as `roles[].review`. `hub feature list
---refresh` reads the forge for every open feature first.
+`conflicts`, `ci failed`, `N threads`, `changes`, `ci running`, `approved`,
+`draft` that applies; `--json` carries it as `roles[].review`. `hub feature
+list --refresh` reads the forge for every open feature first.
 
 ### Pull and base updates
 

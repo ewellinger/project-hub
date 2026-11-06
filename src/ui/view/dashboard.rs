@@ -164,7 +164,7 @@ pub(super) fn render_status(app: &App, frame: &mut Frame, area: Rect) {
     // A finished feature keeps its review stages but is never read again.
     let review = match &cached.report {
         Report::Feature { report: f, .. } if f.status == FeatureStatus::Open => {
-            review_table(&display_rows)
+            review_table(&display_rows, inner.width)
         }
         _ => None,
     };
@@ -216,15 +216,24 @@ pub(super) fn review_extra(
 }
 
 /// The review section for these rows, and its height; `None` when no row has cells.
-pub(super) fn review_table(rows: &[&StatusRow]) -> Option<(Table<'static>, u16)> {
+pub(super) fn review_table(rows: &[&StatusRow], width: u16) -> Option<(Table<'static>, u16)> {
     let cells: Vec<_> = rows.iter().filter_map(|r| review_cells(r)).collect();
     if cells.is_empty() {
         return None;
     }
+    let widest_cell = |i: usize| {
+        cells
+            .iter()
+            .map(|c| c[i].0.chars().count())
+            .max()
+            .unwrap_or(0)
+    };
+    let full = |i: usize| widest_cell(i).max(REVIEW_HEADERS[i].len());
+    let fits = (0..REVIEW_HEADERS.len()).map(full).sum::<usize>() + 12 <= width as usize;
     let widths: Vec<Constraint> = (0..REVIEW_HEADERS.len())
         .map(|i| {
-            let widest = cells.iter().map(|c| c[i].0.chars().count()).max();
-            let widest = widest.unwrap_or(0).max(REVIEW_HEADERS[i].len()) as u16;
+            // Too narrow: headers clip so the values stay whole.
+            let widest = if fits { full(i) } else { widest_cell(i) } as u16;
             // The other columns give first: a clipped role or request
             // number would read as another, valid one.
             if i < 2 {
