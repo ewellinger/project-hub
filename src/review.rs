@@ -425,9 +425,49 @@ pub fn parse_github(url: &ReviewUrl, pr: &serde_json::Value) -> Result<ReviewInf
 }
 
 /// `<program> api --hostname HOST --method GET ENDPOINT`, parsed as JSON.
-fn api_get(program: &str, host: &str, endpoint: &str) -> Result<serde_json::Value> {
+pub(crate) fn api_get(program: &str, host: &str, endpoint: &str) -> Result<serde_json::Value> {
+    api(
+        program,
+        host,
+        endpoint,
+        &["api", "--hostname", host, "--method", "GET", endpoint],
+    )
+}
+
+/// `gh api graphql` with the three variables the query takes.
+pub(crate) fn api_graphql(
+    host: &str,
+    query: &str,
+    owner: &str,
+    name: &str,
+    number: u64,
+) -> Result<serde_json::Value> {
+    api(
+        "gh",
+        host,
+        "graphql",
+        &[
+            "api",
+            "graphql",
+            "--hostname",
+            host,
+            "-f",
+            &format!("query={query}"),
+            "-f",
+            &format!("owner={owner}"),
+            "-f",
+            &format!("name={name}"),
+            "-F",
+            &format!("number={number}"),
+        ],
+    )
+}
+
+/// Run `<program> ARGS` and parse its output as JSON; `endpoint` names the
+/// call in errors.
+fn api(program: &str, host: &str, endpoint: &str, args: &[&str]) -> Result<serde_json::Value> {
     let out = Command::new(program)
-        .args(["api", "--hostname", host, "--method", "GET", endpoint])
+        .args(args)
         .output()
         .map_err(|e| {
             if e.kind() == std::io::ErrorKind::NotFound {
