@@ -110,9 +110,12 @@ fn start_rejects_the_base_session_name_as_a_checkout() {
 #[test]
 fn finished_features_are_read_only() {
     let (fx, hub) = world();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     let head = fx.git(&hub, &["rev-parse", "HEAD"]);
     for args in [
         vec!["feature", "add", "api", "--feature", "feat-1"],
@@ -245,9 +248,12 @@ fn repo_remove_is_refused_while_a_feature_uses_the_role() {
         .assert()
         .code(1)
         .stderr(predicate::str::contains("feat-1").and(predicate::str::contains("open change")));
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     fx.hub(&hub, &["repo", "remove", "api"]).assert().success();
     // History for the removed role stays readable: the change carries its clone.
     fx.hub(&hub, &["feature", "list", "--all"])

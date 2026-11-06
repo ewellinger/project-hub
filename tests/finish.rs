@@ -27,10 +27,13 @@ fn finish_removes_worktrees_and_session_but_keeps_branches() {
     fx.hub(&hub, &["feature", "review", "ui", "--feature", "feat-1"])
         .assert()
         .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success()
-        .stdout(predicate::str::contains("finished"));
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains("finished"));
     assert!(!fx.worktree_dir.join("api-clone").join("feat-1").exists());
     assert!(!fx.worktree_dir.join("ui-clone").join("feat-1").exists());
     assert!(!fx.worktree_dir.join("acme").join("feat-1").exists());
@@ -47,6 +50,10 @@ fn finish_removes_worktrees_and_session_but_keeps_branches() {
     );
     let f = fx.feature_json(&hub, "feat-1");
     assert_eq!(f["status"], "finished");
+    assert_eq!(
+        f["changes"][0]["stage"], "working",
+        "stages are left as they were"
+    );
     assert_eq!(
         f["changes"][1]["stage"], "review",
         "stages are left as they were"
@@ -67,12 +74,15 @@ fn finish_notes_hub_commits_not_on_main_and_keeps_them() {
     let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
     fx.commit_file(&hub_wt, "plan.md", "plan");
     fx.commit_file(&hub_wt, "handoff.md", "handoff");
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success()
-        .stdout(predicate::str::contains(
-            "note: hub branch feat-1 has 2 commits not on main; they stay on the branch",
-        ));
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains(
+        "note: hub branch feat-1 has 2 commits not on main; they stay on the branch",
+    ));
     assert_eq!(
         fx.git(&hub, &["rev-list", "--count", "main..feat-1"])
             .trim(),
@@ -83,28 +93,21 @@ fn finish_notes_hub_commits_not_on_main_and_keeps_them() {
 #[test]
 fn finish_checks_every_tree_before_removing_anything() {
     let (fx, hub) = world();
-    let ui_wt = fx.worktree_dir.join("ui-clone").join("feat-1");
-    std::fs::write(ui_wt.join("scratch.txt"), "x").unwrap();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+    fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
         .assert()
-        .code(20)
-        .stderr(predicate::str::contains("scratch.txt"));
-    assert!(
-        fx.worktree_dir.join("api-clone").join("feat-1").exists(),
-        "api (earlier in order) untouched"
-    );
-    assert!(fx.worktree_dir.join("acme").join("feat-1").exists());
-    assert!(fx.has_session("feat-1"));
-    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "open");
-
+        .success();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
     let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
-    std::fs::remove_file(ui_wt.join("scratch.txt")).unwrap();
     std::fs::write(hub_wt.join("notes.md"), "x").unwrap();
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
         .assert()
         .code(20)
         .stderr(predicate::str::contains("notes.md"));
-    assert!(fx.worktree_dir.join("api-clone").join("feat-1").exists());
+    assert!(hub_wt.exists());
+    assert!(fx.has_session("feat-1"));
+    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "open");
 
     fx.hub(
         &hub,
@@ -120,10 +123,13 @@ fn finish_checks_every_tree_before_removing_anything() {
 fn finish_completes_on_rerun_after_a_failed_write() {
     let (fx, hub) = world();
     fx.block_feature_writes(&hub);
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .code(1)
-        .stderr(predicate::str::contains("Permission denied"));
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("Permission denied"));
     assert!(!fx.worktree_dir.join("api-clone").join("feat-1").exists());
     assert!(!fx.has_session("feat-1"));
     assert_eq!(
@@ -133,9 +139,12 @@ fn finish_completes_on_rerun_after_a_failed_write() {
     );
     assert_eq!(fx.git(&hub, &["status", "--porcelain"]), "");
     fx.allow_feature_writes(&hub);
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "finished");
 }
 
@@ -155,54 +164,12 @@ fn finish_needs_no_force_after_copied_local_config() {
             .join(".env")
             .exists()
     );
+    fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-2"])
+        .assert()
+        .success();
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-2"])
         .assert()
         .success();
-}
-
-#[test]
-fn finish_keeps_declined_adopted_worktrees_and_continues() {
-    let (fx, hub) = world();
-    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
-        .assert()
-        .success();
-    fx.remote_branch("ui-clone", "shared");
-    let ui = fx.project_home.join("ui-clone");
-    let review = fx.worktree_dir.join("ui-clone").join("ui-review_3");
-    fx.git(
-        &ui,
-        &[
-            "worktree",
-            "add",
-            "-q",
-            "--track",
-            "-b",
-            "shared",
-            review.to_str().unwrap(),
-            "origin/shared",
-        ],
-    );
-    fx.hub(
-        &hub,
-        &[
-            "feature",
-            "add",
-            "ui",
-            "--branch",
-            "shared",
-            "--feature",
-            "feat-1",
-        ],
-    )
-    .assert()
-    .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success()
-        .stdout(predicate::str::contains("kept adopted worktree"));
-    assert!(review.exists(), "adopted worktree left in place");
-    assert!(!fx.worktree_dir.join("api-clone").join("feat-1").exists());
-    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "finished");
 }
 
 #[test]
@@ -210,11 +177,14 @@ fn finish_records_the_finish_when_the_hub_worktree_cannot_be_deleted() {
     let (fx, hub) = world();
     let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
     fx.block_deletion(&hub, &hub_wt);
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success()
-        .stdout(predicate::str::contains("directory remains"))
-        .stdout(predicate::str::contains(hub_wt.display().to_string()));
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains("directory remains"))
+    .stdout(predicate::str::contains(hub_wt.display().to_string()));
     assert!(hub_wt.exists());
     assert_eq!(fx.git(&hub, &["worktree", "list"]).lines().count(), 1);
     assert!(!fx.worktree_dir.join("api-clone").join("feat-1").exists());
@@ -225,8 +195,14 @@ fn finish_records_the_finish_when_the_hub_worktree_cannot_be_deleted() {
 #[test]
 fn finish_kills_the_session_then_refuses_live_processes_before_removing_anything() {
     let (fx, hub) = world();
-    let ui_wt = fx.worktree_dir.join("ui-clone").join("feat-1");
-    let procs = format!("4242\tnode\t{}", ui_wt.display());
+    fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
+    let procs = format!("4242\tnode\t{}", hub_wt.display());
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
         .env("FAKE_LSOF_CWDS", &procs)
         .assert()
@@ -236,12 +212,7 @@ fn finish_kills_the_session_then_refuses_live_processes_before_removing_anything
         !fx.has_session("feat-1"),
         "the session's own shells go first so they cannot block removal"
     );
-    assert!(
-        fx.worktree_dir.join("api-clone").join("feat-1").exists(),
-        "api (earlier in order) untouched"
-    );
-    assert!(ui_wt.exists());
-    assert!(fx.worktree_dir.join("acme").join("feat-1").exists());
+    assert!(hub_wt.exists());
     assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "open");
     fx.hub(
         &hub,
@@ -250,37 +221,49 @@ fn finish_kills_the_session_then_refuses_live_processes_before_removing_anything
     .env("FAKE_LSOF_CWDS", &procs)
     .assert()
     .success();
-    assert!(!ui_wt.exists());
+    assert!(!hub_wt.exists());
 }
 
 #[test]
 fn finish_refuses_to_run_inside_the_session_it_would_kill() {
     let (fx, hub) = world();
     // Killing the session would hang up this very process, so nothing is touched.
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .env("TMUX", "/tmp/tmux-501/default,123,4")
-        .env("FAKE_TMUX_CURRENT", "feat-1")
-        .assert()
-        .code(1)
-        .stderr(predicate::str::contains("inside tmux session feat-1"))
-        .stderr(predicate::str::contains(
-            "hub feature finish --feature feat-1",
-        ));
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .env("TMUX", "/tmp/tmux-501/default,123,4")
+    .env("FAKE_TMUX_CURRENT", "feat-1")
+    .assert()
+    .code(1)
+    .stderr(predicate::str::contains("inside tmux session feat-1"))
+    .stderr(predicate::str::contains(
+        "hub feature finish --feature feat-1",
+    ));
     assert!(fx.has_session("feat-1"));
     assert!(fx.worktree_dir.join("acme").join("feat-1").exists());
     assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "open");
     // From a different session it proceeds as usual.
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .env("TMUX", "/tmp/tmux-501/default,123,0")
-        .env("FAKE_TMUX_CURRENT", "acme-main")
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .env("TMUX", "/tmp/tmux-501/default,123,0")
+    .env("FAKE_TMUX_CURRENT", "acme-main")
+    .assert()
+    .success();
     assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "finished");
 }
 
 #[test]
 fn finish_ignores_its_own_process_tree_when_checking_for_live_processes() {
     let (fx, hub) = world();
+    fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
     // Run from the hub worktree, as the feature inference invites: the
     // calling shell, hub itself and its lsof all sit in the tree about to go.
     let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
@@ -295,13 +278,63 @@ fn finish_ignores_its_own_process_tree_when_checking_for_live_processes() {
 #[test]
 fn finish_still_refuses_a_foreign_process_alongside_its_own() {
     let (fx, hub) = world();
-    let ui_wt = fx.worktree_dir.join("ui-clone").join("feat-1");
-    let procs = format!("4242\tnode\t{}", ui_wt.display());
+    fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
+    let procs = format!("4242\tnode\t{}", hub_wt.display());
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
         .env("FAKE_LSOF_SELF", "1")
         .env("FAKE_LSOF_CWDS", &procs)
         .assert()
         .code(21)
         .stderr(predicate::str::contains("4242"));
-    assert!(ui_wt.exists());
+    assert!(hub_wt.exists());
+}
+
+#[test]
+fn finish_refuses_while_a_role_is_open_and_names_the_ways_out() {
+    let (fx, hub) = world();
+    fx.hub(&hub, &["feature", "review", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    // Dirty on purpose: the open-roles refusal comes before the dirty check,
+    // so this is exit 1 with the roles message, not exit 20.
+    std::fs::write(
+        fx.worktree_dir
+            .join("ui-clone")
+            .join("feat-1")
+            .join("scratch.txt"),
+        "x",
+    )
+    .unwrap();
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains(
+            "roles still open: api (working), ui (review)",
+        ))
+        .stderr(predicate::str::contains("hub feature dropped ROLE"))
+        .stderr(predicate::str::contains("hub feature finish --force"));
+    assert!(fx.has_session("feat-1"), "nothing was touched");
+    assert!(fx.worktree_dir.join("api-clone").join("feat-1").exists());
+    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "open");
+}
+
+#[test]
+fn finish_succeeds_without_force_once_every_role_is_closed() {
+    let (fx, hub) = world();
+    fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "dropped", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success();
+    assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "finished");
 }

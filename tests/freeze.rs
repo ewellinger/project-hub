@@ -394,6 +394,9 @@ fn finish_removes_frozen_worktrees_and_refuses_dirty_ones_without_force() {
     fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
         .assert()
         .success();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
     std::fs::write(frozen_wt(&fx).join("scratch.txt"), "x\n").unwrap();
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
         .assert()

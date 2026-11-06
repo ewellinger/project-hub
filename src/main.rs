@@ -601,7 +601,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 }),
                 FeatureCommand::Finish { feature, force } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
-                    ops::finish::finish(hub, &mut f, force, &mut confirm_removal)
+                    ops::finish::finish(hub, &mut f, force)
                 }),
                 FeatureCommand::Remove { name } => {
                     hub.with_lock(|hub| ops::remove::remove(hub, &hub.load_feature(&name)?))

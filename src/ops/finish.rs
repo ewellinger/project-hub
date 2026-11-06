@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use crate::error::{HubError, Result};
 use crate::feature::{Feature, FeatureStatus};
 use crate::git::Git;
@@ -10,14 +8,10 @@ use crate::ops::session::{change_path, ordered_open_changes, pin_path};
 
 /// Close every open change's worktree and every frozen reference worktree,
 /// remove the hub worktree, kill the session, and mark the feature finished.
-/// Without `force`, a frozen worktree whose HEAD left its pin is refused like a
-/// dirty one. Stages are left as they are and no branch is deleted or merged.
-pub fn finish(
-    hub: &Hub,
-    feature: &mut Feature,
-    force: bool,
-    confirm: &mut dyn FnMut(&Path) -> bool,
-) -> Result<Vec<String>> {
+/// Without `force`, a role still working or in review is refused, and so is a
+/// frozen worktree whose HEAD left its pin or any dirty tree. Stages are left
+/// as they are and no branch is deleted or merged.
+pub fn finish(hub: &Hub, feature: &mut Feature, force: bool) -> Result<Vec<String>> {
     feature.require_open()?;
     // Killing the session would hang up the shell this command runs in, and
     // this command with it, before anything below could happen.
@@ -42,20 +36,19 @@ pub fn finish(
                 require_on_pin(&path, pin)?;
             }
         }
-        for change in ordered_open_changes(hub, feature) {
-            if change.worktree.is_none() {
-                continue;
-            }
-            let path = change_path(hub, change);
-            if path.exists() {
-                let git = Git::new(&path);
-                if git.is_dirty()? {
-                    return Err(HubError::Dirty {
-                        path,
-                        status: git.status_short()?,
-                    });
-                }
-            }
+        let open = ordered_open_changes(hub, feature);
+        if !open.is_empty() {
+            let roles: Vec<_> = open
+                .iter()
+                .map(|c| format!("{} ({})", c.role, c.stage.as_str()))
+                .collect();
+            return Err(HubError::Precondition(format!(
+                "feature '{}' has roles still open: {}\n  \
+                 record each one first: hub feature merged ROLE, or hub feature dropped ROLE\n  \
+                 or run hub feature finish --force to finish anyway, which also removes dirty worktrees",
+                feature.name,
+                roles.join(", ")
+            )));
         }
         for pin in &feature.pins {
             let Some(path) = pin_path(hub, pin).filter(|p| p.exists()) else {
@@ -123,7 +116,7 @@ pub fn finish(
     lines.extend(refuse_in_use(&paths, force)?);
 
     for change in &open {
-        let (_, closed) = close_change(hub, change, force, confirm)?;
+        let (_, closed) = close_change(hub, change, force, &mut |_| true)?;
         lines.extend(closed);
     }
     for pin in &feature.pins {

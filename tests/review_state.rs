@@ -570,9 +570,12 @@ fn a_finished_feature_shows_no_word() {
         stdout(&refresh(&fx, &hub)).contains("api:review(ci failed)"),
         "a word is remembered"
     );
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
 
     let out = stdout(
         &fx.hub(&hub, &["feature", "list", "--all"])

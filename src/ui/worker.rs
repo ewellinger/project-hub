@@ -186,7 +186,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                 }
                 Action::Finish { feature, force } => {
                     let mut f = hub.load_feature(feature)?;
-                    ops::finish::finish(hub, &mut f, *force, &mut |_| true)
+                    ops::finish::finish(hub, &mut f, *force)
                 }
                 Action::Remove { feature } => ops::remove::remove(hub, &hub.load_feature(feature)?),
                 Action::Pull { row: RowId::Base } => ops::pull::pull_base(hub),

@@ -662,7 +662,13 @@ fn dotted_name_gets_a_dot_free_tmux_session() {
     assert_eq!(fx.tmux_log().matches("new-session").count(), 1);
     fx.hub(
         &hub,
-        &["feature", "finish", "--feature", "app-release-v1.0.1"],
+        &[
+            "feature",
+            "finish",
+            "--force",
+            "--feature",
+            "app-release-v1.0.1",
+        ],
     )
     .assert()
     .success();

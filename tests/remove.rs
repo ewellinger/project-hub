@@ -80,9 +80,12 @@ fn remove_refuses_unmerged_and_pushed_branches_and_changes_nothing() {
     fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
         .assert()
         .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     fx.hub(&hub, &["feature", "remove", "feat-1"])
         .assert()
         .code(1)
@@ -100,9 +103,12 @@ fn remove_refuses_a_hub_branch_with_commits_and_skips_gone_branches() {
     let (fx, hub) = world();
     let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
     fx.commit_file(&hub_wt, "notes.md", "notes");
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     // Branches deleted by hand count as already removed.
     for clone in ["api-clone", "ui-clone"] {
         fx.git(&fx.project_home.join(clone), &["branch", "-D", "feat-1"]);
