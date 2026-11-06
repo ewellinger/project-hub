@@ -69,9 +69,17 @@ pub fn parse_gitlab_state(mr: &Value, approvals: &Value, discussions: &Value) ->
     let approved = if mr["detailed_merge_status"] == "requested_changes" {
         Some(Approval::Changes)
     } else {
-        approvals["approved"]
-            .as_bool()
-            .map(|a| if a { Approval::Yes } else { Approval::No })
+        // `approved` is true with no approver when the project requires none, so ask for one.
+        let by_someone = approvals["approved_by"]
+            .as_array()
+            .is_some_and(|a| !a.is_empty());
+        approvals["approved"].as_bool().map(|a| {
+            if a && by_someone {
+                Approval::Yes
+            } else {
+                Approval::No
+            }
+        })
     };
     let pipeline = mr.get("head_pipeline").and_then(|p| {
         if p.is_null() {
@@ -311,7 +319,7 @@ mod tests {
     #[test]
     fn gitlab_requested_changes_wins_over_the_approved_flag() {
         let mr = json!({"detailed_merge_status":"requested_changes"});
-        let approvals = json!({"approved":true});
+        let approvals = json!({"approved":true,"approved_by":[{"user":{"username":"ann"}}]});
         assert_eq!(
             parse_gitlab_state(&mr, &approvals, &Value::Null).approved,
             Some(Approval::Changes)
@@ -319,6 +327,17 @@ mod tests {
         assert_eq!(
             parse_gitlab_state(&json!({}), &approvals, &Value::Null).approved,
             Some(Approval::Yes)
+        );
+    }
+
+    #[test]
+    fn gitlab_approved_with_no_approver_is_not_approved() {
+        // Captured from a project that requires no approvals: nobody approved, yet `approved` is true.
+        let approvals =
+            json!({"approved":true,"approvals_required":0,"approvals_left":0,"approved_by":[]});
+        assert_eq!(
+            parse_gitlab_state(&json!({}), &approvals, &Value::Null).approved,
+            Some(Approval::No)
         );
     }
 
