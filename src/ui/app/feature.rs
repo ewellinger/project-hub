@@ -128,6 +128,10 @@ impl App {
                 Some((feature, role)) => self.start_flow(Flow::Merged { feature, role }),
                 None => Vec::new(),
             },
+            KeyCode::Char('d') => match self.role_action() {
+                Some((feature, role)) => self.start_flow(Flow::Dropped { feature, role }),
+                None => Vec::new(),
+            },
             KeyCode::Char('f') => {
                 if self.busy() {
                     return Vec::new();
@@ -749,11 +753,14 @@ pub(crate) mod tests {
     fn role_actions_are_refused_on_a_merged_role_while_busy_and_without_a_report() {
         let mut a = on_feature();
         a.update(key(KeyCode::Char('j'))); // ui, merged
-        assert!(a.update(key(KeyCode::Char('v'))).is_empty());
-        assert!(a.footer.as_ref().is_some_and(
-            |f| f.is_error && f.text == "no open change for role 'ui' in feature 'suspense'"
-        ));
-        assert!(a.overlay.is_none());
+        for c in ['v', 'd'] {
+            assert!(a.update(key(KeyCode::Char(c))).is_empty());
+            assert!(
+                a.footer.as_ref().is_some_and(|f| f.is_error
+                    && f.text == "no open change for role 'ui' in feature 'suspense'")
+            );
+            assert!(a.overlay.is_none());
+        }
         a.update(key(KeyCode::Char('k')));
         a.running = Some(Action::Finish {
             feature: "suspense".into(),
@@ -773,6 +780,13 @@ pub(crate) mod tests {
                 .as_ref()
                 .is_some_and(|f| f.text == "status not loaded yet; press r")
         );
+    }
+
+    #[test]
+    fn d_starts_the_dropped_flow() {
+        let mut a = on_feature();
+        a.update(key(KeyCode::Char('d')));
+        assert!(matches!(a.flow, Some(Flow::Dropped { .. })), "{:?}", a.flow);
     }
 
     #[test]
