@@ -334,8 +334,8 @@ pub struct App {
     pub running: Option<Action>,
     /// Setup scripts of the last `start` or `add`, as the worker reports them.
     pub setups: Vec<SetupRow>,
-    /// Title and lines of the result popup those scripts append to.
-    action_lines: Option<(String, Vec<String>)>,
+    /// Feature, title, and lines of the result popup those scripts append to.
+    action_lines: Option<(String, String, Vec<String>)>,
     /// A feature to select once the next list lands.
     pub select_next: Option<String>,
     /// The next list landing reads the forge for the selected row.
@@ -690,28 +690,35 @@ impl App {
     /// Record a setup script's state; redraw the popup it belongs to, or
     /// report a finished script in the footer when that popup is gone.
     fn setup(&mut self, feature: String, role: String, state: SetupState) {
-        match self
+        let index = match self
             .setups
-            .iter_mut()
-            .find(|r| r.feature == feature && r.role == role)
+            .iter()
+            .position(|r| r.feature == feature && r.role == role)
         {
-            Some(row) => row.state = state,
-            None => self.setups.push(SetupRow {
-                feature,
-                role,
-                state,
-            }),
-        }
+            Some(i) => {
+                self.setups[i].state = state;
+                i
+            }
+            None => {
+                self.setups.push(SetupRow {
+                    feature: feature.clone(),
+                    role,
+                    state,
+                });
+                self.setups.len() - 1
+            }
+        };
         let home = hub::env::home_dir();
         let popup_open = matches!(
             (&self.overlay, &self.action_lines),
-            (Some(Overlay::Result { title, .. }), Some((action, _))) if title == action
+            (Some(Overlay::Result { title, .. }), Some((f, action, _)))
+                if title == action && *f == feature
         );
         if popup_open {
-            let (title, action_lines) = self.action_lines.clone().expect("matched above");
+            let (_, title, action_lines) = self.action_lines.clone().expect("matched above");
             let mut lines = action_lines;
             let mut is_error = false;
-            for row in &self.setups {
+            for row in self.setups.iter().filter(|r| r.feature == feature) {
                 match &row.state {
                     SetupState::Running { script } => {
                         lines.push(format!("{}  setup running…  {script}", row.role));
@@ -728,11 +735,7 @@ impl App {
                 }
             }
             self.overlay = Some(Overlay::result(title, lines, is_error));
-        } else if let Some(SetupRow {
-            state: SetupState::Done(outcome),
-            ..
-        }) = self.setups.last()
-        {
+        } else if let SetupState::Done(outcome) = &self.setups[index].state {
             let line = hub::setup::result_lines(outcome, 0, home.as_deref())
                 .remove(0)
                 .trim_start()
@@ -821,12 +824,18 @@ impl App {
         self.running = None;
         let ok = result.is_ok();
         if let Ok(lines) = &result
-            && matches!(action, Action::Start { .. } | Action::Add { .. })
+            && let Some(feature) = match &action {
+                Action::Start { name, .. } => Some(name),
+                Action::Add { feature, .. } => Some(feature),
+                _ => None,
+            }
         {
             // The worker runs this action's setup scripts next; their rows
-            // append to the popup these lines open.
-            self.setups.clear();
-            self.action_lines = Some((action.to_string(), lines.clone()));
+            // append to the popup these lines open. Rows of an earlier
+            // action's scripts still running stay, so the quit guard holds.
+            self.setups
+                .retain(|r| matches!(r.state, SetupState::Running { .. }));
+            self.action_lines = Some((feature.clone(), action.to_string(), lines.clone()));
         }
         match result {
             Ok(lines) if lines.len() == 1 => self.say(lines[0].clone(), false),
@@ -1160,6 +1169,59 @@ mod tests {
         ))));
         a.update(key(KeyCode::Char('q')));
         assert!(a.quit);
+    }
+
+    /// Two starts overlap: the second's popup shows only its own rows, and
+    /// the first's still-running script keeps the quit guard up.
+    #[test]
+    fn overlapping_setups_keep_their_rows_and_the_quit_guard_apart() {
+        let mut a = app();
+        start_beta(&mut a);
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        a.update(key(KeyCode::Esc));
+        let gamma = Action::Start {
+            name: "gamma".into(),
+            repos: vec![("ui".into(), None)],
+        };
+        a.run(gamma.clone());
+        a.update(Event::Done {
+            action: gamma,
+            result: Ok(vec!["Hub worktree: /g".into(), "ui: gamma at /h".into()]),
+        });
+        a.update(Event::Setup {
+            feature: "gamma".into(),
+            role: "ui".into(),
+            state: SetupState::Running {
+                script: "scripts/ui.sh".into(),
+            },
+        });
+        a.update(Event::Setup {
+            feature: "gamma".into(),
+            role: "ui".into(),
+            state: SetupState::Done(hub::setup::Outcome {
+                role: "ui".into(),
+                status: hub::setup::Status::Ok,
+                elapsed: Duration::from_secs(1),
+                log: PathBuf::from("/x/ui.log"),
+            }),
+        });
+        match &a.overlay {
+            Some(Overlay::Result { lines, .. }) => {
+                assert_eq!(lines.len(), 3, "only gamma's row: {lines:?}");
+                assert_eq!(lines[2], "ui: setup ok (1.0s)");
+            }
+            other => panic!("{other:?}"),
+        }
+        assert_eq!(a.setup_in_flight(), Some("api"), "beta's script still runs");
+        a.update(key(KeyCode::Esc));
+        a.update(setup_event(SetupState::Done(setup_outcome(
+            hub::setup::Status::Failed(2),
+        ))));
+        assert!(a.footer.as_ref().is_some_and(|f| f.is_error
+            && f.text.starts_with("api: setup failed (exit 2)")));
+        assert!(a.setup_in_flight().is_none());
     }
 
     #[test]

@@ -346,7 +346,9 @@ fn print_lines(lines: Vec<String>) {
 /// printing each result as it lands. A failure is reported, not returned:
 /// the feature is complete. Runs after the hub lock is released, so a slow
 /// script blocks nobody.
-fn run_setup(hub: &Hub, feature: &str, roles: &[String]) -> Result<()> {
+fn run_setup(hub: &mut Hub, feature: &str, roles: &[String]) -> Result<()> {
+    // The op read `hub.json` fresh inside the lock; so must the setup.
+    hub.reload_manifest()?;
     let f = hub.load_feature(feature)?;
     run_jobs(&hub::setup::jobs(hub, &f, roles, false));
     Ok(())
@@ -545,13 +547,13 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         repos,
                         freeze,
                     };
-                    let after = hub.clone();
+                    let mut after = hub.clone();
                     let lines = hub.with_lock(|hub| ops::start::start(hub, &opts))?;
                     print_lines(lines);
                     if !no_setup {
                         let roles: Vec<String> =
                             opts.repos.iter().map(|(r, _)| r.clone()).collect();
-                        run_setup(&after, &opts.name, &roles)?;
+                        run_setup(&mut after, &opts.name, &roles)?;
                     }
                     Ok(Vec::new())
                 }
@@ -566,13 +568,13 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         name,
                         checkout,
                     };
-                    let after = hub.clone();
+                    let mut after = hub.clone();
                     let (name, lines) =
                         hub.with_lock(|hub| ops::start_review::start_review(hub, &opts))?;
                     print_lines(lines);
                     if !no_setup {
                         let role = after.load_feature(&name)?.changes[0].role.clone();
-                        run_setup(&after, &name, &[role])?;
+                        run_setup(&mut after, &name, &[role])?;
                     }
                     Ok(Vec::new())
                 }
@@ -616,7 +618,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         base: base.as_deref(),
                         from_latest,
                     };
-                    let after = hub.clone();
+                    let mut after = hub.clone();
                     let (name, lines) = hub.with_lock(|hub| {
                         let mut f = hub.resolve_feature(feature.as_deref())?;
                         let lines = ops::add::add(hub, &mut f, &opts)?;
@@ -624,7 +626,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     })?;
                     print_lines(lines);
                     if !no_setup {
-                        run_setup(&after, &name, std::slice::from_ref(&role))?;
+                        run_setup(&mut after, &name, std::slice::from_ref(&role))?;
                     }
                     Ok(Vec::new())
                 }

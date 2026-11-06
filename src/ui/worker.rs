@@ -119,7 +119,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
     thread::spawn(move || {
         // `with_lock` consumes its hub; the setup scripts run on this copy
         // after the lock is gone.
-        let after = hub.clone();
+        let mut after = hub.clone();
         let result = catch_unwind(AssertUnwindSafe(|| {
             hub.with_lock(|hub| match &action {
                 Action::Start { name, repos } => ops::start::start(
@@ -207,7 +207,8 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
             action: action.clone(),
             result,
         });
-        if ok {
+        // The op read `hub.json` fresh inside the lock; so must the setup.
+        if ok && after.reload_manifest().is_ok() {
             run_setup(&after, &action, &tx);
         }
     });

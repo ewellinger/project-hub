@@ -280,10 +280,17 @@ impl Hub {
                 lock_path.display()
             ))
         })?;
-        self.manifest = Manifest::load(&self.manifest_path())?;
+        self.reload_manifest()?;
         let result = f(&self);
         drop(guard);
         result
+    }
+
+    /// Re-read `hub.json`: a long-lived `Hub` (the dashboard's) otherwise
+    /// keeps the manifest as it was at startup.
+    pub fn reload_manifest(&mut self) -> Result<()> {
+        self.manifest = Manifest::load(&self.manifest_path())?;
+        Ok(())
     }
 }
 
@@ -332,6 +339,26 @@ mod tests {
 
     fn set_mode(path: &Path, mode: u32) {
         std::fs::set_permissions(path, std::fs::Permissions::from_mode(mode)).unwrap();
+    }
+
+    #[test]
+    fn reload_manifest_picks_up_a_changed_hub_json() {
+        let fx = fixture();
+        let mut hub = Hub::locate(&fx.hub_dir, fx.env.clone()).unwrap();
+        assert!(hub.manifest.repos.is_empty());
+        let mut m = Manifest::new("acme", None);
+        m.repos.push(RepoSpec {
+            role: "api".into(),
+            clone: "api-clone".into(),
+            remote: "r".into(),
+            base: "main".into(),
+            branch_template: "{feature}".into(),
+            description: String::new(),
+            setup: Some("scripts/api.sh".into()),
+        });
+        m.save(&fx.hub_dir.join(MANIFEST_FILE)).unwrap();
+        hub.reload_manifest().unwrap();
+        assert_eq!(hub.manifest.repos[0].setup.as_deref(), Some("scripts/api.sh"));
     }
 
     #[test]
