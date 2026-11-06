@@ -1219,4 +1219,152 @@ mod tests {
         assert!(!style.add_modifier.contains(Modifier::ITALIC), "{style:?}");
         assert!(!style.add_modifier.contains(Modifier::DIM), "{style:?}");
     }
+
+    const MR: &str = "https://gitlab.example.com/g/proj/-/merge_requests/412";
+
+    /// An api row in review on `MR`, with state read now when `state`.
+    fn review_row(state: bool) -> StatusRow {
+        use hub::review_state::{Approval, Fields, Pipeline, RequestStatus, ReviewState};
+        let mut r = row("api", "feature/x", "review", false, None);
+        r.review_url = Some(MR.into());
+        r.review = state.then(|| ReviewState {
+            url: MR.into(),
+            read_at: hub::ops::review_state::now_secs(),
+            fields: Fields {
+                status: Some(RequestStatus::Open),
+                approved: Some(Approval::No),
+                pipeline: Some(Pipeline::Failed),
+                threads: Some(2),
+                threads_more: false,
+                conflicts: Some(false),
+            },
+        });
+        r
+    }
+
+    /// The dashboard with `suspense` selected and this report delivered.
+    fn preview(status: FeatureStatus, rows: Vec<StatusRow>) -> App {
+        let mut a = App::new("acme", vec![summary("suspense", status)]);
+        a.show_finished = true;
+        a.rebuild_rows(None);
+        a.update(Event::Key(KeyEvent::new(
+            KeyCode::Char('j'),
+            KeyModifiers::NONE,
+        )));
+        a.update(Event::Report {
+            row: RowId::Feature("suspense".into()),
+            r#gen: 1,
+            result: Ok(Report::Feature {
+                feature: Feature::new("suspense", "acme-suspense"),
+                report: StatusReport {
+                    feature: "suspense".into(),
+                    checkout: "acme-suspense".into(),
+                    status,
+                    rows,
+                    warnings: vec![],
+                    drift: false,
+                },
+            }),
+        });
+        a
+    }
+
+    #[test]
+    fn word_line_puts_the_word_left_of_the_stage() {
+        let line = dashboard::word_line("api", Some("ci failed"), "review", 29);
+        assert_eq!(line, "  api       ci failed  review");
+        assert_eq!(line.chars().count(), 29);
+    }
+
+    #[test]
+    fn word_line_drops_the_word_when_the_pane_is_too_narrow() {
+        assert_eq!(
+            dashboard::word_line("api", Some("ci failed"), "review", 14),
+            dashboard::role_line("api", "review", 14)
+        );
+    }
+
+    #[test]
+    fn features_pane_shows_the_review_word() {
+        let mut s = summary("suspense", FeatureStatus::Open);
+        s.roles[0].review = Some(hub::ops::review_state::ReviewWord::CiFailed);
+        let a = App::new("acme", vec![s]);
+        let rows = lines(100, 30, &a);
+        assert!(
+            rows.iter()
+                .any(|l| l.contains("  api ") && l.contains("ci failed") && l.contains("review│")),
+            "{}",
+            joined(&rows)
+        );
+        assert_eq!(
+            find_style(100, 30, &a, "ci failed").fg,
+            Some(Color::Red),
+            "the word takes its colour"
+        );
+    }
+
+    #[test]
+    fn the_preview_shows_the_review_section_under_the_role_table() {
+        let a = preview(FeatureStatus::Open, vec![review_row(true)]);
+        let out = lines(100, 30, &a);
+        let text = joined(&out);
+        for needle in ["REVIEW", "!412", "failed", "review state read"] {
+            assert!(text.contains(needle), "{needle}: {text}");
+        }
+        let at = |n: &str| out.iter().position(|l| l.contains(n)).unwrap();
+        assert!(at("ROLE") < at("REVIEW"), "{text}");
+        assert_eq!(at("REVIEW"), at("ROLE") + 3, "one blank row: {text}");
+        assert_eq!(find_style(100, 30, &a, "failed").fg, Some(Color::Red));
+    }
+
+    #[test]
+    fn the_preview_has_no_review_section_without_a_review_row() {
+        let a = preview(
+            FeatureStatus::Open,
+            vec![row("api", "feature/x", "review", false, None)],
+        );
+        let text = joined(&lines(100, 30, &a));
+        assert!(text.contains("ROLE"), "{text}");
+        assert!(!text.contains("REVIEW"), "{text}");
+    }
+
+    #[test]
+    fn the_preview_of_a_finished_feature_has_no_review_section() {
+        let a = preview(FeatureStatus::Finished, vec![review_row(true)]);
+        let text = joined(&lines(100, 30, &a));
+        assert!(text.contains("ROLE"), "{text}");
+        assert!(!text.contains("REVIEW"), "{text}");
+        assert!(!text.contains("review state read"), "{text}");
+    }
+
+    #[test]
+    fn the_feature_view_shows_the_review_section() {
+        use crate::ui::app::feature::tests::{on_report, suspense};
+        let Report::Feature {
+            feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        report.rows[1] = review_row(true);
+        let a = on_report(Report::Feature { feature, report });
+        let out = lines(100, 30, &a);
+        let text = joined(&out);
+        assert!(text.contains(" roles "), "the feature view: {text}");
+        for needle in ["REVIEW", "!412", "2 open", "review state read"] {
+            assert!(text.contains(needle), "{needle}: {text}");
+        }
+        let at = |n: &str| out.iter().position(|l| l.contains(n)).unwrap();
+        assert!(at("ROLE") < at("REVIEW"), "{text}");
+    }
+
+    #[test]
+    fn a_review_row_without_state_shows_question_marks() {
+        let a = preview(FeatureStatus::Open, vec![review_row(false)]);
+        let out = lines(100, 30, &a);
+        let line = out.iter().find(|l| l.contains("!412")).unwrap();
+        assert_eq!(line.matches('?').count(), 5, "{line}");
+        assert!(!joined(&out).contains("review state read"));
+    }
 }

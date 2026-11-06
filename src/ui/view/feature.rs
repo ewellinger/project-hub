@@ -5,14 +5,17 @@
 //! Frozen reference rows are styled read-only (`dashboard::read_only`).
 
 use ratatui::Frame;
-use ratatui::layout::{Constraint, Layout, Rect};
+use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};
 use ratatui::text::Line;
 use ratatui::widgets::{Paragraph, TableState, Wrap};
 
 use crate::ui::app::feature::display_order;
 use crate::ui::app::{App, RowId, Screen};
-use crate::ui::view::dashboard::{read_only, report_tail, status_prologue, status_table};
+use crate::ui::view::dashboard::{
+    read_only, report_tail, review_extra, review_layout, review_table, status_prologue,
+    status_table,
+};
 use hub::env::home_dir;
 use hub::feature::short_sha;
 use hub::ops::status::StatusRow;
@@ -31,9 +34,9 @@ pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
 
     let order = display_order(&report.rows);
     let rows: Vec<&StatusRow> = order.iter().map(|&i| &report.rows[i]).collect();
+    let review_section = review_table(&rows);
     let table_height = rows.len() as u16 + 1;
-    let [table_area, tail_area] =
-        Layout::vertical([Constraint::Length(table_height), Constraint::Min(0)]).areas(inner);
+    let [table_area, review_area, tail_area] = review_layout(inner, table_height, &review_section);
     let table = status_table(&rows, home_dir().as_deref())
         .highlight_symbol("▸ ")
         .row_highlight_style(Style::new().add_modifier(Modifier::BOLD | Modifier::REVERSED));
@@ -45,6 +48,7 @@ pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
         .and_then(|change| order.iter().position(|&row| row == change + 1));
     let mut state = TableState::default().with_selected(highlighted);
     frame.render_stateful_widget(table, table_area, &mut state);
+    let age = review_extra(&rows, review_section, frame, review_area);
 
     let review: Vec<Line> = app
         .selected_change()
@@ -74,7 +78,7 @@ pub(super) fn render_feature(app: &App, frame: &mut Frame, area: Rect) {
         })
         .into_iter()
         .collect();
-    let extra = review.into_iter().chain(reference).collect();
+    let extra = age.into_iter().chain(review).chain(reference).collect();
     let tail = report_tail(app, &id, &report.rows, &report.warnings, attach, extra);
     frame.render_widget(Paragraph::new(tail).wrap(Wrap { trim: false }), tail_area);
 }
