@@ -1,7 +1,7 @@
 //! Dashboard state and the pure update function. No terminal, no threads,
 //! no git: everything here is unit-testable with synthetic events.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
@@ -11,6 +11,7 @@ use hub::error::HubError;
 use hub::feature::{Feature, FeatureStatus};
 use hub::manifest::RepoSpec;
 use hub::ops::list::FeatureSummary;
+use hub::ops::review_state::{RefreshAll, word};
 use hub::ops::status::{BaseStatusReport, StatusReport};
 use hub::ops::suggest::BranchRow;
 
@@ -217,6 +218,7 @@ pub enum Event {
         name: String,
         result: Result<String, HubError>,
     },
+    Reviews(Result<RefreshAll, HubError>),
 }
 
 /// What the event loop must do on the app's behalf. `update` never does
@@ -227,6 +229,12 @@ pub enum Effect {
         row: RowId,
         r#gen: u64,
     },
+    /// A `Request` that also reads review state from the forge.
+    RequestForge {
+        row: RowId,
+        r#gen: u64,
+    },
+    RefreshReviews,
     OpenWorkspace(RowId),
     /// Put `text` on the clipboard; `label` names it in the footer.
     Copy {
@@ -290,6 +298,10 @@ pub struct App {
     pub cache: HashMap<RowId, Cached>,
     /// Generation of the newest outstanding request per row.
     pub in_flight: HashMap<RowId, u64>,
+    /// Rows in `in_flight` whose request reads the forge.
+    pub forge_in_flight: HashSet<RowId>,
+    /// A `refresh_all` is running.
+    pub reviews_in_flight: bool,
     /// Last failure per row; cleared by the next success.
     pub errors: HashMap<RowId, String>,
     pub footer: Option<Footer>,
@@ -301,6 +313,8 @@ pub struct App {
     pub running: Option<Action>,
     /// A feature to select once the next list lands.
     pub select_next: Option<String>,
+    /// The next list landing reads the forge for the selected row.
+    forge_next: bool,
     next_gen: u64,
 }
 
@@ -319,6 +333,8 @@ impl App {
             selected: 0,
             cache: HashMap::new(),
             in_flight: HashMap::new(),
+            forge_in_flight: HashSet::new(),
+            reviews_in_flight: false,
             errors: HashMap::new(),
             footer: None,
             spinner: 0,
@@ -327,6 +343,7 @@ impl App {
             flow: None,
             running: None,
             select_next: None,
+            forge_next: false,
             next_gen: 0,
         };
         app.set_features(features);
@@ -352,10 +369,32 @@ impl App {
     fn request_fresh(&mut self, id: RowId) -> Vec<Effect> {
         self.next_gen += 1;
         self.in_flight.insert(id.clone(), self.next_gen);
-        vec![Effect::Request {
-            row: id,
-            r#gen: self.next_gen,
-        }]
+        let r#gen = self.next_gen;
+        if self.forge_in_flight.contains(&id) {
+            vec![Effect::RequestForge { row: id, r#gen }]
+        } else {
+            vec![Effect::Request { row: id, r#gen }]
+        }
+    }
+
+    /// Request `id`'s status with a forge read unless one is already in
+    /// flight, superseding a plain request.
+    pub fn request_forge(&mut self, id: RowId) -> Vec<Effect> {
+        if self.forge_in_flight.contains(&id) {
+            return Vec::new();
+        }
+        self.forge_in_flight.insert(id.clone());
+        self.request_fresh(id)
+    }
+
+    /// The request a landed list makes: a forge read after dashboard `r`.
+    fn request_listed(&mut self) -> Vec<Effect> {
+        if std::mem::take(&mut self.forge_next) {
+            let id = self.selected_row().id.clone();
+            self.request_forge(id)
+        } else {
+            self.request_selected()
+        }
     }
 
     /// Request the selected row's status unless one is already in flight.
@@ -393,14 +432,19 @@ impl App {
             Event::Report { row, r#gen, result } => {
                 if !Self::is_known(&self.features, &row) {
                     self.in_flight.remove(&row);
+                    self.forge_in_flight.remove(&row);
                     return Vec::new();
                 }
                 if self.in_flight.get(&row) != Some(&r#gen) {
                     return Vec::new();
                 }
                 self.in_flight.remove(&row);
+                self.forge_in_flight.remove(&row);
                 match result {
                     Ok(report) => {
+                        if let Report::Feature { report: status, .. } = &report {
+                            self.set_review_words(status);
+                        }
                         self.errors.remove(&row);
                         self.cache.insert(
                             row,
@@ -421,12 +465,13 @@ impl App {
                 if let Some(name) = self.select_next.take() {
                     self.select_row(&RowId::Feature(name));
                 }
-                self.request_selected()
+                self.request_listed()
             }
             Event::List(Err(err)) => {
                 self.say(err.to_string(), true);
-                self.request_selected()
+                self.request_listed()
             }
+            Event::Reviews(result) => self.reviews(result),
             Event::Opened(Ok(path)) => {
                 self.say(format!("Opened {}", path.display()), false);
                 Vec::new()
@@ -560,6 +605,8 @@ impl App {
         let features = &self.features;
         self.cache.retain(|id, _| Self::is_known(features, id));
         self.in_flight.retain(|id, _| Self::is_known(features, id));
+        self.forge_in_flight
+            .retain(|id| Self::is_known(features, id));
         self.errors.retain(|id, _| Self::is_known(features, id));
     }
 
@@ -615,6 +662,51 @@ impl App {
         }
         self.running = Some(action.clone());
         vec![Effect::Run(action)]
+    }
+
+    /// Copy the review words of a feature report into that feature's list
+    /// summary, so the dashboard row shows what the report read.
+    fn set_review_words(&mut self, status: &StatusReport) {
+        let Some(summary) = self.features.iter_mut().find(|s| s.name == status.feature) else {
+            return;
+        };
+        for role in &mut summary.roles {
+            role.review = status
+                .rows
+                .iter()
+                .find(|r| r.role == role.role && r.stage == "review")
+                .and_then(|r| r.review.as_ref())
+                .and_then(|s| word(&s.fields));
+        }
+        let keep = self.selected_row().id.clone();
+        self.rebuild_rows(Some(&keep));
+    }
+
+    fn reviews(&mut self, result: Result<RefreshAll, HubError>) -> Vec<Effect> {
+        self.reviews_in_flight = false;
+        let all = match result {
+            Ok(all) => all,
+            Err(err) => {
+                self.say(err.to_string(), true);
+                return Vec::new();
+            }
+        };
+        let n = all.features;
+        let read = format!(
+            "review state read for {n} feature{}",
+            if n == 1 { "" } else { "s" }
+        );
+        let w = all.warnings.len();
+        if w == 0 {
+            self.say(read, false);
+        } else if self.overlay.is_none() && self.flow.is_none() {
+            self.overlay = Some(Overlay::result("review state".into(), all.warnings, true));
+        } else {
+            // An open wizard's overlay holds what the user typed; keep it.
+            let text = format!("{read}; {w} warning{}", if w == 1 { "" } else { "s" });
+            self.say(text, true);
+        }
+        vec![Effect::ReloadList]
     }
 
     fn done(&mut self, action: Action, result: Result<Vec<String>, HubError>) -> Vec<Effect> {
@@ -1143,7 +1235,7 @@ mod tests {
         assert_eq!(a.selected_row().id, RowId::Feature("alpha".into()));
         assert_eq!(
             effects,
-            vec![Effect::Request {
+            vec![Effect::RequestForge {
                 row: RowId::Feature("alpha".into()),
                 r#gen: 1
             }],
@@ -1328,7 +1420,7 @@ mod tests {
         assert_eq!(a.selected, 1, "selection clamped to the last row");
         assert_eq!(
             effects,
-            vec![Effect::Request {
+            vec![Effect::RequestForge {
                 row: RowId::Feature("alpha".into()),
                 r#gen: 3
             }]
@@ -1777,5 +1869,152 @@ mod tests {
                 r#gen: 1
             }]
         );
+    }
+
+    fn footer_is(a: &App, text: &str, is_error: bool) -> bool {
+        a.footer
+            .as_ref()
+            .is_some_and(|f| f.text == text && f.is_error == is_error)
+    }
+
+    #[test]
+    fn moving_the_cursor_requests_status_without_the_forge() {
+        let mut a = app();
+        assert_eq!(
+            a.update(key(KeyCode::Down)),
+            vec![Effect::Request {
+                row: RowId::Feature("alpha".into()),
+                r#gen: 1
+            }]
+        );
+        assert!(a.forge_in_flight.is_empty());
+    }
+
+    #[test]
+    fn enter_reads_the_forge_even_when_a_plain_request_is_in_flight() {
+        let mut a = app();
+        let id = RowId::Feature("alpha".into());
+        a.update(key(KeyCode::Down)); // plain request, gen 1, in flight
+        assert_eq!(
+            a.update(key(KeyCode::Enter)),
+            vec![Effect::RequestForge {
+                row: id.clone(),
+                r#gen: 2
+            }]
+        );
+        a.update(Event::Report {
+            row: id.clone(),
+            r#gen: 1,
+            result: Ok(empty_feature_report("alpha")),
+        });
+        assert!(!a.cache.contains_key(&id), "the plain read is dropped");
+        assert_eq!(a.in_flight.get(&id), Some(&2));
+        assert!(a.forge_in_flight.contains(&id));
+        a.update(Event::Report {
+            row: id.clone(),
+            r#gen: 2,
+            result: Ok(empty_feature_report("alpha")),
+        });
+        assert!(a.cache.contains_key(&id));
+        assert!(a.forge_in_flight.is_empty());
+    }
+
+    #[test]
+    fn dashboard_r_reloads_then_reads_the_forge_for_the_selected_row() {
+        let mut a = app();
+        let id = RowId::Feature("alpha".into());
+        a.update(key(KeyCode::Down));
+        a.update(Event::Report {
+            row: id.clone(),
+            r#gen: 1,
+            result: Ok(empty_feature_report("alpha")),
+        });
+        assert_eq!(a.update(key(KeyCode::Char('r'))), vec![Effect::ReloadList]);
+        let list = || Event::List(Ok(vec![summary("alpha", FeatureStatus::Open)]));
+        assert_eq!(
+            a.update(list()),
+            vec![Effect::RequestForge {
+                row: id.clone(),
+                r#gen: 2
+            }]
+        );
+        a.update(Event::Report {
+            row: id.clone(),
+            r#gen: 2,
+            result: Ok(empty_feature_report("alpha")),
+        });
+        assert_eq!(
+            a.update(list()),
+            vec![Effect::Request { row: id, r#gen: 3 }]
+        );
+    }
+
+    #[test]
+    fn shift_r_reads_every_feature_once_and_reloads_the_list_when_done() {
+        let mut a = app();
+        assert_eq!(
+            a.update(key(KeyCode::Char('R'))),
+            vec![Effect::RefreshReviews]
+        );
+        assert!(footer_is(&a, "reading review state…", false));
+        assert!(a.update(key(KeyCode::Char('R'))).is_empty());
+        let effects = a.update(Event::Reviews(Ok(RefreshAll {
+            features: 2,
+            warnings: vec![],
+        })));
+        assert_eq!(effects, vec![Effect::ReloadList]);
+        assert!(footer_is(&a, "review state read for 2 features", false));
+        assert!(a.overlay.is_none());
+        assert_eq!(
+            a.update(key(KeyCode::Char('R'))),
+            vec![Effect::RefreshReviews]
+        );
+        assert!(
+            a.update(Event::Reviews(Err(HubError::Precondition("boom".into()))))
+                .is_empty()
+        );
+        assert!(footer_is(&a, "boom", true));
+        assert_eq!(
+            a.update(key(KeyCode::Char('R'))),
+            vec![Effect::RefreshReviews]
+        );
+    }
+
+    #[test]
+    fn review_warnings_from_shift_r_open_a_result_overlay() {
+        let mut a = app();
+        a.update(key(KeyCode::Char('R')));
+        let warnings = vec!["a".to_string(), "b".to_string()];
+        let effects = a.update(Event::Reviews(Ok(RefreshAll {
+            features: 1,
+            warnings: warnings.clone(),
+        })));
+        assert_eq!(effects, vec![Effect::ReloadList]);
+        assert_eq!(
+            a.overlay,
+            Some(Overlay::result("review state".into(), warnings, true))
+        );
+    }
+
+    #[test]
+    fn review_warnings_do_not_replace_an_open_wizard() {
+        let mut a = app();
+        a.update(key(KeyCode::Char('R')));
+        a.update(key(KeyCode::Char('n')));
+        assert!(a.flow.is_some());
+        let wizard = a.overlay.clone();
+        assert!(wizard.is_some());
+        a.update(Event::Reviews(Ok(RefreshAll {
+            features: 2,
+            warnings: vec!["w".into()],
+        })));
+        assert!(a.flow.is_some());
+        assert!(!matches!(a.overlay, Some(Overlay::Result { .. })));
+        assert_eq!(a.overlay, wizard);
+        assert!(footer_is(
+            &a,
+            "review state read for 2 features; 1 warning",
+            true
+        ));
     }
 }

@@ -76,7 +76,11 @@ pub const DASHBOARD_HELP: &[(&str, &str)] = &[
     ("⏎", "open the feature"),
     ("n", "start a new feature"),
     ("a", "show or hide finished features"),
-    ("r", "reload the list and refresh the selected row"),
+    (
+        "r",
+        "reload the list and refresh the selected row, with its review state",
+    ),
+    ("R", "read review state for every open feature"),
     ("o", "open the selected row's workspace"),
     ("p", "pull the selected row's checkouts, fast-forward only"),
     (
@@ -106,7 +110,7 @@ pub const FEATURE_HELP: &[(&str, &str)] = &[
     ("f", "finish the feature"),
     ("o", "open the feature's workspace"),
     ("p", "pull every open role, fast-forward only"),
-    ("r", "refresh"),
+    ("r", "refresh, with review state"),
     ("?", "this help"),
     ("Esc q", "back to the dashboard"),
 ];

@@ -80,7 +80,11 @@ fn event_loop(
 fn run_effects(hub: &Hub, app: &mut App, effects: &mut VecDeque<Effect>, tx: &Sender<Event>) {
     while let Some(effect) = effects.pop_front() {
         match effect {
-            Effect::Request { row, r#gen } => worker::request(hub, row, r#gen, tx.clone()),
+            Effect::Request { row, r#gen } => worker::request(hub, row, r#gen, false, tx.clone()),
+            Effect::RequestForge { row, r#gen } => {
+                worker::request(hub, row, r#gen, true, tx.clone())
+            }
+            Effect::RefreshReviews => worker::refresh_reviews(hub, tx.clone()),
             Effect::OpenWorkspace(row) => worker::open_workspace(hub, row, tx.clone()),
             Effect::Copy { label, text } => worker::copy(label, text, tx.clone()),
             Effect::ReloadList => {

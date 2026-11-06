@@ -12,24 +12,41 @@ use hub::feature::Feature;
 use hub::hub::Hub;
 use hub::ops;
 use hub::ops::resolve::AddOptions;
+use hub::ops::review_state::{self, Source};
 use hub::ops::start::StartOptions;
 use hub::ops::suggest;
 
 use crate::ui::app::{Action, Event, Report, RowId};
 
 /// Run the row's status on a detached thread and send one `Event::Report`
-/// tagged with `gen`. The app drops stale generations, so a thread that
-/// outlives the request it served is harmless.
-pub fn request(hub: &Hub, row: RowId, r#gen: u64, tx: Sender<Event>) {
+/// tagged with `gen`. A feature's review state is read from the forge when
+/// `forge` is set, else the remembered one. The app drops stale
+/// generations, so a thread that outlives the request it served is harmless.
+pub fn request(hub: &Hub, row: RowId, r#gen: u64, forge: bool, tx: Sender<Event>) {
     let hub = hub.clone();
     thread::spawn(move || {
         let result = match &row {
             RowId::Base => ops::status::base_status(&hub).map(Report::Base),
             RowId::Feature(name) => hub.load_feature(name).and_then(|f| {
-                ops::status::status(&hub, &f).map(|report| Report::Feature { feature: f, report })
+                let mut report = ops::status::status(&hub, &f)?;
+                let source = if forge {
+                    Source::Forge
+                } else {
+                    Source::Remembered
+                };
+                review_state::attach(&hub, &f, &mut report, source);
+                Ok(Report::Feature { feature: f, report })
             }),
         };
         let _ = tx.send(Event::Report { row, r#gen, result });
+    });
+}
+
+/// `review_state::refresh_all` on a detached thread; sends one `Event::Reviews`.
+pub fn refresh_reviews(hub: &Hub, tx: Sender<Event>) {
+    let hub = hub.clone();
+    thread::spawn(move || {
+        let _ = tx.send(Event::Reviews(review_state::refresh_all(&hub)));
     });
 }
 
