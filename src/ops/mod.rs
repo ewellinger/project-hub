@@ -10,6 +10,7 @@ pub mod remove;
 pub mod repo;
 pub mod resolve;
 pub mod review;
+pub mod review_state;
 pub mod session;
 pub mod set_base;
 pub mod start;
@@ -107,9 +108,41 @@ fn render_table(
         .collect()
 }
 
+/// An elapsed time at the precision a glance needs: seconds under a minute,
+/// whole minutes under an hour, hours and minutes beyond that.
+pub fn format_age(age: std::time::Duration) -> String {
+    let secs = age.as_secs();
+    match secs {
+        s if s < 60 => format!("{s}s"),
+        s if s < 3600 => format!("{}m", s / 60),
+        s => format!("{}h {}m", s / 3600, (s % 3600) / 60),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use comfy_table::{Cell, Color};
+    use std::time::Duration;
+
+    use super::format_age;
+
+    #[test]
+    fn format_age_scales_seconds_minutes_and_hours() {
+        assert_eq!(format_age(Duration::from_secs(0)), "0s");
+        assert_eq!(format_age(Duration::from_secs(12)), "12s");
+        assert_eq!(format_age(Duration::from_secs(59)), "59s");
+        assert_eq!(format_age(Duration::from_secs(60)), "1m");
+        assert_eq!(format_age(Duration::from_secs(37 * 60 + 5)), "37m");
+        assert_eq!(format_age(Duration::from_secs(3600)), "1h 0m");
+        assert_eq!(
+            format_age(Duration::from_secs(3600 + 12 * 60 + 9)),
+            "1h 12m"
+        );
+        assert_eq!(
+            format_age(Duration::from_secs(26 * 3600 + 3 * 60)),
+            "26h 3m"
+        );
+    }
 
     #[test]
     fn redirected_table_aligns_columns_without_decoration() {

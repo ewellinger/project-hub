@@ -425,9 +425,49 @@ pub fn parse_github(url: &ReviewUrl, pr: &serde_json::Value) -> Result<ReviewInf
 }
 
 /// `<program> api --hostname HOST --method GET ENDPOINT`, parsed as JSON.
-fn api_get(program: &str, host: &str, endpoint: &str) -> Result<serde_json::Value> {
+pub(crate) fn api_get(program: &str, host: &str, endpoint: &str) -> Result<serde_json::Value> {
+    api(
+        program,
+        host,
+        endpoint,
+        &["api", "--hostname", host, "--method", "GET", endpoint],
+    )
+}
+
+/// `gh api graphql` with the three variables the query takes.
+pub(crate) fn api_graphql(
+    host: &str,
+    query: &str,
+    owner: &str,
+    name: &str,
+    number: u64,
+) -> Result<serde_json::Value> {
+    api(
+        "gh",
+        host,
+        "graphql",
+        &[
+            "api",
+            "graphql",
+            "--hostname",
+            host,
+            "-f",
+            &format!("query={query}"),
+            "-f",
+            &format!("owner={owner}"),
+            "-f",
+            &format!("name={name}"),
+            "-F",
+            &format!("number={number}"),
+        ],
+    )
+}
+
+/// Run `<program> ARGS` and parse its output as JSON; `endpoint` names the
+/// call in errors.
+fn api(program: &str, host: &str, endpoint: &str, args: &[&str]) -> Result<serde_json::Value> {
     let out = Command::new(program)
-        .args(["api", "--hostname", host, "--method", "GET", endpoint])
+        .args(args)
         .output()
         .map_err(|e| {
             if e.kind() == std::io::ErrorKind::NotFound {
@@ -439,7 +479,12 @@ fn api_get(program: &str, host: &str, endpoint: &str) -> Result<serde_json::Valu
             }
         })?;
     if !out.status.success() {
-        let stderr = String::from_utf8_lossy(&out.stderr).trim().to_string();
+        // The text reaches the terminal as a warning; keep only its lines.
+        let stderr: String = String::from_utf8_lossy(&out.stderr)
+            .trim()
+            .chars()
+            .filter(|c| *c == '\n' || !c.is_control())
+            .collect();
         return Err(HubError::Precondition(format!(
             "{program} api {endpoint} on {host} failed: {stderr}\n\
              check `{program} auth status --hostname {host}` and that the review exists and is readable"
@@ -491,6 +536,19 @@ mod tests {
             branch_template: "{feature}".into(),
             description: String::new(),
         }
+    }
+
+    #[test]
+    fn forge_cli_stderr_loses_control_characters_but_keeps_newlines() {
+        let script = "printf '\\033[31mbad\\nauth\\n' >&2; exit 1";
+        let err = api("sh", "h", "e", &["-c", script])
+            .unwrap_err()
+            .to_string();
+        assert!(!err.contains('\u{1b}'), "{err:?}");
+        assert!(
+            err.starts_with("sh api e on h failed: [31mbad\nauth\n"),
+            "{err:?}"
+        );
     }
 
     #[test]

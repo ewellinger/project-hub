@@ -147,6 +147,12 @@ impl Hub {
         self.features_dir().join(format!("{name}.json"))
     }
 
+    pub fn reviews_path(&self, feature: &str) -> PathBuf {
+        self.state_dir()
+            .join("reviews")
+            .join(format!("{feature}.json"))
+    }
+
     /// Basename of the main clone; the hub's own worktrees live under `$GIT_WORKTREE_DIR/<this>/`.
     pub fn hub_dir_name(&self) -> String {
         self.root

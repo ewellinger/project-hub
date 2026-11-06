@@ -1,7 +1,7 @@
 //! Dashboard panes: the feature list and the status of the selected row.
 
 use std::path::Path;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use ratatui::Frame;
 use ratatui::layout::{Constraint, Layout, Rect};
@@ -15,6 +15,8 @@ use crate::ui::app::feature::display_order;
 use crate::ui::app::{App, Report, RowId};
 use hub::env::{home_dir, shorten_home};
 use hub::feature::{FeatureStatus, Stage};
+use hub::ops::format_age;
+use hub::ops::review_state::{REVIEW_HEADERS, ReviewWord, now_secs, review_age_line, review_cells};
 use hub::ops::status::{StateColour, StatusRow, state_colour, state_text};
 
 pub(super) const SPINNER: [&str; 4] = ["⠋", "⠙", "⠸", "⠴"];
@@ -44,12 +46,12 @@ pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
                     s.roles
                         .iter()
                         .filter(|r| r.stage != Stage::Merged)
-                        .map(|r| stage_line(&r.role, r.stage.as_str(), inner)),
+                        .map(|r| stage_line(&r.role, r.review.as_ref(), r.stage.as_str(), inner)),
                 );
                 text.extend(
                     s.frozen
                         .iter()
-                        .map(|f| stage_line(&f.role, "frozen", inner).style(read_only())),
+                        .map(|f| stage_line(&f.role, None, "frozen", inner).style(read_only())),
                 );
                 ListItem::new(text)
             }
@@ -63,11 +65,14 @@ pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
     frame.render_stateful_widget(list, area, &mut state);
 }
 
-/// `role_line` with the stage coloured by value: working green, review
-/// yellow, frozen grey. On the selected row `REVERSED` turns the colour
-/// into the stage's background, which still reads.
-fn stage_line(role: &str, stage: &str, width: usize) -> Line<'static> {
-    let mut text = role_line(role, stage, width);
+/// `word_line` with the stage coloured by value: working green, review
+/// yellow, frozen grey, and the word by `ReviewWord::colour`. On the
+/// selected row `REVERSED` turns the colour into the background, which
+/// still reads.
+fn stage_line(role: &str, word: Option<&ReviewWord>, stage: &str, width: usize) -> Line<'static> {
+    let word_text = word.map(ToString::to_string);
+    let mut text = word_line(role, word_text.as_deref(), stage, width);
+    let kept = word.filter(|_| text != role_line(role, stage, width));
     let stage_text = text.split_off(text.len() - stage.len());
     let colour = match stage {
         "working" => Some(Color::Green),
@@ -76,7 +81,32 @@ fn stage_line(role: &str, stage: &str, width: usize) -> Line<'static> {
         _ => None,
     };
     let style = colour.map_or(Style::new(), |c| Style::new().fg(c));
-    Line::from(vec![Span::raw(text), Span::styled(stage_text, style)])
+    let Some(word) = kept else {
+        return Line::from(vec![Span::raw(text), Span::styled(stage_text, style)]);
+    };
+    // `text` now ends in the word and its two-space gap.
+    let word_text = text.split_off(text.len() - word.to_string().len() - 2);
+    let word_style = word
+        .colour()
+        .map_or(Style::new(), |c| Style::new().fg(colour_of(c)));
+    Line::from(vec![
+        Span::raw(text),
+        Span::styled(word_text.trim_end().to_string(), word_style),
+        Span::raw("  "),
+        Span::styled(stage_text, style),
+    ])
+}
+
+/// `role_line` with a word placed left of the stage; the word is dropped when
+/// role, word and stage do not fit in `width`.
+pub(super) fn word_line(role: &str, word: Option<&str>, stage: &str, width: usize) -> String {
+    let len = |s: &str| s.chars().count();
+    match word {
+        Some(w) if 2 + len(role) + 1 + len(w) + 2 + len(stage) <= width => {
+            role_line(role, &format!("{w}  {stage}"), width)
+        }
+        _ => role_line(role, stage, width),
+    }
 }
 
 /// `"  <role>  …  <stage>"` exactly `width` chars wide when it fits: the
@@ -131,16 +161,106 @@ pub(super) fn render_status(app: &App, frame: &mut Frame, area: Rect) {
                 }),
             ),
         };
+    // A finished feature keeps its review stages but is never read again.
+    let review = match &cached.report {
+        Report::Feature { report: f, .. } if f.status == FeatureStatus::Open => {
+            review_table(&display_rows, inner.width)
+        }
+        _ => None,
+    };
     let table_height = display_rows.len() as u16 + 1;
-    let [table_area, tail_area] =
-        Layout::vertical([Constraint::Length(table_height), Constraint::Min(0)]).areas(inner);
+    let [table_area, review_area, tail_area] = review_layout(inner, table_height, &review);
     frame.render_widget(
         status_table(&display_rows, home_dir().as_deref()),
         table_area,
     );
+    let extra = review_extra(&display_rows, review, frame, review_area);
 
-    let tail = report_tail(app, &row.id, record_rows, warnings, attach, Vec::new());
+    let tail = report_tail(app, &row.id, record_rows, warnings, attach, extra);
     frame.render_widget(Paragraph::new(tail).wrap(Wrap { trim: false }), tail_area);
+}
+
+/// The role table, the review table one blank row below it, and the tail.
+pub(super) fn review_layout(
+    inner: Rect,
+    table_height: u16,
+    review: &Option<(Table<'static>, u16)>,
+) -> [Rect; 3] {
+    let (gap, height) = review.as_ref().map_or((0, 0), |(_, h)| (1, *h));
+    let [table, _, review, tail] = Layout::vertical([
+        Constraint::Length(table_height),
+        Constraint::Length(gap),
+        Constraint::Length(height),
+        Constraint::Min(0),
+    ])
+    .areas(inner);
+    [table, review, tail]
+}
+
+/// Draws the review table, if any, and returns the dim age line for the tail.
+pub(super) fn review_extra(
+    rows: &[&StatusRow],
+    review: Option<(Table<'static>, u16)>,
+    frame: &mut Frame,
+    area: Rect,
+) -> Vec<Line<'static>> {
+    let Some((table, _)) = review else {
+        return Vec::new();
+    };
+    frame.render_widget(table, area);
+    let dim = Style::new().add_modifier(Modifier::DIM);
+    review_age_line(rows, now_secs())
+        .map(|age| Line::styled(age, dim))
+        .into_iter()
+        .collect()
+}
+
+/// The review section for these rows, and its height; `None` when no row has cells.
+pub(super) fn review_table(rows: &[&StatusRow], width: u16) -> Option<(Table<'static>, u16)> {
+    let cells: Vec<_> = rows.iter().filter_map(|r| review_cells(r)).collect();
+    if cells.is_empty() {
+        return None;
+    }
+    let widest_cell = |i: usize| {
+        cells
+            .iter()
+            .map(|c| c[i].0.chars().count())
+            .max()
+            .unwrap_or(0)
+    };
+    let full = |i: usize| widest_cell(i).max(REVIEW_HEADERS[i].len());
+    let fits = (0..REVIEW_HEADERS.len()).map(full).sum::<usize>() + 12 <= width as usize;
+    let widths: Vec<Constraint> = (0..REVIEW_HEADERS.len())
+        .map(|i| {
+            // Too narrow: headers clip so the values stay whole.
+            let widest = if fits { full(i) } else { widest_cell(i) } as u16;
+            // The other columns give first: a clipped role or request
+            // number would read as another, valid one.
+            if i < 2 {
+                Constraint::Length(widest)
+            } else {
+                Constraint::Max(widest)
+            }
+        })
+        .collect();
+    let header = TableRow::new(REVIEW_HEADERS).style(Style::new().add_modifier(Modifier::BOLD));
+    let height = cells.len() as u16 + 1;
+    let body = cells.into_iter().map(|row| {
+        TableRow::new(row.map(|(text, colour)| match colour {
+            Some(c) => Cell::from(text).style(Style::new().fg(colour_of(c))),
+            None => Cell::from(text),
+        }))
+    });
+    let table = Table::new(body, widths).header(header).column_spacing(2);
+    Some((table, height))
+}
+
+fn colour_of(c: StateColour) -> Color {
+    match c {
+        StateColour::Red => Color::Red,
+        StateColour::Yellow => Color::Yellow,
+        StateColour::Green => Color::Green,
+    }
 }
 
 /// Renders the bordered block and, when the row has no cached report yet
@@ -246,11 +366,7 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
     let header = TableRow::new(["ROLE", "BRANCH", "STAGE", "STATE", "PATH"])
         .style(Style::new().add_modifier(Modifier::BOLD));
     let body = rows.iter().map(|r| {
-        let colour = match state_colour(r) {
-            StateColour::Red => Color::Red,
-            StateColour::Yellow => Color::Yellow,
-            StateColour::Green => Color::Green,
-        };
+        let colour = colour_of(state_colour(r));
         let row = TableRow::new(vec![
             Cell::from(r.role.as_str()),
             Cell::from(r.branch.as_str()),
@@ -281,38 +397,9 @@ pub(super) fn refresh_line(app: &App, at: Option<Instant>, in_flight: bool) -> L
     }
 }
 
-/// An elapsed time at the precision a glance needs: seconds under a minute,
-/// whole minutes under an hour, hours and minutes beyond that.
-fn format_age(age: Duration) -> String {
-    let secs = age.as_secs();
-    match secs {
-        s if s < 60 => format!("{s}s"),
-        s if s < 3600 => format!("{}m", s / 60),
-        s => format!("{}h {}m", s / 3600, (s % 3600) / 60),
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn format_age_scales_seconds_minutes_and_hours() {
-        assert_eq!(format_age(Duration::from_secs(0)), "0s");
-        assert_eq!(format_age(Duration::from_secs(12)), "12s");
-        assert_eq!(format_age(Duration::from_secs(59)), "59s");
-        assert_eq!(format_age(Duration::from_secs(60)), "1m");
-        assert_eq!(format_age(Duration::from_secs(37 * 60 + 5)), "37m");
-        assert_eq!(format_age(Duration::from_secs(3600)), "1h 0m");
-        assert_eq!(
-            format_age(Duration::from_secs(3600 + 12 * 60 + 9)),
-            "1h 12m"
-        );
-        assert_eq!(
-            format_age(Duration::from_secs(26 * 3600 + 3 * 60)),
-            "26h 3m"
-        );
-    }
 
     #[test]
     fn role_line_pushes_the_stage_to_the_right_edge() {
@@ -336,7 +423,7 @@ mod tests {
             ("frozen", Some(Color::DarkGray)),
             ("other", None),
         ] {
-            let line = stage_line("api", stage, 20);
+            let line = stage_line("api", None, stage, 20);
             assert_eq!(line.spans.len(), 2, "{stage}");
             assert_eq!(line.spans[0].style.fg, None, "{stage}");
             assert_eq!(line.spans[1].content, stage);

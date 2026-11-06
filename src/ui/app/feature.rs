@@ -111,7 +111,7 @@ impl App {
             }
             KeyCode::Up | KeyCode::Char('k') => self.move_role(-1),
             KeyCode::Down | KeyCode::Char('j') => self.move_role(1),
-            KeyCode::Char('r') => self.request(RowId::Feature(name)),
+            KeyCode::Char('r') => self.request_forge(RowId::Feature(name)),
             KeyCode::Char('o') => vec![Effect::OpenWorkspace(RowId::Feature(name))],
             KeyCode::Char('p') => self.run(Action::Pull {
                 row: RowId::Feature(name),
@@ -305,6 +305,7 @@ pub(crate) mod tests {
                 role: "api".into(),
                 branch: "feature/x".into(),
                 stage: Stage::Working,
+                review: None,
             }],
             frozen: Vec::new(),
         }
@@ -346,6 +347,7 @@ pub(crate) mod tests {
             base_ahead: None,
             hint: None,
             review_url: None,
+            review: None,
             frozen_sha: None,
             base_moved: None,
             drift: false,
@@ -479,7 +481,7 @@ pub(crate) mod tests {
         let effects = a.update(key(KeyCode::Enter));
         assert_eq!(
             effects,
-            vec![Effect::Request {
+            vec![Effect::RequestForge {
                 row: RowId::Feature("suspense".into()),
                 r#gen: 2
             }]
@@ -562,7 +564,7 @@ pub(crate) mod tests {
         });
         assert_eq!(
             a.update(key(KeyCode::Char('r'))),
-            vec![Effect::Request {
+            vec![Effect::RequestForge {
                 row: RowId::Feature("suspense".into()),
                 r#gen: 3
             }]
@@ -571,6 +573,92 @@ pub(crate) mod tests {
             a.update(key(KeyCode::Char('o'))),
             vec![Effect::OpenWorkspace(RowId::Feature("suspense".into()))]
         );
+    }
+
+    #[test]
+    fn r_in_the_feature_view_reads_the_forge_once() {
+        let mut a = on_feature(); // gen 2, a forge read, in flight
+        let id = RowId::Feature("suspense".into());
+        assert!(a.update(key(KeyCode::Char('r'))).is_empty());
+        a.update(Event::Report {
+            row: id.clone(),
+            r#gen: 2,
+            result: Ok(suspense()),
+        });
+        assert_eq!(
+            a.update(key(KeyCode::Char('r'))),
+            vec![Effect::RequestForge {
+                row: id.clone(),
+                r#gen: 3
+            }]
+        );
+        assert!(a.update(key(KeyCode::Char('r'))).is_empty());
+        a.update(Event::Report {
+            row: id.clone(),
+            r#gen: 3,
+            result: Ok(suspense()),
+        });
+        assert_eq!(
+            a.update(key(KeyCode::Char('r'))),
+            vec![Effect::RequestForge { row: id, r#gen: 4 }]
+        );
+    }
+
+    #[test]
+    fn an_action_finishing_keeps_a_forge_read_a_forge_read() {
+        let mut a = on_feature(); // gen 2, a forge read, in flight
+        let action = Action::Review {
+            feature: "suspense".into(),
+            role: "api".into(),
+            url: None,
+        };
+        a.run(action.clone());
+        let effects = a.update(Event::Done {
+            action,
+            result: Ok(vec!["api: feature/x is in review".into()]),
+        });
+        assert_eq!(
+            effects,
+            vec![Effect::RequestForge {
+                row: RowId::Feature("suspense".into()),
+                r#gen: 3
+            }]
+        );
+    }
+
+    #[test]
+    fn a_feature_report_updates_the_words_in_the_list() {
+        let mut a = App::new("acme", vec![summary_of("suspense")]);
+        a.update(key(KeyCode::Char('j')));
+        let Report::Feature {
+            feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        report.rows[1].stage = "review".into();
+        report.rows[1].review = Some(hub::review_state::ReviewState {
+            url: "https://gitlab.com/acme/api/-/merge_requests/1".into(),
+            read_at: 0,
+            fields: hub::review_state::Fields {
+                pipeline: Some(hub::review_state::Pipeline::Failed),
+                ..Default::default()
+            },
+        });
+        a.update(Event::Report {
+            row: RowId::Feature("suspense".into()),
+            r#gen: 1,
+            result: Ok(Report::Feature { feature, report }),
+        });
+        let word = Some(hub::ops::review_state::ReviewWord::CiFailed);
+        assert_eq!(a.feature_summary("suspense").unwrap().roles[0].review, word);
+        assert_eq!(
+            a.selected_row().summary.as_ref().unwrap().roles[0].review,
+            word,
+            "the visible row is rebuilt, the selection kept"
+        );
+        assert_eq!(a.selected_row().id, RowId::Feature("suspense".into()));
     }
 
     #[test]

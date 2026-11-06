@@ -121,7 +121,9 @@ From a clone: `cargo install --path .`.
 - `tmux`, optional: see [Without tmux](#without-tmux).
 - An editor launcher for `hub open` and the dashboard's `o`: `code` (VS Code)
   unless the config file names another.
-- `glab` or `gh`, authenticated for the host, for `hub feature start-review`.
+- `glab` or `gh`, authenticated for the host, for `hub feature start-review`
+  and for the review state `hub status` reads; when it is missing, `status`
+  warns and carries on.
 
 ### Configuration
 
@@ -220,8 +222,8 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch |
 | `hub feature remove NAME` | Free a finished feature's name for reuse: delete its local member branches (each marked merged or contained in its base, and gone from origin), its hub branch (nothing beyond `main`), and its record; any refusal changes nothing |
-| `hub feature list [--all] [--json]` | Open features with the stage of each role, and frozen roles as `ROLE:frozen`; `--all` includes finished ones |
-| `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; exit 30 on structural drift |
+| `hub feature list [--all] [--refresh] [--json]` | Open features with the stage of each role, a review word after a role in review (`api:review(ci failed)`), and frozen roles as `ROLE:frozen`; `--all` includes finished ones; `--refresh` reads review state from the forge for every open feature first |
+| `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; a feature's merge and pull requests list in a review section; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
 | `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
 | `hub tmux` / `hub open` / `hub sync` | Repair the session / open the workspace / regenerate it; from the main hub, `tmux` and `open` use all base checkouts |
@@ -340,6 +342,42 @@ feature, has no worktree by design, so `status` lists it in a separate
 `Completed` table with role, branch, and stage rather than as missing. Paths
 under your home directory print as `~/…`; `--json` keeps them absolute.
 
+For a feature with a role in review and a recorded `review_url`, `status`
+also reads each merge or pull request from the forge, through `glab api` or
+`gh api`, and prints a review section under the role table:
+
+```
+REVIEW  REQUEST  STATUS  APPROVED  PIPELINE  THREADS  CONFLICTS
+api     !412     open    no        failed    2 open   no
+web     #31      open    yes       passed    0 open   yes
+
+review state read 4m ago
+```
+
+REQUEST is `!N` for a GitLab merge request and `#N` for a GitHub pull
+request. STATUS is `open`, `draft`, `merged`, or `closed`. APPROVED is `yes`
+when the approval requirement is met, `changes` when a reviewer requested
+changes (GitHub), and `no` otherwise. PIPELINE is `passed`, `failed`,
+`running`, or `none`, for the request's latest commit. THREADS counts
+unresolved review threads in the first 100 the forge returns, with a `+`
+(`100+ open`) when there may be more. CONFLICTS is `yes` or `no`. A field
+the forge does not supply shows `?`; for a merged or closed request,
+APPROVED, THREADS, and CONFLICTS show `-`. The age line gives the oldest
+read shown. A merged request puts
+`merged on GitLab; run hub feature merged ROLE` (or `GitHub`) in STATE, and
+a closed one `closed on GitLab without merging`; either replaces git's hint
+for that row.
+
+`hub` remembers the last read per role, so a failed read (no `glab` or `gh`,
+no login, no network) is a warning and the remembered row still shows. A
+feature with no role in review prints no section, and `status --base` never
+reads the forge. `--json` carries the state as `review` on each row (`null`
+when there is none). `hub feature list` shows one word from the remembered
+state after the stage of a role in review: the first of `merged`, `closed`,
+`conflicts`, `ci failed`, `N threads`, `changes`, `ci running`, `approved`,
+`draft` that applies; `--json` carries it as `roles[].review`. `hub feature
+list --refresh` reads the forge for every open feature first.
+
 ### Pull and base updates
 
 `hub pull` acts on the `+a/-b` column: from the main hub it fast-forwards
@@ -457,6 +495,10 @@ selected row on the right. Frozen roles are listed under their feature in
 dim italics, marked `frozen`: they are read-only references, not members.
 Status runs in the background when you move the
 selection or press `r`, showing the last result until the new one lands.
+Review state (see [Status](#status)) is read from the forge on `r`, on
+entering a feature, and on `R` for every open feature; moving the selection
+shows the remembered state and never reads the forge. The features list
+shows the same word as `hub feature list` next to each role in review.
 Finished features are hidden until `a` shows them. Run from a feature's hub
 worktree, `hub` opens that feature's view directly; `Esc` returns to the
 dashboard with that feature selected.
@@ -467,7 +509,8 @@ dashboard with that feature selected.
 | `Enter` | open the selected feature's view |
 | `n` | start a new feature: name, roles, a branch per role, summary, then `feature start` |
 | `a` | show or hide finished features |
-| `r` | reload the feature list and refresh the selected row |
+| `r` | reload the feature list and refresh the selected row, with its review state |
+| `R` | read review state for every open feature |
 | `o` | open the selected row's workspace in the editor (base workspace on the base row) |
 | `p` | `hub pull` for the selected row: the base checkouts, or the feature's open roles; each role's outcome is shown when it finishes |
 | `x` | `hub feature remove` for the selected finished feature, after a confirmation listing the branches it deletes |
@@ -508,7 +551,7 @@ nothing.
 | `f` | `feature finish`, after a preview of every worktree it removes and a warning for roles not yet merged; `F` forces |
 | `o` | open the feature's workspace |
 | `p` | `hub pull` for the feature: fast-forward every open role |
-| `r` | refresh |
+| `r` | refresh, with review state |
 | `?` | list every key |
 | `Esc` `q` | back to the dashboard |
 

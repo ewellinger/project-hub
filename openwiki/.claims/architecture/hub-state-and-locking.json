@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1a1f4f060c4e429813ee8bc1272b2d562ace5fd3d05e551b5e61a40cd35ca33f",
+  "pageVersion": "sha256:84cdfb29615af60d68d7c1a44b708968c7c83b5d7e2e7bcce325324c938ba8dc",
   "claims": [
     {
       "id": "claim_7faf23742e7d45059c90a46f52411633",
@@ -25,7 +25,7 @@
           "version": "repo-lines-v1:sha256:993d0f936039abd39957dc0e4950aa6c8e10e402c6cb3569b52ceab259b87027:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkNTYzZmNhZjQ1NTM3ODRhYjFmNGNlMmQxOGViZDIyZjE2ZmZhYTQ2YjJhZTYyMzNkOTQ5YTRkZGFjZDU3YzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0NDBhM2E1NjM1ZDhmOTk5ZmZhNTBhYTJjOWI2ZmUyNjZlN2FhNjI5MGQ1ZDYxZTE5OTU2N2Q4NGIzZDljNjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3YjEwZTg1MTE5ZGU5MTk0NDZmODFjZWI5NDE1MWRjZTM2ZjczMDllYWZlZjJkY2M0NjdmMWNhNmFhN2EwNmQifQ"
         },
         {
-          "resource": "repo://src/hub.rs#L242-L250",
+          "resource": "repo://src/hub.rs#L248-L256",
           "version": "repo-lines-v1:sha256:7304811a82e8ec4bd738a75f317bd9b5d69eace7c4f23d6930770e8b7bdc666b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQzMGMxNDg5OTZlNGJhMDg2MTEwODgxYTgwOTRmMzFkZTBlY2U4NTAwYjBkZTRjZTYyYzYyNjQ4ZmE2ZGIxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTYyZWU1N2U0MWE4YzIwYWUwMTY0ZGYyNjE0MzlkY2M0OTlkMzUyMDgzNDE1MTUxNmQwNDdlOGRlYWU4YTQ2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzgxNTE3OTRiMjNmODgxOTg3NjY4MzIwZWQzMzk1NDYwZDY3NzcwZTRhN2IwNjM0Y2RmMzcwODIzYjkzMTQ0MCJ9"
         }
       ]
@@ -35,7 +35,7 @@
       "statement": "The current feature is inferred from the cwd worktree's branch when it is not `main` and a matching feature record exists; resolve_feature prefers an explicit --feature flag.",
       "evidence": [
         {
-          "resource": "repo://src/hub.rs#L206-L214",
+          "resource": "repo://src/hub.rs#L212-L220",
           "version": "repo-lines-v1:sha256:3fc46d47ce33fb53bb759fa9569a25045ab7a3b7b645696925a7146e7ffa3dd0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhlN2YzZmJlODk1MTk2MDNhZDBiMmMwMDk0OGU1MzJmMjMxNmNiMTcxYzRmMjc4MzJhODBjYWVkMTRmY2Y3ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzcyODg5MjUzMGZhZDFmMTc5YmY5YThjMDk5NTk5Mjg4ZGU3ZGM2ZmJkNzU3ZmNkMDQ3YmI4ZmNmZWNlNzQ5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzQwMjg3NWI4Y2U4YWViZGQwMDY4ODJhOGE2NjYyNTNhNGZjYTc5YTEzNTczMjM3YTMzODNiY2QwZjBhZGM1NyJ9"
         },
         {
@@ -63,7 +63,7 @@
       "statement": "Hub::commit stages only the given paths, commits them alone as `hub: <message>`, no-ops when unchanged, and restores the paths from HEAD if the commit fails; only hub.json goes through it.",
       "evidence": [
         {
-          "resource": "repo://src/hub.rs#L216-L257",
+          "resource": "repo://src/hub.rs#L222-L263",
           "version": "repo-lines-v1:sha256:906626b1d8ea68dca31546443e47ae55cfb5816ec2f27028416097626193a23f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhMDJiMjI5NjAwMGI2Y2UxZjNkYmI5N2QzMzE1MGYxNWQ3YWNmYzg3YWY0YjM5NDUzMWUzMDAwMjViMjc1OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwZTE4MjcxNDRiNTA3YTgxYzIyMTFhYzA1ZTE5ZDc1ODc0NTYzNDZkMjNlYzA4ZWMxY2ZjYThjYzNiMTQ0ZDcifQ"
         }
       ]
@@ -73,7 +73,7 @@
       "statement": "with_lock takes a non-blocking exclusive fd-lock on hub.lock, failing immediately if another hub command holds it, and reloads hub.json under the lock before running the closure.",
       "evidence": [
         {
-          "resource": "repo://src/hub.rs#L259-L281",
+          "resource": "repo://src/hub.rs#L265-L287",
           "version": "repo-lines-v1:sha256:f4d022c953b105d762fb9f3d18344e9daa226c41c25cc82f890c0b7d932f8ca1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwY2U4Y2EzYzdmNWI4OGRiZTk5NTg5YWRkNTMyNjJlZDQ1NTk2MjY0NGE3OGE4ZDVhZDEzYjcxOGNjZTBjZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjZTY5NGE3OTI2MTc1NmI4N2IxMjhlMjdkZjE4NmU3MWQ1NzJhY2ZjZjYyMTdjN2RiZjE2YTY1MmExMmFkZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
         }
       ]
@@ -83,12 +83,12 @@
       "statement": "Mutating CLI commands (repo add/set/rename/remove, feature start/start-review/add/set-base/freeze/unfreeze/refreeze/review/merged/finish/remove, pull) run under the hub lock, as do dashboard actions.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L405-L650",
-          "version": "repo-lines-v1:sha256:9a989ccc46666d3205ec9c0e418744677fef4ab1fceff1151dd3c91c66176b85:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQ2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjZTViM2YyMmM3MGEyZWZiOGEyNTkwOTdjYTk3OTA0MDg4OWZiMzIxNzk3Njc4M2Q1ZDkwOGY5OWEyYzEzNjI2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1NTIyYzQyY2QxOWM2ZDAzZDgwOGM0NTI3MjA1NTI4MjViN2VhMWM1YjQ5MWIyMTg1MTFjYWM3NDE1Y2Y5ZDliIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwZDk4OGIxNzYyZDFlMDVjZmY1MzQ2OTdhYTRmYThhYjlmMDhmOWE0YTAwNzkyZGU2MThmYjFiMDA5ODI5NWIzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjMGM1NWVkNjY1ZTFhYjUyYjJkZDRhY2IxOWEzZWI5NGEzNjQ0MGU3NzVlMWJiOTFiN2I1MDEzOTk4ZWE2N2RhIn0"
+          "resource": "repo://src/main.rs#L402-L667",
+          "version": "repo-lines-v1:sha256:bc985e942f415e3839b4b91e1bf53a9ee673d572ab77e54c761f72c601f53825:eyJzZWxlY3RlZExpbmVDb3VudCI6MjY2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2OWFkNzA0YTRjZmM1YWQwZmIzZGY3MGY5YTg1NTkxMjA0NGE5MTQwMzk3ZmMwNzM1N2MzNTJkZjMxOWEwYjlmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlNmIwNDQ5MTQ2OTcyMmU4MzYzYTk0ZTQwNDQ1MzhlMDEzYTJhMjE3ZTM2YjFlNTY4YmE2MGFjYjdiNGM4ZjJlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJhNGE4NmFjNTJjZTJhMmQyMzhkZWUzYTgxNGQ4MGY0NDUzMGI1NTEzN2ZkZTRlYzc0ZjFjYTc0MmY0NjU0NmFmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4N2UxYWNmMjAyNTgxZWM4YmExYWFkZTcxOGJhODUxM2Q5NGQ2NmFjNTVjNmZhMWUwNjQzMjVmZjQ0M2M0MjgwIn0"
         },
         {
-          "resource": "repo://src/ui/worker.rs#L100-L110",
-          "version": "repo-lines-v1:sha256:8dd5a524d8f19960bcc1171949a63b44bb45db10018750dc68d499d382073f6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjYTNlODU1YTA5Y2ZhNzIzMDhlMmY5ZmEyZjZmNzg1ZDU3MGNmN2E0N2U3NTEyNWNjZDllN2QzYWVkMmMxZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZGRlYTc5NTdhNDIyY2EzMDE4MjI0NTczYjAwYmQ4MmE3YjMwNTJmN2U0OGJiNjhmMDJkNzEzMjhmNDI5MDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NjEwMjM2MzA3NTEwNGY2ZDJiMTkyYjQzYjBlOTRjYzFmMjIzZmIyYTY2ZWMwNTAxY2ZiNTljZDc2NDU5NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjODFjODk2MDU1YjM2ZGNhODM5MTBiM2Y5YzE2ZDJkYmVjMDMxYTlmODVhYjcwNGU5YjhiMzE2YmFkZDhkY2YifQ"
+          "resource": "repo://src/ui/worker.rs#L115-L125",
+          "version": "repo-lines-v1:sha256:5df6d56968d9b1104174441c5f5cf88898a614453e5345eff7d5a57b2aea0317:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZGEwZTE3OGQxOGU5YWZjMWVhNWU3ZjQ1YzU5ZTc4YzY0NGFhYjk5YjFlODQ4Nzg5MjFkOTA3OGU2NTBiMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlMWVlYWU0MGQ3NTc1N2Y2NjEzNTVkYjYxZGJjM2QwOTRkZGVlMmY2MTZkYmQxNzAxNGY4Yjg3MmY4MDM2YzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmNDU4YmZmZTFmMWNiOTUyNTY3ZWM3NTgyMzlmM2U5YTU2M2RkZmM2ZWRhY2I5YzJkOGFiZTdhYWRiMDk3YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM0YmE2OGNkMDU1Yjg4NzVmNWVjMDRmMDU0MjdlNjU4OGYxNzY1ZmIyNWZkNDMyMjE0MzM5ZjdmNjczNTM1NzAifQ"
         }
       ]
     },
@@ -118,17 +118,41 @@
       "evidence": [
         {
           "resource": "repo://src/hub.rs#L242-L250",
-          "version": "repo-lines-v1:sha256:7304811a82e8ec4bd738a75f317bd9b5d69eace7c4f23d6930770e8b7bdc666b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQzMGMxNDg5OTZlNGJhMDg2MTEwODgxYTgwOTRmMzFkZTBlY2U4NTAwYjBkZTRjZTYyYzYyNjQ4ZmE2ZGIxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTYyZWU1N2U0MWE4YzIwYWUwMTY0ZGYyNjE0MzlkY2M0OTlkMzUyMDgzNDE1MTUxNmQwNDdlOGRlYWU4YTQ2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzgxNTE3OTRiMjNmODgxOTg3NjY4MzIwZWQzMzk1NDYwZDY3NzcwZTRhN2IwNjM0Y2RmMzcwODIzYjkzMTQ0MCJ9"
+          "version": "repo-lines-v1:sha256:ab4e64b84de929266a85560d3d356773b9911b38945b64603589b8748393f02c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUyMmM0MmNkMTljNmQwM2Q4MDhjNDUyNzIwNTUyODI1YjdlYTFjNWI0OTFiMjE4NTExY2FjNzQxNWNmOWQ5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZmYmIxZjZlY2FlODE2NDI2ODU4OGZmZmI1NTE4ZGQzMzUxODRjOTdlOGExZDNjMTI0ZTU4MjBjNDhkOTdjMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmYzZjhiZWU0MjJmMjM4NGU0MjdlZjgyNzAzN2MxZTdjMjc5YzJmZDMxMzYyMDU2OGM4N2ZhM2FmODc2NmQ1MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjNiZmI0MDVjMmRmNGZlMmRmMmJhMmUzZmQ4MDMzYmQ5MzhhY2NkMWZhODViN2RkZDA4N2NjNjQ3OTFiN2E2ZiJ9"
         },
         {
-          "resource": "repo://src/ops/remove.rs#L15-L100",
-          "version": "repo-lines-v1:sha256:5423e0d06298b546d995564cb22e765ac4ef005b9dd821628e886e8adec84bc2:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMjZiNTM4N2FhMWFkYjFlOWQ0MmJkMjkyMmU1ZTJmMjhmZjY4N2I2YmI4OWVmYzU0MTFkNGU5NTU1ZWI5NjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZmQ0ZTM3MTc1N2EyMTk1OGRiZjc3Nzc0NGQ3OTg3MWU4NjMwZmU0ZGMwNGM0MGYxMDA1Y2MzMGE3MmZjNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyZWE3ZWJlMGYzYjc5NWM5NTA0NDJmMWI4OTEwM2ViMDI2NjAwMWY2ZTQ4OWY3MjJjZTI3OGI5YWQxZjg2N2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4MmFiZjYyMmZkOTUxY2UxNGE0ZmQ3NmFlMTM4ZWVkZmNmZGQ2NGIzMmIzMTJkZWE3YjkwM2Y5ODIyNzdkNTgifQ"
+          "resource": "repo://src/ops/remove.rs#L15-L105",
+          "version": "repo-lines-v1:sha256:510bfa24d89f1a76abee0f96142ae734f62e626ec7a49fbf9d1efecdcb4f9a1d:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2YTFiMDdjNGI5NzRiMzRhNmM0N2UzYWVkOTFlZWYyMDRlOWI3YmI0MjQ2YjFhODFhOTE3ZmRkNTlmY2NiMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkYjIwOTdjYTc2OWEwYTM3M2RlM2UxYjUxMDJjZjNjZjFjMTFiMDI2Yjc3MDRjMmMzZTQ5NzEyMGRlMTE1OTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MzUyZWU5MjA5YTAzZmZmYzg3NzlmZjU5MzFkNGNjN2Y5Y2VjMTg4ZDY1NTQ2OWY2OTkyOTdmZTUyYjIxYjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0ce3bc2a5f44dd9b8de5b1e2fe75c85",
+      "statement": "The last review state read from the forge is kept per feature in `<git common dir>/hub/reviews/<feature>.json`, separate from the feature record, and is written without the hub lock; a missing or unparseable file reads as empty and a failed write only adds a warning.",
+      "evidence": [
+        {
+          "resource": "repo://src/hub.rs#L150-L154",
+          "version": "repo-lines-v1:sha256:a32243b2dd90924c54dd854cdf49f74f05e1208af467a72970a5f6c01e6d1a16:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjkyNmQ2MjljZTVhODQ2MTk0NDlmMWE0OTc0ZGZiNWEyNDVlYTZkMjE2NGY4NjYxMzE0MTUxYTA4MWNlM2Q1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjlmMTZjYzk5ZTQ5ZTY3ZjVmYzU0NTA0MTY5MDFkNDU1YWZkMTljNTE0MDViMzU1NTk3MTFjOTM1MDgxMzgyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjdiMTBlODUxMTlkZTkxOTQ0NmY4MWNlYjk0MTUxZGNlMzZmNzMwOWVhZmVmMmRjYzQ2N2YxY2E2YWE3YTA2ZCJ9"
+        },
+        {
+          "resource": "repo://src/ops/review_state.rs#L47-L106",
+          "version": "repo-lines-v1:sha256:21c3a074ea9bcb261dba4c39cb66493a73d10bbe6e269c36695b1aac30587f58:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyOTg5MmZlYmI2ZjkxZjY3ODBlMTRjNDAyYjQ0YjJhOGFlODM4YWEyYTA3MTIxZTM3NmZkZjc5OTIwNmVmM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4ODU5MjEwZWJjYjEyY2Y2OGM2MTYyMjJmYzU2MGMxZjY4ZTJmYTMxZjYzMDQ5M2RmODA5NTg4ODdkNTdhZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0ZjNiYzdkNDAzMzJkOTg0NzA5ZjU5NjExNTcyZTlkMzYzMWFmOTE3NTliNWNlYjI5ZjkwOTMxOGUyMjcyYTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_64a8f1c5b4574f1d9749f37fbf276e45",
+      "statement": "`hub feature remove` deletes the feature's remembered review state file after the record and ignores a failure to do so.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/remove.rs#L98-L104",
+          "version": "repo-lines-v1:sha256:31e09380d3c2cc830e2300271b8ed7eeba7d439cd2a32317a1ea351a5fe93b1e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmY0YWZmZWU0OWUxZDM2ZGE2MTFmOTRmZjcyN2I4MWJiM2MwMDZkYjVmMTA0NGQ2ZTNhYjFiMjdlMjRlYjZiZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTIxZmQwYmQxZjQ2Mjc2NDc2ZjNmMDc0OGMzNzdmMmUyMWE2ZTE3YjczYjAzYTA2NWY3NDUzZGQ5YzI3NTk4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjNiYWUzYjYxMzg3ZDI3YmIwMTI5YzIyY2QzMWE1NTIzOGRkMTJmYjE2ZDlhMDIyMGYwOTZmYWExYTkyMzUxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWM2MWI2MjE2NWUwOWRmNjdiMjA5Zjc4NzI0N2ZjMGU1ZDM1NmM3ZTA4NWY5NzY3MTU0MDM1MGI5OTc3ZTRlMSJ9"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:12:12.058Z"
+    "at": "2026-11-06T19:21:31.800Z"
   }
 }

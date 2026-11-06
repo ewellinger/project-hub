@@ -3,6 +3,7 @@ use serde::Serialize;
 use crate::error::{HubError, Result};
 use crate::feature::{FeatureStatus, Stage};
 use crate::hub::Hub;
+use crate::ops::review_state::{ReviewWord, remembered, word};
 use crate::ops::table;
 
 #[derive(Debug, Clone, Serialize)]
@@ -10,6 +11,7 @@ pub struct RoleSummary {
     pub role: String,
     pub branch: String,
     pub stage: Stage,
+    pub review: Option<ReviewWord>,
 }
 
 /// A frozen reference role: a read-only checkout pinned at `sha`, not a
@@ -37,6 +39,9 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
         .list_features()?
         .into_iter()
         .map(|f| {
+            // Only open review changes are remembered, so other roles get no word.
+            let states = remembered(hub, &f);
+            let review = |role: &str| states.get(role).and_then(|s| word(&s.fields));
             let mut roles: Vec<RoleSummary> = hub
                 .manifest
                 .repos
@@ -46,6 +51,7 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
                         role: repo.role.clone(),
                         branch: c.branch.clone(),
                         stage: c.stage,
+                        review: review(&repo.role),
                     })
                 })
                 .collect();
@@ -59,6 +65,7 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
                         role: change.role.clone(),
                         branch: last.branch.clone(),
                         stage: last.stage,
+                        review: review(&change.role),
                     });
                 }
             }
@@ -91,7 +98,10 @@ pub fn render_table(summaries: &[FeatureSummary]) -> Vec<String> {
             let roles = s
                 .roles
                 .iter()
-                .map(|r| format!("{}:{}", r.role, r.stage.as_str()))
+                .map(|r| match &r.review {
+                    Some(w) => format!("{}:{}({w})", r.role, r.stage.as_str()),
+                    None => format!("{}:{}", r.role, r.stage.as_str()),
+                })
                 .chain(s.frozen.iter().map(|f| format!("{}:frozen", f.role)))
                 .collect::<Vec<_>>()
                 .join(" ");

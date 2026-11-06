@@ -3,9 +3,6 @@ type: operations
 title: CI and release
 description: The checks every pull request must pass (fmt, clippy, tests on Linux and macOS, MSRV 1.88), the dist-generated tag-driven release workflow that builds binaries and a shell installer, crates.io trusted publishing, and the version/CHANGELOG procedure.
 tags: [operations, ci, release, crates-io, cargo-dist, changelog]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-164e2da859b5277df81c7d94
     resource: repo://.github/workflows/ci.yml
@@ -17,14 +14,19 @@ sources:
     resource: repo://CONTRIBUTING.md
   - id: openwiki-source-09a6e8c3317970f7ee55af63
     resource: repo://dist-workspace.toml
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+  - id: openwiki-source-eaeff68d3e917151c3a9cf0b
+    resource: repo://towncrier.toml
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # CI and release
 
 ## CI (`.github/workflows/ci.yml`)
 
-Runs on pushes to `main` and on every pull request, as four jobs:
+Runs on pushes to `main` and on every pull request, as five jobs:
 
 | Job | Toolchain | Command |
 |---|---|---|
@@ -32,6 +34,7 @@ Runs on pushes to `main` and on every pull request, as four jobs:
 | `clippy` | stable + clippy | `cargo clippy --all-targets --locked -- -D warnings` |
 | `test` | stable, matrix `ubuntu-latest` + `macos-latest` | `cargo test --locked` |
 | `msrv` | 1.88 | `cargo check --locked --all-targets` |
+| `changelog` | uv | `uvx towncrier check --compare-with origin/main`, then a version check (pull requests only; skipped by the `skip-changelog` label) |
 
 The cargo steps set `GIT_CONFIG_GLOBAL=/dev/null` and `GIT_CONFIG_NOSYSTEM=1`
 so the runner's git config cannot leak into tests: unit tests set their own
@@ -41,8 +44,25 @@ Actions are pinned to commit SHAs.
 
 Contributors run the same commands locally (listed in `CONTRIBUTING.md`).
 PRs are squash-merged, so the PR title becomes the commit on `main` as
-`<title> (#<number>)`. User-visible changes add an entry under `## [Unreleased]`
-in `CHANGELOG.md` in the same PR.
+`<title> (#<number>)`.
+
+### Changelog fragments and beta versions
+
+The changelog is built with towncrier (`towncrier.toml`). A user-visible change
+adds one fragment in the same PR, `changelog.d/+<slug>.<type>.md`, where
+`<type>` is one of `added`, `changed`, `deprecated`, `removed`, `fixed`,
+`security` and the content is the entry as it should read; nobody edits
+`CHANGELOG.md` for unreleased work. The `changelog` job fails a PR that adds no
+fragment unless it is labelled `skip-changelog`.
+
+A PR that carries a fragment also bumps `version` in `Cargo.toml` to a beta of
+the next release: the first after a release sets `<next minor>-beta.1`, each
+later one steps `beta.N`. The same job enforces it by PR kind: a PR that does
+not touch `CHANGELOG.md` must carry a `x.y.z-beta.N` version different from the
+one on `main`; a PR that does (a release PR) must carry a plain `x.y.z` that
+has a `## [x.y.z]` section in `CHANGELOG.md`. Beta versions are never tagged: a
+repository ruleset refuses any tag containing `-`, so the release workflow and
+the crates.io publish only run for plain versions.
 
 ## Release
 
@@ -51,11 +71,15 @@ A release is a version bump, a tag, and a push:
 1. Choose the version: minor for a new capability, patch for a fix. Anything
    that changes the binary needs a bump, including `skills/hub/SKILL.md`,
    which is embedded at build time (see [Bundled agent skill](../integrations/agent-skill.md)).
-2. Set `version` in `Cargo.toml` and build so `Cargo.lock` follows.
-3. In `CHANGELOG.md` (Keep a Changelog format), rename `[Unreleased]` to
-   `[<version>] - <date>`, add a fresh `[Unreleased]`, and update compare links.
-4. Merge the bump PR, then tag the resulting `main` commit `v<version>` and
-   push the tag.
+   The beta on `main` is only a guess at this number.
+2. Set `version` in `Cargo.toml` to the plain release version and build so
+   `Cargo.lock` follows.
+3. Run `uvx towncrier build --yes --version <version>`, which writes a
+   `## [<version>] - <today>` section under the
+   `<!-- towncrier release notes start -->` marker in `CHANGELOG.md` and
+   deletes the fragments it consumed.
+4. Squash-merge the bump PR, then tag the resulting `main` commit `v<version>`
+   and push the tag.
 
 ### Release workflow (`.github/workflows/release.yml`)
 

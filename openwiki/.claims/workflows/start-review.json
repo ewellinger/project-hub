@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:07eb0623d29a322cf7858842e9e56263ba0c61f9f55677712e9ee52be029cceb",
+  "pageVersion": "sha256:b7bb2675b5a29d872b7ec1bb4beccfafff76099df20aba2dd4e179ed83b4f1f8",
   "claims": [
     {
       "id": "claim_48b0760fb53f428bbbdce2fb0fbd5fe6",
@@ -27,8 +27,12 @@
       "statement": "The review is read through `glab api` or `gh api` with the URL's hostname; hub stores no tokens and reports a missing CLI as a usage error.",
       "evidence": [
         {
-          "resource": "repo://src/review.rs#L427-L478",
-          "version": "repo-lines-v1:sha256:52088af729879a0216184b0e9b11f14f98012553c6852f2cc3520e566f9afd8c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZmFkMmMyYzZkNTVkNTliMzI3ZWI2YThhNDc1NmRmNDEzNzcyMjM3NjJiNTFmOTQ4YjY0M2MyZjJjMjYzNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/review.rs#L427-L435",
+          "version": "repo-lines-v1:sha256:6746ceea766b7ee981ca940548daaed23a48666cd31ae0de228aa54d31eef0f0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGFmYWQyYzJjNmQ1NWQ1OWIzMjdlYjZhOGE0NzU2ZGY0MTM3NzIyMzc2MmI1MWY5NDhiNjQzYzJmMmMyNjM0ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjA2M2M0ZDFhZjhjZDg5YmIwYmRkNzY1N2ZmY2JmNjgwNmE2MTBkNzlkNmM4ZDRjMzA3YzI0MWRmMzkwMDUyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIzYTY1N2M4OThlMDE5ZjY4NmJhYmVmMjliYjM1MDNiYmFmMDcyZjZlZWQ2MjU1OWQyZjM2Mzc4NzUwNThkNSJ9"
+        },
+        {
+          "resource": "repo://src/review.rs#L466-L522",
+          "version": "repo-lines-v1:sha256:c8e83c5342ea562aefc6c5cd5feb5ae9012c7a84662338eb33bfe2bfaf419f3f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxMWFmMDE0NzI3ZWUyYjU0YTFiYjgxY2EzNDI4NGQ3ZWRmNWQxN2Q3YWY2OGIxOTE3YjNkZDhlN2Y3OWE5ZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NmY4Y2IwODNmYTgwMGE0ZGNkMjk2OTcyMmQ3YjkyNjg2YWRkOWViZTM2NTU0OTJmYTY3MmIxYTdjZWQyNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
         }
       ]
     },
@@ -61,8 +65,8 @@
       "statement": "start-review defaults the feature name to `<role>-review-<number>` and refuses an existing hub branch locally or on origin and an existing tmux session; it never adopts.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L116-L145",
-          "version": "repo-lines-v1:sha256:cb96369b66240d0afac0cb9e8af5c40e0a24390a9d29786c8fd3db767ab52d8d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2NjFhZGMzNTZkOGNlM2JmNGIwNTI4MWFlNDZkOGU3MzI1NzFkNzMyNjU3ODhjOGM2NGQ2ODJkYzM0MmQxZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhZDIwNWMzYWFhMGM1MmYwZjc5NTc0M2Q4NGMxNDYxNTZhZmExY2FmY2U5ZjBkNmNiMjYxYzkxOWY1MzAyNTAifQ"
+          "resource": "repo://src/ops/start_review.rs#L115-L145",
+          "version": "repo-lines-v1:sha256:a35193c819078e1764e298dccdb131f2196c348677e3270cd7bd8748af9e10e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTc3MWZlMWI2NjI4ODc1YWEyM2U3ZGJlNGFhNzE0NjFkMDBjZGZiNjZkZGYxMWI5ZDgyMGFjNTg5N2ZkZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1YWI3YjZkOWI2ZTE5NTY1M2ZjOGI1NWY2M2YzNjQ2MDY4NTVjNDU0ZmM1NjU4NTFmMzFhMmYwOTQ1ZGE3NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2Y2M3ZDg2MTM5YTEwYzI5ZjgxYzE5MjIwMDNlYTU4NjMyYTY4YTk5M2U3ODFlMDA0YmEwZjBiMTg1NDE5MjgifQ"
         },
         {
           "resource": "repo://src/ops/start_review.rs#L49-L54",
@@ -75,7 +79,7 @@
       "statement": "The member check requires origin/<source> to equal the reported head, origin/<target> to exist with shared history, the source branch to be checked out nowhere, and a local source branch to be at or strictly behind the head.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L147-L251",
+          "resource": "repo://src/ops/start_review.rs#L148-L252",
           "version": "repo-lines-v1:sha256:6476ab45f5550040430d5447efe7f34d1dbc4e66c0a4cbe602f97ee191dd94de:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiOTY1OTk0ZDdmY2ZlYjgyY2Q4NWVkN2QyOWUzMmVkZjgwZWFiOTQ2MTY4Zjg0MmFiODMzZjhlMzhiOTBmZWVkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzNWY2ZjQ2NmU1OWNmYzMwNzAzYzQ1ZjcyYWY2NWRlNTRhYzM2M2QzNTRjYzFhMzMzMDM1MGFjZDQ1MjQzNGM0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0ZjAyM2U0MjMxMDJjNzI3NzNjYTg2OGFhOWI5YzMxMGUzNzE4M2VlOTY4ODc5MjZhN2M2YWYxNWQ1MWY3MmI2In0"
         }
       ]
@@ -95,14 +99,28 @@
       "statement": "The created change has stage review, the canonical review URL, origin_seen true, the target as base, and a hub-owned worktree; branch creation and fast-forwards are registered for conditional rollback.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L255-L360",
+          "resource": "repo://src/ops/start_review.rs#L256-L361",
           "version": "repo-lines-v1:sha256:b9fb2fe5ba5d60ba2ccfbfc667e920baeda3b8095aafc0de7fef61603ccab449:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlNjExODdkMzRmMWNhMmVlZTg2OTc5MDMyMWVlZjQ3M2IxMWRiMzhiNjA4OWY1ODZhMDZkNjU3OGFhNjM3NzQxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0ZjAyM2U0MjMxMDJjNzI3NzNjYTg2OGFhOWI5YzMxMGUzNzE4M2VlOTY4ODc5MjZhN2M2YWYxNWQ1MWY3MmI2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_739ed330d1204e3cb281297cb99e5dd1",
+      "statement": "start-review's drift check calls the status operations directly and so makes no review state call to the forge for the invoking feature.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/start_review.rs#L100-L113",
+          "version": "repo-lines-v1:sha256:83837402350d976eb6ee639bbcf898b3badba1946fccf1b33cf24bc8b4b81aa8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczOTBhYzdjYzNkZTA1NjZiZmI5MzU3NzJlN2FkYzAxOWE1NjFmMTg3NDZhYTczNjE0ZTcyNDMxZTQwNDM5ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTc3MWZlMWI2NjI4ODc1YWEyM2U3ZGJlNGFhNzE0NjFkMDBjZGZiNjZkZGYxMWI5ZDgyMGFjNTg5N2ZkZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwNzgxZmVlNDlhNjkyNWQyODJkODg2NzIyODUwNzFlMTEyNTAyNmQzZDRjYTI3YjIwM2NmNmRiZDkwNWZjZjQifQ"
+        },
+        {
+          "resource": "repo://tests/review_state.rs#L486-L512",
+          "version": "repo-lines-v1:sha256:6de3b5c0c0a03e95c68105a633fcc29742e07352d32f0a2ca6160d66a25d9bca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5YWFiNDRjMmIzNTU2ZmQ4NThlOTY0MTE2ZTY3YTEwM2FkODNjM2I3MmI0NTI0ZGM1NjJiYjk1ZWIyZDc1M2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxYzg0ZGRmMTkyZWQ3ZWY1OGNmNTY1NTE0NDFhMmIyYTgyNTc5ZjYzZGVlMjA4M2Q4MzU4ZWQ5MmFjNmIyOGUifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-12T04:10:52.427Z"
+    "at": "2026-11-06T19:21:31.800Z"
   }
 }

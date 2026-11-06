@@ -1,0 +1,1 @@
+`hub status`, `hub feature list` and the dashboard show the state of each role's merge or pull request (status, approval, pipeline, unresolved threads, conflicts), read through `glab`/`gh`; `R` in the dashboard and `hub feature list --refresh` read it for every open feature.

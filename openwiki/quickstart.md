@@ -12,10 +12,10 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-c17c8e3e271a8329ed7a5e63
     resource: repo://src/feature.rs
-generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-27T18:18:48.498Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Quickstart
@@ -41,8 +41,9 @@ cargo fmt --check
 
 Running `hub` needs `git` 2.31+, `project_home` and `worktree_dir` configured
 (env vars or `~/.config/hub/config.toml`), optionally `tmux`, an editor
-(`code` by default), and `glab`/`gh` only for `start-review`. Bare `hub` in a
-terminal opens the dashboard.
+(`code` by default), and `glab`/`gh` for `start-review` and for the review
+state `hub status` reads (when it is missing, `status` warns and carries on).
+Bare `hub` in a terminal opens the dashboard.
 
 ## Source map
 
@@ -52,7 +53,7 @@ terminal opens the dashboard.
 | `src/hub.rs`, `src/manifest.rs`, `src/feature.rs` | hub discovery, lock, manifest, feature records |
 | `src/env.rs`, `src/names.rs`, `src/error.rs` | configuration, naming rules, errors/exit codes |
 | `src/ops/` | one module per command family |
-| `src/git.rs`, `src/tmux.rs`, `src/code.rs`, `src/workspace.rs`, `src/procs.rs`, `src/review.rs` | external tool wrappers |
+| `src/git.rs`, `src/tmux.rs`, `src/code.rs`, `src/workspace.rs`, `src/procs.rs`, `src/review.rs`, `src/review_state.rs` | external tool wrappers |
 | `src/skill.rs`, `skills/hub/SKILL.md` | agent skill embedded in the binary |
 | `src/ui/` | ratatui dashboard |
 | `tests/`, `tests/fake-bin/` | integration tests with fake tmux/code/lsof/gh/glab |
@@ -71,6 +72,7 @@ terminal opens the dashboard.
 | Work on `review`, `set-base`, `merged`, `finish`, `remove` (reusing a finished feature's name), dirty/in-use refusals | [Review, merged, set-base, finish, and remove](workflows/review-merged-finish.md) |
 | Work on frozen bases: `freeze`/`unfreeze`/`refreeze`, pins, `start --freeze`, `add` on a frozen role | [Frozen bases: freeze, unfreeze, and refreeze](workflows/frozen-bases.md) |
 | Work on `status`, drift, hints, `feature list`, or `pull` | [Status, list, and pull](workflows/status-and-pull.md) |
+| Work on what hub reads from a merge/pull request (approval, pipeline, threads, conflicts), the review section, the list word, or when the forge is read | [Review state from the forge](workflows/review-state.md) |
 | Touch git/tmux/editor calls or workspace files | [Git, tmux, and editor integration](integrations/git-tmux-editor.md) |
 | Edit the agent skill or its distribution | [Bundled agent skill](integrations/agent-skill.md) |
 | Change the dashboard's event loop, workers, or caching | [Dashboard architecture](ui/dashboard-architecture.md) |
@@ -88,10 +90,13 @@ terminal opens the dashboard.
 - Creation is transactional up to the feature-record write and rolls back only
   what it created; workspace and tmux steps after the write are warnings with a
   retry command.
-- Nothing ever deletes a branch, pushes, or rebases; removals refuse dirty
+- Nothing pushes or rebases, and only `feature remove` deletes a branch (a
+  finished feature's merged local ones); removals refuse dirty
   (exit 20) or in-use (exit 21) worktrees without `--force`; `status` exits 30
   on structural drift. A frozen worktree whose detached HEAD left its pin is
   refused (exit 1) before any dirty check, so `--force` never silently
   discards commits on no branch.
+- Reading review state from the forge never fails a command or changes its
+  exit code, and `ops::status` itself never reads the forge.
 - Editing `skills/hub/SKILL.md` changes the binary, and the `skill` test
   requires every command it lists to exist.

@@ -272,6 +272,15 @@ impl Fixture {
         serde_json::from_str(&text).unwrap()
     }
 
+    /// The feature's stored review states, or `None` when the file is absent.
+    pub fn reviews_json(&self, hub_dir: &Path, feature: &str) -> Option<serde_json::Value> {
+        let path = hub_dir
+            .join(".git/hub/reviews")
+            .join(format!("{feature}.json"));
+        let text = std::fs::read_to_string(path).ok()?;
+        Some(serde_json::from_str(&text).unwrap())
+    }
+
     /// Make every commit in `dir` fail (a pre-commit hook) until `allow_commits`.
     pub fn block_commits(&self, dir: &Path) {
         let hook = dir.join(".git/hooks/pre-commit");

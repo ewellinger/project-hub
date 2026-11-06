@@ -3,9 +3,6 @@ type: configuration
 title: Environment and configuration
 description: How `hub` resolves project_home, worktree_dir, editor, and tmux from environment variables and `~/.config/hub/config.toml`, how values are validated, how `hub config` shows and edits the file, and how tmux sessions are switched on or off.
 tags: [configuration, env, config-toml, tmux, editor]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-a3b2fe9fb2fafbad4d2be800
     resource: repo://src/env.rs
@@ -18,6 +15,9 @@ sources:
   - id: openwiki-source-1b5cfaa33f22a91204f59602
     resource: repo://src/tmux.rs
 generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Environment and configuration

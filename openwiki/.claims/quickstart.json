@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6a9c9bc803427e203c181d8df91540b915063d8f9a7099362864e8d0aa1092b9",
+  "pageVersion": "sha256:93dff5da2423bdfe9770f1ec812259b075ffed0ff17853cf9033514e38c0c8d9",
   "claims": [
     {
       "id": "claim_047f11ca67ea49c7929bce7126c3f6c8",
@@ -8,7 +8,7 @@
       "evidence": [
         {
           "resource": "repo://Cargo.toml#L1-L20",
-          "version": "repo-lines-v1:sha256:48a924b09e52eaa3cfb04f431943afc780d3eb4e3e988854caf022945f43ec16:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2NkNWE4MWIzZjlhNjIxYWE0OTNkOTBjNDVmNDJhYjU3MWQ0ZTQyYjhhZTVhZmYzNTFjYjBhMDJkMDZkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYWJiMmJhNWU2ZmI5MTQwMGQwNTdlOTMxY2U5MTk5OGI2ZjcwZmM1OGI3MzMwNTIxMzI2YTRlYzVlNWI2YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlMDQ2ZTAwMjVmZGIyYWE1NGJkNzBjYjYwNDFjYmFhNjg1ZThiOGMxMjUyYWI5NmM1N2FmMWM4M2Q0MjU0MGMifQ"
+          "version": "repo-lines-v1:sha256:c1162fd89a1a30c47d7b9e12d7c09a975f88dc7cafb1caa15dc385497004b32f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2NkNWE4MWIzZjlhNjIxYWE0OTNkOTBjNDVmNDJhYjU3MWQ0ZTQyYjhhZTVhZmYzNTFjYjBhMDJkMDZkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYWJiMmJhNWU2ZmI5MTQwMGQwNTdlOTMxY2U5MTk5OGI2ZjcwZmM1OGI3MzMwNTIxMzI2YTRlYzVlNWI2YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlMDQ2ZTAwMjVmZGIyYWE1NGJkNzBjYjYwNDFjYmFhNjg1ZThiOGMxMjUyYWI5NmM1N2FmMWM4M2Q0MjU0MGMifQ"
         }
       ]
     },
@@ -34,11 +34,11 @@
     },
     {
       "id": "claim_0c75cf6a920b4a8da6b8285982b5fcf4",
-      "statement": "Running hub requires git 2.31 or newer, optionally tmux, an editor launcher (code by default), and glab or gh only for start-review.",
+      "statement": "Running hub requires git 2.31 or newer, optionally tmux, an editor launcher (code by default), and glab or gh for start-review and for the review state `hub status` reads; when the forge program is missing, status warns and carries on.",
       "evidence": [
         {
-          "resource": "repo://README.md#L118-L124",
-          "version": "repo-lines-v1:sha256:9b7d25818920f9c07b3616a5191bf52a3325b36b52925c4377caebd3358daf8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJmYTE5OGE2NTEzMzA3NzJlYzVmMGJlMTgyZDA5N2Y3ZThlODgyMWM5ZjA0MjYzNjMzM2RjNGI1NDdjNDg2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVkYzU2YTNkMWFmMjJkMWQ1MjE5MTYxM2JjZDY5NTBkZmQ3ODdlM2MzMDRjOWU0N2U3ZjIzYzI0ZDg1ODM2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzVjZWZiYzM0ZTlmY2M2ZjgyYWRmMjk0NmEzMzE1MmVkM2E5NTUwNThkM2QxMjBiOTRjMzc5NTE1NDBhY2EyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTk2ZWZiZTE4MmY5ZjJiYzJmZmY0YjFmZDhiZTVlZjMwYmI3MTIwMTNkNDZmYmUxMjcxOTJjMTVlOGVjNzI4YSJ9"
+          "resource": "repo://README.md#L118-L126",
+          "version": "repo-lines-v1:sha256:bfecc5f35849cb36877cce3b997e2662b9498da1a5d2a758b0bcfe64e409431d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJmYTE5OGE2NTEzMzA3NzJlYzVmMGJlMTgyZDA5N2Y3ZThlODgyMWM5ZjA0MjYzNjMzM2RjNGI1NDdjNDg2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzAwNGJkNjJmNTgzNjhmM2I5M2I4ZTk5YzZiMWQ1MDgwOTY0ZTQ0NzhlNDAxYzVkZmU4NDU2ZWE1N2M1OTVkMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzVjZWZiYzM0ZTlmY2M2ZjgyYWRmMjk0NmEzMzE1MmVkM2E5NTUwNThkM2QxMjBiOTRjMzc5NTE1NDBhY2EyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTk2ZWZiZTE4MmY5ZjJiYzJmZmY0YjFmZDhiZTVlZjMwYmI3MTIwMTNkNDZmYmUxMjcxOTJjMTVlOGVjNzI4YSJ9"
         }
       ]
     },
@@ -59,6 +59,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-27T18:18:48.498Z"
+    "at": "2026-11-06T19:21:31.800Z"
   }
 }

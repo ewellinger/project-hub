@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ad2a01b0179ff360d2b4241cf93216234ab82e9ef9464f1a64cf905788adf387",
+  "pageVersion": "sha256:a232787a526aa7adb2e4db9fb54d70632d2f811246c0542e1a76079f0d4e596d",
   "claims": [
     {
       "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
@@ -27,7 +27,7 @@
       "statement": "Fault-injection helpers block commits with a failing pre-commit hook, block feature-record writes with a read-only store directory, and block worktree directory deletion with a read-only excluded subdirectory.",
       "evidence": [
         {
-          "resource": "repo://tests/common/mod.rs#L275-L333",
+          "resource": "repo://tests/common/mod.rs#L284-L342",
           "version": "repo-lines-v1:sha256:0d216c4a0f1db752aa973125d9a789cd4be4c5b076f17242214a829017ade245:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlMWUxZGExZjMwNWU4YTllMmZjMDQwZDUyZDAxZDFlY2ZiNDAxZmI3MWI2YWZjODc1NzlhYmZiZmE1NGJlMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyMDhkODMyMzg2YTVjOGU1NjJmM2FiOWUwMzcwNzE1NTAyNjhkYzRmZmFmODdkMDI5ZTU0MDk1ODk5M2Q5ZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5N2NjY2QyYjQ3Yzk1ZWZmZDM2YWEzZDAwZjhlZTFhYjhiMWZiMjk3ZGQ5YzliOGM4OWE3MWEwMGNhMThkYTMifQ"
         }
       ]
@@ -44,15 +44,15 @@
     },
     {
       "id": "claim_3e326cfdc76743328b252d33147f9b50",
-      "statement": "The fake gh/glab support only `api`, log calls to FAKE_PROVIDER_LOG, and answer from JSON files under FAKE_PROVIDER_DIR keyed by the endpoint.",
+      "statement": "The fake gh/glab support only `api`, log calls to FAKE_PROVIDER_LOG, and answer from JSON files under FAKE_PROVIDER_DIR keyed by the endpoint; a `gh api graphql` call with `-F number=N` answers from the key `graphql/N`.",
       "evidence": [
         {
-          "resource": "repo://tests/common/mod.rs#L180-L200",
-          "version": "repo-lines-v1:sha256:3a716f5cfd6be4c4a3bf9c7b61ad49abb1c8a095402051330f8bdbec9d0fd1de:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhOTJmZTY3OTc4MzdlYzA3MzlhOWRhNTJhYTIxMzRmMDM3ODhkMmU2NGRlZWRkODRhMTNjNTg4YjVlYmVjYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZDQ3ZDA3YmRjMTU2NGMxMzE0MGExNjU1YTE0MmQwYjRkNzcyYmJmZWI5MWE0NTYxYjExYmMzZTk2NTQxNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4NTNmM2RlODQ4MjdkMWZiNjU4YzQyM2I3MWE1MTllOGM4ZmZkNzUwZmY3NDMzMmUyOGJiMjA5ZjY0ZWM0MTYifQ"
+          "resource": "repo://tests/common/mod.rs#L180-L204",
+          "version": "repo-lines-v1:sha256:e7eb2c2785df5aa9cdcba2de84d61ca3b8763d9988b9ad11e6f2cbb994793d65:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhOTJmZTY3OTc4MzdlYzA3MzlhOWRhNTJhYTIxMzRmMDM3ODhkMmU2NGRlZWRkODRhMTNjNTg4YjVlYmVjYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZDQ3ZDA3YmRjMTU2NGMxMzE0MGExNjU1YTE0MmQwYjRkNzcyYmJmZWI5MWE0NTYxYjExYmMzZTk2NTQxNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMDlkYTlmYzEwMzE3YWZmODBiMzk4OTA1NDM4YzZjN2I2MDQ5MzFkNjc4YmRiMGEzYmNmYjM1Y2M4N2M3NWMifQ"
         },
         {
-          "resource": "repo://tests/fake-bin/glab#L1-L15",
-          "version": "repo-lines-v1:sha256:a0c251fb5e65f67ebab994dcf553f972165892ebb8434ff09ac317bb1df2f3b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1OGI3MTZmOGQ1OTlmYTVmMjFhZjM3NWQ4MzFkNWU5ZTliODZjMjVmNDA5ZjdlOWI1M2JkZTI0YTJiNjk1ZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0MzhiOTk4YTljMmVlNGRjNDI2OGU1OTc3OGEzYmY2MjNjMDU2ZmJhMjZiMTYwNjg5ZjQ2ZGVlMDNjNDAwNGMifQ"
+          "resource": "repo://tests/fake-bin/glab#L1-L36",
+          "version": "repo-lines-v1:sha256:fd100f8e75a860a12d0c3d2d27890cf7ad087534f2cd9ed2be36cb441cb441c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ZDNiOWU4ODBhNzc5NzU0OTNkYzdlMzU5MTQ0YzAyOTVhNGY2OTRjZmUwYWY0ZjkyOGMyMjMwN2JjNWMzMjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -92,13 +92,23 @@
       "evidence": [
         {
           "resource": "repo://tests/remove.rs",
-          "version": "repo-file-v1:sha256:13a327f8968e360729bc97fc5ec64db88be8dcdd686ee14ff28b2aa46b607c33"
+          "version": "repo-file-v1:sha256:048ccb4bbce6a31979178a7bbd4a4b667e1065a32a4e5ee47f76a665983a3202"
+        }
+      ]
+    },
+    {
+      "id": "claim_831b35f8f3a7420890e6517254e30d74",
+      "statement": "tests/review_state.rs covers review state end to end through the fake forge programs: the reviews store, the status review section, hints and JSON, the feature list word and --refresh, and that `status --base` and start-review's drift check do not read review state.",
+      "evidence": [
+        {
+          "resource": "repo://tests/review_state.rs#L92-L570",
+          "version": "repo-lines-v1:sha256:a5b1bf86427a43a42272019bec7b8812c196e9ee7899a288daa8bcf2331142ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NDc5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmOGY3NTYwYTU0N2YyN2VmZmM2N2ZiODM5ZDY1YzI2ZTQ3MTk2Zjg3MDBlNWQ5OTljNTQ0YmQzN2UxNDVjMjBlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3YTY3NGZjMWMwZmY2NzdlOWFjZTY2MDNmMDk3OGRmMTY4MWY5NjIzNGZhYzNlOTg2NzIzMTY4YmNkNGQ3ODUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkMDE2OTU4MDMwYjExMTQxMzViYmY0MTQwZjA5NGI5N2ZlM2FhMWVkNGI2N2NkNzBhNjMyMzMwYWFjYmRjZTc4In0"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:12:12.058Z"
+    "at": "2026-11-06T19:21:31.800Z"
   }
 }

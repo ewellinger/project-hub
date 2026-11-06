@@ -6,6 +6,8 @@ tags: [ui, tui, ratatui, dashboard, architecture, concurrency]
 sources:
   - id: openwiki-source-c55e62404e7071e7e42c91b9
     resource: repo://src/ui/app/dashboard.rs
+  - id: openwiki-source-79a1d0ec63169ed8c7724b38
+    resource: repo://src/ui/app/feature.rs
   - id: openwiki-source-7bdce6d8095dc0966e3f6005
     resource: repo://src/ui/app/mod.rs
   - id: openwiki-source-e9fb0e624f38b4189cab5a2d
@@ -14,10 +16,10 @@ sources:
     resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:33:09.880Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Dashboard architecture
@@ -64,9 +66,11 @@ restarting the dashboard.
 ## Events and effects
 
 `Event` is everything that can happen: `Key`, `Tick`, and worker results
-(`Report`, `List`, `Opened`, `Copied`, `Done`, `Branches`, `Preflighted`).
-`Effect` is everything the loop must do on the app's behalf: `Request` (status
-for a row), `OpenWorkspace`, `Copy`, `ReloadList`, `Run(Action)`,
+(`Report`, `List`, `Opened`, `Copied`, `Done`, `Branches`, `Preflighted`,
+`Reviews`). `Effect` is everything the loop must do on the app's behalf:
+`Request` (status for a row), `RequestForge` (the same, plus a forge read of
+the row's review state), `RefreshReviews` (read review state for every open
+feature), `OpenWorkspace`, `Copy`, `ReloadList`, `Run(Action)`,
 `LoadBranches`, `Preflight`. `update` never performs side effects itself.
 
 `Action` is one hub operation with resolved arguments — `Start`, `Add`
@@ -92,12 +96,42 @@ and the last error (`errors`).
 - `rebuild_rows` prunes cache/in-flight/error state for features that left
   the list.
 
+### Requests that read the forge
+
+A status request comes in two kinds. A plain `Request` attaches the
+**remembered** review state; a `RequestForge` reads the forge first (see
+[Review state from the forge](../workflows/review-state.md)). Which one is
+issued is a matter of state, not of the worker:
+
+- `forge_in_flight` is the set of rows whose outstanding request reads the
+  forge. `request_forge(id)` does nothing when the row is already in it, and
+  otherwise adds the row and issues a fresh generation, superseding a plain
+  request in flight. `request_fresh` emits `RequestForge` whenever the row is in
+  that set, so a refresh after an action does not downgrade a forge read. The
+  row leaves the set when its matching `Report` lands.
+- Moving the cursor calls `request_selected`, a plain request, so cursor
+  movement never reaches the forge. Opening a feature view (`enter_feature`)
+  and `r` in a feature view call `request_forge`.
+- Dashboard `r` sets `forge_next` and reloads the list; when the list lands,
+  `request_listed` makes the selected row's request a forge read.
+- `R` emits `RefreshReviews` unless `reviews_in_flight` is already set. Its
+  `Reviews` event clears the flag, reports the count in the footer or the
+  warnings in a result overlay (footer only, when an overlay or flow is open,
+  so a wizard is never replaced), sets `fresh_next`, and reloads the list; the
+  landing list then supersedes the selected row's request, because `R` rewrote
+  the reviews file an earlier request may have read.
+- A feature `Report` copies its review words into that feature's list summary
+  (`set_review_words`), so the list pane shows what the report just read.
+
 ## Worker threads (`src/ui/worker.rs`)
 
 Each effect spawns a detached thread that sends exactly one event back:
 
 - `request` runs `ops::status::base_status` or `ops::status::status` for a
-  feature — the same code as `hub status`.
+  feature — the same code as `hub status` — then `review_state::attach` with
+  `Source::Forge` or `Source::Remembered` according to its `forge` argument.
+- `refresh_reviews` runs `review_state::refresh_all` and sends one `Reviews`
+  event. Neither takes the hub lock.
 - `run(action)` executes the action **inside `hub.with_lock`**, loading the
   feature record inside the lock so it sees current state rather than the
   dashboard's cache, and calls the same `ops::*` functions as the CLI. Panics
@@ -128,7 +162,8 @@ dashboard).
 ## Rendering
 
 `view::render` draws a header, the active screen, a footer (messages expire
-after 3 s), and any overlay on top. The dashboard screen has the row list on
+after 3 s; while `R` runs and no action is running it shows
+`reading review state…` with the spinner), and any overlay on top. The dashboard screen has the row list on
 the left and the selected row's status on the right (`view/dashboard.rs`),
 including report age and a spinner while refreshing; the feature screen is in
 `view/feature.rs`. There are minimum terminal dimensions (`MIN_WIDTH`,
@@ -143,17 +178,30 @@ frozen reference rows use the read-only style (dim + italic). The dashboard
 list pane also lists each open feature's frozen roles, after its members, in
 the read-only style.
 
+Below the role table both screens draw the review section when a row has review
+cells (`review_table`): seven columns, REVIEW and REQUEST as `Length` columns
+and the other five as `Max`, so a clipped role or request number can never read
+as another valid one. When the full table (each column the wider of its header
+and its widest cell, plus 12 for the gaps) does not fit the pane, columns are
+sized from their cells only: headers clip and the values stay whole. The dim
+`review state read <age> ago` line goes in the tail.
+
 In that list pane each role line (`stage_line`) colours only the stage text:
 `working` green, `review` yellow, `frozen` dark grey, any other stage the
-default. Merged roles are left out of an open feature's lines, and a finished
+default. A role in review with a review word shows the word left of the stage,
+coloured by `ReviewWord::colour`; the word is dropped when role, word, and
+stage do not fit the pane width. Merged roles are left out of an open feature's lines, and a finished
 feature is a single dim `<name>  finished` line. On the selected row the
 `REVERSED` highlight turns the colour into the stage's background.
 
 ## Dashboard keys
 
-`app/dashboard.rs`: `↑↓/jk` select (and request status), `Enter` opens a
-feature view (refused on the base row and finished features), `n` starts the
-new-feature flow, `a` toggles finished features, `r` reloads, `o` opens the
+`app/dashboard.rs`: `↑↓/jk` select (and request status, never from the
+forge), `Enter` opens a feature view and reads its review state from the forge
+(refused on the base row and finished features), `n` starts the new-feature
+flow, `a` toggles finished features, `r` reloads the list and reads the
+selected row's review state from the forge, `R` reads review state for every
+open feature, `o` opens the
 workspace, `p` pulls the selected row, `x` removes the selected finished
 feature after a confirmation (refused in the footer on the base row and on
 open features), `?` shows help. Feature-screen keys are
@@ -165,3 +213,4 @@ covered in [Dashboard flows and overlays](dashboard-flows-and-overlays.md).
 - [Dashboard flows and overlays](dashboard-flows-and-overlays.md)
 - [Status, list, and pull](../workflows/status-and-pull.md)
 - [Architecture overview](../architecture/overview.md)
+- [Review state from the forge](../workflows/review-state.md)

@@ -12,6 +12,8 @@ sources:
     resource: repo://src/ops/merged.rs
   - id: openwiki-source-d7623854325d1c8d971147e7
     resource: repo://src/ops/remove.rs
+  - id: openwiki-source-1da066772d42f80cecf3225c
+    resource: repo://src/ops/review_state.rs
   - id: openwiki-source-bb184e2cea83bf2ff3501c2a
     resource: repo://src/ops/review.rs
   - id: openwiki-source-023f2a1cda1b07809c0aa015
@@ -20,10 +22,10 @@ sources:
     resource: repo://tests/finish.rs
   - id: openwiki-source-1955dcb2c0b390eb78ee0044
     resource: repo://tests/remove.rs
-generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-27T18:18:48.498Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Review, merged, set-base, finish, and remove
@@ -37,13 +39,25 @@ for the model.
 
 ## `hub feature review ROLE [URL]` (`src/ops/review.rs`)
 
-Requires an open change for the role. Fetches the role's clone, then:
+Requires an open change for the role. Fetches the role's clone (a failed
+fetch, for example offline, is a `warning:` and the last fetched refs are
+used), then:
 
 - sets the stage to `review`;
 - records `URL` as `review_url` when given (an omitted URL keeps any existing one);
 - sets `origin_seen` if the branch is on origin (it is never cleared), which
   later lets `status` say "gone from origin; run hub feature merged ROLE";
 - saves the record; prints a note when the branch is not on origin yet.
+
+Once a role is in review with a URL that parses as a GitLab merge request or a
+GitHub pull request, `hub status` reads that request's state from the forge.
+When the forge says it is merged, the row's hint becomes `merged on
+GitLab|GitHub; run hub feature merged ROLE`, which also catches squash merges
+that leave no ancestry; when it was closed without merging, the hint is `closed
+on GitLab|GitHub without merging`, replacing git's "gone from origin" hint so a
+closed request whose branch was deleted does not suggest `feature merged`.
+Nothing runs `feature merged` automatically. See
+[Review state from the forge](review-state.md).
 
 ## `hub feature set-base ROLE BRANCH` (`src/ops/set_base.rs`)
 
@@ -62,20 +76,22 @@ Closes one role's open change:
 1. **Dirty check first** (unless `--force`): a dirty worktree fails with
    `HubError::Dirty` (exit 20) **before** anything else, because the next step
    kills processes.
-2. **Re-point tmux** (`session::repoint_window`): if the session has a window
+2. **Adopted-worktree question** (unless `--force`): a worktree the hub did
+   not create is removed only on a yes from the confirm callback (the CLI asks
+   on a terminal, otherwise declines). It is asked here, before the re-point,
+   for the same reason as the dirty check; a decline aborts with "no worktree
+   was removed. Rerun with --force".
+3. **Re-point tmux** (`session::repoint_window`): if the session has a window
    named after the role, it is respawned in the main clone so its shell (and
    anything started from it) cannot block removal.
-3. **In-use check** (unless `--force`): `refuse_in_use` fails with
+4. **In-use check** (unless `--force`): `refuse_in_use` fails with
    `HubError::InUse` (exit 21) when any process has its working directory
    inside the worktree.
-4. **Close** with `close_change`:
+5. **Close** with `close_change`:
    - no worktree (branch lives in the main clone) → nothing to remove;
    - worktree directory already gone → nothing to remove;
-   - adopted worktree → requires `--force` or a yes from the confirm callback
-     (CLI asks on a terminal, otherwise declines; a decline aborts with
-     "no worktree was removed. Rerun with --force");
    - otherwise `git worktree remove [--force]`.
-5. Set the stage to `merged` with `merged_at`, drop the role's pin if the
+6. Set the stage to `merged` with `merged_at`, drop the role's pin if the
    change was pinned (printing `pin at <sha> dropped`), save, and rewrite the
    workspace (warning on failure).
 
@@ -147,7 +163,9 @@ left to infer it from.
 5. Delete the member branches, then the hub branch, then the record
    (`.git/hub/features/NAME.json`) last, so a failure partway leaves the record
    for a rerun. The record is not in git, so this cannot be undone. Remote
-   branches are never touched.
+   branches are never touched. The feature's remembered review state
+   (`.git/hub/reviews/NAME.json`) is deleted after the record; a failure
+   there is ignored, since a leftover file is harmless.
 
 Frozen roles have no branches, so `remove` has nothing to do for them.
 
@@ -199,3 +217,4 @@ hub-commit refusals change nothing), `tests/set_base.rs`;
 - [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 - [Status, list, and pull](status-and-pull.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
+- [Review state from the forge](review-state.md)

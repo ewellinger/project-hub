@@ -2,7 +2,8 @@
 # Fake glab/gh for tests. `<name> api --hostname HOST --method GET ENDPOINT`
 # logs its arguments to $FAKE_PROVIDER_LOG and prints
 # $FAKE_PROVIDER_DIR/<key>.json, where key is ENDPOINT with `/` -> `__` and
-# `%` -> `_`. FAKE_PROVIDER_FAIL=<text> makes every call fail with <text>.
+# `%` -> `_`. `gh api graphql ... -F number=N` reads endpoint `graphql/N`.
+# FAKE_PROVIDER_FAIL=<text> makes every call fail with <text>.
 set -eu
 : "${FAKE_PROVIDER_DIR:?}" "${FAKE_PROVIDER_LOG:?}"
 name=$(basename "$0")
@@ -14,13 +15,16 @@ fi
 [[ "${1:-}" == api ]] || { echo "fake $name: only 'api' is supported" >&2; exit 1; }
 shift
 endpoint=""
+number=""
 while (($#)); do
   case $1 in
     --hostname|--method) shift ;;
+    -f|-F) shift; [[ $1 == number=* ]] && number=${1#number=} ;;
     *) endpoint=$1 ;;
   esac
   shift
 done
+[[ $endpoint == graphql ]] && endpoint="graphql/$number"
 key=${endpoint//\//__}
 key=${key//%/_}
 file="$FAKE_PROVIDER_DIR/$key.json"

@@ -11,7 +11,7 @@ sources:
 generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-27T18:18:48.498Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Hub init and repo registration

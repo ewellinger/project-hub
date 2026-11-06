@@ -33,7 +33,17 @@ impl App {
                 let next = self.selected + 1;
                 self.select((next < self.rows.len()).then_some(next))
             }
-            KeyCode::Char('r') => vec![Effect::ReloadList],
+            KeyCode::Char('r') => {
+                self.forge_next = true;
+                vec![Effect::ReloadList]
+            }
+            KeyCode::Char('R') => {
+                if self.reviews_in_flight {
+                    return Vec::new();
+                }
+                self.reviews_in_flight = true;
+                vec![Effect::RefreshReviews]
+            }
             KeyCode::Enter => self.open_feature(),
             KeyCode::Char('a') => {
                 let keep = self.selected_row().id.clone();
@@ -138,7 +148,7 @@ impl App {
                     name: name.to_string(),
                     selected: None,
                 };
-                self.request(id)
+                self.request_forge(id)
             }
         }
     }

@@ -18,10 +18,12 @@ sources:
     resource: repo://src/ops/set_base.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
-generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
+  - id: openwiki-source-1b5cfaa33f22a91204f59602
+    resource: repo://src/tmux.rs
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:12:12.058Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Features, changes, stages, and bases
@@ -140,7 +142,7 @@ squash merges qualify) or when it is contained in `origin/<base>`. See
 
 | Thing | Rule |
 |---|---|
-| Feature and checkout names | `^[A-Za-z0-9][A-Za-z0-9_-]*$` — valid as a git branch, tmux session, and directory |
+| Feature and checkout names | `^[A-Za-z0-9][A-Za-z0-9_.-]*$`, with no `..`, no trailing `.`, and no `.lock` suffix — valid as a git branch and directory; the tmux session name maps `.` to `_` |
 | Roles | `^[A-Za-z][A-Za-z0-9_-]*$`; `hub` and `ai` are reserved for fixed tmux windows |
 | Clones | `[A-Za-z0-9-]+` |
 | Worktree names | exactly one normal path component |

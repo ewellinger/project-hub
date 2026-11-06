@@ -14,16 +14,18 @@ sources:
     resource: repo://src/ops/session.rs
   - id: openwiki-source-3f5c288f59bdbf6815ffcff1
     resource: repo://src/ops/start.rs
+  - id: openwiki-source-61647d0ebb1f751a6acc22a7
+    resource: repo://src/review.rs
   - id: openwiki-source-1b5cfaa33f22a91204f59602
     resource: repo://src/tmux.rs
   - id: openwiki-source-fbbd34a2cb4fd0a8355f1f33
     resource: repo://src/workspace.rs
   - id: openwiki-source-f13236b3ab41e3f4cea296b6
     resource: repo://tests/misc.rs
-generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:33:09.880Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Git, tmux, and editor integration
@@ -78,7 +80,10 @@ groups:
 
 `Tmux` runs `tmux` (tests substitute a program and env via `with_program` /
 `env`). Sessions are always targeted as `=<name>` so tmux never
-prefix-matches another session. Operations: `has_session`, `new_session`
+prefix-matches another session. A checkout name may contain `.`, which tmux
+reserves as its window/pane separator and rewrites to `_` on `new-session`, so
+`tmux::session_name` maps `.` to `_` and every target and printed attach
+command uses that name. Operations: `has_session`, `new_session`
 (detached), `windows`, `new_window`, `respawn_window` (kill the pane's
 process and start a fresh shell in a directory), `send_keys`,
 `rename_window`, `kill_session`, and `current_session` (only when `$TMUX` is
@@ -145,6 +150,27 @@ to the local exclude file unless already ignored.
 `open_workspace_quiet` silences stdio for the dashboard, whose raw-mode
 terminal would otherwise be corrupted.
 
+## Forge programs (`glab`, `gh`)
+
+`src/review.rs` is the only place that runs the forge CLIs, and hub stores no
+tokens: authentication is whatever `glab` / `gh` already have for the host.
+Three helpers share one private `api` runner:
+
+- `api_get(program, host, endpoint)` runs
+  `<program> api --hostname HOST --method GET ENDPOINT`. `start-review` uses it
+  to read a review, and review state uses it for GitLab's merge request,
+  `/approvals`, and `/discussions?per_page=100`.
+- `api_graphql(host, query, owner, name, number)` runs `gh api graphql
+  --hostname HOST` with `-f query=…`, `-f owner=…`, `-f name=…`, and
+  `-F number=…`; review state uses it for GitHub's single query.
+
+`api` maps a program missing from `PATH` to `HubError::Usage` ("… is not on
+PATH; install it and run `… auth login --hostname HOST`"), a non-zero exit to
+`HubError::Precondition` carrying the program's stderr with control characters
+stripped, and unparseable output to a "returned malformed JSON" precondition.
+`start-review` surfaces these as errors; the review state read turns them into
+warnings (see [Review state from the forge](../workflows/review-state.md)).
+
 ## Post-save steps are warnings
 
 `ops::session::after_save` wraps workspace and tmux steps that run **after**
@@ -158,3 +184,4 @@ because the recorded state is authoritative.
 - [Environment and configuration](../configuration/environment-and-config.md)
 - [Starting features and adding roles](../workflows/feature-start-and-add.md)
 - [Testing and the integration harness](../testing/integration-test-harness.md)
+- [Review state from the forge](../workflows/review-state.md)
