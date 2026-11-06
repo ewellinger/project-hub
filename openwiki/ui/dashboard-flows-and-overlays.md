@@ -14,12 +14,14 @@ sources:
     resource: repo://src/ui/app/mod.rs
   - id: openwiki-source-5b31f6bedf9e4f28fd8d628a
     resource: repo://src/ui/app/overlay.rs
+  - id: openwiki-source-5fbbfa6028aa0f76fa381d70
+    resource: repo://src/ui/view/feature.rs
   - id: openwiki-source-99b08242c15df3bb83462c9d
     resource: repo://src/ui/view/mod.rs
-generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:12:12.058Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Dashboard flows and overlays
@@ -138,7 +140,12 @@ has two rows; a frozen row is found by role among the rows after the changes,
 so a refresh that shifts it keeps the same role selected. A selection that no
 longer resolves falls back to the last row in display order.
 
-Keys: `↑↓/jk` move within display order; `r` refresh; `o` open the workspace;
+Opening the feature screen reads the feature's review state from the forge,
+and so does `r`; a second `r` while that read is in flight starts nothing (see
+[Dashboard architecture](dashboard-architecture.md#requests-that-read-the-forge)).
+
+Keys: `↑↓/jk` move within display order; `r` refresh, including the review
+state from the forge; `o` open the workspace;
 `p` pull the feature; `v`/`b`/`m` start the per-role flows; `+` add role;
 `z` freeze; `u` unfreeze and `Z` refreeze the frozen row under the cursor;
 `f` finish; `c` copy; `?` help; `Esc`/`q` return to the dashboard (and reload
@@ -156,16 +163,39 @@ The footer normally reads `↑↓/jk role  c copy  z freeze  f finish  ? help  E
 back`; on a row with `frozen_sha` it swaps to `c copy  z freeze  u unfreeze  Z
 refreeze  ? help  Esc back`, so both fit the 60-column minimum.
 
+## Review state keys and warnings
+
+There is no flow for review state; three keys trigger reads and nothing else
+does (not cursor movement, not a timer):
+
+| Key | Where | Reads |
+|---|---|---|
+| `Enter` | dashboard, on an open feature | that feature, while opening its view |
+| `r` | dashboard | reloads the list, then the selected row |
+| `r` | feature screen | that feature |
+| `R` | dashboard | every open feature with a role in review (forge only, no `git fetch`) |
+
+While `R` runs, the footer shows `reading review state…` with the spinner
+(unless an action is running or a message is showing); a second `R` is ignored.
+When it finishes with no warnings the footer says `review state read for N
+feature(s)`. With warnings, a `review state` result overlay lists them, but
+only when no overlay and no flow is open: an open wizard's overlay holds what
+the user typed, so then the footer reports the count instead. Warnings from a
+single row's read arrive in that row's status report like any other status
+warning.
+
 ## Rendering
 
 `src/ui/view/overlay.rs` draws each overlay centered over the screen with
 tone-colored lines (`Plain`, `Warn`, `Error`, `Dim`) and sizes boxes from the
 wrapped line count. `src/ui/view/feature.rs` draws the role table with the
-cursor, followed by warnings, hints, the selected role's review URL (or, on a
+cursor, then the review section (REVIEW, REQUEST, STATUS, APPROVED, PIPELINE,
+THREADS, CONFLICTS) when a role in review has a parseable URL, followed by
+warnings, hints, the selected role's review URL (or, on a
 frozen reference row, `<role>: read-only reference checkout at <sha>; u
 unfreezes` in the read-only style), the attach
-line (when tmux is on), and the refresh age, reusing helpers from
-`view/dashboard.rs`.
+line (when tmux is on), the `review state read <age> ago` line, and the
+refresh age, reusing helpers from `view/dashboard.rs`.
 
 ## Related pages
 
@@ -173,3 +203,4 @@ line (when tmux is on), and the refresh age, reusing helpers from
 - [Dashboard architecture](dashboard-architecture.md)
 - [Starting features and adding roles](../workflows/feature-start-and-add.md)
 - [Review, merged, set-base, and finish](../workflows/review-merged-finish.md)
+- [Review state from the forge](../workflows/review-state.md)

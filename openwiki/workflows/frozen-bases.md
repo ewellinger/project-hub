@@ -19,7 +19,7 @@ sources:
 generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:33:09.880Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Frozen bases: freeze, unfreeze, and refreeze

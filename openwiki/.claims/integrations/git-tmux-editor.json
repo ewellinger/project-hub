@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:94e3428e41eb15380a32b52d863ad12f180460f36a273c62eaa537506a7dbb4d",
+  "pageVersion": "sha256:fa8829cf9220b6fb68e729bdc0776bf2f524e7ac7beb85b8954d7d0c5ce4b0da",
   "claims": [
     {
       "id": "claim_555ff32dc81744febc68dab7920bdbd9",
@@ -17,7 +17,7 @@
       "statement": "update_ref_if and delete_ref_if update or delete a ref only if it still points at the expected old commit.",
       "evidence": [
         {
-          "resource": "repo://src/git.rs#L183-L190",
+          "resource": "repo://src/git.rs#L185-L192",
           "version": "repo-lines-v1:sha256:c1e86cd1d7cb893019d8f29a372f00b05aa61e8519e0f1a146c866a081df2903:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmZkYTIxNjRhMDkyNTA1OGMwOTMxMzkwZDA0YWVhNGRhMWZjYzJkYjZmN2RhNTI3YmUyZWE1MjdmZjk1MWU3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjU3MjM5ZjdhZmNkYjJhNTQyODdkYWMyNTliMmQyOTFhMjMxODJmMjgzZmU0ZDcyMWJlNzFkYTc4ZWYxMzllYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDkyNTFjY2EwNDM0ZTM2ZDQzNWUwMDUxZmQwOTQzMDI3OGYxNzdhNTA3ZjJkZjI3OGJkYjgyM2ZhYTBhN2E3YyJ9"
         }
       ]
@@ -31,7 +31,7 @@
           "version": "repo-lines-v1:sha256:c547732d7e012a5f34a11296afaae23b8a7bffa354b57a3489f966c151a3660b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGYzMDRjNTg0YzE2YWE1YWQxMWM2OWVlZTBhZmM2ZjUwOTM0ZmQwMThiZWE5MWY2YTQ5NDUzYzFhNjEwMGNhOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTI2MTlmNTJhOGExNzZmNzAwMTNkMTBjOTkwNjBjNDFlOTBiZjdiNzVmZjI1NDlkZDM3YzZhMWRhOWFhMzhmYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWY5ZjExZDZhMDQ4MGI0OTk5ODQwNWQzYWU3NTJhNGY0YzgxZmY0MmIzNzEyZWZjYTY0MDczNjgxZTYzMDg1ZSJ9"
         },
         {
-          "resource": "repo://src/git.rs#L264-L291",
+          "resource": "repo://src/git.rs#L266-L293",
           "version": "repo-lines-v1:sha256:5be6d409d18c00c884d6ac8c74266c5057e68d5fb509c6398d9ce978d8202845:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMWJiNDQzZmVmNzQ3Yjg2NGUyYmQyMjFjZGU5MGNiNmI4Zjc1YTZmZGViNWE3NDZhOTQ1NmEyMTY0ODBjZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2YzFjZjQ3MjY2NDg1ZDVhYzkyYTYxZTJlYmE3N2Q4MDViMjcyZTUyZTAzMTFlYWQxNGI1MjFmM2NlZjRhZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllY2U1Y2RkM2NlNTI3MDU0ZjQ1MDVhM2Q0ZDY3Y2M4Yzk2MmY1MzI5NWRkZWVlNjI2NmY4NzRiNDdkYjNhNzAifQ"
         }
       ]
@@ -41,7 +41,7 @@
       "statement": "merge_base returns None when two commits share no history.",
       "evidence": [
         {
-          "resource": "repo://src/git.rs#L329-L344",
+          "resource": "repo://src/git.rs#L331-L346",
           "version": "repo-lines-v1:sha256:76aa52319392447255897e46b1e7e1a5612b00ba3feb02306237dcdf4489f9bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxOTVmNjUzNzFjMjNmMzk2MGMyZjU5Mzg2ZTgxNTY3Y2NkZmFkMzE4MmE2NjgxYmZiNGE2M2IxYzFhNzQ2ODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhMjljMGUzNmY0MmI5MzA1YTUxZTE3NzJmMGI2YjU4N2FiZjlmZjhlNjcyZjUxMjk2NjYyMGM3YzhhOGM4YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmYzM5ZDEzY2FjYTRjYzUyMWMyYWQzMjBjZmY4YWJjMmJjNmZjNTFiNjkxOWIxYWJhZDFhNjZmYWQxNjkwZTAifQ"
         }
       ]
@@ -51,18 +51,18 @@
       "statement": "exclude_locally appends a pattern to the repository's info/exclude file, shared by linked worktrees and never committed.",
       "evidence": [
         {
-          "resource": "repo://src/git.rs#L502-L526",
+          "resource": "repo://src/git.rs#L504-L528",
           "version": "repo-lines-v1:sha256:5c8c1d615371cc82b5bcf2bf478ccb48ecf85f18da21a7e035fe953b98e1d654:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhZDgyNzMwNWZiMDQwYTUyMzExMmQ4ZmFkNDk3N2EyOWMxZjExYTdhZTViMGQwOGVhMTEwYjcxNzYwNDk0ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5ZGExN2Q0MTA1YjZhMDhkMjNkZDQ4Njg4MDI4Nzc1MjdkNmVkZjc4ZDAzNWZlNTQxMDY3Mzk2OWE3MTk4YjUifQ"
         }
       ]
     },
     {
       "id": "claim_baadca0c868649bcb58eda79c4db475c",
-      "statement": "Tmux always targets sessions as `=<name>` so tmux never prefix-matches.",
+      "statement": "Tmux always targets sessions as `=<name>` so tmux never prefix-matches, and the session name is the checkout name with '.' replaced by '_'.",
       "evidence": [
         {
-          "resource": "repo://src/tmux.rs#L7-L22",
-          "version": "repo-lines-v1:sha256:0b8f75448e2506084e1a1c3d6fde26d7d7876a9c6ac4ce5a9dbf96ddc9a9ab27:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMmZjNDgzNDRlNjkzN2FmYjdhZjNhZDdmMGQ5MGVjNjdmNWFkYTc5MjljNWQ4YzkxMjVjNjBiZTk0Nzk2NmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NjAyNDA5OWIwMmYwNjcxOTBlMjViZDE4Yzk3YmEzOWI0NjllYTBiNWI5ODJiNTE0NmZkYjNjODFkMTY1OWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNThhY2NkZGUyMTkzNTEzMDRhNjRmYWMxYzkzMWI1M2JlZDQ4NDZmMDRhNWNiZGMxNjIyZjZlMGU3MmZkY2QifQ"
+          "resource": "repo://src/tmux.rs#L7-L33",
+          "version": "repo-lines-v1:sha256:6f461641f9d29ee75f6aa2da4b6b7fe6ca9a279ec8692075744309fb0f2fc713:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMmZjNDgzNDRlNjkzN2FmYjdhZjNhZDdmMGQ5MGVjNjdmNWFkYTc5MjljNWQ4YzkxMjVjNjBiZTk0Nzk2NmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NjAyNDA5OWIwMmYwNjcxOTBlMjViZDE4Yzk3YmEzOWI0NjllYTBiNWI5ODJiNTE0NmZkYjNjODFkMTY1OWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNThhY2NkZGUyMTkzNTEzMDRhNjRmYWMxYzkzMWI1M2JlZDQ4NDZmMDRhNWNiZGMxNjIyZjZlMGU3MmZkY2QifQ"
         }
       ]
     },
@@ -75,8 +75,8 @@
           "version": "repo-lines-v1:sha256:b1aaf27c4c11d336ef86c10badbe77f6059f5af8d4d3d908768f0475c0a867a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2YTdiZGYxNjNjOWNiYjVlOWM0NTQ2MzE3YjY0NzllMWZlOGU2MzQ5M2ZlNmE0OWFkMzIxMDliNzU4NDM1YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYjUzZDEyYTU5YWVhNmQ4NTcyYWE5NGQ2ODZkZTEzZWYwMTk5Njk1OTMyZmI3NjZjNmU0YzEyMWUwMDBiMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3MmVkYmRhZDU4MDI3YjEzNTQyZjE3MmNiODgxMzFiMTFmODE1NTc4OWQyYTUwZjkyNmNlYmQ2MWZkZDFhNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3ZTE2NjAyY2U0Y2UzMzcyM2MyYTA2OGM4NzUxOGJiZjE1NTlkYTAyMWZhN2IzOWU5ZTdkNWI3M2Y0ZmYyZmMifQ"
         },
         {
-          "resource": "repo://src/ops/session.rs#L93-L155",
-          "version": "repo-lines-v1:sha256:75325f3a79391da1c1fbae2db19b4f00644b34bdefe945117ac40428fdc7adae:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YzAxYjExZWE5YjEzZmM4MmRhYzgwYjkzYzUwMjM4OWZkY2EwNmEzNDJlZmM2YTdlMjRhZWU5YjM1MWQxMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkMmE1NTdiMDZmZTI4MjFhODBhMmE4NzJiYzA0MWVjMzQ2MjA0MzEwNzY1MGVjZGU3Yjk1NDlkYzU1ZWI1MzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyN2U0ODUwZjExOTZhYjFjMjBjODgwMmJhNTdiYTNmZWJmMjMyOTVlM2M4YzBmMGQ4ODVmYjNjNjQ1OWM0MjQifQ"
+          "resource": "repo://src/ops/session.rs#L93-L161",
+          "version": "repo-lines-v1:sha256:92d8b9b62e6c74e799c208af90ee0be2a4fcac6009fc3ef42db20d69da66a4c3:eyJzZWxlY3RlZExpbmVDb3VudCI6NjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDQ0YzZhODY4Y2Y1ZjM1MjMwNjg0ODQ5ZTM2YTI2ZGZmNmNjZDMxMmM0ZmJhZGY2OThmNDVmMzZiNzA1OWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3YmIzNjdiMGFkNDk0YTI3OTdjMTVjMjM2N2VlYTU2M2QwMDcwOTAxYWZiNDkyZjExODA1ZWQ5MThmZTM3Y2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkZmJjYzI3ZGY5MDYyY2NiZTczNzQ5NDA3ODBkOWE4YjRhOTYzZTQ5MmNjMTAzOGNjZTBiMzM5YWU3YzlkY2IifQ"
         }
       ]
     },
@@ -85,7 +85,7 @@
       "statement": "Feature workspace files list the hub worktree plus each role checkout (open changes and frozen reference worktrees) relative to it in manifest order; the base workspace lists every registered repo's main clone.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L161-L207",
+          "resource": "repo://src/ops/session.rs#L163-L209",
           "version": "repo-lines-v1:sha256:b9c1dac481eb8c332a139a6774d0e8c58c8cce5a23d52d8293e077b31ebb9b2b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNGZkMjUwYmFlZWJmYWI0ZWU0ODg0YThmODUyMGRjYTBlNmM0YzM0MjljMjlhNWIwYjg5ZTFhNDRmYTcwNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwMGI3ZGZhZDExMzg4MGI1OGQzZDIyZGUzODM5MzFmYTNmNDQxMmM3MGJkNWE5NTBmZTg5YjRjMDMyOGY1NTAifQ"
         },
         {
@@ -109,7 +109,7 @@
       "statement": "Workspace filenames are added to the local exclude file unless already ignored.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L209-L216",
+          "resource": "repo://src/ops/session.rs#L211-L218",
           "version": "repo-lines-v1:sha256:309542add6c2566698725cb84b43de569f1e0f4e06c74ec4fea7c5b818d55c85:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQ3ZmYwYmRlYTRjOTUxNTBmZjZmMzAxNTc4Y2MxMWQ5OTYyMmFkNWVkYzQ1ZDU1NWVhN2ZmZThjODFjYjdhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDA0ZGM1MmFlMDQ1YzgyNmM1YjZlZTNkZGFlZTYyNTg4YzE2OWU5ZmZlODliYTc0Y2I1ODgwMzY1YTgyODIwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
@@ -149,7 +149,7 @@
       "statement": "Git provides worktree_add_detached to create a detached worktree at a commit and checkout_detached to move a detached worktree's HEAD.",
       "evidence": [
         {
-          "resource": "repo://src/git.rs#L243-L265",
+          "resource": "repo://src/git.rs#L245-L267",
           "version": "repo-lines-v1:sha256:d0c69691add75c103c4c7673e1b2601aa1b5c040e46927534a39c8cc12932145:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4YTIyMjhlN2UyYzRlMmRiNWY5ZWUwYmIxMDZhNGQwZWNiMThiZWY2MjkyZjJiZmI5ODM3ZDA1YWEzNWM2MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlM2U2MTI1NWRmMDIwMGI3NzljMzlmZDRhNjUyMWFiZWFjNzdmNDJlYTIyNGYwYTk1ZDI0NGJiZGRjYjUwMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMmJjZDgzMzdjZmM0MDIwNzNiZDRiZWM0YWYwYTNjOGFlNzkyMTMyOGFmNTAzN2UzOTNkMWFiZTkxYjgwMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3YmI2MDc4MDY2NzYyOGY4YmI0YTcxOGFhNDA0ODJkMjdmYmEzN2NmNTU5ZjA4OGMzMDUzZWFiNjVhNTE1YWMifQ"
         }
       ]
@@ -159,12 +159,12 @@
       "statement": "`hub tmux` outside a feature worktree and without `--feature` converges a base session with `hub` and `ai` windows in the hub's main clone and one window per registered repo's main clone in manifest order, through the same converge_session used for feature sessions.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L612-L620",
-          "version": "repo-lines-v1:sha256:46652f00117450b39040e4e8d9eb34cd91d3976cdddb8286894348f2a872a0c7:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI0M2EzZjEyMTRhMDYyYWVhMDJlYWJhYTIzODk5ODE0Njc3MjRhNjUyMTljODllMTUzNjY2MmY0MTMxNTMwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjdlMzZhODMzZWQ3NThlZTUxNTAyYjUyZjFmYWE2YzFmODIxY2RkMWEyMDc3ZmU0ZmQ0N2Q2MWVkZTY0MDg4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTZmNDlhODk0ODE4NDBlNzNiYjI0MzU4NGM3NjEzZjQ4MjI5NWNhM2NkYjJkODRhZmRjZTU2OTY1NzhjMTE4YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjNkMWQ4YzgyZTZjMWQ2OTdlNWYwNzRkNDc0NDlkY2UzMmQyZmFhYWYwYzgxZTE5MDc5OTQ4NWVhOGY2MWZmMCJ9"
+          "resource": "repo://src/main.rs#L626-L637",
+          "version": "repo-lines-v1:sha256:1bbf52c3352b7ee568ef5ad8bf888a436133d29b0d35858341cc674199bab8a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNWU2MmM3MzQzMjM1MDVmYTRiY2ZjZTUyNTNlZDYxZmMxYTMzZjJlNmU4NGM2ZWVlMzRlMTE2NzY4Nzc0NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjZThkMTM3ZmE0NGFjNjY0OGIzYTRhNmY1NmY1MGJhYmE2NzczNDE0NWQwNDc0YTRlNTU1Njk3ZmQyNmJlYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmNTczOThlOGZkOTFmYzM3YmZlZjRlOTJhMDZjNGNiZGQ4ODVhNTVkYmYzZWMwYzVjNzkwMmJhOTMyNTRiZDMifQ"
         },
         {
-          "resource": "repo://src/ops/session.rs#L108-L155",
-          "version": "repo-lines-v1:sha256:0a4cadf7abdab9887ffe7cd518063a7acdb706c8e5285ad04dbf9870bd47212a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YzAxYjExZWE5YjEzZmM4MmRhYzgwYjkzYzUwMjM4OWZkY2EwNmEzNDJlZmM2YTdlMjRhZWU5YjM1MWQxMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliNTM1ZGU4OWIxNGU1OWFhN2NiODZkNGMwYTc5ODllYjNlMTg4ZTJiNjBlYjMyOTVkNzljZmViN2VjZDU3YzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyN2U0ODUwZjExOTZhYjFjMjBjODgwMmJhNTdiYTNmZWJmMjMyOTVlM2M4YzBmMGQ4ODVmYjNjNjQ1OWM0MjQifQ"
+          "resource": "repo://src/ops/session.rs#L108-L161",
+          "version": "repo-lines-v1:sha256:245de516052a3f6b2ec99118498d3bf5bd8f90d2a6cd63b9fd59e7f68e804856:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4ZTM1OTRjOTdjZjM1NDAzZWJlODRlN2EwYWE0OTA5ZmJkNmFlNmMyMzU2ZGJkMDE4ZjRhMDYzZTc4MmZkNDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NmY4Y2IwODNmYTgwMGE0ZGNkMjk2OTcyMmQ3YjkyNjg2YWRkOWViZTM2NTU0OTJmYTY3MmIxYTdjZWQyNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkZmJjYzI3ZGY5MDYyY2NiZTczNzQ5NDA3ODBkOWE4YjRhOTYzZTQ5MmNjMTAzOGNjZTBiMzM5YWU3YzlkY2IifQ"
         },
         {
           "resource": "repo://tests/misc.rs#L57-L98",
@@ -177,7 +177,7 @@
       "statement": "The base session is named by rendering the checkout_template with `main` as the feature, and `feature start` refuses a checkout name equal to it.",
       "evidence": [
         {
-          "resource": "repo://src/ops/session.rs#L88-L93",
+          "resource": "repo://src/ops/session.rs#L87-L92",
           "version": "repo-lines-v1:sha256:9e672b8674a9eaf14fd2b4dc87941101b2ec3d58f76fd6aa56f3784a58facc55:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTZjYzY5OTllYmUwN2U0N2IxNmQxZTU4MDJlMGRmOTQ5MmRhMGViYjJmNzBjZTA1Y2E4ZTUzZjkzMzQ4MDIxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmZiODE1ZWYxMzVlOGJjYTE2N2UxNjdhOWNhNWY4ZWQ1Y2FiZGVlMjgzMTY1OGZmMjMwOWNlMDBmNDg5N2Q3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzlmZTFhOGJhOGMwNDgzYmYwOGU2ZmRmOTVkNzg2ODdlZTUxOTYxZDkyZTY1NjU0ZGQxZjMzOTZlZjVjNzhlMiJ9"
         },
         {
@@ -185,10 +185,20 @@
           "version": "repo-lines-v1:sha256:f5a2f0698a1db6f6bdb2cf7622dc32cecf92e86cabac68195cdf102fac652073:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM5NDQzODRlYzlhNjI1NzA5YTk3NDA2Y2M2NDViY2RjMTJkNjU1NWM4NjE0MjliZmZlZDliNjc4ZDM3NjZiNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjEzZTQ3NDU5YzY0NGQ2YTAyMTU2YzM3NWJkZWYyMjIwNWIwYWZjZGZkMjJiYmVjNjgyNjZkYTQ5M2M1NTE5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2VlMDgwZWFhNjE2ZmRkYzM5NDM5YzlhZDM1ZGFiMzVjOTdmNzY5NDc1NThhNjFiMDk0NzYxYjJhZDIxMjMyNiJ9"
         }
       ]
+    },
+    {
+      "id": "claim_0021ecf4dc2a4df3940a1c8ae3259a41",
+      "statement": "All forge access goes through `glab api` / `gh api --hostname HOST` in src/review.rs: a missing program is a Usage error naming the `auth login` command, a non-zero exit is a Precondition error carrying the program's stderr without control characters, and unparseable output is a malformed-JSON Precondition error.",
+      "evidence": [
+        {
+          "resource": "repo://src/review.rs#L427-L497",
+          "version": "repo-lines-v1:sha256:fb1afe4c90b56718dd908f79b3c11ab1092a4d6fae1108b799d43781316ec741:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZmFkMmMyYzZkNTVkNTliMzI3ZWI2YThhNDc1NmRmNDEzNzcyMjM3NjJiNTFmOTQ4YjY0M2MyZjJjMjYzNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0NzVlOTRhOTA0YWM0OWIzMTU0ZDQ2NzJhNjZlODYyOWI4NmRhYzc0ZTNlMjkzN2JlNjkyN2FlM2RhMTFjNTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMjgwMjU5YjBmMTc1YjhlMmY3ZDQxYjZhMjBhN2MyYjk5MjU3MjBiYzIxYmVlNTk0ZDJkYmU4NzRlMDRlMGYifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:33:09.880Z"
+    "at": "2026-11-06T19:21:31.800Z"
   }
 }

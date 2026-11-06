@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:7503d93bcf468dcfb09797d0a62834d17af6c981e2567f5cd711b3b6bb5a61c3",
+  "pageVersion": "sha256:dcbfbe67d9596901492a985af25f4f2eb44b6be5ef5ce1f1718444e785806edb",
   "claims": [
     {
       "id": "claim_74e704fcf7e1408d8bcef3756feb5fd3",
@@ -59,7 +59,7 @@
       "statement": "status reports a merge into origin/<base> only when the branch is an ancestor of the base and has work beyond base_sha, and uses origin_seen to distinguish a fast-forward sync and to report branches gone from origin.",
       "evidence": [
         {
-          "resource": "repo://src/ops/status.rs#L497-L534",
+          "resource": "repo://src/ops/status.rs#L528-L565",
           "version": "repo-lines-v1:sha256:d410df8164c3fcd605e21e559355333488777fc523e26e520b91811ff7cc9f3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMThhZDE3MjJjZWU0MTlmMjc4Y2NhNzQ1ZGU5ZTQ1NDk5YmNjMzI0NWVkY2I2YmMwZTE4NGU1NWYwMzIwNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiNmExN2Q2ZmY0MTEyMjk3MTEyNjZjMTcyYjZkMDQyYjg4MDQ5NThkMWE1NmI5M2Q1M2Y5NzNjYWM4NDc4MjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2Yzg3Y2VjNDZiNmNlMjRjOTk3ZjU1NGI4MTFjZGM3ZDgwYmNkNWQ5ODQxNjIxZjMyY2I0NWRhZjZlMWJiM2YifQ"
         }
       ]
@@ -83,7 +83,7 @@
           "version": "repo-lines-v1:sha256:6fefa80c1624a9fd61bb75970e5163be1d51125522d64419946bd4d82e0e5386:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiMmI5NGQ1N2M1YzQyZWI2YTZmZDM3NWY3NTQzOGMwZjFlMGQ0OWNjMDIxM2EwOThlYjY4M2UxNzk3MDFiOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlNDhiNjVmMzhlOTlkOGUyNzM2Y2M3Nzk0ZDBiMDJlMmQ4NjA0YzE0OTY4YmRmMDVmNGNmYjMxM2NlOGQ2YWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4M2VlZTE3ZGE1ZDJkMGQ0N2Q4MTk1Y2YwNWEwMDdkZDBiMTcwMWMzNDIwYzNmODQxZGQyMTc1OWVjYzAyYWMifQ"
         },
         {
-          "resource": "repo://src/main.rs#L612-L640",
+          "resource": "repo://src/main.rs#L628-L656",
           "version": "repo-lines-v1:sha256:29ef10eb7f844c030e8629027c789577aeda4aeb1d56b4d6235dc82e4b656bbf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiNDNhM2YxMjE0YTA2MmFlYTAyZWFiYWEyMzg5OTgxNDY3NzI0YTY1MjE5Yzg5ZTE1MzY2NjJmNDEzMTUzMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2ZjQ5YTg5NDgxODQwZTczYmIyNDM1ODRjNzYxM2Y0ODIyOTVjYTNjZGIyZDg0YWZkY2U1Njk2NTc4YzExOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzN2QzYmYwMDIzZTQwNGU2NjkzNjg4ZTE1N2Q3NTE0OTZmZTRmZTAzMGQ2ZmIwYWQyMjk2NDhjZjdkNGFhOTYifQ"
         },
         {
@@ -94,11 +94,15 @@
     },
     {
       "id": "claim_09c4145972d0401b8771aacf6bcc885e",
-      "statement": "Feature and checkout names must match ^[A-Za-z0-9][A-Za-z0-9_-]*$, roles ^[A-Za-z][A-Za-z0-9_-]*$ with hub and ai reserved, and clones [A-Za-z0-9-]+.",
+      "statement": "Feature and checkout names must match ^[A-Za-z0-9][A-Za-z0-9_.-]*$ and may not contain '..', end with '.', or end with '.lock'; roles must match ^[A-Za-z][A-Za-z0-9_-]*$ with hub and ai reserved, and clones [A-Za-z0-9-]+. The tmux session name replaces '.' with '_'.",
       "evidence": [
         {
-          "resource": "repo://src/names.rs#L9-L54",
-          "version": "repo-lines-v1:sha256:e37f07d06cb85e73a271401cba732043602bd48df24e043b89ade000449b3460:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNDIxNjc3OThlMTM2MWMwZWVkN2JkYjQyNmE5ZmZkNjM0MWRiZjc4YmM4ZmEwYmY4OTVhODlhYWQ3MWZlOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MGVkN2U2N2UxMWE4NGRlNDU0NmM3ZDJjNWNiYWIyYjYwOGQ5NGYzYjM3NTdiZmJhZmVjODJjOTZiN2ZjYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlZjZhOTNiY2QzZTJjYzQ5MWM0ZTM4NTVhOTYyZjRlZDY3Mzc5MWVmZDUxMWQ4NGQwMTBhYmMzMTA0ZWQ1OTkifQ"
+          "resource": "repo://src/names.rs#L9-L61",
+          "version": "repo-lines-v1:sha256:459fff2b3a757cf44cf0dc162ce1fc9baae7e2602457360ece82bd5ca7edda46:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3MDNmYzBkMzQ0MDZiMGNmNDNhMGYyMWM3OWQ4Nzc4YWMwYzI1MzE0ZGNhNDNjMjE0ZDhjMDZlZTQ1ZjM0MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MGVkN2U2N2UxMWE4NGRlNDU0NmM3ZDJjNWNiYWIyYjYwOGQ5NGYzYjM3NTdiZmJhZmVjODJjOTZiN2ZjYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlZjZhOTNiY2QzZTJjYzQ5MWM0ZTM4NTVhOTYyZjRlZDY3Mzc5MWVmZDUxMWQ4NGQwMTBhYmMzMTA0ZWQ1OTkifQ"
+        },
+        {
+          "resource": "repo://src/tmux.rs#L23-L25",
+          "version": "repo-lines-v1:sha256:82cb3fed2833b786f473e8098a39e84f809472b3bdd13fae46da02c9c6560d5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDYxODE1MWYzYzM1NTNlY2Q5MWNlZWE1MzRkNjNjM2E5YTM2MGIwY2QxNWQ2NGYxOWU3ZmNmZjQyMGZmOTQ5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmUyOTg1NjdjNzk1NGY1NmRjNTNlM2I0ZjcyNWMxYzMyMDM1N2IyNjc4ZGZkZTI5MmFmMmY3Zjc1NDk5YWU5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWNkMzVjZTVmOTFhYmI1MDIyZWQ3YjNiODM0Nzk1ZDE2MjU0OWZiZDkyZjA4NDc5YmU5ODBmOTk1MmI5OGEyMCJ9"
         }
       ]
     },
@@ -111,7 +115,7 @@
           "version": "repo-lines-v1:sha256:06d5918c09a6b98a2ef528767551c5ce9dbc2fa6322bf07daa6c3a01773d2ec6:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzg3OWZkMGRkOTU2OTE1MGM1ZjUzNWYzMWIxMjUxMGQ1ZTNiMzJmMTc5M2M2MzFiZTA0MzI4YWQ3ODgxMGEwMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWNlOGQ1ODgyZDAwODk1OTAzODEwOWNhZTdjNzRmNDE1NDQwNThmNDkzYmM4MWJkZjFjMTg5NWViYjk2Y2M1YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzc2MDI0MDk5YjAyZjA2NzE5MGUyNWJkMThjOTdiYTM5YjQ2OWVhMGI1Yjk4MmI1MTQ2ZmRiM2M4MWQxNjU5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2Q1YjhkNjZjOGJkOWI3MGEwODhhMDkzZDVmYTFiNmVjYzE5NDRjZjZlMDk1OTA4NjZmOGIwZWM5ZDMyZjNiNSJ9"
         },
         {
-          "resource": "repo://src/names.rs#L74-L87",
+          "resource": "repo://src/names.rs#L81-L94",
           "version": "repo-lines-v1:sha256:59f26420d73893b198a3a0bb3823edf98352a740ae1e13ec80841eadf0c82b84:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZWNkNTE3MzdiODZmY2ViMGVmNTA0NGJmZGQxZDNlYWMyNjAxMWM4NWUwZDg0YjgzMzU2MWRiNmI1MTU1ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjMmM2YWU4MmYxMTg5NjAzYTkwYTkwYjY5OGE2MTc0ZjNmNGIyNjg1ZDBlNmVjZWFhOGY3YjE3ZTg2ZTliZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5MDdiNmQ3MmY5ZjJiMjBhMjVjODkwNTdkMzg5MmQxYmNlNzg3ODY5MGFhYzNkOGE4ZGJmMDk0YWZlOWJhNGUifQ"
         }
       ]
@@ -121,7 +125,7 @@
       "statement": "next_branch proposes a follow-up branch name by appending or incrementing a -<n> suffix until it finds a name that does not exist.",
       "evidence": [
         {
-          "resource": "repo://src/names.rs#L94-L116",
+          "resource": "repo://src/names.rs#L101-L123",
           "version": "repo-lines-v1:sha256:ad1fdea4e677bc02ff7313795bd70c429206395cee22746df88ad43c3a28bb17:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNGViYWVjZTJhMzEwMjYwODU0OWIyMzE5NmY3MDc5MmY5OTgxNTdmMmIwZTZhZDBjYmJlNjljZDg0MzE0MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjNWI3MDQ3Njg0YzcwZDMxMjQyMGNiYWI1ZDlmY2M2MDM2NWFiZTY0YzZmMWUwYTlkNzg2MDc2NDUxMzNiZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0ZmQxNjFiM2ZlNzRmMGYxMGVkOWRlMzI4Y2MzNTU1MzQ4ZTJjNDExY2E1ZDIxODg5MTBlOWE2NTA4YWRlZWUifQ"
         },
         {
@@ -163,14 +167,14 @@
       "statement": "`feature remove` refuses an open feature and, for a finished one, deletes its merged local member branches, its hub branch, and its record; a member branch qualifies when its stage is `merged` or it is contained in `origin/<base>`.",
       "evidence": [
         {
-          "resource": "repo://src/ops/remove.rs#L15-L60",
-          "version": "repo-lines-v1:sha256:003c976d99c596ae6784a689d77a4636d92fc39873a824d0a4c350f0f405236e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMjZiNTM4N2FhMWFkYjFlOWQ0MmJkMjkyMmU1ZTJmMjhmZjY4N2I2YmI4OWVmYzU0MTFkNGU5NTU1ZWI5NjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyZWE3ZWJlMGYzYjc5NWM5NTA0NDJmMWI4OTEwM2ViMDI2NjAwMWY2ZTQ4OWY3MjJjZTI3OGI5YWQxZjg2N2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3YzgwMjMyZTg3MzczNGQ4ZGFhZTMxZjE2NzgzNDQ2MDJlOTE0YWY4MzdmNTA0NWUwNTIwNWExNTFkNmViNzkifQ"
+          "resource": "repo://src/ops/remove.rs#L15-L105",
+          "version": "repo-lines-v1:sha256:510bfa24d89f1a76abee0f96142ae734f62e626ec7a49fbf9d1efecdcb4f9a1d:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2YTFiMDdjNGI5NzRiMzRhNmM0N2UzYWVkOTFlZWYyMDRlOWI3YmI0MjQ2YjFhODFhOTE3ZmRkNTlmY2NiMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkYjIwOTdjYTc2OWEwYTM3M2RlM2UxYjUxMDJjZjNjZjFjMTFiMDI2Yjc3MDRjMmMzZTQ5NzEyMGRlMTE1OTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MzUyZWU5MjA5YTAzZmZmYzg3NzlmZjU5MzFkNGNjN2Y5Y2VjMTg4ZDY1NTQ2OWY2OTkyOTdmZTUyYjIxYjgifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:12:12.058Z"
+    "at": "2026-11-06T19:21:31.800Z"
   }
 }

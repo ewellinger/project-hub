@@ -18,10 +18,10 @@ sources:
     resource: repo://src/skill.rs
   - id: openwiki-source-ec32cfd44569eaa164e68020
     resource: repo://tests/skill.rs
-generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-27T18:18:48.498Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Bundled agent skill
@@ -69,8 +69,11 @@ hub command retries.
 `SKILL.md` (frontmatter `name: hub`) is operational guidance for agents:
 
 - **Rules**: run `hub status` before trusting any path; exit 30 means drift —
-  stop; refer to repos by role, not path; never push or pull the hub on the
-  user's behalf.
+  stop; refer to member repos by role in documents that live in the hub, and
+  by the repository's real name (from the role's `remote`) in anything that
+  leaves the hub, such as a member repo's files, a commit message, or a PR/MR
+  description, since a role is private to one hub; never use filesystem paths;
+  never push or pull the hub on the user's behalf.
 - **Commands** table mapping intents to `hub` subcommands. Its
   `hub feature remove NAME` row is the one destructive entry: the agent runs
   it only when the user asks, and on a refusal reports the listed branches
@@ -81,7 +84,13 @@ hub command retries.
   `base_behind`, `custom_base`, `review_url`, for frozen bases
   `frozen_sha`, `base_moved`, and `feature list --json`'s `frozen` array,
   and on the feature's hub row `base_ahead`, the hub-branch commits not on
-  `main` (`docs not on main: <n>` in the table).
+  `main` (`docs not on main: <n>` in the table). It also describes
+  `rows[].review`, the request's state as last read from the forge (`null`
+  when there is none), and `roles[].review` in `feature list --json`; a
+  `merged on GitLab|GitHub; run hub feature merged ROLE` hint is acted on like
+  git's own merged hints, while `closed on ... without merging` is reported to
+  the user and never followed by `hub feature merged` (see
+  [Review state from the forge](../workflows/review-state.md)).
 - **Workflow** responses to exit codes 20/21, `warning:` lines, tmux-off,
   adopted worktrees, and finished features. Two bullets cover the hub
   branch's documents: nothing merges them into `main` automatically, so a
@@ -127,3 +136,4 @@ hub command retries.
 
 - [Hub init and repo registration](../workflows/hub-and-repo-management.md)
 - [CI and release](../operations/ci-and-release.md)
+- [Review state from the forge](../workflows/review-state.md)

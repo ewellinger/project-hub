@@ -18,10 +18,12 @@ sources:
     resource: repo://tests/misc.rs
   - id: openwiki-source-1955dcb2c0b390eb78ee0044
     resource: repo://tests/remove.rs
-generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
+  - id: openwiki-source-3ea48b9bb97138d656617af0
+    resource: repo://tests/review_state.rs
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T22:12:12.058Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Testing and the integration harness
@@ -95,7 +97,11 @@ tests assert on logs and state instead of a live tmux server or network.
   `$FAKE_PROVIDER_DIR/<key>.json` where the key is the endpoint with `/`→`__`
   and `%`→`_` (`provider_response`); `provider_response_next` supplies a
   different answer from the second call on, to test "review changed while
-  checking". `FAKE_PROVIDER_FAIL` makes every call fail.
+  checking". `gh` is a symlink to the `glab` script. `-f`/`-F` fields are
+  skipped except `number=N`, so `gh api graphql … -F number=N` answers from
+  the key `graphql/N`. `FAKE_PROVIDER_FAIL` makes every call fail.
+  `Fixture::reviews_json(hub_dir, feature)` reads the remembered review state
+  (`.git/hub/reviews/<feature>.json`), `None` when the file is absent.
 
 ## Where commands are covered
 
@@ -113,6 +119,7 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/finish.rs` | `feature finish` |
 | `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, and a hub branch with commits, all without partial deletion |
 | `tests/list_status.rs` | `feature list`, `status` |
+| `tests/review_state.rs` | review state from the forge: the reviews store (changed URL, corrupt file, failed read, missing program, `feature remove`), the `status` review section, hints and JSON, `feature list` words and `--refresh`, and that `status --base` and `start-review`'s drift check never read review state |
 | `tests/pull.rs` | `hub pull` |
 | `tests/tmux_off.rs` | behavior with sessions off |
 | `tests/skill.rs` | generated agent skill and its command table |
@@ -124,3 +131,4 @@ tests assert on logs and state instead of a live tmux server or network.
 - [Frozen bases: freeze, unfreeze, and refreeze](../workflows/frozen-bases.md)
 - [CI and release](../operations/ci-and-release.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
+- [Review state from the forge](../workflows/review-state.md)

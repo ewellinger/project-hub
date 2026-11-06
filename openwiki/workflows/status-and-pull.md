@@ -18,17 +18,19 @@ sources:
     resource: repo://src/ops/status.rs
   - id: openwiki-source-ca06566e1b7ac17d65e3380f
     resource: repo://tests/list_status.rs
-generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-27T18:18:48.498Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Status, list, and pull
 
 These commands read reality and report it. `status` and `list` take no lock and
-change no hub state; `pull` runs under the lock but only fast-forwards
-checkouts. The dashboard's status pane calls the same `ops::status` functions
+change no feature record; `pull` runs under the lock but only fast-forwards
+checkouts. The one thing `status` (for a feature) and `list --refresh` do
+write is the remembered review state, a cache kept outside the record (see
+[Review state from the forge](review-state.md)). The dashboard's status pane calls the same `ops::status` functions
 (see [Dashboard architecture](../ui/dashboard-architecture.md)).
 
 ## Choosing a mode
@@ -71,6 +73,7 @@ Per change row:
 | `base_moved` | commits the local `refs/heads/<base>` gained since the pin; `null` when not pinned |
 | `hint` | merge hints (below) |
 | `review_url` | recorded MR/PR URL |
+| `review` | the request's state as last read from the forge (`url`, `read_at`, `status`, `approved`, `pipeline`, `threads`, `threads_more`, `conflicts`); `null` unless the row is a role in review with a parseable URL and a state is known. `ops::status::status` always leaves it `null`; `review_state::attach` fills it afterwards |
 | `drift` | structural problem |
 
 **Frozen reference rows** have `stage` `frozen` and `branch` = the base. Their
@@ -98,6 +101,13 @@ never seen there); "gone from origin; run hub feature merged ROLE" when hub saw
 the branch on origin earlier (`origin_seen`) and a pruning fetch removed it.
 See [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md).
 
+**Forge hints**: after `status` returns, `hub status` attaches review state
+read from the forge. A request the forge reports as merged sets the row's hint
+to `merged on GitLab|GitHub; run hub feature merged ROLE` (this also catches
+squash merges, which leave no ancestry for the git hint to find), and one
+closed without merging sets `closed on GitLab|GitHub without merging`. Either
+replaces the git hint above for that row.
+
 **Fetching**: each clone with an open change is fetched once with
 `git fetch --prune origin`, and the hub's origin is fetched too. Changes are
 grouped by clone: different clones are processed concurrently on scoped
@@ -124,11 +134,18 @@ nonzero `base_ahead` is appended to the hub row's state as
 `docs not on main: <n>` and, like a frozen marker, does not change the row's
 colour. Paths under `$HOME` print as `~/…`. Warnings follow.
 
+When an open row is a role in review with a parseable URL, a **review
+section** follows the open rows: a second table with the columns REVIEW,
+REQUEST, STATUS, APPROVED, PIPELINE, THREADS, CONFLICTS and a
+`review state read <age> ago` line. Without such a row the table output is
+unchanged. `hub status --base` never has one. Cell values, the read itself,
+and failure handling are in [Review state from the forge](review-state.md).
+
 `--json` serializes the full report; `rows` always contains every row with
 absolute paths, which is the supported machine interface (the agent skill
 reads paths from `rows[].path`).
 
-## `hub feature list [--all] [--json]` (`src/ops/list.rs`)
+## `hub feature list [--all] [--refresh] [--json]` (`src/ops/list.rs`)
 
 One `FeatureSummary { name, checkout, status, roles, frozen }` per feature,
 open features first, then finished, each by name. `roles` holds the
@@ -137,7 +154,17 @@ open features first, then finished, each by name. `roles` holds the
 (`{role, sha}`, from pins with a worktree) in record order; a pinned open
 change stays in `roles` only. The table shows them as `ROLE:frozen` after the
 members, and `--json` always includes `frozen`, empty or not. Without `--all`, finished features are hidden (with a note when that
-leaves nothing). It reads records only — no git calls.
+leaves nothing). It reads records and the remembered review state only — no
+git calls and no forge calls.
+
+Each role in review carries a **review word** from the remembered state
+(`roles[].review` in JSON, `null` when there is none): the first that applies
+of `merged`, `closed`, `conflicts`, `ci failed`, `N threads`, `changes`,
+`ci running`, `approved`, `draft`. The table shows it after the stage, as
+`api:review(ci failed)`. `--refresh` first reads the forge for every open
+feature with a role in review (`review_state::refresh_all`), then lists;
+problems are `warning:` lines after the table, or on stderr with `--json`,
+and never fail the command.
 
 Because both commands read the record store, a finished feature stays in
 `feature list --all` and in `status`'s `Completed` table until
@@ -176,7 +203,8 @@ procedure (see [Bundled agent skill](../integrations/agent-skill.md)).
 
 `tests/list_status.rs` (drift, hints, base lag, Completed table, JSON shape,
 base status, the hub row's `base_ahead` before and after a merge into
-`main` and after `finish`), `tests/pull.rs`; `pull.rs` has unit tests for grouping and each
+`main` and after `finish`), `tests/review_state.rs` (the review section,
+forge hints, `review` in JSON, the list word, `--refresh`), `tests/pull.rs`; `pull.rs` has unit tests for grouping and each
 skip case.
 
 ## Related pages
@@ -185,3 +213,4 @@ skip case.
 - [Review, merged, set-base, and finish](review-merged-finish.md)
 - [Dashboard architecture](../ui/dashboard-architecture.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
+- [Review state from the forge](review-state.md)

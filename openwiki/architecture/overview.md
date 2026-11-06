@@ -12,10 +12,12 @@ sources:
     resource: repo://src/lib.rs
   - id: openwiki-source-b55a21a31ede1b56cd31a6a6
     resource: repo://src/main.rs
-generated: { by: "claude-code", at: "2026-10-12T18:18:24.526Z" }
+  - id: openwiki-source-1da066772d42f80cecf3225c
+    resource: repo://src/ops/review_state.rs
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-12T18:18:24.526Z
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Architecture overview
@@ -42,8 +44,8 @@ touches, an optional tmux session, and a VS Code workspace.
 | Layer | Modules | Role |
 |---|---|---|
 | Core state | `hub`, `manifest`, `feature`, `env`, `names`, `error` | Locate a hub, load/validate `hub.json` and feature records, resolve configuration, validate names, define errors. See [Hub state](hub-state-and-locking.md) and [Features](../concepts/features-changes-and-stages.md). |
-| External tools | `git`, `tmux`, `code`, `procs`, `review`, `workspace`, `skill` | Thin wrappers that shell out to `git`, `tmux`, the editor, `lsof`, `glab`/`gh`, and generate workspace/skill files. See [Git, tmux, and editor](../integrations/git-tmux-editor.md). |
-| Operations | `ops::*` (`init`, `config`, `repo`, `start`, `start_review`, `add`, `resolve`, `freeze`, `set_base`, `review`, `merged`, `finish`, `list`, `status`, `pull`, `session`, `suggest`) | One module per command family. Each returns `Result<Vec<String>>` of output lines, or a report struct that a renderer turns into lines/JSON. |
+| External tools | `git`, `tmux`, `code`, `procs`, `review`, `review_state`, `workspace`, `skill` | Thin wrappers that shell out to `git`, `tmux`, the editor, `lsof`, `glab`/`gh`, and generate workspace/skill files. `review_state` holds the typed state of a merge/pull request, its JSON parsers, and the forge read. See [Git, tmux, and editor](../integrations/git-tmux-editor.md). |
+| Operations | `ops::*` (`init`, `config`, `repo`, `start`, `start_review`, `add`, `resolve`, `freeze`, `set_base`, `review`, `merged`, `finish`, `remove`, `list`, `status`, `review_state`, `pull`, `session`, `suggest`) | One module per command family. Each returns `Result<Vec<String>>` of output lines, or a report struct that a renderer turns into lines/JSON. |
 | Presentation (binary only) | `prompt`, `ui::*` | Interactive pickers and the TUI dashboard. Both call the same `ops` functions the CLI does. |
 
 `ops/mod.rs` also hosts the shared table renderer (`table`, `styled_table`)
@@ -73,6 +75,10 @@ error prints `Error: <message>` to stderr and exits with `err.exit_code()`.
   even when the role and branch are given.
 - `status` prints its table or JSON itself and then returns `HubError::Drift`
   when the report has structural drift, giving exit 30 after full output.
+  For a feature it first calls `ops::review_state::attach(..., Source::Forge)`
+  on the report, which is the only place the CLI's status reaches the forge;
+  `ops::status::status` itself never does (see
+  [Review state from the forge](../workflows/review-state.md)).
 - `merged` and `finish` receive a `confirm_removal` callback that asks on a
   terminal before removing a worktree the hub did not create and answers "no"
   when stdin is not a terminal.
@@ -101,3 +107,4 @@ Clap itself uses exit 2 for argument errors.
 - [Hub state, manifest, and locking](hub-state-and-locking.md)
 - [Dashboard architecture](../ui/dashboard-architecture.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
+- [Review state from the forge](../workflows/review-state.md)

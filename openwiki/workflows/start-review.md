@@ -3,15 +3,17 @@ type: workflow
 title: Reviewing a merge or pull request
 description: How `hub feature start-review URL` turns a GitLab merge request or GitHub pull request into an isolated review feature — URL parsing and matching to exactly one role, reading the review through `glab api` or `gh api`, verifying the head, refusing forks, closed reviews, occupied or diverged branches and collisions, and conditional rollback.
 tags: [workflow, start-review, gitlab, github, review, safety, rollback]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-12T04:10:52.427Z
 sources:
   - id: openwiki-source-e782c5002a54f711ccbae710
     resource: repo://src/ops/start_review.rs
   - id: openwiki-source-61647d0ebb1f751a6acc22a7
     resource: repo://src/review.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+  - id: openwiki-source-3ea48b9bb97138d656617af0
+    resource: repo://tests/review_state.rs
+generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-11-06T19:21:31.800Z
 ---
 
 # Reviewing a merge or pull request
@@ -71,6 +73,8 @@ The result is `ReviewInfo { url, source_branch, target_branch, head_sha }`.
 2. **No drift**: run base status, and the invoking feature's status when run
    from a feature worktree; any structural drift returns `HubError::Drift`
    (exit 30) before any provider call. See [Status, list, and pull](status-and-pull.md).
+   This check calls `ops::status` directly, which never reads the forge, so it
+   makes no review state call for the invoking feature.
 3. Fetch the review.
 4. Name defaults to `<role>-review-<number>`; `start::preflight` validates it
    and the checkout, and refuses an existing record (finished ones included)
@@ -111,7 +115,8 @@ A branch another process moved meanwhile is left alone and reported.
 ## Afterwards
 
 The feature behaves like any other: `hub status` shows the role in `review`
-with its `review_url` and base lag; `hub feature finish` cleans up without
+with its `review_url` and base lag, plus the request's state read from the
+forge (see [Review state from the forge](review-state.md)); `hub feature finish` cleans up without
 provider access, so it works after the review closes or its branch is deleted.
 Finishing records nothing about the review outcome.
 
@@ -127,3 +132,4 @@ rewritten to a local bare repo) and the fake `glab`/`gh`, including
 
 - [Starting features and adding roles](feature-start-and-add.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
+- [Review state from the forge](review-state.md)
