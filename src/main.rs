@@ -267,6 +267,14 @@ enum FeatureCommand {
         #[arg(long)]
         feature: Option<String>,
     },
+    /// Mark a role's review as viewed: flag it when the other side pushes or replies
+    Viewed {
+        /// Role whose review you have finished looking at
+        role: String,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+    },
     /// Close a role's open change: remove its worktree, keep the branch
     Merged {
         /// Role whose change merged
@@ -571,6 +579,10 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 FeatureCommand::Review { role, url, feature } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::review::review(hub, &mut f, &role, url.as_deref())
+                }),
+                FeatureCommand::Viewed { role, feature } => hub.with_lock(|hub| {
+                    let f = hub.resolve_feature(feature.as_deref())?;
+                    ops::viewed::viewed(hub, &f, &role)
                 }),
                 FeatureCommand::Merged {
                     role,

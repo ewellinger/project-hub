@@ -61,7 +61,15 @@ fn gitlab_state(fx: &Fixture, number: u64, mr: serde_json::Value) {
     let base = format!("projects/g%2Fsub%2Fproj/merge_requests/{number}");
     fx.provider_response(&base, &mr);
     fx.provider_response(&format!("{base}/approvals"), &json!({"approved": false}));
-    fx.provider_response(&format!("{base}/discussions?per_page=100"), &json!([]));
+    fx.provider_response(
+        &format!("{base}/discussions?per_page=100"),
+        &json!([{"notes": [{"system": false}]}]),
+    );
+}
+
+fn viewed(fx: &Fixture, hub: &Path, feature: &str, role: &str) -> assert_cmd::assert::Assert {
+    fx.hub(hub, &["feature", "viewed", role, "--feature", feature])
+        .assert()
 }
 
 /// Store the GraphQL answer for PR `#number`.
@@ -75,7 +83,8 @@ fn github_state(fx: &Fixture, number: u64, pr: serde_json::Value) {
 fn open_mr() -> serde_json::Value {
     json!({
         "state": "opened", "draft": false, "merge_status": "can_be_merged",
-        "has_conflicts": false, "head_pipeline": {"status": "running"}
+        "has_conflicts": false, "head_pipeline": {"status": "running"},
+        "sha": "0123456789abcdef0123456789abcdef01234567"
     })
 }
 
@@ -617,5 +626,93 @@ fn a_refresh_keeps_the_mark() {
     assert!(
         file["api"]["read_at"].as_u64().unwrap() > 1,
         "fields were refreshed"
+    );
+}
+
+#[test]
+fn viewed_reads_the_forge_and_stores_the_snapshot() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+
+    let out = stdout(&viewed(&fx, &hub, "feat-1", "api").success());
+
+    assert!(
+        matches(r"api: viewed !412 head [0-9a-f]{7}, 1 comments", &out),
+        "{out}"
+    );
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 1);
+    assert_eq!(file["api"]["viewed"]["head"], file["api"]["head"]);
+    assert!(fx.provider_log().contains("merge_requests/412"));
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][0]["stage"],
+        "review",
+        "record untouched"
+    );
+}
+
+#[test]
+fn viewed_refuses_a_role_not_in_review_and_a_failed_read() {
+    let (fx, hub) = world();
+    viewed(&fx, &hub, "feat-1", "api")
+        .failure()
+        .stderr(predicates::str::contains(
+            "not in review with a merge/pull request URL",
+        ));
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    fx.hub(&hub, &["feature", "viewed", "api", "--feature", "feat-1"])
+        .env("FAKE_PROVIDER_FAIL", "401 Unauthorized")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains("review state not read for api"));
+    // `refresh` still writes the file (possibly `{}`); only the mark must be absent.
+    assert!(
+        fx.reviews_json(&hub, "feat-1")
+            .is_none_or(|f| f["api"]["viewed"].is_null()),
+        "no mark written"
+    );
+}
+
+#[test]
+fn viewed_with_unknown_comments_marks_and_says_so() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    // No discussions answer: the fake fails that one call, the MR itself still reads.
+    std::fs::remove_file(
+        fx.provider_dir
+            .join("projects__g_2Fsub_2Fproj__merge_requests__412__discussions?per_page=100.json"),
+    )
+    .unwrap();
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+
+    let out = stdout(&viewed(&fx, &hub, "feat-1", "api").success());
+
+    assert!(out.contains(", ? comments"), "{out}");
+    assert_eq!(
+        fx.reviews_json(&hub, "feat-1").unwrap()["api"]["viewed"]["comments"],
+        serde_json::Value::Null
+    );
+}
+
+#[test]
+fn a_changed_url_drops_the_mark() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    viewed(&fx, &hub, "feat-1", "api").success();
+    review(
+        &fx,
+        &hub,
+        "feat-1",
+        "api",
+        Some("https://gitlab.example.com/g/sub/proj/-/merge_requests/413"),
+    );
+
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+
+    assert!(
+        out.contains("api:review") && !out.contains("api:review("),
+        "{out}"
     );
 }
