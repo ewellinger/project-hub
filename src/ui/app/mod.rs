@@ -72,6 +72,11 @@ pub enum Action {
         role: String,
         url: Option<String>,
     },
+    /// `feature viewed ROLE`: snapshot the review's head and comment count.
+    Viewed {
+        feature: String,
+        role: String,
+    },
     SetBase {
         feature: String,
         role: String,
@@ -116,6 +121,7 @@ impl Action {
             Action::Start { .. } | Action::Pull { row: RowId::Base } => None,
             Action::Add { feature, .. }
             | Action::Review { feature, .. }
+            | Action::Viewed { feature, .. }
             | Action::SetBase { feature, .. }
             | Action::Merged { feature, .. }
             | Action::Freeze { feature, .. }
@@ -136,6 +142,7 @@ impl fmt::Display for Action {
             Action::Start { name, .. } => write!(f, "start {name}"),
             Action::Add { feature, role, .. } => write!(f, "add {role} to {feature}"),
             Action::Review { role, .. } => write!(f, "review {role}"),
+            Action::Viewed { role, .. } => write!(f, "viewed {role}"),
             Action::SetBase { role, .. } => write!(f, "set-base {role}"),
             Action::Merged { role, .. } => write!(f, "merged {role}"),
             Action::Freeze { role, .. } => write!(f, "freeze {role}"),
@@ -986,6 +993,12 @@ mod tests {
             "add ui to x"
         );
         assert_eq!(review_action().to_string(), "review api");
+        let viewed = Action::Viewed {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        assert_eq!(viewed.to_string(), "viewed api");
+        assert_eq!(viewed.feature(), Some("alpha"));
         assert_eq!(
             Action::SetBase {
                 feature: "x".into(),
