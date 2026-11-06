@@ -539,18 +539,25 @@ fn list_json_carries_the_word() {
 fn a_finished_feature_shows_no_word() {
     let (fx, hub) = world();
     api_in_review_with_failed_pipeline(&fx, &hub);
-    refresh(&fx, &hub);
-    for role in ["api", "ui"] {
-        fx.hub(&hub, &["feature", "merged", role, "--feature", "feat-1"])
-            .assert()
-            .success();
-    }
+    assert!(
+        stdout(&refresh(&fx, &hub)).contains("api:review(ci failed)"),
+        "a word is remembered"
+    );
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
         .assert()
         .success();
 
-    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+    let out = stdout(
+        &fx.hub(&hub, &["feature", "list", "--all"])
+            .assert()
+            .success(),
+    );
 
-    assert!(out.contains("finished"), "{out}");
-    assert!(!out.contains('('), "{out}");
+    let row = out
+        .lines()
+        .find(|l| l.starts_with("feat-1"))
+        .unwrap_or_else(|| panic!("{out}"));
+    assert!(row.contains("finished"), "{out}");
+    assert!(row.contains("api:review"), "{out}");
+    assert!(!row.contains("api:review("), "{out}");
 }
