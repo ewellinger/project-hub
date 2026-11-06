@@ -15,6 +15,29 @@ use crate::ops::{format_age, styled_table};
 use crate::review::{Provider, ReviewUrl, parse_review_url};
 use crate::review_state::{Approval, Fields, Pipeline, RequestStatus, ReviewState, fetch_state};
 
+/// What moved since the user marked the review viewed.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Attention {
+    /// The head commit changed.
+    Pushed,
+    /// This many more comments than at the mark.
+    Replies(u64),
+}
+
+/// `None` without a mark, when nothing moved, or when either side is unknown.
+pub fn attention(state: &ReviewState) -> Option<Attention> {
+    let viewed = state.viewed.as_ref()?;
+    if let (Some(now), Some(then)) = (&state.fields.head, &viewed.head)
+        && now != then
+    {
+        return Some(Attention::Pushed);
+    }
+    match (state.fields.comments, viewed.comments) {
+        (Some(now), Some(then)) if now > then => Some(Attention::Replies(now - then)),
+        _ => None,
+    }
+}
+
 pub type States = BTreeMap<String /* role */, ReviewState>;
 
 pub struct Target {
@@ -80,6 +103,7 @@ pub fn refresh(hub: &Hub, feature: &Feature) -> (States, Vec<String>) {
                         url: target.recorded.clone(),
                         read_at,
                         fields,
+                        viewed: None,
                     },
                 );
             }
@@ -91,6 +115,12 @@ pub fn refresh(hub: &Hub, feature: &Feature) -> (States, Vec<String>) {
                 err.to_string().lines().next().unwrap_or_default()
             )),
         }
+    }
+    // Status runs without the hub lock, so a mark written by `feature viewed`
+    // while the forge was answering must be taken from the file as it is now.
+    let marks = remembered(hub, feature);
+    for (role, state) in states.iter_mut() {
+        state.viewed = marks.get(role).and_then(|m| m.viewed.clone());
     }
     let path = hub.reviews_path(&feature.name);
     let dir = path.parent().expect("reviews path has a parent");
@@ -387,7 +417,7 @@ mod tests {
     use super::*;
     use crate::ops::status::StateColour::{Green, Red, Yellow};
     use crate::ops::status::tests::row;
-    use crate::review_state::{Approval, Fields, Pipeline, RequestStatus};
+    use crate::review_state::{Approval, Fields, Pipeline, RequestStatus, Viewed};
 
     const MR: &str = "https://gitlab.example.com/g/proj/-/merge_requests/412";
     const PR: &str = "https://github.example.com/o/r/pull/87";
@@ -401,6 +431,7 @@ mod tests {
             url: url.into(),
             read_at: 1000,
             fields,
+            viewed: None,
         });
         r
     }
@@ -521,6 +552,54 @@ mod tests {
             "\"changes\""
         );
         assert_eq!(ReviewWord::Changes.colour(), Some(StateColour::Yellow));
+    }
+
+    fn marked(head: &str, comments: u64, viewed_head: &str, viewed_comments: u64) -> ReviewState {
+        ReviewState {
+            url: MR.into(),
+            read_at: 1000,
+            fields: Fields {
+                head: Some(head.into()),
+                comments: Some(comments),
+                ..open_fields()
+            },
+            viewed: Some(Viewed {
+                at: 900,
+                head: Some(viewed_head.into()),
+                comments: Some(viewed_comments),
+            }),
+        }
+    }
+
+    #[test]
+    fn attention_is_pushed_then_replies_then_nothing() {
+        assert_eq!(attention(&marked("b", 7, "a", 7)), Some(Attention::Pushed));
+        assert_eq!(
+            attention(&marked("b", 9, "a", 7)),
+            Some(Attention::Pushed),
+            "pushed wins"
+        );
+        assert_eq!(
+            attention(&marked("a", 9, "a", 7)),
+            Some(Attention::Replies(2))
+        );
+        assert_eq!(attention(&marked("a", 7, "a", 7)), None);
+        let mut unmarked = marked("b", 9, "a", 7);
+        unmarked.viewed = None;
+        assert_eq!(attention(&unmarked), None);
+    }
+
+    #[test]
+    fn attention_never_flags_a_lower_count_or_unknowns() {
+        assert_eq!(attention(&marked("a", 5, "a", 7)), None);
+        let mut s = marked("b", 9, "a", 7);
+        s.fields.head = None;
+        s.fields.comments = None;
+        assert_eq!(attention(&s), None);
+        let mut s = marked("b", 9, "a", 7);
+        s.viewed.as_mut().unwrap().head = None;
+        s.viewed.as_mut().unwrap().comments = None;
+        assert_eq!(attention(&s), None);
     }
 
     #[test]

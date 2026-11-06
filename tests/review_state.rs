@@ -588,3 +588,34 @@ fn a_finished_feature_shows_no_word() {
     assert!(row.contains("api:review"), "{out}");
     assert!(!row.contains("api:review("), "{out}");
 }
+
+/// Write `viewed` under `role` in the feature's reviews file by hand.
+fn seed_mark(fx: &Fixture, hub: &Path, feature: &str, role: &str, viewed: serde_json::Value) {
+    let path = hub.join(".git/hub/reviews").join(format!("{feature}.json"));
+    let mut file = fx.reviews_json(hub, feature).expect("reviews file");
+    file[role]["viewed"] = viewed;
+    std::fs::write(&path, serde_json::to_string(&file).unwrap()).unwrap();
+}
+
+#[test]
+fn a_refresh_keeps_the_mark() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]);
+    seed_mark(
+        &fx,
+        &hub,
+        "feat-1",
+        "api",
+        json!({"at": 1, "head": null, "comments": 0}),
+    );
+
+    status(&fx, &hub, &[]);
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
+    assert!(
+        file["api"]["read_at"].as_u64().unwrap() > 1,
+        "fields were refreshed"
+    );
+}

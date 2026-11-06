@@ -59,6 +59,15 @@ fn head_sha(value: &Value) -> Option<String> {
         .then(|| sha.to_ascii_lowercase())
 }
 
+/// What the request looked like when the user marked it viewed.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Viewed {
+    /// Seconds since the Unix epoch.
+    pub at: u64,
+    pub head: Option<String>,
+    pub comments: Option<u64>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReviewState {
     /// `Change.review_url` exactly as recorded when this was read.
@@ -67,6 +76,8 @@ pub struct ReviewState {
     pub read_at: u64,
     #[serde(flatten)]
     pub fields: Fields,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub viewed: Option<Viewed>,
 }
 
 /// One merge request, its `/approvals` and its first page of `/discussions`.
@@ -560,6 +571,7 @@ mod tests {
                 head: Some("0123456789abcdef0123456789abcdef01234567".into()),
                 comments: Some(1),
             },
+            viewed: None,
         };
         let value = serde_json::to_value(&state).unwrap();
         assert_eq!(
@@ -577,6 +589,30 @@ mod tests {
         assert_eq!(read.fields.pipeline, Some(Pipeline::None));
         assert!(!read.fields.threads_more);
         assert_eq!((read.fields.head, read.fields.comments), (None, None));
+        assert_eq!(read.viewed, None);
+    }
+
+    #[test]
+    fn viewed_serialises_only_when_set() {
+        let mut state = ReviewState {
+            url: "u".into(),
+            read_at: 1000,
+            fields: Fields::default(),
+            viewed: None,
+        };
+        let value = serde_json::to_value(&state).unwrap();
+        assert!(value.get("viewed").is_none(), "{value}");
+        state.viewed = Some(Viewed {
+            at: 900,
+            head: Some("0123456789abcdef0123456789abcdef01234567".into()),
+            comments: Some(7),
+        });
+        let value = serde_json::to_value(&state).unwrap();
+        assert_eq!(
+            value["viewed"],
+            json!({"at":900,"head":"0123456789abcdef0123456789abcdef01234567","comments":7})
+        );
+        assert_eq!(serde_json::from_value::<ReviewState>(value).unwrap(), state);
     }
 
     #[test]
