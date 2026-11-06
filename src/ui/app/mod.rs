@@ -1629,6 +1629,7 @@ mod tests {
             base: "main".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         }];
         a.update(key(KeyCode::Char('+')));
         let effects = a.update(key(KeyCode::Enter)); // picks ui

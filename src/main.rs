@@ -123,6 +123,9 @@ enum RepoCommand {
         /// Human-readable description of the role
         #[arg(long)]
         description: Option<String>,
+        /// Script, relative to the hub repo, run in each new worktree of this role
+        #[arg(long, value_name = "PATH")]
+        setup: Option<String>,
     },
     /// Change a registered role's fields in place, keeping its position
     Set {
@@ -140,6 +143,9 @@ enum RepoCommand {
         /// New description; "" clears it
         #[arg(long)]
         description: Option<String>,
+        /// New setup script, relative to the hub repo; "" clears it
+        #[arg(long, value_name = "PATH")]
+        setup: Option<String>,
     },
     /// Rename a role in hub.json and in this machine's feature records
     Rename {
@@ -408,6 +414,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     base,
                     branch_template,
                     description,
+                    setup,
                 } => {
                     let opts = ops::repo::AddRepoOptions {
                         role,
@@ -415,6 +422,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         base,
                         branch_template,
                         description,
+                        setup,
                     };
                     hub.with_lock(|hub| ops::repo::add(hub, &opts))
                 }
@@ -424,6 +432,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     base,
                     branch_template,
                     description,
+                    setup,
                 } => {
                     let opts = ops::repo::SetRepoOptions {
                         role,
@@ -431,6 +440,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         base,
                         branch_template,
                         description,
+                        setup,
                     };
                     hub.with_lock(|hub| ops::repo::set(hub, &opts))
                 }

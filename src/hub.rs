@@ -463,6 +463,7 @@ mod tests {
             base: "main".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         });
         hub.save_manifest(&manifest, "repo add api").unwrap();
         assert_eq!(
@@ -562,6 +563,7 @@ mod tests {
             base: "main".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         });
         Hub::locate(&fx.hub_dir, fx.env.clone())
             .unwrap()

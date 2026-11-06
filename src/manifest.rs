@@ -19,6 +19,9 @@ pub struct RepoSpec {
     pub branch_template: String,
     #[serde(default)]
     pub description: String,
+    /// Script, relative to the hub repo root, run in each new worktree of this role.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub setup: Option<String>,
 }
 
 fn default_branch_template() -> String {
@@ -115,6 +118,10 @@ impl Manifest {
                     ),
                 ));
             }
+            if let Some(setup) = &repo.setup {
+                names::validate_setup_path(setup)
+                    .map_err(|e| bad("repos[].setup", format!("role '{}': {e}", repo.role)))?;
+            }
         }
         Ok(())
     }
@@ -199,6 +206,7 @@ mod tests {
             base: "main".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         }
     }
 
@@ -283,6 +291,17 @@ mod tests {
         let mut m = manifest();
         m.repos[0].remote.clear();
         assert_eq!(field_error(&m), "repos[].remote");
+    }
+
+    #[test]
+    fn setup_must_be_a_relative_path_inside_the_hub() {
+        let mut m = manifest();
+        m.repos[0].setup = Some("scripts/setup.sh".into());
+        assert!(m.validate(Path::new("hub.json")).is_ok());
+        for bad in ["/abs/setup.sh", "../x.sh", "a/../b.sh", ""] {
+            m.repos[0].setup = Some(bad.into());
+            assert_eq!(field_error(&m), "repos[].setup", "{bad}");
+        }
     }
 
     #[test]
