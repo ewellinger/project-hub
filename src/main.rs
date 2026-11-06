@@ -278,6 +278,17 @@ enum FeatureCommand {
         #[arg(long)]
         force: bool,
     },
+    /// Close a role's change as abandoned: remove its worktree, keep the branch
+    Dropped {
+        /// Role whose change was abandoned
+        role: String,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+        /// Remove even if dirty or adopted
+        #[arg(long)]
+        force: bool,
+    },
     /// Remove the feature's worktrees and tmux session; keeps every branch
     Finish {
         /// Feature name; inferred from the hub worktree when omitted
@@ -579,6 +590,14 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::merged::merged(hub, &mut f, &role, force, &mut confirm_removal)
+                }),
+                FeatureCommand::Dropped {
+                    role,
+                    feature,
+                    force,
+                } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::merged::dropped(hub, &mut f, &role, force, &mut confirm_removal)
                 }),
                 FeatureCommand::Finish { feature, force } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;

@@ -437,3 +437,102 @@ fn review_warns_and_records_the_stage_when_the_fetch_fails() {
         "review"
     );
 }
+
+#[test]
+fn dropped_closes_a_change_like_merged_and_records_the_stage() {
+    let (fx, hub) = world();
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("api: feat-1 marked dropped"));
+    assert!(!fx.worktree_dir.join("api-clone").join("feat-1").exists());
+    let dir = fx.project_home.join("api-clone");
+    assert_eq!(
+        fx.git(&dir, &["branch", "--list", "feat-1"]).trim(),
+        "feat-1"
+    );
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["changes"][0]["stage"], "dropped");
+    assert!(f["changes"][0]["dropped_at"].is_string());
+    assert_eq!(f["changes"][0]["merged_at"], serde_json::Value::Null);
+    // a follow-up opens as after merged
+    fx.hub(&hub, &["feature", "add", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][2]["branch"],
+        "feat-1-2"
+    );
+}
+
+#[test]
+fn dropped_refuses_a_dirty_worktree_without_force() {
+    let (fx, hub) = world();
+    let wt = fx.worktree_dir.join("api-clone").join("feat-1");
+    std::fs::write(wt.join("scratch.txt"), "x").unwrap();
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .code(20)
+        .stderr(predicate::str::contains("scratch.txt"));
+    assert!(wt.exists());
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][0]["stage"],
+        "working"
+    );
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "dropped",
+            "api",
+            "--force",
+            "--feature",
+            "feat-1",
+        ],
+    )
+    .assert()
+    .success();
+    assert!(!wt.exists());
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][0]["stage"],
+        "dropped"
+    );
+}
+
+#[test]
+fn merged_and_dropped_on_a_finished_feature_change_only_the_record() {
+    let (fx, hub) = world();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
+    let tmux_before = fx.tmux_log();
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "marked dropped (feature already finished)",
+        ));
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "marked merged (feature already finished)",
+        ));
+    let f = fx.feature_json(&hub, "feat-1");
+    assert_eq!(f["status"], "finished");
+    assert_eq!(f["changes"][0]["stage"], "dropped");
+    assert_eq!(f["changes"][1]["stage"], "merged");
+    assert_eq!(
+        fx.tmux_log(),
+        tmux_before,
+        "no tmux call for a finished feature"
+    );
+    // a second dropped finds no open change
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("no open change for role 'api'"));
+}

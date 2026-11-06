@@ -117,7 +117,6 @@ fn finished_features_are_read_only() {
     for args in [
         vec!["feature", "add", "api", "--feature", "feat-1"],
         vec!["feature", "review", "api", "--feature", "feat-1"],
-        vec!["feature", "merged", "api", "--feature", "feat-1"],
         vec!["feature", "finish", "--feature", "feat-1"],
         vec!["tmux", "--feature", "feat-1"],
         vec!["open", "--feature", "feat-1"],

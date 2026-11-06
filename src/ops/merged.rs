@@ -115,14 +115,55 @@ pub fn merged(
     force: bool,
     confirm: &mut dyn FnMut(&Path) -> bool,
 ) -> Result<Vec<String>> {
-    feature.require_open()?;
+    close(hub, feature, role, Stage::Merged, force, confirm)
+}
+
+pub fn dropped(
+    hub: &Hub,
+    feature: &mut Feature,
+    role: &str,
+    force: bool,
+    confirm: &mut dyn FnMut(&Path) -> bool,
+) -> Result<Vec<String>> {
+    close(hub, feature, role, Stage::Dropped, force, confirm)
+}
+
+/// Record a role's open change as `stage` (merged or dropped) and remove its
+/// worktree. On a finished feature the worktrees are already gone, so only the
+/// record changes.
+fn close(
+    hub: &Hub,
+    feature: &mut Feature,
+    role: &str,
+    stage: Stage,
+    force: bool,
+    confirm: &mut dyn FnMut(&Path) -> bool,
+) -> Result<Vec<String>> {
     let change = feature.open_change(role).cloned().ok_or_else(|| {
         HubError::Precondition(format!(
             "no open change for role '{role}' in feature '{}'",
             feature.name
         ))
     })?;
+    let word = if stage == Stage::Dropped {
+        "dropped"
+    } else {
+        "merged"
+    };
     let mut lines = Vec::new();
+    if !feature.is_open() {
+        record_stage(feature, role, stage);
+        let pin = feature.remove_pin(role);
+        hub.save_feature(feature)?;
+        lines.push(format!(
+            "{role}: {} marked {word} (feature already finished)",
+            change.branch
+        ));
+        if let Some(pin) = pin {
+            lines.push(format!("{role}: pin at {} dropped", pin.short()));
+        }
+        return Ok(lines);
+    }
     let clone_dir = hub.env.clone_path(&change.clone);
     let path = change
         .worktree
@@ -184,9 +225,7 @@ pub fn merged(
     // The adopted-worktree question was asked above, so the answer here is yes.
     let (_, closed) = close_change(hub, &change, force, &mut |_| true)?;
     lines.extend(closed);
-    let open = feature.open_change_mut(role).expect("checked above");
-    open.stage = Stage::Merged;
-    open.merged_at = Some(now_rfc3339());
+    record_stage(feature, role, stage);
     // The pin belonged to the change; the role goes back to absent.
     let dropped = feature.remove_pin(role);
     hub.save_feature(feature)?;
@@ -195,9 +234,20 @@ pub fn merged(
         write_workspace(hub, feature).map(|_| Vec::new()),
         &format!("hub sync --feature {}", feature.name),
     );
-    lines.push(format!("{role}: {} marked merged", change.branch));
+    lines.push(format!("{role}: {} marked {word}", change.branch));
     if let Some(pin) = dropped {
         lines.push(format!("{role}: pin at {} dropped", pin.short()));
     }
     Ok(lines)
+}
+
+fn record_stage(feature: &mut Feature, role: &str, stage: Stage) {
+    let open = feature.open_change_mut(role).expect("checked above");
+    open.stage = stage;
+    let now = Some(now_rfc3339());
+    if stage == Stage::Dropped {
+        open.dropped_at = now;
+    } else {
+        open.merged_at = now;
+    }
 }
