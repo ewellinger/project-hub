@@ -219,6 +219,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature unfreeze ROLE [--force]` | Release the pin and remove the reference worktree |
 | `hub feature refreeze ROLE` | Move the pin, and the reference worktree, to the local base's current tip |
 | `hub feature review ROLE [URL]` | Record that the role's change is in review |
+| `hub feature viewed ROLE` | Mark the role's review as viewed: record its head and comment count, and flag it as `pushed` or `N replies` when they grow |
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch |
 | `hub feature remove NAME` | Free a finished feature's name for reuse: delete its local member branches (each marked merged or contained in its base, and gone from origin), its hub branch (nothing beyond `main`), and its record; any refusal changes nothing |
@@ -377,6 +378,21 @@ state after the stage of a role in review: the first of `merged`, `closed`,
 `conflicts`, `ci failed`, `N threads`, `changes`, `ci running`, `approved`,
 `draft` that applies; `--json` carries it as `roles[].review`. `hub feature
 list --refresh` reads the forge for every open feature first.
+
+`hub feature viewed ROLE` (TUI `V`) says "I have done my part; the ball is
+with the other side": it reads the request once more and records its head
+commit and comment count beside the remembered state. Every later read
+compares against that mark. A new head gives the word `pushed`; a higher
+comment count gives `N replies`. Both sit after `merged` and `closed` and
+before every other word, in cyan, so the reviews that need you stand out in
+the list. `hub status` and the TUI show the same thing as a hint in STATE,
+`pushed since viewed` or `N replies since viewed`; the merged and closed
+hints and git's own hints come first, since closing the change outranks
+looking again. A review that was never marked is never flagged, and a new
+mark replaces the old one; there is no undo. `--json` carries `head`,
+`comments` and `viewed` (`null` until marked) in each row's `review`. A mark
+is taken only from a fresh read: when the forge cannot be reached the
+command fails and records nothing.
 
 ### Pull and base updates
 
@@ -542,6 +558,7 @@ nothing.
 | `↑` `↓` `j` `k` | select a role |
 | `c` | copy the role's branch name (a frozen role's pinned commit), worktree path, or review URL to the OS clipboard; only what exists is offered |
 | `v` | `feature review` for the role, with an optional URL |
+| `V` | `feature viewed` for the role in review under the cursor |
 | `m` | `feature merged` for the role, after a preview of the worktree it removes; `F` in the preview forces |
 | `b` | `feature set-base` for the role |
 | `+` | `feature add`: pick a role, then a branch; for a new branch of a frozen role, then whether it starts from the frozen commit (keeping the pin) or from `origin/<base>` (dropping it). An existing branch keeps the pin without asking |
