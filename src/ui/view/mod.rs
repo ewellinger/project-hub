@@ -1256,7 +1256,10 @@ mod tests {
                 threads: Some(2),
                 threads_more: false,
                 conflicts: Some(false),
+                head: None,
+                comments: None,
             },
+            viewed: None,
         });
         r
     }

@@ -716,3 +716,93 @@ fn a_changed_url_drops_the_mark() {
         "{out}"
     );
 }
+
+/// Mark `api` viewed on `open_mr()`, then queue the next answers so the
+/// following read sees `next_mr` and `next_discussions`.
+fn marked_then_moved(
+    fx: &Fixture,
+    hub: &Path,
+    next_mr: serde_json::Value,
+    next_discussions: serde_json::Value,
+) {
+    gitlab_state(fx, 412, open_mr());
+    review(fx, hub, "feat-1", "api", Some(MR_412));
+    viewed(fx, hub, "feat-1", "api").success();
+    let base = "projects/g%2Fsub%2Fproj/merge_requests/412";
+    fx.provider_response(base, &next_mr);
+    fx.provider_response(
+        &format!("{base}/discussions?per_page=100"),
+        &next_discussions,
+    );
+}
+
+fn one_note() -> serde_json::Value {
+    json!([{"notes": [{"system": false}]}])
+}
+
+#[test]
+fn a_push_after_the_mark_shows_pushed_in_list_and_status() {
+    let (fx, hub) = world();
+    let mut moved = open_mr();
+    moved["sha"] = json!("ffffffffffffffffffffffffffffffffffffffff");
+    marked_then_moved(&fx, &hub, moved, one_note());
+
+    let out = status(&fx, &hub, &[]);
+    assert!(out.contains("pushed since viewed"), "{out}");
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+    assert!(out.contains("api:review(pushed)"), "{out}");
+}
+
+#[test]
+fn replies_after_the_mark_show_a_count() {
+    let (fx, hub) = world();
+    let three = json!([{"notes": [{"system": false}, {"system": false}, {"system": true}]},
+        {"notes": [{"system": false}]}]);
+    marked_then_moved(&fx, &hub, open_mr(), three);
+
+    let out = status(&fx, &hub, &[]);
+    assert!(out.contains("2 replies since viewed"), "{out}");
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+    assert!(out.contains("api:review(2 replies)"), "{out}");
+}
+
+#[test]
+fn merged_outranks_pushed_in_word_and_hint() {
+    let (fx, hub) = world();
+    let mut moved = open_mr();
+    moved["sha"] = json!("ffffffffffffffffffffffffffffffffffffffff");
+    moved["state"] = json!("merged");
+    marked_then_moved(&fx, &hub, moved, one_note());
+
+    let out = status(&fx, &hub, &[]);
+    assert!(
+        out.contains("merged on GitLab; run hub feature merged api"),
+        "{out}"
+    );
+    assert!(!out.contains("pushed"), "{out}");
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+    assert!(out.contains("api:review(merged)"), "{out}");
+}
+
+#[test]
+fn status_json_carries_head_comments_and_viewed() {
+    let (fx, hub) = world();
+    marked_then_moved(&fx, &hub, open_mr(), one_note());
+    github_state(&fx, 31, open_pr());
+    review(&fx, &hub, "feat-1", "ui", Some(PR_31));
+    let json: serde_json::Value = serde_json::from_str(&status(&fx, &hub, &["--json"])).unwrap();
+    let row = |role: &str| {
+        json["rows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|r| r["role"] == role)
+            .unwrap()
+            .clone()
+    };
+
+    assert_eq!(row("api")["review"]["viewed"]["comments"], 1);
+    assert_eq!(row("api")["review"]["comments"], 1);
+    assert_eq!(row("api")["review"]["head"].as_str().unwrap().len(), 40);
+    assert_eq!(row("ui")["review"]["viewed"], serde_json::Value::Null);
+}

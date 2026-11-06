@@ -685,7 +685,7 @@ impl App {
                 .iter()
                 .find(|r| r.role == role.role && r.stage == "review")
                 .and_then(|r| r.review.as_ref())
-                .and_then(|s| word(&s.fields));
+                .and_then(word);
         }
         let keep = self.selected_row().id.clone();
         self.rebuild_rows(Some(&keep));

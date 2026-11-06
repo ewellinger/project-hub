@@ -645,6 +645,7 @@ pub(crate) mod tests {
                 pipeline: Some(hub::review_state::Pipeline::Failed),
                 ..Default::default()
             },
+            viewed: None,
         });
         a.update(Event::Report {
             row: RowId::Feature("suspense".into()),

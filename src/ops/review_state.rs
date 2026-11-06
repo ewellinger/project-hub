@@ -13,7 +13,7 @@ use crate::manifest::write_json;
 use crate::ops::status::{StateColour, StatusReport, StatusRow, comfy_colour, parallel_map};
 use crate::ops::{format_age, styled_table};
 use crate::review::{Provider, ReviewUrl, parse_review_url};
-use crate::review_state::{Approval, Fields, Pipeline, RequestStatus, ReviewState, fetch_state};
+use crate::review_state::{Approval, Pipeline, RequestStatus, ReviewState, fetch_state};
 
 /// What moved since the user marked the review viewed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -196,6 +196,16 @@ pub fn attach(hub: &Hub, feature: &Feature, report: &mut StatusReport, source: S
             }
             _ => {}
         }
+        // Closing the change comes first; "look again" fills an empty hint only.
+        if row.hint.is_none() {
+            row.hint = match row.review.as_ref().and_then(attention) {
+                Some(Attention::Pushed) => Some("pushed since viewed".into()),
+                Some(Attention::Replies(n)) => {
+                    Some(format!("{} since viewed", ReviewWord::Replies(n)))
+                }
+                None => None,
+            };
+        }
     }
     report.warnings.extend(warnings);
 }
@@ -204,6 +214,8 @@ pub fn attach(hub: &Hub, feature: &Feature, report: &mut StatusReport, source: S
 pub enum ReviewWord {
     Merged,
     Closed,
+    Pushed,
+    Replies(u64),
     Conflicts,
     CiFailed,
     Threads(u64),
@@ -218,6 +230,9 @@ impl std::fmt::Display for ReviewWord {
         match self {
             ReviewWord::Merged => f.write_str("merged"),
             ReviewWord::Closed => f.write_str("closed"),
+            ReviewWord::Pushed => f.write_str("pushed"),
+            ReviewWord::Replies(1) => f.write_str("1 reply"),
+            ReviewWord::Replies(n) => write!(f, "{n} replies"),
             ReviewWord::Conflicts => f.write_str("conflicts"),
             ReviewWord::CiFailed => f.write_str("ci failed"),
             ReviewWord::Threads(1) => f.write_str("1 thread"),
@@ -243,6 +258,7 @@ impl ReviewWord {
     pub fn colour(&self) -> Option<StateColour> {
         match self {
             ReviewWord::Merged | ReviewWord::Approved => Some(StateColour::Green),
+            ReviewWord::Pushed | ReviewWord::Replies(_) => Some(StateColour::Cyan),
             ReviewWord::Closed | ReviewWord::Conflicts | ReviewWord::CiFailed => {
                 Some(StateColour::Red)
             }
@@ -255,11 +271,17 @@ impl ReviewWord {
 }
 
 /// The first word that applies, in the Global Constraints order.
-pub fn word(fields: &Fields) -> Option<ReviewWord> {
+pub fn word(state: &ReviewState) -> Option<ReviewWord> {
+    let fields = &state.fields;
     match fields.status {
         Some(RequestStatus::Merged) => return Some(ReviewWord::Merged),
         Some(RequestStatus::Closed) => return Some(ReviewWord::Closed),
         _ => {}
+    }
+    match attention(state) {
+        Some(Attention::Pushed) => return Some(ReviewWord::Pushed),
+        Some(Attention::Replies(n)) => return Some(ReviewWord::Replies(n)),
+        None => {}
     }
     if fields.conflicts == Some(true) {
         return Some(ReviewWord::Conflicts);
@@ -457,6 +479,56 @@ mod tests {
         }
     }
 
+    fn state(fields: &Fields) -> ReviewState {
+        ReviewState {
+            url: MR.into(),
+            read_at: 1000,
+            fields: fields.clone(),
+            viewed: None,
+        }
+    }
+
+    #[test]
+    fn attention_words_come_after_merged_and_closed_and_before_the_rest() {
+        let pushed = ReviewState {
+            fields: Fields {
+                conflicts: Some(true),
+                ..marked("b", 7, "a", 7).fields
+            },
+            ..marked("b", 7, "a", 7)
+        };
+        assert_eq!(word(&pushed), Some(ReviewWord::Pushed));
+        let merged = ReviewState {
+            fields: Fields {
+                status: Some(RequestStatus::Merged),
+                ..pushed.fields.clone()
+            },
+            ..pushed.clone()
+        };
+        assert_eq!(word(&merged), Some(ReviewWord::Merged));
+        let closed = ReviewState {
+            fields: Fields {
+                status: Some(RequestStatus::Closed),
+                ..pushed.fields.clone()
+            },
+            ..pushed.clone()
+        };
+        assert_eq!(word(&closed), Some(ReviewWord::Closed));
+        let replies = ReviewState {
+            fields: Fields {
+                pipeline: Some(Pipeline::Failed),
+                ..marked("a", 9, "a", 7).fields
+            },
+            ..marked("a", 9, "a", 7)
+        };
+        assert_eq!(word(&replies), Some(ReviewWord::Replies(2)));
+        assert_eq!(ReviewWord::Pushed.to_string(), "pushed");
+        assert_eq!(ReviewWord::Replies(1).to_string(), "1 reply");
+        assert_eq!(ReviewWord::Replies(3).to_string(), "3 replies");
+        assert_eq!(ReviewWord::Pushed.colour(), Some(StateColour::Cyan));
+        assert_eq!(ReviewWord::Replies(3).colour(), Some(StateColour::Cyan));
+    }
+
     #[test]
     fn the_word_is_the_first_that_applies() {
         let open = Fields {
@@ -476,65 +548,65 @@ mod tests {
             conflicts: Some(true),
             ..open.clone()
         };
-        assert_eq!(word(&merged), Some(ReviewWord::Merged));
+        assert_eq!(word(&state(&merged)), Some(ReviewWord::Merged));
         let closed = Fields {
             status: Some(RequestStatus::Closed),
             ..merged.clone()
         };
-        assert_eq!(word(&closed), Some(ReviewWord::Closed));
+        assert_eq!(word(&state(&closed)), Some(ReviewWord::Closed));
         let conflicts = Fields {
             conflicts: Some(true),
             pipeline: Some(Pipeline::Failed),
             ..open.clone()
         };
-        assert_eq!(word(&conflicts), Some(ReviewWord::Conflicts));
+        assert_eq!(word(&state(&conflicts)), Some(ReviewWord::Conflicts));
         let failed = Fields {
             pipeline: Some(Pipeline::Failed),
             threads: Some(2),
             ..open.clone()
         };
-        assert_eq!(word(&failed), Some(ReviewWord::CiFailed));
+        assert_eq!(word(&state(&failed)), Some(ReviewWord::CiFailed));
         let threads = Fields {
             threads: Some(2),
             pipeline: Some(Pipeline::Running),
             ..open.clone()
         };
-        assert_eq!(word(&threads), Some(ReviewWord::Threads(2)));
+        assert_eq!(word(&state(&threads)), Some(ReviewWord::Threads(2)));
         let running = Fields {
             pipeline: Some(Pipeline::Running),
             approved: Some(Approval::Yes),
             ..open.clone()
         };
-        assert_eq!(word(&running), Some(ReviewWord::CiRunning));
+        assert_eq!(word(&state(&running)), Some(ReviewWord::CiRunning));
         let changes_threads = Fields {
             approved: Some(Approval::Changes),
             threads: Some(2),
             ..open.clone()
         };
-        assert_eq!(word(&changes_threads), Some(ReviewWord::Threads(2)));
+        assert_eq!(word(&state(&changes_threads)), Some(ReviewWord::Threads(2)));
         let changes_running = Fields {
             approved: Some(Approval::Changes),
             pipeline: Some(Pipeline::Running),
             ..open.clone()
         };
-        assert_eq!(word(&changes_running), Some(ReviewWord::Changes));
+        assert_eq!(word(&state(&changes_running)), Some(ReviewWord::Changes));
         let changes = Fields {
             approved: Some(Approval::Changes),
             ..open.clone()
         };
-        assert_eq!(word(&changes), Some(ReviewWord::Changes));
+        assert_eq!(word(&state(&changes)), Some(ReviewWord::Changes));
         let approved = Fields {
             approved: Some(Approval::Yes),
             ..open.clone()
         };
-        assert_eq!(word(&approved), Some(ReviewWord::Approved));
+        assert_eq!(word(&state(&approved)), Some(ReviewWord::Approved));
         let draft = Fields {
             status: Some(RequestStatus::Draft),
             ..Fields::default()
         };
-        assert_eq!(word(&draft), Some(ReviewWord::Draft));
-        assert_eq!(word(&open), None);
-        assert_eq!(word(&Fields::default()), None);
+        assert_eq!(word(&state(&draft)), Some(ReviewWord::Draft));
+        assert_eq!(word(&state(&open)), None);
+        assert_eq!(word(&state(&Fields::default())), None);
     }
 
     #[test]

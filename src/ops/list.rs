@@ -41,7 +41,7 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
         .map(|f| {
             // Only open review changes are remembered, so other roles get no word.
             let states = remembered(hub, &f);
-            let review = |role: &str| states.get(role).and_then(|s| word(&s.fields));
+            let review = |role: &str| states.get(role).and_then(word);
             let mut roles: Vec<RoleSummary> = hub
                 .manifest
                 .repos

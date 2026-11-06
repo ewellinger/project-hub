@@ -260,6 +260,7 @@ fn colour_of(c: StateColour) -> Color {
         StateColour::Red => Color::Red,
         StateColour::Yellow => Color::Yellow,
         StateColour::Green => Color::Green,
+        StateColour::Cyan => Color::Cyan,
     }
 }
 
