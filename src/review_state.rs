@@ -76,7 +76,7 @@ pub struct ReviewState {
     pub read_at: u64,
     #[serde(flatten)]
     pub fields: Fields,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub viewed: Option<Viewed>,
 }
 
@@ -579,7 +579,8 @@ mod tests {
             json!({"url":"https://gitlab.com/g/p/-/merge_requests/1","read_at":1_762_300_800u64,
                 "status":"open","approved":"no","pipeline":"failed","threads":1,
                 "threads_more":false,"conflicts":true,
-                "head":"0123456789abcdef0123456789abcdef01234567","comments":1})
+                "head":"0123456789abcdef0123456789abcdef01234567","comments":1,
+                "viewed":null})
         );
         assert_eq!(serde_json::from_value::<ReviewState>(value).unwrap(), state);
         // `threads_more` is optional on read; `pipeline: "none"` is not unknown.
@@ -593,7 +594,7 @@ mod tests {
     }
 
     #[test]
-    fn viewed_serialises_only_when_set() {
+    fn viewed_serialises_as_null_until_set() {
         let mut state = ReviewState {
             url: "u".into(),
             read_at: 1000,
@@ -601,7 +602,7 @@ mod tests {
             viewed: None,
         };
         let value = serde_json::to_value(&state).unwrap();
-        assert!(value.get("viewed").is_none(), "{value}");
+        assert_eq!(value.get("viewed"), Some(&Value::Null), "{value}");
         state.viewed = Some(Viewed {
             at: 900,
             head: Some("0123456789abcdef0123456789abcdef01234567".into()),

@@ -804,5 +804,36 @@ fn status_json_carries_head_comments_and_viewed() {
     assert_eq!(row("api")["review"]["viewed"]["comments"], 1);
     assert_eq!(row("api")["review"]["comments"], 1);
     assert_eq!(row("api")["review"]["head"].as_str().unwrap().len(), 40);
-    assert_eq!(row("ui")["review"]["viewed"], serde_json::Value::Null);
+    assert_eq!(
+        row("ui")["review"].get("viewed"),
+        Some(&serde_json::Value::Null),
+        "the key is present and null until marked"
+    );
+}
+
+#[test]
+fn a_mark_set_while_status_reads_the_forge_survives_its_write() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]); // the file exists, with no mark
+    std::thread::scope(|scope| {
+        scope.spawn(|| {
+            fx.hub(&hub, &["status", "--feature", "feat-1"])
+                .env("FAKE_PROVIDER_SLEEP", "3")
+                .assert()
+                .success();
+        });
+        // Status has snapshotted the file and is waiting on the forge.
+        std::thread::sleep(std::time::Duration::from_millis(1500));
+        seed_mark(
+            &fx,
+            &hub,
+            "feat-1",
+            "api",
+            json!({"at": 1, "head": null, "comments": 0}),
+        );
+    });
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
 }
