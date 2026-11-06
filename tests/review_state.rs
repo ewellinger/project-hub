@@ -436,7 +436,10 @@ fn a_closed_request_replaces_gits_gone_from_origin_hint() {
     ui_reviewed_and_gone_from_origin(&fx, &hub, json!({"state": "CLOSED"}));
     let out = status(&fx, &hub, &[]);
 
-    assert!(out.contains("closed on GitHub without merging"), "{out}");
+    assert!(
+        out.contains("closed on GitHub without merging; run hub feature dropped ui"),
+        "{out}"
+    );
     assert!(!out.contains("gone from origin"), "{out}");
 }
 

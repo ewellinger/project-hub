@@ -162,7 +162,10 @@ pub fn attach(hub: &Hub, feature: &Feature, report: &mut StatusReport, source: S
                 ))
             }
             Some(RequestStatus::Closed) => {
-                row.hint = Some(format!("closed on {forge} without merging"))
+                row.hint = Some(format!(
+                    "closed on {forge} without merging; run hub feature dropped {}",
+                    target.role
+                ))
             }
             _ => {}
         }
