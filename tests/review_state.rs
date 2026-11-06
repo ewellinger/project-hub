@@ -297,3 +297,188 @@ fn refresh_with_json_sends_warnings_to_stderr() {
     );
     assert!(stderr.contains("boom"), "{stderr}");
 }
+
+fn status(fx: &Fixture, hub: &Path, args: &[&str]) -> String {
+    let mut all = vec!["status", "--feature", "feat-1"];
+    all.extend(args);
+    stdout(&fx.hub(hub, &all).assert().success())
+}
+
+fn matches(pattern: &str, text: &str) -> bool {
+    use predicates::prelude::*;
+    predicates::str::is_match(pattern).unwrap().eval(text)
+}
+
+/// `api` in review with `!412`: open, not approved, pipeline failed, two
+/// unresolved threads, no conflicts.
+fn api_in_review_with_failed_pipeline(fx: &Fixture, hub: &Path) {
+    gitlab_state(
+        fx,
+        412,
+        json!({
+            "state": "opened", "draft": false, "merge_status": "can_be_merged",
+            "has_conflicts": false, "head_pipeline": {"status": "failed"}
+        }),
+    );
+    let unresolved = json!({"notes": [{"resolvable": true, "resolved": false}]});
+    fx.provider_response(
+        "projects/g%2Fsub%2Fproj/merge_requests/412/discussions?per_page=100",
+        &json!([unresolved, unresolved]),
+    );
+    review(fx, hub, "feat-1", "api", Some(MR_412));
+}
+
+#[test]
+fn status_prints_the_review_section_after_the_role_table() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    let out = status(&fx, &hub, &[]);
+
+    assert!(
+        matches(
+            r"REVIEW\s+REQUEST\s+STATUS\s+APPROVED\s+PIPELINE\s+THREADS\s+CONFLICTS",
+            &out
+        ),
+        "{out}"
+    );
+    assert!(
+        matches(r"api\s+!412\s+open\s+no\s+failed\s+2 open\s+no", &out),
+        "{out}"
+    );
+    assert!(matches(r"review state read \d+s ago", &out), "{out}");
+    assert!(
+        out.find("ROLE").unwrap() < out.find("REVIEW").unwrap(),
+        "{out}"
+    );
+}
+
+#[test]
+fn status_without_a_role_in_review_is_unchanged() {
+    let (fx, hub) = world();
+    let out = status(&fx, &hub, &[]);
+
+    assert!(!out.contains("REVIEW"), "{out}");
+    assert!(!out.contains("review state read"), "{out}");
+    assert_eq!(fx.provider_log(), "");
+}
+
+#[test]
+fn status_json_carries_review_per_row_and_null_elsewhere() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    let json: serde_json::Value = serde_json::from_str(&status(&fx, &hub, &["--json"])).unwrap();
+    let row = |role: &str| {
+        json["rows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|r| r["role"] == role)
+            .unwrap()
+            .clone()
+    };
+
+    assert_eq!(row("api")["review"]["status"], "open");
+    assert_eq!(row("api")["review"]["threads"], 2);
+    assert_eq!(row("ui")["review"], serde_json::Value::Null);
+    assert_eq!(row("hub")["review"], serde_json::Value::Null);
+}
+
+#[test]
+fn a_merged_request_hints_to_run_feature_merged() {
+    let (fx, hub) = world();
+    github_state(&fx, 31, json!({"state": "MERGED"}));
+    review(&fx, &hub, "feat-1", "ui", Some(PR_31));
+    let out = status(&fx, &hub, &[]);
+
+    assert!(
+        out.contains("merged on GitHub; run hub feature merged ui"),
+        "{out}"
+    );
+}
+
+/// Push ui's branch, put it in review with `PR_31`, then delete the branch
+/// on origin so git hints `gone from origin`.
+fn ui_reviewed_and_gone_from_origin(fx: &Fixture, hub: &Path, pr: serde_json::Value) {
+    let ui_wt = fx.worktree_dir.join("ui-clone").join("feat-1");
+    fx.commit_file(&ui_wt, "work.txt", "work");
+    fx.git(&ui_wt, &["push", "-q", "-u", "origin", "feat-1"]);
+    github_state(fx, 31, pr);
+    review(fx, hub, "feat-1", "ui", Some(PR_31));
+    status(fx, hub, &["--json"]);
+    fx.git(&ui_wt, &["push", "-q", "origin", "--delete", "feat-1"]);
+}
+
+#[test]
+fn a_closed_request_replaces_gits_gone_from_origin_hint() {
+    let (fx, hub) = world();
+    ui_reviewed_and_gone_from_origin(&fx, &hub, json!({"state": "CLOSED"}));
+    let out = status(&fx, &hub, &[]);
+
+    assert!(out.contains("closed on GitHub without merging"), "{out}");
+    assert!(!out.contains("gone from origin"), "{out}");
+}
+
+#[test]
+fn an_open_request_leaves_gits_hint_alone() {
+    let (fx, hub) = world();
+    ui_reviewed_and_gone_from_origin(&fx, &hub, open_pr());
+    let out = status(&fx, &hub, &[]);
+
+    assert!(
+        out.contains("gone from origin; run hub feature merged ui"),
+        "{out}"
+    );
+}
+
+#[test]
+fn a_forge_failure_warns_and_status_still_succeeds() {
+    let (fx, hub) = world();
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    let assert = fx
+        .hub(&hub, &["status", "--feature", "feat-1"])
+        .env("FAKE_PROVIDER_FAIL", "boom")
+        .assert()
+        .success();
+    let out = stdout(&assert);
+
+    assert!(
+        out.contains("warning: review state not read for api: "),
+        "{out}"
+    );
+    assert!(
+        matches(r"api\s+!412\s+\?\s+\?\s+\?\s+\?\s+\?", &out),
+        "{out}"
+    );
+}
+
+#[test]
+fn status_base_never_reads_the_forge() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    fx.hub(&hub, &["status", "--base"]).assert().success();
+
+    assert_eq!(fx.provider_log(), "");
+}
+
+#[test]
+fn start_review_does_not_read_review_state_during_its_drift_check() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    let hub_wt = fx.worktree_dir.join("acme").join("acme-feat_1");
+    assert!(hub_wt.is_dir(), "{}", hub_wt.display());
+
+    fx.hub(
+        &hub_wt,
+        &[
+            "feature",
+            "start-review",
+            "https://gitlab.example.com/g/sub/proj/-/merge_requests/9",
+        ],
+    )
+    .assert()
+    .failure();
+
+    let log = fx.provider_log();
+    assert!(!log.contains("approvals"), "{log}");
+    assert!(!log.contains("discussions"), "{log}");
+}

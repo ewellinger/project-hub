@@ -673,7 +673,8 @@ fn run(cli: Cli) -> Result<Vec<String>> {
             let hub = locate()?;
             let (lines, drift) = if !base && (feature.is_some() || hub.cwd_feature.is_some()) {
                 let f = hub.resolve_feature(feature.as_deref())?;
-                let report = ops::status::status(&hub, &f)?;
+                let mut report = ops::status::status(&hub, &f)?;
+                ops::review_state::attach(&hub, &f, &mut report, ops::review_state::Source::Forge);
                 let lines = if json {
                     vec![ops::status::render_json(&report)?]
                 } else {

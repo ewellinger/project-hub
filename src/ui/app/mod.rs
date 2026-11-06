@@ -1118,6 +1118,7 @@ mod tests {
                 base_ahead: None,
                 hint: None,
                 review_url: None,
+                review: None,
                 frozen_sha: None,
                 base_moved: None,
                 drift: false,

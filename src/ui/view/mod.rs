@@ -257,6 +257,7 @@ mod tests {
             base_ahead: None,
             hint: hint.map(str::to_string),
             review_url: None,
+            review: None,
             frozen_sha: None,
             base_moved: None,
             drift: dirty,

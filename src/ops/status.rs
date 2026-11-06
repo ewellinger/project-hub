@@ -13,8 +13,10 @@ use crate::feature::{Change, Feature, FeatureStatus, Pin, short_sha};
 use crate::git::{Git, same_path};
 use crate::hub::Hub;
 use crate::manifest::RepoSpec;
+use crate::ops::review_state::{now_secs, section_lines};
 use crate::ops::session::{change_path, pin_path};
 use crate::ops::styled_table;
+use crate::review_state::ReviewState;
 
 #[derive(Debug, Serialize)]
 pub struct StatusRow {
@@ -42,6 +44,8 @@ pub struct StatusRow {
     /// Merge/pull request URL recorded on the change; `None` on hub and
     /// base rows and on changes without one.
     pub review_url: Option<String>,
+    /// Review state read from the forge; filled by `review_state::attach`.
+    pub review: Option<ReviewState>,
     /// Commit a frozen role is pinned to; `None` on other rows.
     pub frozen_sha: Option<String>,
     /// Commits the local base gained since the pin; `None` on other rows
@@ -142,6 +146,7 @@ fn base_hub_row(hub: &Hub) -> Result<StatusRow> {
         base_ahead: None,
         hint: None,
         review_url: None,
+        review: None,
         frozen_sha: None,
         base_moved: None,
         drift: false,
@@ -176,6 +181,7 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
                 base_ahead: None,
                 hint: None,
                 review_url: None,
+                review: None,
                 frozen_sha: None,
                 base_moved: None,
                 drift: true,
@@ -217,6 +223,7 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
             base_ahead: None,
             hint: None,
             review_url: None,
+            review: None,
             frozen_sha: None,
             base_moved: None,
             drift: !branch_matches,
@@ -371,6 +378,7 @@ fn hub_row(hub: &Hub, feature: &Feature) -> Result<StatusRow> {
         base_ahead,
         hint: None,
         review_url: None,
+        review: None,
         frozen_sha: None,
         base_moved: None,
         drift: open && (!exists || !registered || !branch_matches),
@@ -413,6 +421,7 @@ fn change_row(
             base_ahead: None,
             hint: None,
             review_url: change.review_url.clone(),
+            review: None,
             frozen_sha: None,
             base_moved: None,
             drift: open,
@@ -509,6 +518,7 @@ fn change_row(
         base_ahead: None,
         hint,
         review_url: change.review_url.clone(),
+        review: None,
         frozen_sha: pin.map(|p| p.sha.clone()),
         base_moved,
         drift: open && (!exists || !registered || !branch_matches),
@@ -574,6 +584,7 @@ fn render_table_with_home(
         .partition(|r| report.status == FeatureStatus::Finished || r.stage == "merged");
     if !open.is_empty() {
         lines.extend(open_table(&open, home));
+        lines.extend(section_lines(&open, now_secs()));
     }
     if !closed.is_empty() {
         lines.push(String::new());
@@ -735,6 +746,7 @@ fn frozen_row(hub: &Hub, feature: &Feature, pin: &Pin) -> Result<Option<StatusRo
         base_ahead: None,
         hint: None,
         review_url: None,
+        review: None,
         frozen_sha: Some(pin.sha.clone()),
         base_moved,
         drift: feature.is_open() && (!exists || !registered || !branch_matches),
@@ -804,13 +816,16 @@ pub fn state_colour(row: &StatusRow) -> StateColour {
     }
 }
 
-fn state_cell(row: &StatusRow) -> Cell {
-    let color = match state_colour(row) {
+pub(crate) fn comfy_colour(c: StateColour) -> Color {
+    match c {
         StateColour::Red => Color::Red,
         StateColour::Yellow => Color::Yellow,
         StateColour::Green => Color::Green,
-    };
-    Cell::new(state_text(row)).fg(color)
+    }
+}
+
+fn state_cell(row: &StatusRow) -> Cell {
+    Cell::new(state_text(row)).fg(comfy_colour(state_colour(row)))
 }
 
 pub fn render_json(report: &StatusReport) -> Result<String> {
@@ -824,7 +839,7 @@ pub fn render_base_json(report: &BaseStatusReport) -> Result<String> {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     use std::sync::atomic::{AtomicUsize, Ordering};
     use std::time::Duration;
@@ -872,7 +887,7 @@ mod tests {
         );
     }
 
-    fn row() -> StatusRow {
+    pub(crate) fn row() -> StatusRow {
         StatusRow {
             role: "api".into(),
             branch: "feature/example".into(),
@@ -890,6 +905,7 @@ mod tests {
             base_ahead: None,
             hint: None,
             review_url: None,
+            review: None,
             frozen_sha: None,
             base_moved: None,
             drift: false,
@@ -1016,6 +1032,7 @@ mod tests {
             base_ahead: None,
             hint: hint.map(str::to_string),
             review_url: None,
+            review: None,
             frozen_sha: None,
             base_moved: None,
             drift: !exists,
