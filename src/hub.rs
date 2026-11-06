@@ -358,7 +358,10 @@ mod tests {
         });
         m.save(&fx.hub_dir.join(MANIFEST_FILE)).unwrap();
         hub.reload_manifest().unwrap();
-        assert_eq!(hub.manifest.repos[0].setup.as_deref(), Some("scripts/api.sh"));
+        assert_eq!(
+            hub.manifest.repos[0].setup.as_deref(),
+            Some("scripts/api.sh")
+        );
     }
 
     #[test]

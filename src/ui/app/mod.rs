@@ -1219,8 +1219,11 @@ mod tests {
         a.update(setup_event(SetupState::Done(setup_outcome(
             hub::setup::Status::Failed(2),
         ))));
-        assert!(a.footer.as_ref().is_some_and(|f| f.is_error
-            && f.text.starts_with("api: setup failed (exit 2)")));
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.is_error && f.text.starts_with("api: setup failed (exit 2)"))
+        );
         assert!(a.setup_in_flight().is_none());
     }
 
