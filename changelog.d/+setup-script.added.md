@@ -1,0 +1,1 @@
+A role's `setup` script in `hub.json` (`hub repo add/set --setup`) runs in every worktree hub creates for it after `feature start`, `feature add` and `start-review`, with its output logged under `.git/hub/setup/` and its result shown in the CLI and the dashboard; `--no-setup` skips it and `hub feature setup [ROLE]` reruns it.
