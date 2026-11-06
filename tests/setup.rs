@@ -214,3 +214,146 @@ fn start_review_runs_setup() {
     assert!(seen.contains("HUB_FEATURE=api-review-486\n"), "{seen}");
     assert!(seen.contains("HUB_BRANCH=feature/x\n"), "{seen}");
 }
+
+#[test]
+fn feature_setup_reruns_one_role_and_exits_1_on_failure() {
+    let (fx, hub) = world();
+    script(&fx, &hub, "scripts/api.sh", ENV_SCRIPT, 0o755);
+    fx.hub(
+        &hub,
+        &["feature", "start", "feat-1", "--repo", "api", "--no-setup"],
+    )
+    .assert()
+    .success();
+    assert!(!env_file(&fx, "api-clone", "feat-1").exists());
+    let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
+    fx.hub(&hub_wt, &["feature", "setup", "api"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("api: setup ok ("));
+    assert!(env_file(&fx, "api-clone", "feat-1").is_file());
+
+    script(
+        &fx,
+        &hub,
+        "scripts/api.sh",
+        "echo boom >&2\nexit 3\n",
+        0o755,
+    );
+    fx.hub(&hub, &["feature", "setup", "api", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stdout(predicate::str::contains("api: setup failed (exit 3)"))
+        .stdout(predicate::str::contains("\n    boom\n"))
+        .stderr(predicate::str::contains("Error: setup failed for api"));
+}
+
+#[test]
+fn feature_setup_without_a_role_runs_hub_created_worktrees_only() {
+    let (fx, hub) = world();
+    script(&fx, &hub, "scripts/api.sh", ENV_SCRIPT, 0o755);
+    script(&fx, &hub, "scripts/ui.sh", ENV_SCRIPT, 0o755);
+    fx.hub(&hub, &["repo", "set", "ui", "--setup", "scripts/ui.sh"])
+        .assert()
+        .success();
+    let adopted = fx.worktree_dir.join("ui-clone").join("feat-1");
+    fx.git(
+        &fx.project_home.join("ui-clone"),
+        &[
+            "worktree",
+            "add",
+            "-q",
+            "-b",
+            "feat-1",
+            adopted.to_str().unwrap(),
+        ],
+    );
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "start",
+            "feat-1",
+            "--repo",
+            "api",
+            "--repo",
+            "ui",
+            "--no-setup",
+        ],
+    )
+    .assert()
+    .success();
+    fx.hub(&hub, &["feature", "setup", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Running setup for api"))
+        .stdout(predicate::str::contains("Running setup for ui").not());
+    assert!(env_file(&fx, "api-clone", "feat-1").is_file());
+    assert!(!env_file(&fx, "ui-clone", "feat-1").exists());
+}
+
+#[test]
+fn feature_setup_names_an_adopted_worktree_but_refuses_the_main_clone() {
+    let (fx, hub) = world();
+    script(&fx, &hub, "scripts/api.sh", ENV_SCRIPT, 0o755);
+    script(&fx, &hub, "scripts/ui.sh", ENV_SCRIPT, 0o755);
+    fx.hub(&hub, &["repo", "set", "ui", "--setup", "scripts/ui.sh"])
+        .assert()
+        .success();
+    let adopted = fx.worktree_dir.join("ui-clone").join("feat-1");
+    fx.git(
+        &fx.project_home.join("ui-clone"),
+        &[
+            "worktree",
+            "add",
+            "-q",
+            "-b",
+            "feat-1",
+            adopted.to_str().unwrap(),
+        ],
+    );
+    let api = fx.project_home.join("api-clone");
+    fx.git(&api, &["checkout", "-q", "-b", "inplace"]);
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "start",
+            "feat-1",
+            "--repo",
+            "ui",
+            "--repo",
+            "api:inplace",
+            "--no-setup",
+        ],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains("Using main clone"));
+    fx.hub(&hub, &["feature", "setup", "ui", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("ui: setup ok ("));
+    assert!(env_file(&fx, "ui-clone", "feat-1").is_file());
+    fx.hub(&hub, &["feature", "setup", "api", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("checked out in the main clone"));
+    assert!(!api.join("setup-env.txt").exists());
+}
+
+#[test]
+fn feature_setup_needs_a_configured_role() {
+    let (fx, hub) = world();
+    fx.hub(&hub, &["feature", "start", "feat-1", "--repo", "ui"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "setup", "ui", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("has no setup script"));
+    fx.hub(&hub, &["feature", "setup", "api", "--feature", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("has no open change"));
+}

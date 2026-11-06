@@ -12,6 +12,7 @@ use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
 use crate::env::shorten_home;
+use crate::error::{HubError, Result};
 use crate::feature::{Change, Feature, Owner};
 use crate::hub::Hub;
 use crate::manifest::Manifest;
@@ -71,6 +72,40 @@ pub fn select_changes<'a>(
         .collect()
 }
 
+/// Jobs for `hub feature setup`: one named role, which may be an adopted
+/// worktree, or every worktree hub created. A change living in the main
+/// clone is refused rather than run, since that is the user's own checkout.
+pub fn rerun_jobs(hub: &Hub, feature: &Feature, role: Option<&str>) -> Result<Vec<Job>> {
+    feature.require_open()?;
+    let Some(role) = role else {
+        let all: Vec<String> = feature
+            .open_changes()
+            .iter()
+            .map(|c| c.role.clone())
+            .collect();
+        return Ok(jobs(hub, feature, &all, false));
+    };
+    let repo = hub.manifest.require_repo(role)?;
+    let Some(setup) = &repo.setup else {
+        return Err(HubError::Usage(format!(
+            "role '{role}' has no setup script in hub.json; set one with `hub repo set {role} --setup PATH`"
+        )));
+    };
+    let Some(change) = feature.open_change(role) else {
+        return Err(HubError::Precondition(format!(
+            "role '{role}' has no open change in feature '{}'",
+            feature.name
+        )));
+    };
+    if change.worktree.is_none() {
+        return Err(HubError::Precondition(format!(
+            "{role} is checked out in the main clone at {}; run {setup} there yourself",
+            change_path(hub, change).display()
+        )));
+    }
+    Ok(jobs(hub, feature, &[role.to_string()], true))
+}
+
 pub fn log_path(hub: &Hub, feature: &str, role: &str) -> PathBuf {
     hub.state_dir()
         .join("setup")
@@ -119,7 +154,7 @@ pub fn run(job: &Job) -> Outcome {
     }
 }
 
-fn spawn_and_wait(job: &Job) -> Result<Status, String> {
+fn spawn_and_wait(job: &Job) -> std::result::Result<Status, String> {
     let meta = std::fs::metadata(&job.script)
         .map_err(|e| format!("{} is not a file ({e})", job.script.display()))?;
     if !meta.is_file() {

@@ -232,6 +232,14 @@ enum FeatureCommand {
         #[arg(long)]
         no_setup: bool,
     },
+    /// Run the setup script of one role, or of every worktree hub created, in the current feature
+    Setup {
+        /// Role whose script to run; every hub-created worktree when omitted
+        role: Option<String>,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+    },
     /// Record the branch a role's open change merges into; the member branch is not touched
     SetBase {
         /// Role whose open change gets the new base
@@ -335,24 +343,28 @@ fn print_lines(lines: Vec<String>) {
 }
 
 /// Run the setup scripts of `roles`' hub-created worktrees in `feature`,
-/// printing each result as it lands; `Ok(true)` when every script succeeded.
-/// Runs after the hub lock is released, so a slow script blocks nobody.
-fn run_setup(hub: &Hub, feature: &str, roles: &[String]) -> Result<bool> {
+/// printing each result as it lands. A failure is reported, not returned:
+/// the feature is complete. Runs after the hub lock is released, so a slow
+/// script blocks nobody.
+fn run_setup(hub: &Hub, feature: &str, roles: &[String]) -> Result<()> {
     let f = hub.load_feature(feature)?;
-    Ok(run_jobs(&hub::setup::jobs(hub, &f, roles, false)))
+    run_jobs(&hub::setup::jobs(hub, &f, roles, false));
+    Ok(())
 }
 
-fn run_jobs(jobs: &[hub::setup::Job]) -> bool {
+/// Run each job in order, printing the Running line before it starts and
+/// its result after; returns every outcome.
+fn run_jobs(jobs: &[hub::setup::Job]) -> Vec<hub::setup::Outcome> {
     let home = hub::env::home_dir();
-    let mut all_ok = true;
-    for job in jobs {
-        println!("{}", hub::setup::running_line(job));
-        let _ = std::io::stdout().flush();
-        let outcome = hub::setup::run(job);
-        all_ok &= outcome.status == hub::setup::Status::Ok;
-        print_lines(hub::setup::result_lines(&outcome, 20, home.as_deref()));
-    }
-    all_ok
+    jobs.iter()
+        .map(|job| {
+            println!("{}", hub::setup::running_line(job));
+            let _ = std::io::stdout().flush();
+            let outcome = hub::setup::run(job);
+            print_lines(hub::setup::result_lines(&outcome, 20, home.as_deref()));
+            outcome
+        })
+        .collect()
 }
 
 fn main() {
@@ -615,6 +627,23 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         run_setup(&after, &name, std::slice::from_ref(&role))?;
                     }
                     Ok(Vec::new())
+                }
+                FeatureCommand::Setup { role, feature } => {
+                    let f = hub.resolve_feature(feature.as_deref())?;
+                    let jobs = hub::setup::rerun_jobs(&hub, &f, role.as_deref())?;
+                    let failed: Vec<String> = run_jobs(&jobs)
+                        .into_iter()
+                        .filter(|o| o.status != hub::setup::Status::Ok)
+                        .map(|o| o.role)
+                        .collect();
+                    if failed.is_empty() {
+                        Ok(Vec::new())
+                    } else {
+                        Err(HubError::Precondition(format!(
+                            "setup failed for {}",
+                            failed.join(", ")
+                        )))
+                    }
                 }
                 FeatureCommand::SetBase {
                     role,

@@ -26,6 +26,7 @@ A hub is a git repo, shared through a remote when the project has one, whose `hu
 | Start a feature: hub branch and worktree, one change per `--repo`, one frozen reference worktree per `--freeze`, tmux session | `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]...` |
 | Set up an isolated review of a GitLab MR or GitHub PR: its role from the URL, the real source branch at the verified head, base = the MR's target, stage `review` | `hub feature start-review URL [--name NAME] [--checkout C]` |
 | Bring one more role into the feature | `hub feature add ROLE [--branch B] [--from REF \| --from-latest] [--base B] [--worktree W]` (the role is required without a terminal) |
+| Rerun a role's setup script, or every hub-created worktree's, in the current feature | `hub feature setup [ROLE]` |
 | Record the branch a role's open change merges into, when it is not the role's base | `hub feature set-base ROLE BRANCH` |
 | Pin a role to a fixed commit of its local base: a read-only reference worktree for a role outside the feature, a comparison point for an open change | `hub feature freeze ROLE [--at REF]` |
 | Release a pin and remove the reference worktree | `hub feature unfreeze ROLE [--force]` |
