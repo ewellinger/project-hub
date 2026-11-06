@@ -232,6 +232,11 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
     ))
 }
 
+/// Whether a row's stage names a change that is over: merged or dropped.
+pub fn closed(stage: &str) -> bool {
+    matches!(stage, "merged" | "dropped")
+}
+
 /// Compare the feature's recorded state against the repos, including how
 /// far each open branch is behind its base. Changes no hub state, worktree,
 /// or branch; it does `git fetch --prune origin` in each clone with an open
@@ -239,11 +244,6 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
 /// fetches the hub's own origin too when it has one. A failed fetch
 /// (offline, moved remote) is a warning, and both then use whatever was
 /// fetched last.
-/// Whether a row's stage names a change that is over: merged or dropped.
-pub fn closed(stage: &str) -> bool {
-    matches!(stage, "merged" | "dropped")
-}
-
 pub fn status(hub: &Hub, feature: &Feature) -> Result<StatusReport> {
     let mut warnings = Vec::new();
     let groups = group_changes_by_clone(&feature.changes);
