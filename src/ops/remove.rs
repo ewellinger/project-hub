@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::path::PathBuf;
 
 use crate::error::{HubError, Result};
-use crate::feature::{Feature, Stage};
+use crate::feature::{self, Feature};
 use crate::git::Git;
 use crate::hub::Hub;
 
@@ -56,9 +56,9 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
             }
             None => false,
         };
-        if change.stage != Stage::Merged && !contained {
+        if change.stage.is_open() && !contained {
             refusals.push(format!(
-                "{label} is not merged; run hub feature merged or delete the branch in {}",
+                "{label} is not merged; run hub feature merged or hub feature dropped, or delete the branch in {}",
                 dir.display()
             ));
             continue;
@@ -92,8 +92,13 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
         return Err(HubError::Precondition(refusals.join("\n  ")));
     }
     for (dir, label, branch) in &doomed {
-        Git::new(dir).delete_branch(branch)?;
-        lines.push(format!("Deleted branch {label}"));
+        let git = Git::new(dir);
+        let tip = git.rev_parse(branch)?;
+        git.delete_branch(branch)?;
+        lines.push(format!(
+            "Deleted branch {label} (was {})",
+            feature::short_sha(&tip)
+        ));
     }
     let path = hub.feature_path(&feature.name);
     std::fs::remove_file(&path)

@@ -62,6 +62,39 @@ fn remove_deletes_merged_branches_and_the_record_so_the_name_is_free() {
 }
 
 #[test]
+fn remove_deletes_a_dropped_branch_and_prints_its_tip() {
+    let (fx, hub) = world();
+    let tip = |clone: &str| {
+        let wt = fx.worktree_dir.join(clone).join("feat-1");
+        fx.git(&wt, &["rev-parse", "--short", "HEAD"])
+            .trim()
+            .to_string()
+    };
+    let (api_tip, ui_tip) = (tip("api-clone"), tip("ui-clone"));
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "Deleted branch api: feat-1 (was {api_tip})"
+        )))
+        .stdout(predicate::str::contains(format!(
+            "Deleted branch ui: feat-1 (was {ui_tip})"
+        )));
+    for clone in ["api-clone", "ui-clone"] {
+        assert!(!branch_exists(&fx, &fx.project_home.join(clone), "feat-1"));
+    }
+}
+
+#[test]
 fn remove_refuses_an_open_feature() {
     let (fx, hub) = world();
     fx.hub(&hub, &["feature", "remove", "feat-1"])
@@ -90,7 +123,9 @@ fn remove_refuses_unmerged_and_pushed_branches_and_changes_nothing() {
         .assert()
         .code(1)
         .stderr(predicate::str::contains("api: feat-1 is still on origin"))
-        .stderr(predicate::str::contains("ui: feat-1 is not merged"));
+        .stderr(predicate::str::contains(
+            "ui: feat-1 is not merged; run hub feature merged or hub feature dropped",
+        ));
     for clone in ["api-clone", "ui-clone"] {
         assert!(branch_exists(&fx, &fx.project_home.join(clone), "feat-1"));
     }
