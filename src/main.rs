@@ -300,6 +300,9 @@ enum FeatureCommand {
         /// Print as JSON
         #[arg(long)]
         json: bool,
+        /// Read review state from the forge for every open feature first
+        #[arg(long)]
+        refresh: bool,
     },
 }
 
@@ -584,7 +587,16 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 FeatureCommand::Remove { name } => {
                     hub.with_lock(|hub| ops::remove::remove(hub, &hub.load_feature(&name)?))
                 }
-                FeatureCommand::List { all, json } => {
+                FeatureCommand::List { all, json, refresh } => {
+                    let warnings = if refresh {
+                        match ops::review_state::refresh_all(&hub) {
+                            Ok(done) => done.warnings,
+                            Err(err) => vec![err.to_string()],
+                        }
+                    } else {
+                        Vec::new()
+                    };
+                    let warnings = warnings.iter().map(|w| format!("warning: {w}"));
                     let mut summaries = ops::list::list(&hub)?;
                     let hidden = if all {
                         0
@@ -594,6 +606,9 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         before - summaries.len()
                     };
                     if json {
+                        for warning in warnings {
+                            eprintln!("{warning}");
+                        }
                         Ok(vec![ops::list::render_json(&summaries)?])
                     } else {
                         let mut lines = ops::list::render_table(&summaries);
@@ -602,6 +617,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                                 "no open features; pass --all to include finished ones".into(),
                             );
                         }
+                        lines.extend(warnings);
                         Ok(lines)
                     }
                 }

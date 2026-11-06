@@ -1,7 +1,7 @@
 //! Dashboard panes: the feature list and the status of the selected row.
 
 use std::path::Path;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use ratatui::Frame;
 use ratatui::layout::{Constraint, Layout, Rect};
@@ -15,6 +15,7 @@ use crate::ui::app::feature::display_order;
 use crate::ui::app::{App, Report, RowId};
 use hub::env::{home_dir, shorten_home};
 use hub::feature::{FeatureStatus, Stage};
+use hub::ops::format_age;
 use hub::ops::status::{StateColour, StatusRow, state_colour, state_text};
 
 pub(super) const SPINNER: [&str; 4] = ["⠋", "⠙", "⠸", "⠴"];
@@ -281,38 +282,9 @@ pub(super) fn refresh_line(app: &App, at: Option<Instant>, in_flight: bool) -> L
     }
 }
 
-/// An elapsed time at the precision a glance needs: seconds under a minute,
-/// whole minutes under an hour, hours and minutes beyond that.
-fn format_age(age: Duration) -> String {
-    let secs = age.as_secs();
-    match secs {
-        s if s < 60 => format!("{s}s"),
-        s if s < 3600 => format!("{}m", s / 60),
-        s => format!("{}h {}m", s / 3600, (s % 3600) / 60),
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn format_age_scales_seconds_minutes_and_hours() {
-        assert_eq!(format_age(Duration::from_secs(0)), "0s");
-        assert_eq!(format_age(Duration::from_secs(12)), "12s");
-        assert_eq!(format_age(Duration::from_secs(59)), "59s");
-        assert_eq!(format_age(Duration::from_secs(60)), "1m");
-        assert_eq!(format_age(Duration::from_secs(37 * 60 + 5)), "37m");
-        assert_eq!(format_age(Duration::from_secs(3600)), "1h 0m");
-        assert_eq!(
-            format_age(Duration::from_secs(3600 + 12 * 60 + 9)),
-            "1h 12m"
-        );
-        assert_eq!(
-            format_age(Duration::from_secs(26 * 3600 + 3 * 60)),
-            "26h 3m"
-        );
-    }
 
     #[test]
     fn role_line_pushes_the_stage_to_the_right_edge() {
