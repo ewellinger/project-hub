@@ -305,6 +305,7 @@ pub(crate) mod tests {
                 role: "api".into(),
                 branch: "feature/x".into(),
                 stage: Stage::Working,
+                review: None,
             }],
             frozen: Vec::new(),
         }

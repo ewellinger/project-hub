@@ -482,3 +482,75 @@ fn start_review_does_not_read_review_state_during_its_drift_check() {
     assert!(!log.contains("approvals"), "{log}");
     assert!(!log.contains("discussions"), "{log}");
 }
+
+#[test]
+fn list_shows_the_remembered_word_without_reading_the_forge() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]);
+    std::fs::write(&fx.provider_log, "").unwrap();
+
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+
+    assert!(out.contains("api:review(ci failed)"), "{out}");
+    assert_eq!(fx.provider_log(), "");
+}
+
+#[test]
+fn list_refresh_shows_the_word_it_just_read() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    let out = stdout(&refresh(&fx, &hub));
+
+    assert!(out.contains("api:review(ci failed)"), "{out}");
+    assert!(
+        fx.provider_log().contains("merge_requests/412"),
+        "{}",
+        fx.provider_log()
+    );
+}
+
+#[test]
+fn list_json_carries_the_word() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    review(&fx, &hub, "feat-1", "ui", None);
+    let out = stdout(
+        &fx.hub(&hub, &["feature", "list", "--refresh", "--json"])
+            .assert()
+            .success(),
+    );
+    let json: serde_json::Value = serde_json::from_str(&out).unwrap();
+    let role = |name: &str| {
+        json[0]["roles"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|r| r["role"] == name)
+            .unwrap()
+            .clone()
+    };
+
+    assert_eq!(role("api")["review"], "ci failed");
+    assert_eq!(role("ui")["review"], serde_json::Value::Null);
+}
+
+#[test]
+fn a_finished_feature_shows_no_word() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    refresh(&fx, &hub);
+    for role in ["api", "ui"] {
+        fx.hub(&hub, &["feature", "merged", role, "--feature", "feat-1"])
+            .assert()
+            .success();
+    }
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success();
+
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+
+    assert!(out.contains("finished"), "{out}");
+    assert!(!out.contains('('), "{out}");
+}

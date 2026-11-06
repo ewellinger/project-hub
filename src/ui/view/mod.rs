@@ -274,11 +274,13 @@ mod tests {
                     role: "api".into(),
                     branch: "x".into(),
                     stage: Stage::Review,
+                    review: None,
                 },
                 RoleSummary {
                     role: "ui".into(),
                     branch: "y".into(),
                     stage: Stage::Working,
+                    review: None,
                 },
             ],
             frozen: Vec::new(),
@@ -305,6 +307,7 @@ mod tests {
             role: "bff".into(),
             branch: "z".into(),
             stage: Stage::Merged,
+            review: None,
         });
         let a = App::new("acme", vec![s]);
         let rows = lines(100, 30, &a);

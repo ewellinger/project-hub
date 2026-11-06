@@ -671,6 +671,7 @@ mod tests {
                 role: "api".into(),
                 branch: format!("feature/{name}"),
                 stage: Stage::Working,
+                review: None,
             }],
             frozen: Vec::new(),
         }

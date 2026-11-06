@@ -13,7 +13,7 @@ use crate::manifest::write_json;
 use crate::ops::status::{StateColour, StatusReport, StatusRow, comfy_colour, parallel_map};
 use crate::ops::{format_age, styled_table};
 use crate::review::{Provider, ReviewUrl, parse_review_url};
-use crate::review_state::{Approval, Pipeline, RequestStatus, ReviewState, fetch_state};
+use crate::review_state::{Approval, Fields, Pipeline, RequestStatus, ReviewState, fetch_state};
 
 pub type States = BTreeMap<String /* role */, ReviewState>;
 
@@ -163,6 +163,81 @@ pub fn attach(hub: &Hub, feature: &Feature, report: &mut StatusReport, source: S
         }
     }
     report.warnings.extend(warnings);
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ReviewWord {
+    Merged,
+    Closed,
+    Conflicts,
+    CiFailed,
+    Threads(u64),
+    CiRunning,
+    Approved,
+    Draft,
+}
+
+impl std::fmt::Display for ReviewWord {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ReviewWord::Merged => f.write_str("merged"),
+            ReviewWord::Closed => f.write_str("closed"),
+            ReviewWord::Conflicts => f.write_str("conflicts"),
+            ReviewWord::CiFailed => f.write_str("ci failed"),
+            ReviewWord::Threads(1) => f.write_str("1 thread"),
+            ReviewWord::Threads(n) => write!(f, "{n} threads"),
+            ReviewWord::CiRunning => f.write_str("ci running"),
+            ReviewWord::Approved => f.write_str("approved"),
+            ReviewWord::Draft => f.write_str("draft"),
+        }
+    }
+}
+
+impl serde::Serialize for ReviewWord {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
+        serializer.collect_str(self)
+    }
+}
+
+impl ReviewWord {
+    pub fn colour(&self) -> Option<StateColour> {
+        match self {
+            ReviewWord::Merged | ReviewWord::Approved => Some(StateColour::Green),
+            ReviewWord::Closed | ReviewWord::Conflicts | ReviewWord::CiFailed => {
+                Some(StateColour::Red)
+            }
+            ReviewWord::Threads(_) | ReviewWord::CiRunning => Some(StateColour::Yellow),
+            ReviewWord::Draft => None,
+        }
+    }
+}
+
+/// The first word that applies, in the Global Constraints order.
+pub fn word(fields: &Fields) -> Option<ReviewWord> {
+    match fields.status {
+        Some(RequestStatus::Merged) => return Some(ReviewWord::Merged),
+        Some(RequestStatus::Closed) => return Some(ReviewWord::Closed),
+        _ => {}
+    }
+    if fields.conflicts == Some(true) {
+        return Some(ReviewWord::Conflicts);
+    }
+    if fields.pipeline == Some(Pipeline::Failed) {
+        return Some(ReviewWord::CiFailed);
+    }
+    if let Some(n @ 1..) = fields.threads {
+        return Some(ReviewWord::Threads(n));
+    }
+    if fields.pipeline == Some(Pipeline::Running) {
+        return Some(ReviewWord::CiRunning);
+    }
+    if fields.approved == Some(Approval::Yes) {
+        return Some(ReviewWord::Approved);
+    }
+    (fields.status == Some(RequestStatus::Draft)).then_some(ReviewWord::Draft)
 }
 
 pub const REVIEW_HEADERS: [&str; 7] = [
@@ -335,6 +410,78 @@ mod tests {
             threads_more: false,
             conflicts: Some(false),
         }
+    }
+
+    #[test]
+    fn the_word_is_the_first_that_applies() {
+        let open = Fields {
+            status: Some(RequestStatus::Open),
+            approved: Some(Approval::No),
+            pipeline: Some(Pipeline::Passed),
+            threads: Some(0),
+            threads_more: false,
+            conflicts: Some(false),
+        };
+        let merged = Fields {
+            status: Some(RequestStatus::Merged),
+            pipeline: Some(Pipeline::Failed),
+            threads: Some(2),
+            conflicts: Some(true),
+            ..open.clone()
+        };
+        assert_eq!(word(&merged), Some(ReviewWord::Merged));
+        let closed = Fields {
+            status: Some(RequestStatus::Closed),
+            ..merged.clone()
+        };
+        assert_eq!(word(&closed), Some(ReviewWord::Closed));
+        let conflicts = Fields {
+            conflicts: Some(true),
+            pipeline: Some(Pipeline::Failed),
+            ..open.clone()
+        };
+        assert_eq!(word(&conflicts), Some(ReviewWord::Conflicts));
+        let failed = Fields {
+            pipeline: Some(Pipeline::Failed),
+            threads: Some(2),
+            ..open.clone()
+        };
+        assert_eq!(word(&failed), Some(ReviewWord::CiFailed));
+        let threads = Fields {
+            threads: Some(2),
+            pipeline: Some(Pipeline::Running),
+            ..open.clone()
+        };
+        assert_eq!(word(&threads), Some(ReviewWord::Threads(2)));
+        let running = Fields {
+            pipeline: Some(Pipeline::Running),
+            approved: Some(Approval::Yes),
+            ..open.clone()
+        };
+        assert_eq!(word(&running), Some(ReviewWord::CiRunning));
+        let approved = Fields {
+            approved: Some(Approval::Yes),
+            ..open.clone()
+        };
+        assert_eq!(word(&approved), Some(ReviewWord::Approved));
+        let draft = Fields {
+            status: Some(RequestStatus::Draft),
+            ..Fields::default()
+        };
+        assert_eq!(word(&draft), Some(ReviewWord::Draft));
+        assert_eq!(word(&open), None);
+        assert_eq!(word(&Fields::default()), None);
+    }
+
+    #[test]
+    fn words_display_and_serialise_as_text() {
+        assert_eq!(ReviewWord::Threads(2).to_string(), "2 threads");
+        assert_eq!(ReviewWord::Threads(1).to_string(), "1 thread");
+        assert_eq!(ReviewWord::CiRunning.to_string(), "ci running");
+        assert_eq!(
+            serde_json::to_string(&ReviewWord::CiFailed).unwrap(),
+            "\"ci failed\""
+        );
     }
 
     #[test]
