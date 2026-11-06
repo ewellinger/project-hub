@@ -42,7 +42,6 @@ impl App {
                     return Vec::new();
                 }
                 self.reviews_in_flight = true;
-                self.say("reading review state…".into(), false);
                 vec![Effect::RefreshReviews]
             }
             KeyCode::Enter => self.open_feature(),

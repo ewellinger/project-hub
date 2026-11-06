@@ -479,7 +479,12 @@ fn api(program: &str, host: &str, endpoint: &str, args: &[&str]) -> Result<serde
             }
         })?;
     if !out.status.success() {
-        let stderr = String::from_utf8_lossy(&out.stderr).trim().to_string();
+        // The text reaches the terminal as a warning; keep only its lines.
+        let stderr: String = String::from_utf8_lossy(&out.stderr)
+            .trim()
+            .chars()
+            .filter(|c| *c == '\n' || !c.is_control())
+            .collect();
         return Err(HubError::Precondition(format!(
             "{program} api {endpoint} on {host} failed: {stderr}\n\
              check `{program} auth status --hostname {host}` and that the review exists and is readable"
@@ -531,6 +536,19 @@ mod tests {
             branch_template: "{feature}".into(),
             description: String::new(),
         }
+    }
+
+    #[test]
+    fn forge_cli_stderr_loses_control_characters_but_keeps_newlines() {
+        let script = "printf '\\033[31mbad\\nauth\\n' >&2; exit 1";
+        let err = api("sh", "h", "e", &["-c", script])
+            .unwrap_err()
+            .to_string();
+        assert!(!err.contains('\u{1b}'), "{err:?}");
+        assert!(
+            err.starts_with("sh api e on h failed: [31mbad\nauth\n"),
+            "{err:?}"
+        );
     }
 
     #[test]

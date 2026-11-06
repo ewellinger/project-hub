@@ -363,11 +363,12 @@ unresolved review threads in the first 100 the forge returns, with a `+`
 (`100+ open`) when there may be more. CONFLICTS is `yes` or `no`. A field
 the forge does not supply shows `?`; for a merged or closed request,
 APPROVED, THREADS, and CONFLICTS show `-`. The age line gives the oldest
-read shown. A merged request puts `merged on GitLab; run hub feature merged ROLE` (or `GitHub`) in
-STATE, and a closed one `closed on GitLab without merging`; either replaces
-git's hint for that row.
+read shown. A merged request puts
+`merged on GitLab; run hub feature merged ROLE` (or `GitHub`) in STATE, and
+a closed one `closed on GitLab without merging`; either replaces git's hint
+for that row.
 
-hub remembers the last read per role, so a failed read (no `glab` or `gh`,
+`hub` remembers the last read per role, so a failed read (no `glab` or `gh`,
 no login, no network) is a warning and the remembered row still shows. A
 feature with no role in review prints no section, and `status --base` never
 reads the forge. `--json` carries the state as `review` on each row (`null`
@@ -496,7 +497,8 @@ Status runs in the background when you move the
 selection or press `r`, showing the last result until the new one lands.
 Review state (see [Status](#status)) is read from the forge on `r`, on
 entering a feature, and on `R` for every open feature; moving the selection
-shows the remembered state and never reads the forge.
+shows the remembered state and never reads the forge. The features list
+shows the same word as `hub feature list` next to each role in review.
 Finished features are hidden until `a` shows them. Run from a feature's hub
 worktree, `hub` opens that feature's view directly; `Esc` returns to the
 dashboard with that feature selected.

@@ -118,7 +118,12 @@ pub fn refresh_all(hub: &Hub) -> Result<RefreshAll> {
         .into_iter()
         .filter(|f| !targets(f).is_empty())
         .collect();
-    let mut warnings = parallel_map(&features, |f| refresh(hub, f).1).concat();
+    // Eight at a time: each GitLab role runs three `glab`s, and one thread
+    // per feature could reach the default 256 file descriptors.
+    let mut warnings: Vec<String> = features
+        .chunks(8)
+        .flat_map(|chunk| parallel_map(chunk, |f| refresh(hub, f).1).concat())
+        .collect();
     warnings.sort();
     warnings.dedup();
     Ok(RefreshAll {

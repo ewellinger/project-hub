@@ -191,6 +191,28 @@ fn a_missing_program_warns_once_for_several_roles() {
 }
 
 #[test]
+fn a_missing_program_still_shows_the_remembered_row() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    refresh(&fx, &hub);
+
+    let assert = fx
+        .hub(&hub, &["status", "--feature", "feat-1"])
+        .env("PATH", fx.path_without_tmux())
+        .assert()
+        .success();
+    let out = stdout(&assert);
+
+    assert!(
+        matches(r"api\s+!412\s+open\s+no\s+running\s+0 open\s+no", &out),
+        "{out}"
+    );
+    let missing = out.lines().filter(|l| l.contains("is not on PATH")).count();
+    assert_eq!(missing, 1, "{out}");
+}
+
+#[test]
 fn a_changed_url_makes_the_remembered_state_absent() {
     let (fx, hub) = world();
     gitlab_state(&fx, 412, open_mr());
@@ -466,6 +488,10 @@ fn start_review_does_not_read_review_state_during_its_drift_check() {
     api_in_review_with_failed_pipeline(&fx, &hub);
     let hub_wt = fx.worktree_dir.join("acme").join("acme-feat_1");
     assert!(hub_wt.is_dir(), "{}", hub_wt.display());
+    fx.provider_response(
+        "projects/g%2Fsub%2Fproj",
+        &json!({"id": 77, "path_with_namespace": "g/sub/proj"}),
+    );
 
     fx.hub(
         &hub_wt,
@@ -479,6 +505,7 @@ fn start_review_does_not_read_review_state_during_its_drift_check() {
     .failure();
 
     let log = fx.provider_log();
+    assert!(log.contains("merge_requests/9"), "{log}");
     assert!(!log.contains("approvals"), "{log}");
     assert!(!log.contains("discussions"), "{log}");
 }

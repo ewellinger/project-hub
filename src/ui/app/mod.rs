@@ -315,6 +315,9 @@ pub struct App {
     pub select_next: Option<String>,
     /// The next list landing reads the forge for the selected row.
     forge_next: bool,
+    /// The next list landing supersedes the selected row's request: a
+    /// finished `R` rewrote the reviews file it may have read.
+    fresh_next: bool,
     next_gen: u64,
 }
 
@@ -344,6 +347,7 @@ impl App {
             running: None,
             select_next: None,
             forge_next: false,
+            fresh_next: false,
             next_gen: 0,
         };
         app.set_features(features);
@@ -387,11 +391,16 @@ impl App {
         self.request_fresh(id)
     }
 
-    /// The request a landed list makes: a forge read after dashboard `r`.
+    /// The request a landed list makes: a forge read after dashboard `r`,
+    /// a superseding one after `R`.
     fn request_listed(&mut self) -> Vec<Effect> {
+        let fresh = std::mem::take(&mut self.fresh_next);
         if std::mem::take(&mut self.forge_next) {
             let id = self.selected_row().id.clone();
             self.request_forge(id)
+        } else if fresh {
+            let id = self.selected_row().id.clone();
+            self.request_fresh(id)
         } else {
             self.request_selected()
         }
@@ -706,6 +715,7 @@ impl App {
             let text = format!("{read}; {w} warning{}", if w == 1 { "" } else { "s" });
             self.say(text, true);
         }
+        self.fresh_next = true;
         vec![Effect::ReloadList]
     }
 
@@ -1956,7 +1966,7 @@ mod tests {
             a.update(key(KeyCode::Char('R'))),
             vec![Effect::RefreshReviews]
         );
-        assert!(footer_is(&a, "reading review state…", false));
+        assert!(a.footer.is_none(), "the footer spinner shows the read");
         assert!(a.update(key(KeyCode::Char('R'))).is_empty());
         let effects = a.update(Event::Reviews(Ok(RefreshAll {
             features: 2,
@@ -1977,6 +1987,31 @@ mod tests {
         assert_eq!(
             a.update(key(KeyCode::Char('R'))),
             vec![Effect::RefreshReviews]
+        );
+    }
+
+    #[test]
+    fn a_finished_shift_r_supersedes_an_in_flight_plain_request() {
+        let mut a = app();
+        assert_eq!(
+            a.request_selected(),
+            vec![Effect::Request {
+                row: RowId::Base,
+                r#gen: 1
+            }]
+        );
+        a.update(key(KeyCode::Char('R')));
+        a.update(Event::Reviews(Ok(RefreshAll {
+            features: 1,
+            warnings: vec![],
+        })));
+        let list = Event::List(Ok(vec![summary("alpha", FeatureStatus::Open)]));
+        assert_eq!(
+            a.update(list),
+            vec![Effect::Request {
+                row: RowId::Base,
+                r#gen: 2
+            }]
         );
     }
 

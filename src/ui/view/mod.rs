@@ -158,6 +158,13 @@ fn render_footer(app: &App, frame: &mut Frame, area: Rect) {
                 ),
                 Style::new().add_modifier(Modifier::DIM),
             ),
+            None if app.reviews_in_flight => Line::styled(
+                format!(
+                    " reading review state… {}",
+                    SPINNER[app.spinner % SPINNER.len()]
+                ),
+                Style::new().add_modifier(Modifier::DIM),
+            ),
             None => match &app.screen {
                 Screen::Dashboard => legend_line(LEGEND),
                 Screen::Feature { .. }
@@ -502,6 +509,18 @@ mod tests {
             out.last().unwrap().contains("running: finish suspense…"),
             "{}",
             out.last().unwrap()
+        );
+    }
+
+    #[test]
+    fn footer_shows_a_running_review_read_with_a_spinner() {
+        let mut a = app();
+        a.reviews_in_flight = true;
+        let out = lines(100, 30, &a);
+        let footer = out.last().unwrap();
+        assert!(
+            footer.contains(&format!("reading review state… {}", SPINNER[0])),
+            "{footer}"
         );
     }
 
@@ -1315,6 +1334,17 @@ mod tests {
         assert!(at("ROLE") < at("REVIEW"), "{text}");
         assert_eq!(at("REVIEW"), at("ROLE") + 3, "one blank row: {text}");
         assert_eq!(find_style(100, 30, &a, "failed").fg, Some(Color::Red));
+    }
+
+    #[test]
+    fn the_preview_keeps_the_whole_request_number_at_80_columns() {
+        let mut r = review_row(true);
+        let url = MR.replace("412", "12345");
+        r.review_url = Some(url.clone());
+        r.review.as_mut().unwrap().url = url;
+        let a = preview(FeatureStatus::Open, vec![r]);
+        let text = joined(&lines(80, 30, &a));
+        assert!(text.contains("!12345"), "{text}");
     }
 
     #[test]

@@ -224,7 +224,14 @@ pub(super) fn review_table(rows: &[&StatusRow]) -> Option<(Table<'static>, u16)>
     let widths: Vec<Constraint> = (0..REVIEW_HEADERS.len())
         .map(|i| {
             let widest = cells.iter().map(|c| c[i].0.chars().count()).max();
-            Constraint::Length(widest.unwrap_or(0).max(REVIEW_HEADERS[i].len()) as u16)
+            let widest = widest.unwrap_or(0).max(REVIEW_HEADERS[i].len()) as u16;
+            // The other columns give first: a clipped role or request
+            // number would read as another, valid one.
+            if i < 2 {
+                Constraint::Length(widest)
+            } else {
+                Constraint::Max(widest)
+            }
         })
         .collect();
     let header = TableRow::new(REVIEW_HEADERS).style(Style::new().add_modifier(Modifier::BOLD));
