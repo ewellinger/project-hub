@@ -794,6 +794,38 @@ mod tests {
     }
 
     #[test]
+    fn a_dropped_row_is_dim_and_absent_from_the_list_panes_role_lines() {
+        let mut a = app();
+        deliver(
+            &mut a,
+            RowId::Base,
+            Report::Base(BaseStatusReport {
+                hub: "acme".into(),
+                rows: vec![
+                    row("hub", "main", "-", false, None),
+                    row("ui", "feature/y", "dropped", false, None),
+                ],
+                warnings: vec![],
+                drift: false,
+            }),
+        );
+        let dropped_style = find_style(100, 30, &a, "dropped");
+        assert!(
+            dropped_style.add_modifier.contains(Modifier::DIM),
+            "dropped row is dim: {dropped_style:?}"
+        );
+        let mut s = summary("suspense", FeatureStatus::Open);
+        s.roles.push(RoleSummary {
+            role: "bff".into(),
+            branch: "z".into(),
+            stage: Stage::Dropped,
+            review: None,
+        });
+        let text = joined(&lines(100, 30, &App::new("acme", vec![s])));
+        assert!(!text.contains("bff"), "dropped role listed: {text}");
+    }
+
+    #[test]
     fn status_table_shortens_paths_under_home() {
         let rows = [row("api", "feature/x", "working", false, None)];
         let rows: Vec<&StatusRow> = rows.iter().collect();

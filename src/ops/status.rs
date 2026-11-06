@@ -239,6 +239,11 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
 /// fetches the hub's own origin too when it has one. A failed fetch
 /// (offline, moved remote) is a warning, and both then use whatever was
 /// fetched last.
+/// Whether a row's stage names a change that is over: merged or dropped.
+pub fn closed(stage: &str) -> bool {
+    matches!(stage, "merged" | "dropped")
+}
+
 pub fn status(hub: &Hub, feature: &Feature) -> Result<StatusReport> {
     let mut warnings = Vec::new();
     let groups = group_changes_by_clone(&feature.changes);
@@ -581,7 +586,7 @@ fn render_table_with_home(
     let (closed, open): (Vec<&StatusRow>, Vec<&StatusRow>) = report
         .rows
         .iter()
-        .partition(|r| report.status == FeatureStatus::Finished || r.stage == "merged");
+        .partition(|r| report.status == FeatureStatus::Finished || closed(&r.stage));
     if !open.is_empty() {
         lines.extend(open_table(&open, home));
         lines.extend(section_lines(&open, now_secs()));

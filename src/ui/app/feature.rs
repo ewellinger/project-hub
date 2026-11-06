@@ -2,14 +2,14 @@
 
 use crossterm::event::{KeyCode, KeyEvent};
 use hub::feature::{Change, Feature};
-use hub::ops::status::{StatusReport, StatusRow};
+use hub::ops::status::{StatusReport, StatusRow, closed};
 
 use super::flow::AddRole;
 use super::overlay::{FEATURE_HELP, Overlay};
 use super::{Action, App, Effect, Flow, RowId, Screen, Selected};
 
 /// Row indices of a feature report in display order: the hub row (row 0),
-/// then changes whose stage is not `merged`, then merged ones, each group in
+/// then open changes, then closed (merged or dropped) ones, each group in
 /// record order. Pure; both views and the cursor use it, so the
 /// table and the keys always agree on which change a row is.
 pub fn display_order(rows: &[StatusRow]) -> Vec<usize> {
@@ -17,8 +17,8 @@ pub fn display_order(rows: &[StatusRow]) -> Vec<usize> {
     if !rows.is_empty() {
         order.push(0);
     }
-    order.extend((1..rows.len()).filter(|&i| rows[i].stage != "merged"));
-    order.extend((1..rows.len()).filter(|&i| rows[i].stage == "merged"));
+    order.extend((1..rows.len()).filter(|&i| !closed(&rows[i].stage)));
+    order.extend((1..rows.len()).filter(|&i| closed(&rows[i].stage)));
     order
 }
 
@@ -323,6 +323,7 @@ pub(crate) mod tests {
             stage,
             review_url: None,
             merged_at: None,
+            dropped_at: None,
             origin_seen: false,
             base: Some("main".into()),
             base_sha: None,
@@ -964,6 +965,17 @@ pub(crate) mod tests {
         assert_eq!(display_order(&rows), vec![0, 2, 4, 1, 3]);
         assert_eq!(display_order(&rows[..1]), vec![0]);
         assert_eq!(display_order(&[]), Vec::<usize>::new());
+    }
+
+    #[test]
+    fn display_order_puts_dropped_changes_with_the_merged_ones() {
+        let rows = vec![
+            status_row("hub", "suspense", "-"),
+            status_row("api", "old-api", "dropped"),
+            status_row("ui", "feature/y", "working"),
+            status_row("bff", "old-bff", "merged"),
+        ];
+        assert_eq!(display_order(&rows), vec![0, 2, 1, 3]);
     }
 
     #[test]
