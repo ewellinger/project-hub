@@ -421,6 +421,8 @@ mod tests {
             threads: Some(2),
             threads_more: false,
             conflicts: Some(false),
+            head: None,
+            comments: None,
         }
     }
 
@@ -433,6 +435,8 @@ mod tests {
             threads: Some(0),
             threads_more: false,
             conflicts: Some(false),
+            head: None,
+            comments: None,
         };
         let merged = Fields {
             status: Some(RequestStatus::Merged),

@@ -44,6 +44,19 @@ pub struct Fields {
     #[serde(default)]
     pub threads_more: bool,
     pub conflicts: Option<bool>,
+    /// Head commit of the request, 40 lowercase hex.
+    #[serde(default)]
+    pub head: Option<String>,
+    /// A count that rises with every comment or reply on the request.
+    #[serde(default)]
+    pub comments: Option<u64>,
+}
+
+/// `Some` only for a 40-hex sha, lowercased.
+fn head_sha(value: &Value) -> Option<String> {
+    let sha = value.as_str()?;
+    (sha.len() == 40 && sha.chars().all(|c| c.is_ascii_hexdigit()))
+        .then(|| sha.to_ascii_lowercase())
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -107,6 +120,14 @@ pub fn parse_gitlab_state(mr: &Value, approvals: &Value, discussions: &Value) ->
         Some("unchecked" | "checking") => None,
         _ => mr["has_conflicts"].as_bool(),
     };
+    // shortcut: counts notes in the first 100 discussions only; page when threads_more bites.
+    let comments = discussions.as_array().map(|list| {
+        list.iter()
+            .filter_map(|d| d["notes"].as_array())
+            .flatten()
+            .filter(|n| n["system"] != true)
+            .count() as u64
+    });
     Fields {
         status,
         approved,
@@ -115,6 +136,8 @@ pub fn parse_gitlab_state(mr: &Value, approvals: &Value, discussions: &Value) ->
         // The read asks for 100 per page; a full page may not be all of them.
         threads_more: discussions.as_array().is_some_and(|l| l.len() == 100),
         conflicts,
+        head: head_sha(&mr["sha"]),
+        comments,
     }
 }
 
@@ -170,6 +193,14 @@ pub fn parse_github_state(pull_request: &Value) -> Fields {
         Some("MERGEABLE") => Some(false),
         _ => None,
     };
+    // Every review-thread reply is wrapped in a review, so the two totals cover all comments.
+    let comments = match (
+        pr["comments"]["totalCount"].as_u64(),
+        pr["reviews"]["totalCount"].as_u64(),
+    ) {
+        (Some(a), Some(b)) => Some(a + b),
+        _ => None,
+    };
     Fields {
         status,
         approved,
@@ -177,10 +208,12 @@ pub fn parse_github_state(pull_request: &Value) -> Fields {
         threads,
         threads_more,
         conflicts,
+        head: head_sha(&pr["headRefOid"]),
+        comments,
     }
 }
 
-const GITHUB_QUERY: &str = "query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){state isDraft mergeable reviewDecision latestOpinionatedReviews(first:20){nodes{state}} reviewThreads(first:100){totalCount nodes{isResolved}} commits(last:1){nodes{commit{statusCheckRollup{state}}}}}}}";
+const GITHUB_QUERY: &str = "query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){state isDraft mergeable reviewDecision headRefOid comments{totalCount} reviews{totalCount} latestOpinionatedReviews(first:20){nodes{state}} reviewThreads(first:100){totalCount nodes{isResolved}} commits(last:1){nodes{commit{statusCheckRollup{state}}}}}}}";
 
 /// Read the review's state from its forge. On GitLab only the merge request
 /// itself must answer; approvals and discussions that fail become unknown.
@@ -243,7 +276,9 @@ mod tests {
                 pipeline: Some(Pipeline::Failed),
                 threads: Some(1),
                 threads_more: false,
-                conflicts: Some(true)
+                conflicts: Some(true),
+                head: None,
+                comments: Some(3),
             }
         );
     }
@@ -372,7 +407,9 @@ mod tests {
                 pipeline: Some(Pipeline::Passed),
                 threads: Some(1),
                 threads_more: false,
-                conflicts: Some(false)
+                conflicts: Some(false),
+                head: None,
+                comments: None,
             }
         );
     }
@@ -448,7 +485,9 @@ mod tests {
                 pipeline: Some(Pipeline::Passed),
                 threads: Some(0),
                 threads_more: false,
-                conflicts: Some(false)
+                conflicts: Some(false),
+                head: None,
+                comments: None,
             }
         );
         let merged = json!({"state":"MERGED","isDraft":false,"mergeable":"UNKNOWN","reviewDecision":null,
@@ -462,7 +501,9 @@ mod tests {
                 pipeline: Some(Pipeline::Passed),
                 threads: Some(0),
                 threads_more: false,
-                conflicts: None
+                conflicts: None,
+                head: None,
+                comments: None,
             }
         );
     }
@@ -482,7 +523,9 @@ mod tests {
                 pipeline: Some(Pipeline::Running),
                 threads: None,
                 threads_more: false,
-                conflicts: Some(false)
+                conflicts: Some(false),
+                head: None,
+                comments: None,
             }
         );
         // A self-hosted instance with no approval requirement sends nulls for the counts.
@@ -514,6 +557,8 @@ mod tests {
                 threads: Some(1),
                 threads_more: false,
                 conflicts: Some(true),
+                head: Some("0123456789abcdef0123456789abcdef01234567".into()),
+                comments: Some(1),
             },
         };
         let value = serde_json::to_value(&state).unwrap();
@@ -521,7 +566,8 @@ mod tests {
             value,
             json!({"url":"https://gitlab.com/g/p/-/merge_requests/1","read_at":1_762_300_800u64,
                 "status":"open","approved":"no","pipeline":"failed","threads":1,
-                "threads_more":false,"conflicts":true})
+                "threads_more":false,"conflicts":true,
+                "head":"0123456789abcdef0123456789abcdef01234567","comments":1})
         );
         assert_eq!(serde_json::from_value::<ReviewState>(value).unwrap(), state);
         // `threads_more` is optional on read; `pipeline: "none"` is not unknown.
@@ -530,5 +576,38 @@ mod tests {
         .unwrap();
         assert_eq!(read.fields.pipeline, Some(Pipeline::None));
         assert!(!read.fields.threads_more);
+        assert_eq!((read.fields.head, read.fields.comments), (None, None));
+    }
+
+    #[test]
+    fn gitlab_head_and_comments_come_from_the_mr_and_its_notes() {
+        let mr = json!({"state":"opened","sha":"0123456789ABCDEF0123456789abcdef01234567"});
+        let discussions = json!([
+            {"notes":[{"system":false,"resolvable":true,"resolved":false},{"system":false}]},
+            {"notes":[{"system":true}]},
+            {"notes":[{"resolvable":false}]}]);
+        let f = parse_gitlab_state(&mr, &Value::Null, &discussions);
+        assert_eq!(
+            f.head.as_deref(),
+            Some("0123456789abcdef0123456789abcdef01234567")
+        );
+        // Two in the first discussion, one in the third; the system note is excluded.
+        assert_eq!(f.comments, Some(3));
+        let f = parse_gitlab_state(&json!({"sha":"short"}), &Value::Null, &Value::Null);
+        assert_eq!((f.head, f.comments), (None, None));
+    }
+
+    #[test]
+    fn github_head_and_comments_come_from_head_ref_oid_and_the_two_totals() {
+        let pr = json!({"state":"OPEN","headRefOid":"89abcdef0123456789abcdef0123456789abcdef",
+            "comments":{"totalCount":2},"reviews":{"totalCount":3}});
+        let f = parse_github_state(&pr);
+        assert_eq!(
+            f.head.as_deref(),
+            Some("89abcdef0123456789abcdef0123456789abcdef")
+        );
+        assert_eq!(f.comments, Some(5));
+        let f = parse_github_state(&json!({"comments":{"totalCount":2}}));
+        assert_eq!((f.head, f.comments), (None, None), "both totals or neither");
     }
 }
