@@ -26,15 +26,14 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
     let mut doomed: Vec<(PathBuf, String, String)> = Vec::new();
     // Follow-up changes share a clone; fetch it once.
     let mut fetched: HashSet<&str> = HashSet::new();
+    // A branch reopened by `feature add --branch` has several records.
+    let mut seen: HashSet<(&str, &str)> = HashSet::new();
 
     for change in &feature.changes {
-        let dir = hub.env.clone_path(&change.clone);
-        if doomed
-            .iter()
-            .any(|(d, _, b)| *d == dir && *b == change.branch)
-        {
+        if !seen.insert((change.clone.as_str(), change.branch.as_str())) {
             continue;
         }
+        let dir = hub.env.clone_path(&change.clone);
         let git = Git::new(&dir);
         if fetched.insert(change.clone.as_str()) {
             fetch(&git, &dir, &mut lines);
@@ -56,7 +55,13 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
             }
             None => false,
         };
-        if change.stage.is_open() && !contained {
+        // Any record of the branch can hold it open: `feature add --branch`
+        // can reopen a dropped or merged branch, and later records are skipped.
+        let open = feature
+            .changes
+            .iter()
+            .any(|c| c.clone == change.clone && c.branch == *branch && c.is_open());
+        if open && !contained {
             refusals.push(format!(
                 "{label} is not merged; run hub feature merged or hub feature dropped, or delete the branch in {}",
                 dir.display()

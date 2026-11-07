@@ -212,3 +212,48 @@ fn remove_fetches_each_clone_once() {
     assert!(!branch_exists(&fx, &api, "feat-1-2"));
     assert!(!record_path(&hub).exists());
 }
+
+#[test]
+fn remove_refuses_an_open_change_on_a_branch_that_was_dropped_earlier() {
+    let (fx, hub) = world();
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "add",
+            "api",
+            "--branch",
+            "feat-1",
+            "--feature",
+            "feat-1",
+        ],
+    )
+    .assert()
+    .success();
+    fx.commit_file(
+        &fx.worktree_dir.join("api-clone").join("feat-1"),
+        "more.txt",
+        "work after the revival",
+    );
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
+    fx.hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("api: feat-1 is not merged").count(1));
+    assert!(branch_exists(
+        &fx,
+        &fx.project_home.join("api-clone"),
+        "feat-1"
+    ));
+}

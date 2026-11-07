@@ -569,7 +569,7 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
                 if open_row(record, report, &change.role).is_some_and(|r| r.dirty) {
                     lines.push((
                         format!(
-                            "! {} is dirty; m or d will refuse without force",
+                            "! {} is dirty; F discards its uncommitted changes",
                             change.role
                         ),
                         Tone::Warn,
@@ -1840,6 +1840,39 @@ mod tests {
         );
         assert!(
             lines.contains(&("! adopted worktree will be removed".to_string(), Tone::Warn)),
+            "{lines:?}"
+        );
+    }
+
+    #[test]
+    fn finish_warns_that_force_discards_a_dirty_open_role() {
+        let mut app = on_feature();
+        let Report::Feature {
+            feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        report.rows[1].dirty = true;
+        app.cache.insert(
+            RowId::Feature("suspense".into()),
+            Cached {
+                report: Report::Feature { feature, report },
+                at: std::time::Instant::now(),
+            },
+        );
+        let mut flow = Flow::Finish {
+            feature: "suspense".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        assert!(
+            lines.contains(&(
+                "! api is dirty; F discards its uncommitted changes".to_string(),
+                Tone::Warn
+            )),
             "{lines:?}"
         );
     }
