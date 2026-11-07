@@ -192,9 +192,12 @@ fn set_base_rejects_bad_input_without_changing_state() {
     .stderr(predicate::str::contains("no open change"));
 
     // A finished feature.
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     fx.hub(
         &hub,
         &[

@@ -18,10 +18,10 @@ sources:
     resource: repo://src/ops/status.rs
   - id: openwiki-source-ca06566e1b7ac17d65e3380f
     resource: repo://tests/list_status.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Status, list, and pull
@@ -88,7 +88,7 @@ and shows `frozen @<short>` only when nothing is missing. See
 unregistered, on the wrong branch, or whose clone is missing; for the hub row,
 an open feature whose hub worktree is missing/unregistered/off-branch; for a
 frozen reference row in an open feature, a reference worktree that is missing,
-unregistered, or off its pin. Merged
+unregistered, or off its pin. Merged and dropped
 changes and finished features cannot drift. Dirtiness and base lag are
 operational state and never drift. If any row drifts, `main.rs` prints the
 output and exits **30**.
@@ -105,8 +105,8 @@ See [Features, changes, stages, and bases](../concepts/features-changes-and-stag
 read from the forge. A request the forge reports as merged sets the row's hint
 to `merged on GitLab|GitHub; run hub feature merged ROLE` (this also catches
 squash merges, which leave no ancestry for the git hint to find), and one
-closed without merging sets `closed on GitLab|GitHub without merging`. Either
-replaces the git hint above for that row.
+closed without merging sets `closed on GitLab|GitHub without merging; run hub
+feature dropped ROLE`. Either replaces the git hint above for that row.
 
 **Fetching**: each clone with an open change is fetched once with
 `git fetch --prune origin`, and the hub's origin is fetched too. Changes are
@@ -126,7 +126,7 @@ drift. All repos and the hub are fetched concurrently.
 
 The human table (`render_table`) prints a header (feature, status, tmux session
 only when tmux is on), the open rows, then a separate **`Completed`** table
-(role, branch, stage) for merged rows — or every row of a finished feature —
+(role, branch, stage) for merged and dropped rows (`status::closed`) — or every row of a finished feature —
 since their worktrees are gone by design. A `BASE` column appears only when
 some change has a custom base; nonzero lag shows as `behind base <branch> by
 <n>` in yellow, which on the hub row reads `behind base main by <n>`. A
@@ -152,7 +152,8 @@ open features first, then finished, each by name. `roles` holds the
 **latest** change per role in manifest order, with roles since removed from
 `hub.json` appended. `frozen` lists the feature's frozen reference roles
 (`{role, sha}`, from pins with a worktree) in record order; a pinned open
-change stays in `roles` only. The table shows them as `ROLE:frozen` after the
+change stays in `roles` only. A role whose latest change was dropped reads
+`api:dropped`, with no review word, and `stage` is `dropped` in the JSON. The table shows frozen roles as `ROLE:frozen` after the
 members, and `--json` always includes `frozen`, empty or not. Without `--all`, finished features are hidden (with a note when that
 leaves nothing). It reads records and the remembered review state only — no
 git calls and no forge calls.

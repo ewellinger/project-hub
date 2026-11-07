@@ -87,6 +87,11 @@ pub enum Action {
         role: String,
         force: bool,
     },
+    Dropped {
+        feature: String,
+        role: String,
+        force: bool,
+    },
     /// `feature freeze ROLE` at the local base tip; the dashboard never passes `--at`.
     Freeze {
         feature: String,
@@ -124,6 +129,7 @@ impl Action {
             | Action::Viewed { feature, .. }
             | Action::SetBase { feature, .. }
             | Action::Merged { feature, .. }
+            | Action::Dropped { feature, .. }
             | Action::Freeze { feature, .. }
             | Action::Unfreeze { feature, .. }
             | Action::Refreeze { feature, .. }
@@ -145,6 +151,7 @@ impl fmt::Display for Action {
             Action::Viewed { role, .. } => write!(f, "viewed {role}"),
             Action::SetBase { role, .. } => write!(f, "set-base {role}"),
             Action::Merged { role, .. } => write!(f, "merged {role}"),
+            Action::Dropped { role, .. } => write!(f, "dropped {role}"),
             Action::Freeze { role, .. } => write!(f, "freeze {role}"),
             Action::Unfreeze { role, .. } => write!(f, "unfreeze {role}"),
             Action::Refreeze { role, .. } => write!(f, "refreeze {role}"),
@@ -1016,6 +1023,15 @@ mod tests {
             }
             .to_string(),
             "merged api"
+        );
+        assert_eq!(
+            Action::Dropped {
+                feature: "x".into(),
+                role: "api".into(),
+                force: false
+            }
+            .to_string(),
+            "dropped api"
         );
         assert_eq!(
             Action::Finish {

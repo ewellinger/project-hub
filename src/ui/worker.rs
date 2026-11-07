@@ -172,6 +172,14 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                     let mut f = hub.load_feature(feature)?;
                     ops::merged::merged(hub, &mut f, role, *force, &mut |_| true)
                 }
+                Action::Dropped {
+                    feature,
+                    role,
+                    force,
+                } => {
+                    let mut f = hub.load_feature(feature)?;
+                    ops::merged::dropped(hub, &mut f, role, *force, &mut |_| true)
+                }
                 Action::Freeze { feature, role } => {
                     let mut f = hub.load_feature(feature)?;
                     ops::freeze::freeze(hub, &mut f, role, None)
@@ -190,7 +198,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                 }
                 Action::Finish { feature, force } => {
                     let mut f = hub.load_feature(feature)?;
-                    ops::finish::finish(hub, &mut f, *force, &mut |_| true)
+                    ops::finish::finish(hub, &mut f, *force)
                 }
                 Action::Remove { feature } => ops::remove::remove(hub, &hub.load_feature(feature)?),
                 Action::Pull { row: RowId::Base } => ops::pull::pull_base(hub),

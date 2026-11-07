@@ -286,16 +286,27 @@ enum FeatureCommand {
         #[arg(long)]
         force: bool,
     },
+    /// Close a role's change as abandoned: remove its worktree, keep the branch
+    Dropped {
+        /// Role whose change was abandoned
+        role: String,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
+        /// Remove even if dirty or adopted
+        #[arg(long)]
+        force: bool,
+    },
     /// Remove the feature's worktrees and tmux session; keeps every branch
     Finish {
         /// Feature name; inferred from the hub worktree when omitted
         #[arg(long)]
         feature: Option<String>,
-        /// Remove dirty, adopted, and off-pin frozen worktrees without asking (discards commits on a frozen worktree's detached HEAD)
+        /// Finish while roles are still open, and remove dirty, adopted, and off-pin frozen worktrees without asking (discards commits on a frozen worktree's detached HEAD)
         #[arg(long)]
         force: bool,
     },
-    /// Delete a finished feature's merged branches and its record, freeing the name
+    /// Delete a finished feature's merged or dropped branches and its record, freeing the name
     Remove {
         /// Feature name
         name: String,
@@ -592,9 +603,17 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::merged::merged(hub, &mut f, &role, force, &mut confirm_removal)
                 }),
+                FeatureCommand::Dropped {
+                    role,
+                    feature,
+                    force,
+                } => hub.with_lock(|hub| {
+                    let mut f = hub.resolve_feature(feature.as_deref())?;
+                    ops::merged::dropped(hub, &mut f, &role, force, &mut confirm_removal)
+                }),
                 FeatureCommand::Finish { feature, force } => hub.with_lock(|hub| {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
-                    ops::finish::finish(hub, &mut f, force, &mut confirm_removal)
+                    ops::finish::finish(hub, &mut f, force)
                 }),
                 FeatureCommand::Remove { name } => {
                     hub.with_lock(|hub| ops::remove::remove(hub, &hub.load_feature(&name)?))

@@ -14,10 +14,10 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-1da066772d42f80cecf3225c
     resource: repo://src/ops/review_state.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Architecture overview
@@ -79,7 +79,7 @@ error prints `Error: <message>` to stderr and exits with `err.exit_code()`.
   on the report, which is the only place the CLI's status reaches the forge;
   `ops::status::status` itself never does (see
   [Review state from the forge](../workflows/review-state.md)).
-- `merged` and `finish` receive a `confirm_removal` callback that asks on a
+- `merged` and `dropped` receive a `confirm_removal` callback that asks on a
   terminal before removing a worktree the hub did not create and answers "no"
   when stdin is not a terminal.
 

@@ -446,7 +446,10 @@ fn a_closed_request_replaces_gits_gone_from_origin_hint() {
     ui_reviewed_and_gone_from_origin(&fx, &hub, json!({"state": "CLOSED"}));
     let out = status(&fx, &hub, &[]);
 
-    assert!(out.contains("closed on GitHub without merging"), "{out}");
+    assert!(
+        out.contains("closed on GitHub without merging; run hub feature dropped ui"),
+        "{out}"
+    );
     assert!(!out.contains("gone from origin"), "{out}");
 }
 
@@ -580,9 +583,12 @@ fn a_finished_feature_shows_no_word() {
         stdout(&refresh(&fx, &hub)).contains("api:review(ci failed)"),
         "a word is remembered"
     );
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
 
     let out = stdout(
         &fx.hub(&hub, &["feature", "list", "--all"])

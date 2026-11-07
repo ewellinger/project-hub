@@ -2,14 +2,14 @@
 
 use crossterm::event::{KeyCode, KeyEvent};
 use hub::feature::{Change, Feature, Stage};
-use hub::ops::status::{StatusReport, StatusRow};
+use hub::ops::status::{StatusReport, StatusRow, closed};
 
 use super::flow::AddRole;
 use super::overlay::{FEATURE_HELP, Overlay};
 use super::{Action, App, Effect, Flow, RowId, Screen, Selected};
 
 /// Row indices of a feature report in display order: the hub row (row 0),
-/// then changes whose stage is not `merged`, then merged ones, each group in
+/// then open changes, then closed (merged or dropped) ones, each group in
 /// record order. Pure; both views and the cursor use it, so the
 /// table and the keys always agree on which change a row is.
 pub fn display_order(rows: &[StatusRow]) -> Vec<usize> {
@@ -17,8 +17,8 @@ pub fn display_order(rows: &[StatusRow]) -> Vec<usize> {
     if !rows.is_empty() {
         order.push(0);
     }
-    order.extend((1..rows.len()).filter(|&i| rows[i].stage != "merged"));
-    order.extend((1..rows.len()).filter(|&i| rows[i].stage == "merged"));
+    order.extend((1..rows.len()).filter(|&i| !closed(&rows[i].stage)));
+    order.extend((1..rows.len()).filter(|&i| closed(&rows[i].stage)));
     order
 }
 
@@ -142,6 +142,10 @@ impl App {
             },
             KeyCode::Char('m') => match self.role_action() {
                 Some((feature, role)) => self.start_flow(Flow::Merged { feature, role }),
+                None => Vec::new(),
+            },
+            KeyCode::Char('d') => match self.role_action() {
+                Some((feature, role)) => self.start_flow(Flow::Dropped { feature, role }),
                 None => Vec::new(),
             },
             KeyCode::Char('f') => {
@@ -339,6 +343,7 @@ pub(crate) mod tests {
             stage,
             review_url: None,
             merged_at: None,
+            dropped_at: None,
             origin_seen: false,
             base: Some("main".into()),
             base_sha: None,
@@ -805,11 +810,14 @@ pub(crate) mod tests {
     fn role_actions_are_refused_on_a_merged_role_while_busy_and_without_a_report() {
         let mut a = on_feature();
         a.update(key(KeyCode::Char('j'))); // ui, merged
-        assert!(a.update(key(KeyCode::Char('v'))).is_empty());
-        assert!(a.footer.as_ref().is_some_and(
-            |f| f.is_error && f.text == "no open change for role 'ui' in feature 'suspense'"
-        ));
-        assert!(a.overlay.is_none());
+        for c in ['v', 'd'] {
+            assert!(a.update(key(KeyCode::Char(c))).is_empty());
+            assert!(
+                a.footer.as_ref().is_some_and(|f| f.is_error
+                    && f.text == "no open change for role 'ui' in feature 'suspense'")
+            );
+            assert!(a.overlay.is_none());
+        }
         a.update(key(KeyCode::Char('k')));
         a.running = Some(Action::Finish {
             feature: "suspense".into(),
@@ -829,6 +837,13 @@ pub(crate) mod tests {
                 .as_ref()
                 .is_some_and(|f| f.text == "status not loaded yet; press r")
         );
+    }
+
+    #[test]
+    fn d_starts_the_dropped_flow() {
+        let mut a = on_feature();
+        a.update(key(KeyCode::Char('d')));
+        assert!(matches!(a.flow, Some(Flow::Dropped { .. })), "{:?}", a.flow);
     }
 
     #[test]
@@ -1021,6 +1036,17 @@ pub(crate) mod tests {
         assert_eq!(display_order(&rows), vec![0, 2, 4, 1, 3]);
         assert_eq!(display_order(&rows[..1]), vec![0]);
         assert_eq!(display_order(&[]), Vec::<usize>::new());
+    }
+
+    #[test]
+    fn display_order_puts_dropped_changes_with_the_merged_ones() {
+        let rows = vec![
+            status_row("hub", "suspense", "-"),
+            status_row("api", "old-api", "dropped"),
+            status_row("ui", "feature/y", "working"),
+            status_row("bff", "old-bff", "merged"),
+        ];
+        assert_eq!(display_order(&rows), vec![0, 2, 1, 3]);
     }
 
     #[test]

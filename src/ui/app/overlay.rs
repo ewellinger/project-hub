@@ -100,6 +100,10 @@ pub const FEATURE_HELP: &[(&str, &str)] = &[
         "mark the review viewed; flag it when the other side pushes or replies",
     ),
     ("m", "mark the role merged and remove its worktree"),
+    (
+        "d",
+        "mark the role dropped (abandoned) and remove its worktree",
+    ),
     ("b", "set the branch the role merges into"),
     ("+", "add a role"),
     (

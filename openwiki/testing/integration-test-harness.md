@@ -20,10 +20,10 @@ sources:
     resource: repo://tests/remove.rs
   - id: openwiki-source-3ea48b9bb97138d656617af0
     resource: repo://tests/review_state.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Testing and the integration harness
@@ -115,9 +115,9 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/suggest.rs` | branch suggestions for prompts/pickers |
 | `tests/start_review.rs` | `feature start-review` |
 | `tests/set_base.rs` | `feature set-base` |
-| `tests/review_merged.rs` | `feature review`, `feature merged` |
-| `tests/finish.rs` | `feature finish` |
-| `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, and a hub branch with commits, all without partial deletion |
+| `tests/review_merged.rs` | `feature review`, `feature merged`, `feature dropped`, and both closing a role on a finished feature in the record only |
+| `tests/finish.rs` | `feature finish`, including its refusal while a role is open and `--force` leaving stages as they were |
+| `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, a branch reopened after being dropped, and a hub branch with commits, all without partial deletion; deleting dropped branches and printing each deleted tip |
 | `tests/list_status.rs` | `feature list`, `status` |
 | `tests/review_state.rs` | review state from the forge: the reviews store (changed URL, corrupt file, failed read, missing program, `feature remove`), the `status` review section, hints and JSON, `feature list` words and `--refresh`, and that `status --base` and `start-review`'s drift check never read review state |
 | `tests/pull.rs` | `hub pull` |
