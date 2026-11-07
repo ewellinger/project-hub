@@ -4,8 +4,7 @@
 use crate::error::{HubError, Result};
 use crate::feature::{Feature, short_sha};
 use crate::hub::Hub;
-use crate::manifest::write_json;
-use crate::ops::review_state::{now_secs, refresh, targets};
+use crate::ops::review_state::{now_secs, refresh, store, targets};
 use crate::review::Provider;
 use crate::review_state::Viewed;
 
@@ -43,7 +42,7 @@ pub fn viewed(hub: &Hub, feature: &Feature, role: &str) -> Result<Vec<String>> {
         head: head.clone(),
         comments,
     });
-    write_json(&hub.reviews_path(&feature.name), &states)?;
+    store(hub, feature, &mut states, Some(role))?;
     let request = match target.url.provider {
         Provider::GitLab => format!("!{}", target.url.number),
         Provider::GitHub => format!("#{}", target.url.number),

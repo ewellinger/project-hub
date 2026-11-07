@@ -283,6 +283,7 @@ fn feature_remove_deletes_the_reviews_file() {
         .success();
 
     assert!(!hub.join(".git/hub/reviews/feat-1.json").exists());
+    assert!(!hub.join(".git/hub/reviews/feat-1.lock").exists());
 }
 
 #[test]
@@ -825,6 +826,78 @@ fn a_mark_set_while_status_reads_the_forge_survives_its_write() {
         });
         // Status has snapshotted the file and is waiting on the forge.
         std::thread::sleep(std::time::Duration::from_millis(1500));
+        seed_mark(
+            &fx,
+            &hub,
+            "feat-1",
+            "api",
+            json!({"at": 1, "head": null, "comments": 0}),
+        );
+    });
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
+}
+
+/// Hold the reviews lock while `status` runs, call `write`, then release.
+/// Status must still be waiting at that point: an unlocked write would have
+/// gone through already, and would overwrite `write` in a slower interleaving.
+fn write_while_status_waits_for_the_lock(
+    fx: &Fixture,
+    hub: &Path,
+    failing_forge: bool,
+    write: impl FnOnce(),
+) {
+    let lock = std::fs::File::create(hub.join(".git/hub/reviews/feat-1.lock")).unwrap();
+    let mut lock = fd_lock::RwLock::new(lock);
+    let guard = lock.write().unwrap();
+    let mut cmd = fx.hub(hub, &["status", "--feature", "feat-1"]);
+    if failing_forge {
+        cmd.env("FAKE_PROVIDER_FAIL", "boom");
+    }
+    let early = std::thread::scope(|scope| {
+        let status = scope.spawn(move || {
+            cmd.assert().success();
+        });
+        std::thread::sleep(std::time::Duration::from_millis(1000));
+        let early = status.is_finished();
+        write();
+        drop(guard);
+        early
+    });
+    assert!(!early, "status wrote without taking the lock");
+}
+
+#[test]
+fn a_mark_written_just_before_status_saves_survives() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]);
+    write_while_status_waits_for_the_lock(&fx, &hub, false, || {
+        seed_mark(
+            &fx,
+            &hub,
+            "feat-1",
+            "api",
+            json!({"at": 1, "head": null, "comments": 0}),
+        );
+    });
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
+}
+
+#[test]
+fn a_mark_on_a_role_this_status_could_not_read_survives() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]);
+    let path = hub.join(".git/hub/reviews/feat-1.json");
+    let saved = std::fs::read_to_string(&path).unwrap();
+    // Status starts with nothing remembered for api, and its forge read fails.
+    std::fs::write(&path, "{}").unwrap();
+    write_while_status_waits_for_the_lock(&fx, &hub, true, || {
+        std::fs::write(&path, &saved).unwrap();
         seed_mark(
             &fx,
             &hub,

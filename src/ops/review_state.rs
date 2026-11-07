@@ -116,23 +116,44 @@ pub fn refresh(hub: &Hub, feature: &Feature) -> (States, Vec<String>) {
             )),
         }
     }
-    // Status runs without the hub lock, so a mark written by `feature viewed`
-    // while the forge was answering must be taken from the file as it is now.
-    let marks = remembered(hub, feature);
-    for (role, state) in states.iter_mut() {
-        state.viewed = marks.get(role).and_then(|m| m.viewed.clone());
-    }
-    let path = hub.reviews_path(&feature.name);
-    let dir = path.parent().expect("reviews path has a parent");
-    let saved = std::fs::create_dir_all(dir)
-        .map_err(|e| HubError::io(format!("creating {}", dir.display()), e))
-        .and_then(|()| write_json(&path, &states));
-    if let Err(err) = saved {
+    if let Err(err) = store(hub, feature, &mut states, None) {
         warnings.push(format!("review state not saved: {err}"));
     }
     warnings.sort();
     warnings.dedup();
     (states, warnings)
+}
+
+/// Merge the marks on disk into `states` and write them, under a short lock:
+/// status runs without the hub lock. `marking` keeps that role's new mark.
+pub fn store(
+    hub: &Hub,
+    feature: &Feature,
+    states: &mut States,
+    marking: Option<&str>,
+) -> Result<()> {
+    let path = hub.reviews_path(&feature.name);
+    let dir = path.parent().expect("reviews path has a parent");
+    std::fs::create_dir_all(dir)
+        .map_err(|e| HubError::io(format!("creating {}", dir.display()), e))?;
+    let lock_path = path.with_extension("lock");
+    let file = std::fs::File::create(&lock_path)
+        .map_err(|e| HubError::io(format!("creating {}", lock_path.display()), e))?;
+    let mut lock = fd_lock::RwLock::new(file);
+    let _guard = lock
+        .write()
+        .map_err(|e| HubError::io(format!("locking {}", lock_path.display()), e))?;
+    let marks = remembered(hub, feature);
+    for (role, state) in states.iter_mut() {
+        if marking != Some(role.as_str()) {
+            state.viewed = marks.get(role).and_then(|m| m.viewed.clone());
+        }
+    }
+    // A role whose forge read failed here may have been written by another run.
+    for (role, state) in marks {
+        states.entry(role).or_insert(state);
+    }
+    write_json(&path, states)
 }
 
 #[derive(Debug)]

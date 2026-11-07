@@ -458,7 +458,6 @@ pub(crate) mod tests {
         Report::Feature { feature, report }
     }
 
-    /// `suspense` with its open `api` change pinned; no reference worktree.
     /// `suspense` with `api` in review at a GitLab URL; its row is stage `review`.
     pub(crate) fn api_in_review() -> Report {
         let Report::Feature {
@@ -476,6 +475,7 @@ pub(crate) mod tests {
         Report::Feature { feature, report }
     }
 
+    /// `suspense` with its open `api` change pinned; no reference worktree.
     pub(crate) fn pinned_api() -> Report {
         let Report::Feature {
             mut feature,
