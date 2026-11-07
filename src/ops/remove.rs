@@ -47,11 +47,12 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
         if !git.local_branch_exists(branch)? {
             continue;
         }
+        // Full ref names: a bare name would resolve to a tag of the same name first.
+        let head = format!("refs/heads/{branch}");
         let contained = match change.effective_base(&hub.manifest) {
             Some(base) => {
                 let base = format!("origin/{base}");
-                git.ref_exists(&format!("refs/remotes/{base}"))?
-                    && git.is_ancestor(branch, &base)?
+                git.ref_exists(&format!("refs/remotes/{base}"))? && git.is_ancestor(&head, &base)?
             }
             None => false,
         };
@@ -81,7 +82,7 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
     if git.remote_branch_exists(branch)? {
         refusals.push(format!("{label} is still on origin; delete it there"));
     } else if git.local_branch_exists(branch)? {
-        if git.is_ancestor(branch, "main")? {
+        if git.is_ancestor(&format!("refs/heads/{branch}"), "main")? {
             refuse_checked_out(&git, branch, &label, &mut refusals)?;
             doomed.push((hub.root.clone(), label, branch.clone()));
         } else {
@@ -98,7 +99,7 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
     }
     for (dir, label, branch) in &doomed {
         let git = Git::new(dir);
-        let tip = git.rev_parse(branch)?;
+        let tip = git.rev_parse(&format!("refs/heads/{branch}"))?;
         git.delete_branch(branch)?;
         lines.push(format!(
             "Deleted branch {label} (was {})",
