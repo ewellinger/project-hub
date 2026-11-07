@@ -591,10 +591,10 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     let mut f = hub.resolve_feature(feature.as_deref())?;
                     ops::review::review(hub, &mut f, &role, url.as_deref())
                 }),
-                FeatureCommand::Viewed { role, feature } => hub.with_lock(|hub| {
-                    let f = hub.resolve_feature(feature.as_deref())?;
-                    ops::viewed::viewed(hub, &f, &role)
-                }),
+                // No hub lock: the forge read must not block other commands.
+                FeatureCommand::Viewed { role, feature } => {
+                    ops::viewed::viewed(&hub, &hub.resolve_feature(feature.as_deref())?, &role)
+                }
                 FeatureCommand::Merged {
                     role,
                     feature,

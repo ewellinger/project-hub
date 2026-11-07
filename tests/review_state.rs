@@ -703,6 +703,28 @@ fn viewed_with_unknown_comments_marks_and_says_so() {
 }
 
 #[test]
+fn viewed_succeeds_while_another_command_holds_the_hub_lock() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    let lock = std::fs::File::create(hub.join(".git/hub/hub.lock")).unwrap();
+    let mut lock = fd_lock::RwLock::new(lock);
+    let _guard = lock.write().unwrap();
+    // The lock really is held: a locking command refuses.
+    fx.hub(&hub, &["feature", "review", "ui", "--feature", "feat-1"])
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains("another hub command is running"));
+
+    viewed(&fx, &hub, "feat-1", "api").success();
+
+    assert_eq!(
+        fx.reviews_json(&hub, "feat-1").unwrap()["api"]["viewed"]["comments"],
+        1
+    );
+}
+
+#[test]
 fn a_changed_url_drops_the_mark() {
     let (fx, hub) = world();
     gitlab_state(&fx, 412, open_mr());
