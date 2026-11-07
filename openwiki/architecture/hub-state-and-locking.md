@@ -4,8 +4,8 @@ title: Hub state, manifest, and locking
 description: How `hub` locates a hub repository, what state is committed (`hub.json`) versus kept per machine (feature records under the git common dir), how the advisory lock serializes mutating commands, and how JSON is written atomically.
 tags: [architecture, state, manifest, locking, persistence]
 verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+  - by: openwiki/0.7.2
+    at: 2026-11-07T20:01:15.981Z
 sources:
   - id: openwiki-source-a9fddfa72ce7af0e031fedf8
     resource: repo://src/hub.rs
@@ -19,7 +19,7 @@ sources:
     resource: repo://src/ops/review_state.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
 ---
 
 # Hub state, manifest, and locking
@@ -31,7 +31,8 @@ hub state lives in two places with very different sharing rules:
 |---|---|---|---|
 | Manifest (`hub.json`): hub name, checkout template, member repos by role | `<hub root>/hub.json` on `main` | Yes, committed | `src/manifest.rs` |
 | Feature records: one JSON file per feature (its changes and, since frozen bases, its `pins`) | `<git common dir>/hub/features/<name>.json` | No, per machine | `src/feature.rs`, `src/hub.rs` |
-| Remembered review state: the last forge answer per role in review | `<git common dir>/hub/reviews/<feature>.json` | No, per machine | `src/ops/review_state.rs` |
+| Remembered review state: the last forge answer per role in review, and any viewed mark | `<git common dir>/hub/reviews/<feature>.json` | No, per machine | `src/ops/review_state.rs` |
+| Reviews file lock | `<git common dir>/hub/reviews/<feature>.lock` | No | `src/ops/review_state.rs` |
 | Lock file | `<git common dir>/hub/hub.lock` | No | `src/hub.rs` |
 
 Because feature records live under the git *common* dir, every hub worktree
@@ -103,15 +104,23 @@ deleted. Since records are not in git, that deletion cannot be undone.
 
 `Hub::reviews_path(feature)` is `<git common dir>/hub/reviews/<feature>.json`:
 a map from role to the last state read from the forge for that role's merge or
-pull request (its recorded URL, `read_at` in Unix seconds, and the fields). It
-is deliberately a separate file from the feature record. `hub status` reads the
-forge and stores the answer, and status takes no lock, so writing the record
-there would race with locked commands that rewrite it. The reviews file is a
-cache: `ops::review_state::refresh` creates the `reviews/` directory on demand
-and writes it with `write_json` **without the hub lock**; a missing or
-unparseable file reads as empty; an entry whose stored URL differs from the
-recorded one is ignored; and a failed write is a warning, never an error.
-`hub feature remove` deletes the file after the record, ignoring failure. See
+pull request (its recorded URL, `read_at` in Unix seconds, the fields), plus the
+`viewed` mark that `hub feature viewed` records. It is deliberately a separate
+file from the feature record. `hub status` reads the forge and stores the
+answer, and status takes no hub lock, so writing the record there would race
+with locked commands that rewrite it.
+
+Every write goes through `ops::review_state::store`, which creates the
+`reviews/` directory on demand and takes a short **blocking** `fd-lock` write
+lock on the sibling `<feature>.lock` file. Under that lock it rereads the file,
+carries each role's `viewed` mark from disk into the new states (except for the
+role being marked), keeps roles whose forge read failed in this run, and writes
+with `write_json`. That way an unlocked `status` refresh that started before a
+`viewed` mark cannot overwrite the mark. A missing or unparseable file reads as
+empty; an entry whose stored URL differs from the recorded one is ignored; a
+failed write during `refresh` is a warning, never an error, while `viewed`
+reports it as an error. `hub feature remove` deletes the lock file and the
+reviews file after the record, ignoring failure. See
 [Review state from the forge](../workflows/review-state.md).
 
 ## Atomic writes
@@ -137,10 +146,11 @@ Every mutating command runs inside `hub.with_lock(|hub| ...)`:
   while it was starting.
 
 The CLI wraps `repo add/set/rename/remove`, `feature start`, `start-review`,
-`add`, `set-base`, `freeze`, `unfreeze`, `refreeze`, `review`, `merged`, `dropped`,
-`finish`, `remove`, and `pull` in the lock
+`add`, `set-base`, `freeze`, `unfreeze`, `refreeze`, `review`, `viewed`, `merged`,
+`dropped`, `finish`, `remove`, and `pull` in the lock
 (`src/main.rs`); read-only commands such as `status` and `list` do not take it
-(they may still write the remembered review state, which needs no lock).
+(they may still write the remembered review state, under the reviews file's
+own lock rather than the hub lock).
 The dashboard runs its actions through the same lock from a worker thread
 (`src/ui/worker.rs`). Interactive prompts run before the lock is taken.
 

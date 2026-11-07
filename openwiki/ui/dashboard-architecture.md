@@ -16,10 +16,10 @@ sources:
     resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
 verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+  - by: openwiki/0.7.2
+    at: 2026-11-07T20:01:15.981Z
 ---
 
 # Dashboard architecture
@@ -74,7 +74,7 @@ feature), `OpenWorkspace`, `Copy`, `ReloadList`, `Run(Action)`,
 `LoadBranches`, `Preflight`. `update` never performs side effects itself.
 
 `Action` is one hub operation with resolved arguments — `Start`, `Add`
-(carrying `from_latest` for a frozen role), `Review`, `SetBase`, `Merged`, `Dropped`,
+(carrying `from_latest` for a frozen role), `Review`, `Viewed`, `SetBase`, `Merged`, `Dropped`,
 `Freeze`, `Unfreeze { force }`, `Refreeze`, `Finish`, `Remove`, `Pull { row }` — and is
 the unit the worker executes. The dashboard never passes `--at`: `Freeze`
 always pins the local base tip.

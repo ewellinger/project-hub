@@ -20,10 +20,10 @@ sources:
     resource: repo://tests/remove.rs
   - id: openwiki-source-3ea48b9bb97138d656617af0
     resource: repo://tests/review_state.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
 verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+  - by: openwiki/0.7.2
+    at: 2026-11-07T20:01:15.981Z
 ---
 
 # Testing and the integration harness
@@ -99,7 +99,9 @@ tests assert on logs and state instead of a live tmux server or network.
   different answer from the second call on, to test "review changed while
   checking". `gh` is a symlink to the `glab` script. `-f`/`-F` fields are
   skipped except `number=N`, so `gh api graphql … -F number=N` answers from
-  the key `graphql/N`. `FAKE_PROVIDER_FAIL` makes every call fail.
+  the key `graphql/N`. `FAKE_PROVIDER_FAIL` makes every call fail, and
+  `FAKE_PROVIDER_SLEEP=<seconds>` delays every answer so a test can race a
+  slow `status` read against another command.
   `Fixture::reviews_json(hub_dir, feature)` reads the remembered review state
   (`.git/hub/reviews/<feature>.json`), `None` when the file is absent.
 
@@ -117,9 +119,9 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/set_base.rs` | `feature set-base` |
 | `tests/review_merged.rs` | `feature review`, `feature merged`, `feature dropped`, and both closing a role on a finished feature in the record only |
 | `tests/finish.rs` | `feature finish`, including its refusal while a role is open and `--force` leaving stages as they were |
-| `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, a branch reopened after being dropped, and a hub branch with commits, all without partial deletion; deleting dropped branches and printing each deleted tip |
+| `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, a branch reopened after being dropped, and a hub branch with commits, all without partial deletion; deleting dropped branches and printing each deleted tip; fetching each clone once; resolving branches as `refs/heads/...` when a tag shares the name |
 | `tests/list_status.rs` | `feature list`, `status` |
-| `tests/review_state.rs` | review state from the forge: the reviews store (changed URL, corrupt file, failed read, missing program, `feature remove`), the `status` review section, hints and JSON, `feature list` words and `--refresh`, and that `status --base` and `start-review`'s drift check never read review state |
+| `tests/review_state.rs` | review state from the forge: the reviews store (changed URL, corrupt file, failed read, missing program, `feature remove`), the `status` review section, hints and JSON, `feature list` words and `--refresh`, and that `status --base` and `start-review`'s drift check never read review state; `feature viewed` (snapshot, refusals, unknown comment counts), `pushed` / `N replies` attention in list and status, and viewed marks surviving a concurrent `status` write under the reviews lock |
 | `tests/pull.rs` | `hub pull` |
 | `tests/tmux_off.rs` | behavior with sessions off |
 | `tests/skill.rs` | generated agent skill and its command table |

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:4eabb1d50307c28b9d59fa982166dc96e84146eefe3e15c842b3fd8c71287f96",
+  "pageVersion": "sha256:8d5a7a85e1cc003e7a013825610bffafd49cf22a4556b7e5ce873c3f8208c751",
   "claims": [
     {
       "id": "claim_fb3efe01b61d443e9b5633c0d4f0d706",
       "statement": "Review state is read only for open changes in stage `review` of an open feature whose recorded review_url parses as a GitLab merge request or GitHub pull request URL; other roles are skipped without a warning.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L26-L45",
+          "resource": "repo://src/ops/review_state.rs#L49-L68",
           "version": "repo-lines-v1:sha256:7267ea47399f0b986e38e644ec3bbd3433cd72338881b5299ec146c844b8d1bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjYjM5YjNhZWU1NTVhOGM5YTU5YmIyYTVkZTE1MDBiNDY0MzZkNGFhMGI0NzhjNTkxZDg5NGNlNDYyZTVlYjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjOWYxMGJhNjFiMjE1NWVmZWUzYzQ4OGY5NjU4M2RmMTRlYWZkMTBlZTliMzkwOTcyZTc4MmFhZjQwYTQ4OTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjMzJlZDAzZGY3M2EyODVmMjdhZmYyYmNkODM5M2Q1ZGMwYzBlMzFmZWRjMzRmOWJkODg5YmNmMzMxODk1NzAifQ"
         }
       ]
@@ -17,22 +17,22 @@
       "statement": "On GitLab the read runs three `glab api` GET calls concurrently (the merge request, its /approvals, and /discussions?per_page=100); only the merge request must answer, and failed approvals or discussions leave their fields unknown.",
       "evidence": [
         {
-          "resource": "repo://src/review_state.rs#L185-L211",
+          "resource": "repo://src/review_state.rs#L229-L255",
           "version": "repo-lines-v1:sha256:2e02d3692cdd8878d8326b709fb90adbebfc78a7d435e10eb5ad998bb4d5e7ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0MWE1ZmUzNDQ5MjkyZGE5MWRiM2ZjNGUwYzNmNjM3YWQwMWNkZTNiZDNhZDQ4NzQ4OTY3YTdhYjEwYTFjNjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxYjljZjg5MmExZDYyYjA4YWJiNmI4YzgwYTJiNWJjYWExY2ZkMDQ4YmRkMzI5MDI5YWZmOGIzZTEyNjkzYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjOGNkNDRjYzM5NjQwZjIxMGEyMzQ1NTViNTRiMDk3ZTBmOGI5ODIzMmE1NDQxNGNlN2Q1Y2JlYWUxMzdjMjQifQ"
         }
       ]
     },
     {
       "id": "claim_450c48ec2cf34c03b079322ed1b143bc",
-      "statement": "On GitHub the read is one `gh api graphql` call with a fixed query covering state, draft, mergeable, reviewDecision, latest opinionated reviews, review threads and the head commit's status check rollup.",
+      "statement": "On GitHub the read is one `gh api graphql` call with a fixed query covering state, draft, mergeable, reviewDecision, the head commit oid, comment and review totals, latest opinionated reviews, review threads and the head commit's status check rollup.",
       "evidence": [
         {
-          "resource": "repo://src/review_state.rs#L183-L183",
-          "version": "repo-lines-v1:sha256:b13a22b2254f9d033c20e171b01cdf689ac34af06574dafa6673cbb7175a8edb:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjEzYTIyYjIyNTRmOWQwMzNjMjBlMTcxYjAxY2RmNjg5YWMzNGFmMDY1NzRkYWZhNjY3M2NiYjcxNzVhOGVkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjEzYTIyYjIyNTRmOWQwMzNjMjBlMTcxYjAxY2RmNjg5YWMzNGFmMDY1NzRkYWZhNjY3M2NiYjcxNzVhOGVkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzBlODAyOWFmZDA3OTg2OTFlMTEwNzFlOGIxNDA3NDExZGJmZjhjMWRjZDA2YTUyYjJiNDNjODYwM2MxYmYyZSJ9"
+          "resource": "repo://src/review_state.rs#L227-L227",
+          "version": "repo-lines-v1:sha256:c93055422cc7dc970799b6c2c7d1b0e02621b62e03feb951af9c4217a58ea3ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzkzMDU1NDIyY2M3ZGM5NzA3OTliNmMyYzdkMWIwZTAyNjIxYjYyZTAzZmViOTUxYWY5YzQyMTdhNThlYTNmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzkzMDU1NDIyY2M3ZGM5NzA3OTliNmMyYzdkMWIwZTAyNjIxYjYyZTAzZmViOTUxYWY5YzQyMTdhNThlYTNmZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzBlODAyOWFmZDA3OTg2OTFlMTEwNzFlOGIxNDA3NDExZGJmZjhjMWRjZDA2YTUyYjJiNDNjODYwM2MxYmYyZSJ9"
         },
         {
-          "resource": "repo://src/review_state.rs#L212-L221",
-          "version": "repo-lines-v1:sha256:0f761c6eb4cdc995f741af2c488fbe4c0d868e6d9aabcd69928d586d4cf4a112:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlYjI1MjYyMGQyNDgwNDRjMDM1NGM1NmY2ZDRhMzgyMmFmOGQxNzNmNTU5ZDllODExYTZkYjliMTZkNGU1NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0NDlmMmEzYmZkYzBmNDA0ZWU5MGQ2ODM4ZWExMTQ5NzgzNTA4ZDg4MDM1NGM4NDhjY2Y5NWQxMDQ5YmZhOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
+          "resource": "repo://src/review_state.rs#L250-L265",
+          "version": "repo-lines-v1:sha256:dc7938a2721417a99b226d049055ff1fca8cc25c6c9471ae31b998820349870f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMTcxMjI3ODQ5ZDc1ZWM2NzVlNTA4YzY3Nzk3OGNhOTNhOWYzNWU2ODJiMzA1NzRiZDU1OWNhZjFkMjZmOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkwNTZmZTdmOWZhZTFjNjU0NWYyZGEyZTIxNTBiYWM4ODM5YzJkY2Q5ZWYwZjk5MTU2ZjA4NTAyNzQ5MDlhMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1MjE2MDRiMzVmYzQwYWYwMGNiYTRlZWEyZmQ1ZTJjM2FmMTg2M2IzOTExODVkN2JmNGJiMDllNzJkMGM4YjMifQ"
         }
       ]
     },
@@ -41,11 +41,11 @@
       "statement": "A GitLab request counts as approved only when /approvals reports `approved` true and `approved_by` is not empty, because a project that requires no approvals reports `approved` true with no approver; `detailed_merge_status` of `requested_changes` gives `changes`.",
       "evidence": [
         {
-          "resource": "repo://src/review_state.rs#L333-L342",
+          "resource": "repo://src/review_state.rs#L379-L388",
           "version": "repo-lines-v1:sha256:7ce3b32e1dae92564e4f6c347d83487bde8a3c192d8168721df5f35362a53013:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyZDgyOGEwMzdhYzFjODE1MzViMWQ1NTAwODMyMzIzYmZiYjg2NmEzYTNmODdlN2E2OGMxM2EyYmFlNTZmZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkYWQ4MTBjYjliZjAwYzZjNTdhZDIxOWNmNGNlNDBmMDY3NDZlMmViMzY1NzFlZGY1MjFjNDZjMDg4Yzk4OWMifQ"
         },
         {
-          "resource": "repo://src/review_state.rs#L69-L83",
+          "resource": "repo://src/review_state.rs#L93-L107",
           "version": "repo-lines-v1:sha256:98e3a5458de9d87d64afa8cf640929db045839b7b0654f16de08b52ec35d3d2f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlOTNlMGEwNmQ0NTVmYWYwMzdiNTdjZmRlNWYwOGViNmRlMmUzYjliY2FjYWI5NGM3NDQ4OTdlOTFjMGQzNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllNTk2MWJhMmJmOTM0OGRkYmZjNTRkYTFhYTY5Yjk5NGVjYWU2N2M0ZmY0MmMwMWRmY2NjNDQ2ZjAzNWVlZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2ZDhhMjk3ZDY1OTg4MDBlMWRkMzU0OGEwNjQyM2Y2NGIwMzY5NTMzMGIwZjczMjdkZjQ1NjlmM2YxYzBlM2IifQ"
         }
       ]
@@ -55,7 +55,7 @@
       "statement": "When GitHub's reviewDecision is null, approval falls back to the latest opinionated reviews: any CHANGES_REQUESTED gives changes, else any APPROVED gives yes, else no.",
       "evidence": [
         {
-          "resource": "repo://src/review_state.rs#L131-L148",
+          "resource": "repo://src/review_state.rs#L165-L182",
           "version": "repo-lines-v1:sha256:d732cf19bd04626590232cfb858bc2ce19897a63e16546f44f8d62541a5524ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2OTM5ODc2NWY0Mjc0Y2JjNGQ3OTNiYzUzOTdiZDMzOWVkYzliYTY0OWI1MTQ0ODBlMzAyNDc1MzMzOWFlYWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhNWIyNjJlMDVlYjY1NWMxN2NlYjI2ZTIzMWEwOWJmNjhjNGRjNTk3M2ViODFlYmM4ZjE1YmFiYTkzZDZlODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlYzY3NGE0ZmUwMGZjMWZhZmUyMjU5MGEwZWYyMDBkY2MwZWM0NzZmZTk3YmZiNjZmNDg3ZGVhMzUwNjllZDQifQ"
         }
       ]
@@ -65,18 +65,18 @@
       "statement": "`remembered` returns a stored state only for a current target whose stored url equals the recorded review_url, so a changed URL discards the old answer; a missing or unparseable reviews file reads as empty.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L47-L61",
+          "resource": "repo://src/ops/review_state.rs#L70-L84",
           "version": "repo-lines-v1:sha256:30006004b68abaf738e31f7a75ab3ed9702b7c190d97de14380bd03a1825700c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyOTg5MmZlYmI2ZjkxZjY3ODBlMTRjNDAyYjQ0YjJhOGFlODM4YWEyYTA3MTIxZTM3NmZkZjc5OTIwNmVmM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4ODU5MjEwZWJjYjEyY2Y2OGM2MTYyMjJmYzU2MGMxZjY4ZTJmYTMxZjYzMDQ5M2RmODA5NTg4ODdkNTdhZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjNzQ5NTM1NDFkYTk1MTQwZGYwZTVkZDhjMjRmNzg1NzBmMDk2NDk1ZjdmMzYxNzYwNWViY2U3NjlkNzVjZDAifQ"
         }
       ]
     },
     {
       "id": "claim_db0cf9a21ce7402fa6620a4f7219e447",
-      "statement": "`refresh` reads every target concurrently, keeps the remembered entry of any target whose read fails, writes the result to the reviews file, and returns sorted, de-duplicated warnings instead of an error for a missing program, a failed read, or a failed write.",
+      "statement": "`refresh` reads every target concurrently, keeps the remembered entry of any target whose read fails, saves the result through `store`, and returns sorted, de-duplicated warnings instead of an error for a missing program, a failed read, or a failed write.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L63-L106",
-          "version": "repo-lines-v1:sha256:2381d7654c62de27eca686157b55a3f769fda89f2c246156079911266969d499:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4ODJlN2U5NzJmZjg1OWJmZDI1NTVmYWJkOGI1YjUzYTg5NzVlZjQ2MzZjYWZhNjQ5OGIxNjRjMjMyZTM2YzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4ODU5MjEwZWJjYjEyY2Y2OGM2MTYyMjJmYzU2MGMxZjY4ZTJmYTMxZjYzMDQ5M2RmODA5NTg4ODdkNTdhZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0ZjNiYzdkNDAzMzJkOTg0NzA5ZjU5NjExNTcyZTlkMzYzMWFmOTE3NTliNWNlYjI5ZjkwOTMxOGUyMjcyYTEifQ"
+          "resource": "repo://src/ops/review_state.rs#L88-L125",
+          "version": "repo-lines-v1:sha256:822a958c5ffb8958ad2695d99038c2e16387fcff0d16a3515cc35503db75a79f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1NmVjNDBjNzE1ZWMzM2UzNTEyNjllYmZlNWIwOGY2OWNiYjI1NzJlM2U1ZDU0MjBiOTQzNTdjMjBjZjNhMDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjNzQ5NTM1NDFkYTk1MTQwZGYwZTVkZDhjMjRmNzg1NzBmMDk2NDk1ZjdmMzYxNzYwNWViY2U3NjlkNzVjZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNTFhOGQzNmRhODQ4OGJlNDM2NjY2NWQ5MTM4YmI0ZjA2M2UzYzA2N2UxYzNlZGU2MmZkYjNjMzMzOWZiMWIifQ"
         }
       ]
     },
@@ -85,18 +85,18 @@
       "statement": "`refresh_all` refreshes every open feature that has a target, eight features at a time, to bound the number of concurrent forge processes.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L114-L133",
+          "resource": "repo://src/ops/review_state.rs#L165-L184",
           "version": "repo-lines-v1:sha256:d0b6b7524ead846c6444da460b64218cc6c9f8038deab82d07bb43dd73a8590d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwYTMyODk2MzMxYzkxZTlhMDBiMjVkN2E0NzcxYzMzMTE3ZWU1YjUzOWJkNzVkYjM3ODkxNGQzZjRlOThiN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViYjI5MTMyMzRlOTQxZDUyYWZlM2JlZWZlZjQ3YTgwZTU5YzBkMWZmNzkwZmVhNDRjOGY0ODZhNWM0MmJhMTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYmRjMzVjMDc4NzE0MWFlOTI1NGY4MzQxMzAxMTk1ZDk4ZjczMzM1YzNiZmUwM2FjZjM4NTc2MmU0Y2M1ZGEifQ"
         }
       ]
     },
     {
       "id": "claim_33439d42e5fe46c1b47e2c8da8a6e887",
-      "statement": "`attach` fills `row.review` for each target's review row from the forge or from the remembered store, replaces the row's hint when the request is merged or closed, and appends the read's warnings to the report.",
+      "statement": "`attach` fills `row.review` for each target's review row from the forge or from the remembered store, replaces the row's hint when the request is merged or closed, otherwise fills an empty hint with `pushed since viewed` or `N replies since viewed`, and appends the read's warnings to the report.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L135-L174",
-          "version": "repo-lines-v1:sha256:66f96fc9f2147c70fd21a437925f4a989a73dd3f7f4a5c718461e8f567bd365c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2MTg3OWJlOWE3MjJhYWE4Y2QyMzgyZTg5NDg2NjNmNmMyMGQxMDMyNDhkZWQ3NzViYWFkMzRiNmZiMTk4MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyOGQyOTMwZWJjNjkyM2Y5NDVmNjU3OGNlZmI5MmUxYTgyYTU5NzRiYTI3MWFmYmIxMDY5NWY5ZGYxM2Q0MTgifQ"
+          "resource": "repo://src/ops/review_state.rs#L193-L235",
+          "version": "repo-lines-v1:sha256:aa7e54e6fd01bf6da3aa8b5e7379376c177eca768fcc52c7aa3443d040709426:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzM2ZmM2I0OGExNmQxZWJlZmI5ZTFkOTk1OGJlOGY1MzQ3ZWJmNDQ5NGE5YjgxNDZkNzJlYjVjOTRlMTVjOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMzk1ODNhOTBkYmZlZTUwMTMwZThmZjY3NDZmZjZhMzViNjNiNjFhOWM2M2NmZDA5Y2EwMjIwMmNkOGVhYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyOGQyOTMwZWJjNjkyM2Y5NDVmNjU3OGNlZmI5MmUxYTgyYTU5NzRiYTI3MWFmYmIxMDY5NWY5ZGYxM2Q0MTgifQ"
         }
       ]
     },
@@ -105,7 +105,7 @@
       "statement": "`hub feature list --refresh` reads review state for all open features before listing and prints any problem, including a failure of the refresh itself, as `warning:` lines (on stderr with --json) without failing the command.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L609-L642",
+          "resource": "repo://src/main.rs#L621-L654",
           "version": "repo-lines-v1:sha256:7ca877433c25508a62aa0a621e4fbaee948cf80347ea5a9ccffe8f46f0207858:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YWZmNmI1NGFmZTZlMTBkMmZkZTgyMWVhMGVkOTU5MDUwNDJiOTkzNDNlY2JhMzQzMDE5ZTJhYmYxZWI2OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiYjYwYTEyNTkyOGJkMDFkOTkyZTA1ZDQzNDg0ZDczNGUyYWYzZTgyNDNhNDQyYjM1NmVmMTQ4NmRiNzlkY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NGE0NTA2NjYyMGIyY2QxMzY5MTA1OGY2NzlhN2FiMWJhNDdiYWZjMDdiYmU2Yzc2Y2E5M2Y0ZTI1ZTVjMWIifQ"
         }
       ]
@@ -115,22 +115,22 @@
       "statement": "A plain `hub feature list` takes each role's review word from the remembered store and makes no forge call.",
       "evidence": [
         {
-          "resource": "repo://src/ops/list.rs#L37-L44",
-          "version": "repo-lines-v1:sha256:e7d5ed884a112c9371efed491f48bcf18f666aa9147ba1d85997d403f3074fe7:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjhhZGYxMzA2Y2E1NGFmOWE2MjJhZjM2YTBlNTNlZGMyZmY5ZmVhMzIwMTc0NzRiYWU5OWYxNDUyNzBjMTE2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlNTg3N2MzZjdlMjZhMWI0MzBmYjc4MzMzYjlhYWNjZWNhNmFiYWIxMWI4MDM0NGI1YmQxMTBlYmMxYTAwNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWFlMTk0YzA2Y2ExZmE3ODBhYThmNzBjOTlhZGEwNWFmM2RkODhhMmZhOWIyNTRiZGY1YzM3MjNjNjFkNDY4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGM1NTJhYjY0ZjZjYmY2ZjIxMDg0MDcwNjk0YTRhZTJhMWY2OWJkOTc2NWIyYTM1YzMxYjc0ZTUxNzI2NjdiYyJ9"
+          "resource": "repo://src/ops/list.rs#L40-L45",
+          "version": "repo-lines-v1:sha256:b6097b323da3213fa8df6cbad59adf4b3b0f2a0d11717375873e25f2da78ae6b:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzMwNWYxYWJhMThjZWRkODA1OWE5NGIzODJlM2MzODFmYTIyNDk4ODMyZWVhYWZlMTA2Yzg3NTFiOGVlNTIzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjlhODYxNjNiYTM0YzA4ZGU3ZjE2NDhkNzFhYWE0NTA4MWM3NWFhNWFhNGY1OTIzYWIxZjgyNjE1MTAwZGExZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTAxMzlmNTZmMmRjODNlYjFjOWYxOTRmNDA2ZDQ2M2ZiNzBlOWQxOWIzMmNhNjMzZjNhZjVmZDcwMDc5OGJkNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzI0OGJhYmUwNTE0ZWFmNjEyYTFkMGJiYTg2YjIxZWI4MzFiMDI3YWUwMDhlOWU4ZWQ1Y2QzY2ExZGFkZWNiYyJ9"
         },
         {
-          "resource": "repo://src/ops/review_state.rs#L47-L61",
-          "version": "repo-lines-v1:sha256:30006004b68abaf738e31f7a75ab3ed9702b7c190d97de14380bd03a1825700c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyOTg5MmZlYmI2ZjkxZjY3ODBlMTRjNDAyYjQ0YjJhOGFlODM4YWEyYTA3MTIxZTM3NmZkZjc5OTIwNmVmM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4ODU5MjEwZWJjYjEyY2Y2OGM2MTYyMjJmYzU2MGMxZjY4ZTJmYTMxZjYzMDQ5M2RmODA5NTg4ODdkNTdhZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjNzQ5NTM1NDFkYTk1MTQwZGYwZTVkZDhjMjRmNzg1NzBmMDk2NDk1ZjdmMzYxNzYwNWViY2U3NjlkNzVjZDAifQ"
+          "resource": "repo://src/ops/review_state.rs#L72-L86",
+          "version": "repo-lines-v1:sha256:ee086b420ad797c3bc3b5db5cd97f6e215b1c514a3c05970c4103d29f219e780:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZDBkZDAzMDk1NmNlMjkzMWQwMzM2NWE2M2EwYTJmZDEyMzAzYzFlNTMyYmVhMzMyYzk4NTFjOThiNjczMjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4ODJlN2U5NzJmZjg1OWJmZDI1NTVmYWJkOGI1YjUzYTg5NzVlZjQ2MzZjYWZhNjQ5OGIxNjRjMjMyZTM2YzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjMzJlZDAzZGY3M2EyODVmMjdhZmYyYmNkODM5M2Q1ZGMwYzBlMzFmZWRjMzRmOWJkODg5YmNmMzMxODk1NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyMmJiNjBjMzVjMWRkYmVjYjgxZTc0NjEyZjY2MDg2MDExMmU5Y2I5NTVjNDhkNjlhYzY1NWMyZGYyN2ZmMDgifQ"
         }
       ]
     },
     {
       "id": "claim_789c6c1859f94dd2899b8836a3b97e61",
-      "statement": "The list word is the first that applies in the order merged, closed, conflicts, ci failed, N threads, changes, ci running, approved, draft; an open request with none of these has no word.",
+      "statement": "The list word is the first that applies in the order merged, closed, pushed, N replies, conflicts, ci failed, N threads, changes, ci running, approved, draft; an open request with none of these has no word.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L230-L256",
-          "version": "repo-lines-v1:sha256:525bcc62a631b4cb02ada7a0f76f0968efcc9729209ba2878b4a78edc84d14a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYzQ0ZGI4YzFmZTFlYzhiZGViYTFlMjdiMTY2MTY5NjU1ZThkOTZhYTJkMzg2YzNmZTU2MDAwNmMyYTE2YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1NGYwMTEyZDk5YzdlODE2OTJlMTJlZGMwZjU4ZDk0MzIyNTg0Nzc2MWE0Y2JmNWJmMTJjZmEzODY5YjgxYzAifQ"
+          "resource": "repo://src/ops/review_state.rs#L297-L340",
+          "version": "repo-lines-v1:sha256:55f98b68f30b0f6e4ab7791d5181a440c01a6368049d293118fb5ae5c47491e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYzQ0ZGI4YzFmZTFlYzhiZGViYTFlMjdiMTY2MTY5NjU1ZThkOTZhYTJkMzg2YzNmZTU2MDAwNmMyYTE2YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1NTA0YzgwNmNlYTcyOTYyMTNkZTZmZGJjNTYzNjYwOWFjNzYyNzU1YTY3N2Q5MmU2OTU3NzI1OWY3OGU5OTcifQ"
         }
       ]
     },
@@ -139,7 +139,7 @@
       "statement": "The status review section appears only when some open row is in stage review with a parseable URL; its cells show `?` for an unknown field and `-` for approval, threads and conflicts of a merged or closed request, and its age line uses the oldest read among the rows.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L268-L380",
+          "resource": "repo://src/ops/review_state.rs#L341-L453",
           "version": "repo-lines-v1:sha256:50d5896c80a2655fa458f9d48cf1b3785bda48d049a32b412886583c9c1535f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlYWQwOWZhMjg1MDBiYzM3NzFlMGI5MzllMDg1NjUyMzc4YjdhNDRiNzk3MGVkZDZmN2JjNjJhMmNiY2YwZmY5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MDA3NzhhZDNlZDE3N2Q2NTI5ODkzYTk3Zjc2ZmY5NmEzYjdiOWQ1MGE0ZWJkOGZiZDk5MTg4NTYzMjg5YmJkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4NTk2ZDNmMTk4Njk2MzY2MDUxMTM3NzdjN2YxYzFhZmIzZDMxM2JmZjg2NjllZTVkYjkzZjM3YWJlZTc2ZDUzIn0"
         },
         {
@@ -147,10 +147,48 @@
           "version": "repo-lines-v1:sha256:680ecf1ffde58abf47b2d610f1973d25d9dc985df4ab3e8d6410d55ed8f05b96:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2YyN2QxNWNhMzJmOGZmNDhlYzUyMjQ4MzRiMjU5MmI2ZjNmY2YzNzhhMDM3ZDczZDBiMjFhYWYxYjY3ODc4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDBlMjAwNzdjZGFmNDRjYmM5NmYyNzI4Y2IzMGRhMjgwZDE1ZjhmNDFjZTVkYjMwYmU4YjkyNWQ3Y2U3MWJmNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTYwNzI4MmZiNmVhNzBjNjUzY2NhMTU5MDMwMjJhNzNlOGY3NDExMjA4YzJiZGIxMTkyYzYxZDljN2E2NzdkYyJ9"
         }
       ]
+    },
+    {
+      "id": "claim_b7fbf5ec1197400ca7e1ce3768da7a8e",
+      "statement": "`hub feature viewed ROLE` requires the role to be a review target, reads the forge for the feature, fails unless that role was freshly read, and then records `viewed { at, head, comments }` in the reviews file without changing the feature record.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/viewed.rs#L11-L55",
+          "version": "repo-lines-v1:sha256:387e6daa9fbd680c58e602b7a3d0752d4f069eafbccbb778421335d572521e04:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3ZDRjYzkxNTdjMjAzY2U0NDJiYTdiNmY2ODY1MjNlNWE4YjA2ZDE3MmJiNmFiZGFlMDU3MTgxNDY3MDU4MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5MTRlMTdmMjE2YWNhMTdjNjM2YjVkYzhlYTdhODUzNDA1MjAyZjg5ZDBkMzA0MTkwYmQ5OTJiODA0MzY2YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e074bf74ccf24f34b6a415b48eb07568",
+      "statement": "`attention` reports pushed when the head differs from the viewed mark, otherwise N replies when the comment count rose by N, and nothing without a mark, with a lower count, or when either side is unknown.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/review_state.rs#L18-L39",
+          "version": "repo-lines-v1:sha256:7237d832df0152477a3f86104786d73e6ffb028f94e1387eda1b7140e6b59f21:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNDJkZWEwOGIwYjJjZDZiNjVlMDdkMmYyMDZmODk5YjQ5M2I3MTE1YmZiMThlMjAxZGQwYTQ0OGVmYzM5ZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NTE3OTRmMGYzMTc3MDMxNzczMWU1Nzc0Yjc4N2QwZmQyMjIxYmZjNGExNTlhMGExN2NhNjk3MzExMmFmNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0MzE3MjY4NjI1MTNkNmU1YjA4ZWY1MDg3ZTMxMzQ3MjEyYWU5YTI3NzllZTdlZGEzMzkzNGY2MzM1YmUyYjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b02fc263d50b4bbc887af0416a4e70ce",
+      "statement": "The GitLab comment count is the number of non-system notes in the first page of 100 discussions, and the GitHub count is comments.totalCount plus reviews.totalCount, unknown unless both are present; head is kept only as a 40-hex sha, lowercased.",
+      "evidence": [
+        {
+          "resource": "repo://src/review_state.rs#L134-L142",
+          "version": "repo-lines-v1:sha256:522c867dfc17bccc1286b0d83610b9cdad75225d1c36c270066f96aa3b9ced9c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMxZTA5MThkM2U4MzJhMzg4ZTIwNTdkN2Y3MWQwZjViNGNjYTU0YTk2NTkxZTk0MDNhMDdiN2NjYTU4MDZmYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTEwZTQ1YzM3Mzg4NGY5N2FhYmJkZjQwZTNiMzc3Njk2YmQ0MGFhYmJiNzA3MGNiZjFhZTRjZjQ0ZGQxZWU2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTIxYThlNjkxZDkxOWZkYWI5ZWZlMmQwZDE2ODE3MTEwOTY4ZGJmNmQ1ODFkZGRiNTQ5MjUxMTc0NGI2NDg4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA4MDA4MTA2NjI5N2U4ZTEwZjZhOWZkMWU2OTEzZTVhZmNjNTI1MzlmNzMxNWE5MzYxOThiNDM4YmYxYTJiYSJ9"
+        },
+        {
+          "resource": "repo://src/review_state.rs#L207-L215",
+          "version": "repo-lines-v1:sha256:409226aa5c6089ceb0681ce2c3c031b371b46ff4376b3332cc1536c88588e861:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQxNWJlNWQ3YzE3YzZhMDg3MGMyZTA4NGViYzlmOWFmYWFjZDY2ODRkNzRkOWMyODNkMDZmOTdkYzA5YWIxNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTEwZTQ1YzM3Mzg4NGY5N2FhYmJkZjQwZTNiMzc3Njk2YmQ0MGFhYmJiNzA3MGNiZjFhZTRjZjQ0ZGQxZWU2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzYwMzJhY2U4ZjY2MjVlMzgwYjU5ZDNkNzQwOTUwOWY1Njg3MzQ0YTZiYzA5ZTkwMjE3Zjc2YTg4NGFjMTA2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA4MDA4MTA2NjI5N2U4ZTEwZjZhOWZkMWU2OTEzZTVhZmNjNTI1MzlmNzMxNWE5MzYxOThiNDM4YmYxYTJiYSJ9"
+        },
+        {
+          "resource": "repo://src/review_state.rs#L55-L60",
+          "version": "repo-lines-v1:sha256:23f47b4bc93637cd290cbbb49f7e25f65a8a36bece1d4e90a7bc1f441ac2e29d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmU1Yjg3NzFhYzUwOTU4ZTkyMzAwNDU3MjE1YzNlMTlkNzc5N2EwNWZiMmJhYjA1ZDk0NTY3ZDdmMWE4NGI3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRkMDVlNTQxZDZkMjM4OWQyNTMzYjQ1ZDFlZDM4MWZhOTY0YThjYTI1OTYwOTI1NmU5OWM4MTQ5MTY3NGM1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmFjZGMzNjBlNDJjNzBhNzQ5Y2I3NDdkMjlmNmQ3ODExZWVkOTVlZTRmYjYyZDY5NTg4OTA5NzFmMWY5YjcyNSJ9"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T20:01:15.981Z"
   }
 }

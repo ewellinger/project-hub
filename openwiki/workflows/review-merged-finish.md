@@ -24,10 +24,10 @@ sources:
     resource: repo://tests/remove.rs
   - id: openwiki-source-983d7d91e42d115a33ae5f36
     resource: repo://tests/review_merged.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
 verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+  - by: openwiki/0.7.2
+    at: 2026-11-07T20:01:15.981Z
 ---
 
 # Review, merged, set-base, finish, and remove
@@ -145,8 +145,9 @@ Takes the whole feature down:
    **Merging feature documents into main** procedure (see
    [Bundled agent skill](../integrations/agent-skill.md)).
 4. **Kill the tmux session** so its shells cannot block removals.
-5. **In-use check** across all remaining worktree paths, frozen worktrees, and
-   the hub worktree (exit 21).
+5. **In-use check** across the frozen worktrees and the hub worktree (exit
+   21). Open changes' worktrees are not checked: they reach this point only
+   with `--force`, which skips the check anyway.
 6. Close every open change (only `--force` gets here with any, and it removes
    dirty and adopted worktrees without asking), remove each frozen
    reference worktree, clear the pins, then remove the hub worktree.
@@ -183,6 +184,10 @@ left to infer it from.
      names both `feature merged` and `feature dropped`;
    - checked out in any worktree → refused, since `git branch -D` would fail
      partway.
+
+   Branches are resolved as `refs/heads/<branch>` for the ancestry checks and
+   the printed tip, so a tag with the same name cannot stand in for the
+   branch.
 3. **Check the hub branch** (fetching first when the hub has remotes):
    refused if still on origin, or if it has commits not on `main`, because it
    holds the feature's plans and notes.
@@ -193,9 +198,10 @@ left to infer it from.
    hold commits that exist nowhere else, then the record
    (`.git/hub/features/NAME.json`) last, so a failure partway leaves the record
    for a rerun. The record is not in git, so this cannot be undone. Remote
-   branches are never touched. The feature's remembered review state
-   (`.git/hub/reviews/NAME.json`) is deleted after the record; a failure
-   there is ignored, since a leftover file is harmless.
+   branches are never touched. The feature's reviews lock file and
+   remembered review state (`.git/hub/reviews/NAME.lock` and `NAME.json`) are
+   deleted after the record; a failure there is ignored, since a leftover file
+   is harmless.
 
 Frozen roles have no branches, so `remove` has nothing to do for them.
 
