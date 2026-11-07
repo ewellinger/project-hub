@@ -4,7 +4,7 @@ use crate::git::Git;
 use crate::hub::Hub;
 use crate::ops::freeze::{frozen_removal_line, require_on_pin};
 use crate::ops::merged::{close_change, refuse_in_use, removal_line};
-use crate::ops::session::{change_path, ordered_open_changes, pin_path};
+use crate::ops::session::{ordered_open_changes, pin_path};
 
 /// Close every open change's worktree and every frozen reference worktree,
 /// remove the hub worktree, kill the session, and mark the feature finished.
@@ -105,19 +105,18 @@ pub fn finish(hub: &Hub, feature: &mut Feature, force: bool) -> Result<Vec<Strin
         .into_iter()
         .cloned()
         .collect();
-    let mut paths: Vec<_> = open
+    // Open changes get here only with `force`, which skips the in-use check.
+    let mut paths: Vec<_> = feature
+        .pins
         .iter()
-        .filter(|c| c.worktree.is_some())
-        .map(|c| change_path(hub, c))
+        .filter_map(|p| pin_path(hub, p))
         .collect();
-    paths.extend(feature.pins.iter().filter_map(|p| pin_path(hub, p)));
     paths.push(hub_wt.clone());
     paths.retain(|p| p.exists());
     lines.extend(refuse_in_use(&paths, force)?);
 
     for change in &open {
-        let (_, closed) = close_change(hub, change, force, &mut |_| true)?;
-        lines.extend(closed);
+        lines.extend(close_change(hub, change, force)?);
     }
     for pin in &feature.pins {
         let Some(path) = pin_path(hub, pin).filter(|p| p.exists()) else {

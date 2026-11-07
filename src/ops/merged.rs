@@ -7,14 +7,6 @@ use crate::hub::Hub;
 use crate::ops::session::{after_save, repoint_window, write_workspace};
 use crate::procs;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CloseOutcome {
-    Removed,
-    MainClone,
-    AlreadyGone,
-    Declined,
-}
-
 /// Refuse to remove `paths` while a process has its working directory inside
 /// one of them: a dev server or test watcher recreates files while git deletes
 /// the tree, which leaves an unregistered directory behind. `force` skips the
@@ -55,33 +47,22 @@ pub fn removal_line(removal: &WorktreeRemoval, path: &Path, what: &str, kept: &s
     }
 }
 
-/// Remove a change's worktree if it has one. Dirty trees need `force`;
-/// adopted worktrees need `force` or a yes from `confirm`. Never deletes a branch.
-pub fn close_change(
-    hub: &Hub,
-    change: &Change,
-    force: bool,
-    confirm: &mut dyn FnMut(&Path) -> bool,
-) -> Result<(CloseOutcome, Vec<String>)> {
+/// Remove a change's worktree if it has one. Dirty trees need `force`. An
+/// adopted worktree is removed too, so callers ask first. Never deletes a branch.
+pub fn close_change(hub: &Hub, change: &Change, force: bool) -> Result<Vec<String>> {
     let Some(wt) = &change.worktree else {
-        return Ok((
-            CloseOutcome::MainClone,
-            vec![format!(
-                "{}: {} lives in the main clone; nothing to remove",
-                change.role, change.branch
-            )],
-        ));
+        return Ok(vec![format!(
+            "{}: {} lives in the main clone; nothing to remove",
+            change.role, change.branch
+        )]);
     };
     let path = hub.env.worktree_path(&change.clone, &wt.name);
     if !path.exists() {
-        return Ok((
-            CloseOutcome::AlreadyGone,
-            vec![format!(
-                "{}: worktree {} is already gone",
-                change.role,
-                path.display()
-            )],
-        ));
+        return Ok(vec![format!(
+            "{}: worktree {} is already gone",
+            change.role,
+            path.display()
+        )]);
     }
     let git = Git::new(&path);
     if git.is_dirty()? && !force {
@@ -90,22 +71,9 @@ pub fn close_change(
             status: git.status_short()?,
         });
     }
-    if wt.owner == Owner::Adopted && !force && !confirm(&path) {
-        return Ok((
-            CloseOutcome::Declined,
-            vec![format!(
-                "{}: kept adopted worktree {}",
-                change.role,
-                path.display()
-            )],
-        ));
-    }
     let removal = Git::new(hub.env.clone_path(&change.clone)).worktree_remove(&path, force)?;
     let kept = format!("branch {}", change.branch);
-    Ok((
-        CloseOutcome::Removed,
-        vec![removal_line(&removal, &path, &change.role, &kept)],
-    ))
+    Ok(vec![removal_line(&removal, &path, &change.role, &kept)])
 }
 
 pub fn merged(
@@ -149,15 +117,11 @@ fn close(
     let mut lines = Vec::new();
     if !feature.is_open() {
         record_stage(feature, role, stage);
-        let pin = feature.remove_pin(role);
         hub.save_feature(feature)?;
         lines.push(format!(
             "{role}: {} marked {word} (feature already finished)",
             change.branch
         ));
-        if let Some(pin) = pin {
-            lines.push(format!("{role}: pin at {} dropped", pin.short()));
-        }
         return Ok(lines);
     }
     let clone_dir = hub.env.clone_path(&change.clone);
@@ -218,9 +182,7 @@ fn close(
     // and the record write follows. If the write fails the previous record is
     // left in place (stage still open) and rerunning `merged` finds the
     // worktree already gone and completes.
-    // The adopted-worktree question was asked above, so the answer here is yes.
-    let (_, closed) = close_change(hub, &change, force, &mut |_| true)?;
-    lines.extend(closed);
+    lines.extend(close_change(hub, &change, force)?);
     record_stage(feature, role, stage);
     // The pin belonged to the change; the role goes back to absent.
     let pin = feature.remove_pin(role);
