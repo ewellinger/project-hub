@@ -204,7 +204,7 @@ pub fn parse_github_state(pull_request: &Value) -> Fields {
         Some("MERGEABLE") => Some(false),
         _ => None,
     };
-    // Every review-thread reply is wrapped in a review, so the two totals cover all comments.
+    // Each review-thread reply is its own COMMENTED review (checked on cli/cli#14951); approvals and drafts are left out.
     let comments = match (
         pr["comments"]["totalCount"].as_u64(),
         pr["reviews"]["totalCount"].as_u64(),
@@ -224,7 +224,7 @@ pub fn parse_github_state(pull_request: &Value) -> Fields {
     }
 }
 
-const GITHUB_QUERY: &str = "query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){state isDraft mergeable reviewDecision headRefOid comments{totalCount} reviews{totalCount} latestOpinionatedReviews(first:20){nodes{state}} reviewThreads(first:100){totalCount nodes{isResolved}} commits(last:1){nodes{commit{statusCheckRollup{state}}}}}}}";
+const GITHUB_QUERY: &str = "query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){state isDraft mergeable reviewDecision headRefOid comments{totalCount} reviews(states:[COMMENTED,CHANGES_REQUESTED]){totalCount} latestOpinionatedReviews(first:20){nodes{state}} reviewThreads(first:100){totalCount nodes{isResolved}} commits(last:1){nodes{commit{statusCheckRollup{state}}}}}}}";
 
 /// Read the review's state from its forge. On GitLab only the merge request
 /// itself must answer; approvals and discussions that fail become unknown.
@@ -471,6 +471,14 @@ mod tests {
                 json!({"commits":{"nodes":[{"commit":{"statusCheckRollup":{"state":state}}}]}});
             assert_eq!(parse_github_state(&pr).pipeline, Some(want), "{state}");
         }
+    }
+
+    #[test]
+    fn github_comment_count_leaves_out_approvals_and_pending_reviews() {
+        assert!(GITHUB_QUERY.contains("reviews(states:[COMMENTED,CHANGES_REQUESTED]){totalCount}"));
+        // cli/cli#14951 on 2026-11-07: 6 thread replies (6 COMMENTED reviews), 1 more COMMENTED, 1 APPROVED.
+        let pr = json!({"comments":{"totalCount":0},"reviews":{"totalCount":7}});
+        assert_eq!(parse_github_state(&pr).comments, Some(7));
     }
 
     #[test]
