@@ -14,10 +14,10 @@ sources:
     resource: repo://src/ops/config.rs
   - id: openwiki-source-1b5cfaa33f22a91204f59602
     resource: repo://src/tmux.rs
-generated: { by: "claude-code", at: "2026-10-12T04:10:52.427Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Environment and configuration
@@ -90,7 +90,7 @@ executable named `tmux` without spawning anything:
 
 When off, `Hub.tmux` is `None` and `Hub.tmux_off` carries the reason.
 `feature start`, `start-review`, and `add` print `tmux is off; no session
-created`, `finish`/`merged` skip session steps, `status` and the dashboard
+created`, `finish`/`merged`/`dropped` skip session steps, `status` and the dashboard
 omit attach hints, and `hub tmux` refuses with `tmux is off (<reason>)`.
 Worktrees, workspace files, and feature records are still created.
 Coverage: `tests/tmux_off.rs`.

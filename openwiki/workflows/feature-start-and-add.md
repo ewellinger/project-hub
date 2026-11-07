@@ -18,10 +18,10 @@ sources:
     resource: repo://src/ops/suggest.rs
   - id: openwiki-source-fcdf0f9c4361c1ee384f2689
     resource: repo://src/prompt.rs
-generated: { by: "claude-code", at: "2026-10-13T22:12:12.058Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T22:12:12.058Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Starting features and adding roles
@@ -74,7 +74,7 @@ branch, worktree, workspace, and session.
 Requires an open feature. `open_change`, `push_change`, and the record write
 form one transaction. After the write it rewrites the workspace and converges
 tmux; if the session already had a window named after the role (left over
-from a merged change or a frozen role and pointing elsewhere), it **respawns
+from a closed change or a frozen role and pointing elsewhere), it **respawns
 that window** in the new worktree.
 
 On a role frozen with a reference worktree, `add` replaces that worktree with
@@ -112,7 +112,7 @@ For a role:
 3. Base: `--base` (must be a valid branch name without `origin/`) or the
    role's manifest base. Fetch origin and require `origin/<base>` to exist.
 4. Branch: `--branch`, else the default — the role's branch template for a
-   first change, or a follow-up `-<n>` name after a merged one
+   first change, or a follow-up `-<n>` name after a merged or dropped one
    (`resolve::default_branch` via `names::next_branch`; git errors stop the
    search instead of looping forever).
 5. Resolve the branch by where it already exists:

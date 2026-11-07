@@ -62,6 +62,39 @@ fn remove_deletes_merged_branches_and_the_record_so_the_name_is_free() {
 }
 
 #[test]
+fn remove_deletes_a_dropped_branch_and_prints_its_tip() {
+    let (fx, hub) = world();
+    let tip = |clone: &str| {
+        let wt = fx.worktree_dir.join(clone).join("feat-1");
+        fx.git(&wt, &["rev-parse", "--short", "HEAD"])
+            .trim()
+            .to_string()
+    };
+    let (api_tip, ui_tip) = (tip("api-clone"), tip("ui-clone"));
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "Deleted branch api: feat-1 (was {api_tip})"
+        )))
+        .stdout(predicate::str::contains(format!(
+            "Deleted branch ui: feat-1 (was {ui_tip})"
+        )));
+    for clone in ["api-clone", "ui-clone"] {
+        assert!(!branch_exists(&fx, &fx.project_home.join(clone), "feat-1"));
+    }
+}
+
+#[test]
 fn remove_refuses_an_open_feature() {
     let (fx, hub) = world();
     fx.hub(&hub, &["feature", "remove", "feat-1"])
@@ -80,14 +113,19 @@ fn remove_refuses_unmerged_and_pushed_branches_and_changes_nothing() {
     fx.hub(&hub, &["feature", "merged", "api", "--feature", "feat-1"])
         .assert()
         .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     fx.hub(&hub, &["feature", "remove", "feat-1"])
         .assert()
         .code(1)
         .stderr(predicate::str::contains("api: feat-1 is still on origin"))
-        .stderr(predicate::str::contains("ui: feat-1 is not merged"));
+        .stderr(predicate::str::contains(
+            "ui: feat-1 is not merged; run hub feature merged or hub feature dropped",
+        ));
     for clone in ["api-clone", "ui-clone"] {
         assert!(branch_exists(&fx, &fx.project_home.join(clone), "feat-1"));
     }
@@ -100,9 +138,12 @@ fn remove_refuses_a_hub_branch_with_commits_and_skips_gone_branches() {
     let (fx, hub) = world();
     let hub_wt = fx.worktree_dir.join("acme").join("feat-1");
     fx.commit_file(&hub_wt, "notes.md", "notes");
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     // Branches deleted by hand count as already removed.
     for clone in ["api-clone", "ui-clone"] {
         fx.git(&fx.project_home.join(clone), &["branch", "-D", "feat-1"]);
@@ -170,4 +211,114 @@ fn remove_fetches_each_clone_once() {
     assert!(!branch_exists(&fx, &api, "feat-1"));
     assert!(!branch_exists(&fx, &api, "feat-1-2"));
     assert!(!record_path(&hub).exists());
+}
+
+#[test]
+fn remove_refuses_an_open_change_on_a_branch_that_was_dropped_earlier() {
+    let (fx, hub) = world();
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(
+        &hub,
+        &[
+            "feature",
+            "add",
+            "api",
+            "--branch",
+            "feat-1",
+            "--feature",
+            "feat-1",
+        ],
+    )
+    .assert()
+    .success();
+    fx.commit_file(
+        &fx.worktree_dir.join("api-clone").join("feat-1"),
+        "more.txt",
+        "work after the revival",
+    );
+    fx.hub(&hub, &["feature", "merged", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
+    fx.hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("api: feat-1 is not merged").count(1));
+    assert!(branch_exists(
+        &fx,
+        &fx.project_home.join("api-clone"),
+        "feat-1"
+    ));
+}
+
+#[test]
+fn remove_prints_the_branch_tip_when_a_tag_shares_its_name() {
+    let (fx, hub) = world();
+    let clone = fx.project_home.join("api-clone");
+    let tip = fx.git(&clone, &["rev-parse", "--short", "refs/heads/feat-1"]);
+    fx.git(&clone, &["tag", "feat-1", "master"]);
+    fx.hub(&hub, &["feature", "dropped", "api", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "dropped", "ui", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
+        .assert()
+        .success();
+    fx.hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(format!(
+            "Deleted branch api: feat-1 (was {})",
+            tip.trim()
+        )));
+}
+
+#[test]
+fn remove_refuses_an_unmerged_branch_when_a_tag_on_the_base_shares_its_name() {
+    let (fx, hub) = world();
+    let clone = fx.project_home.join("api-clone");
+    fx.git(&clone, &["tag", "feat-1", "master"]);
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
+    fx.hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("api: feat-1 is not merged"));
+    assert!(branch_exists(&fx, &clone, "feat-1"));
+}
+
+#[test]
+fn remove_refuses_a_hub_branch_with_commits_when_a_tag_on_main_shares_its_name() {
+    let (fx, hub) = world();
+    fx.commit_file(
+        &fx.worktree_dir.join("acme").join("feat-1"),
+        "notes.md",
+        "notes",
+    );
+    fx.git(&hub, &["tag", "feat-1", "main"]);
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
+    fx.hub(&hub, &["feature", "remove", "feat-1"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains(
+            "hub: feat-1 has commits not on main",
+        ));
 }

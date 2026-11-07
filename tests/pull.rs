@@ -142,7 +142,9 @@ fn pull_from_a_feature_worktree_fast_forwards_its_open_changes() {
         .success()
         .stdout(predicate::str::contains("ui: skipped"))
         .stdout(predicate::str::contains("api:").not());
-    fx.hub(&hub_wt, &["feature", "finish"]).assert().success();
+    fx.hub(&hub_wt, &["feature", "finish", "--force"])
+        .assert()
+        .success();
     fx.hub(&hub, &["pull", "--feature", "feat-1"])
         .assert()
         .failure()

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a232787a526aa7adb2e4db9fb54d70632d2f811246c0542e1a76079f0d4e596d",
+  "pageVersion": "sha256:d2fd0ac7c186b6b887b54ea1294827522a9d5aa2af635a736b466e4f1b8f9d5b",
   "claims": [
     {
       "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
@@ -71,8 +71,8 @@
       "statement": "tests/misc.rs covers tmux/open/sync, argument exit codes, the hub lock refusal, finished features being read-only, and feature records living under .git/hub.",
       "evidence": [
         {
-          "resource": "repo://tests/misc.rs#L19-L320",
-          "version": "repo-lines-v1:sha256:03a4c404d190c6159b7e3ee3f1403d3f78757d892ab9b91ed9c0564141258e8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMWU2NmNlYTNlMDQxMWQ4NzljYmQzN2U2MDRjY2UyZTc3NWMyMDU4OGVhZjVhZTJkZGRhOGRjMjk5ZGJjNTA2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZjQ4OTFhZDBiMWVmY2M4ODY2ZmQ4ZGEwNGI2MTkxOGVjNTAyYzMxMDYzNGY5NzM1N2VkMDBhMzMxYWZlYjQwIn0"
+          "resource": "repo://tests/misc.rs",
+          "version": "repo-file-v1:sha256:f6909b7140a5d4a65d9110c108b378eae8fcfa419d6329403edc9f3c38bcb32e"
         }
       ]
     },
@@ -88,11 +88,11 @@
     },
     {
       "id": "claim_2c46174f9cc1466ba383ef930760cedd",
-      "statement": "tests/remove.rs covers `feature remove`: a removed name restarts with fresh branches, and open features, unmerged or still-on-origin branches, and a hub branch with commits are refused without deleting anything.",
+      "statement": "tests/remove.rs covers `feature remove`: a removed name restarts with fresh branches, dropped branches are deleted with their tip printed, and open features, unmerged or still-on-origin branches, a branch reopened after being dropped, and a hub branch with commits are refused without deleting anything.",
       "evidence": [
         {
           "resource": "repo://tests/remove.rs",
-          "version": "repo-file-v1:sha256:048ccb4bbce6a31979178a7bbd4a4b667e1065a32a4e5ee47f76a665983a3202"
+          "version": "repo-file-v1:sha256:33b9645114518141f56f82503aa2fb40ec2ed39fc566b0c4c1d7a1b392a17f67"
         }
       ]
     },
@@ -101,14 +101,14 @@
       "statement": "tests/review_state.rs covers review state end to end through the fake forge programs: the reviews store, the status review section, hints and JSON, the feature list word and --refresh, and that `status --base` and start-review's drift check do not read review state.",
       "evidence": [
         {
-          "resource": "repo://tests/review_state.rs#L92-L570",
-          "version": "repo-lines-v1:sha256:a5b1bf86427a43a42272019bec7b8812c196e9ee7899a288daa8bcf2331142ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NDc5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmOGY3NTYwYTU0N2YyN2VmZmM2N2ZiODM5ZDY1YzI2ZTQ3MTk2Zjg3MDBlNWQ5OTljNTQ0YmQzN2UxNDVjMjBlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3YTY3NGZjMWMwZmY2NzdlOWFjZTY2MDNmMDk3OGRmMTY4MWY5NjIzNGZhYzNlOTg2NzIzMTY4YmNkNGQ3ODUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkMDE2OTU4MDMwYjExMTQxMzViYmY0MTQwZjA5NGI5N2ZlM2FhMWVkNGI2N2NkNzBhNjMyMzMwYWFjYmRjZTc4In0"
+          "resource": "repo://tests/review_state.rs",
+          "version": "repo-file-v1:sha256:a8440cb90edf3d88a490636cd8277387a15e10a73f63dd6bdadba795b0ab0336"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }
