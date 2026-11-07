@@ -1,7 +1,7 @@
 //! Feature view: one open feature, keys act on the selected role.
 
 use crossterm::event::{KeyCode, KeyEvent};
-use hub::feature::{Change, Feature};
+use hub::feature::{Change, Feature, Stage};
 use hub::ops::status::{StatusReport, StatusRow};
 
 use super::flow::AddRole;
@@ -118,6 +118,22 @@ impl App {
             }),
             KeyCode::Char('v') => match self.role_action() {
                 Some((feature, role)) => self.start_flow(Flow::Review { feature, role }),
+                None => Vec::new(),
+            },
+            KeyCode::Char('V') => match self.role_action() {
+                Some((feature, role)) => {
+                    let in_review = self
+                        .selected_change()
+                        .is_some_and(|(c, _)| c.stage == Stage::Review && c.review_url.is_some());
+                    if !in_review {
+                        self.say(
+                            format!("{role} is not in review with a merge/pull request URL"),
+                            true,
+                        );
+                        return Vec::new();
+                    }
+                    self.run(Action::Viewed { feature, role })
+                }
                 None => Vec::new(),
             },
             KeyCode::Char('b') => match self.role_action() {
@@ -442,6 +458,23 @@ pub(crate) mod tests {
         Report::Feature { feature, report }
     }
 
+    /// `suspense` with `api` in review at a GitLab URL; its row is stage `review`.
+    pub(crate) fn api_in_review() -> Report {
+        let Report::Feature {
+            mut feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        feature.changes[0].stage = Stage::Review;
+        feature.changes[0].review_url =
+            Some("https://gitlab.example.com/g/p/-/merge_requests/1".into());
+        report.rows[1].stage = "review".into();
+        report.rows[1].review_url = feature.changes[0].review_url.clone();
+        Report::Feature { feature, report }
+    }
+
     /// `suspense` with its open `api` change pinned; no reference worktree.
     pub(crate) fn pinned_api() -> Report {
         let Report::Feature {
@@ -645,6 +678,7 @@ pub(crate) mod tests {
                 pipeline: Some(hub::review_state::Pipeline::Failed),
                 ..Default::default()
             },
+            viewed: None,
         });
         a.update(Event::Report {
             row: RowId::Feature("suspense".into()),
@@ -724,6 +758,29 @@ pub(crate) mod tests {
             })]
         );
         assert!(a.overlay.is_none() && a.flow.is_none());
+    }
+
+    #[test]
+    fn shift_v_runs_viewed_for_a_role_in_review() {
+        let mut a = on_report(api_in_review());
+        assert_eq!(
+            a.update(key(KeyCode::Char('V'))),
+            vec![Effect::Run(Action::Viewed {
+                feature: "suspense".into(),
+                role: "api".into(),
+            })]
+        );
+        assert!(a.running.is_some());
+    }
+
+    #[test]
+    fn shift_v_is_refused_on_a_role_not_in_review() {
+        let mut a = on_feature(); // api is working
+        assert!(a.update(key(KeyCode::Char('V'))).is_empty());
+        assert!(a.footer.as_ref().is_some_and(
+            |f| f.is_error && f.text == "api is not in review with a merge/pull request URL"
+        ));
+        assert!(a.running.is_none());
     }
 
     #[test]

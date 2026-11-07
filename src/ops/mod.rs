@@ -17,6 +17,7 @@ pub mod start;
 pub mod start_review;
 pub mod status;
 pub mod suggest;
+pub mod viewed;
 
 use std::io::IsTerminal;
 

@@ -683,6 +683,7 @@ pub enum StateColour {
     Red,
     Yellow,
     Green,
+    Cyan,
 }
 
 fn structural_drift(row: &StatusRow) -> bool {
@@ -821,6 +822,7 @@ pub(crate) fn comfy_colour(c: StateColour) -> Color {
         StateColour::Red => Color::Red,
         StateColour::Yellow => Color::Yellow,
         StateColour::Green => Color::Green,
+        StateColour::Cyan => Color::Cyan,
     }
 }
 

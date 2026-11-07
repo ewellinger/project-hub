@@ -152,6 +152,10 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                     let mut f = hub.load_feature(feature)?;
                     ops::review::review(hub, &mut f, role, url.as_deref())
                 }
+                Action::Viewed { feature, role } => {
+                    let f = hub.load_feature(feature)?;
+                    ops::viewed::viewed(hub, &f, role)
+                }
                 Action::SetBase {
                     feature,
                     role,
