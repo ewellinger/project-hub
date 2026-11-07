@@ -27,9 +27,10 @@ pub fn viewed(hub: &Hub, feature: &Feature, role: &str) -> Result<Vec<String>> {
         .get_mut(role)
         .filter(|s| s.read_at >= before)
         .ok_or_else(|| {
+            let mine = format!("for {role}:");
             let why = warnings
                 .iter()
-                .find(|w| w.contains(role))
+                .find(|w| w.contains(&mine))
                 .or(warnings.first())
                 .cloned()
                 .unwrap_or_else(|| format!("review state not read for {role}"));

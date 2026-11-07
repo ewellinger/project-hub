@@ -725,6 +725,36 @@ fn viewed_succeeds_while_another_command_holds_the_hub_lock() {
 }
 
 #[test]
+fn a_failed_viewed_names_its_own_role_not_a_longer_one() {
+    use predicates::prelude::*;
+    let (fx, hub) = world();
+    fx.make_provider_repo(
+        "gw-clone",
+        "master",
+        "https://gitlab.example.com/g/sub/gw.git",
+    );
+    fx.add_repo(&hub, "api-gw", "gw-clone");
+    fx.hub(&hub, &["feature", "add", "api-gw", "--feature", "feat-1"])
+        .assert()
+        .success();
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    review(
+        &fx,
+        &hub,
+        "feat-1",
+        "api-gw",
+        Some("https://gitlab.example.com/g/sub/gw/-/merge_requests/7"),
+    );
+    // `-` sorts before `:`, so a bare `contains("api")` would find api-gw's warning first.
+    fx.hub(&hub, &["feature", "viewed", "api", "--feature", "feat-1"])
+        .env("FAKE_PROVIDER_FAIL", "401 Unauthorized")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains("review state not read for api:"))
+        .stderr(predicates::str::contains("api-gw").not());
+}
+
+#[test]
 fn a_changed_url_drops_the_mark() {
     let (fx, hub) = world();
     gitlab_state(&fx, 412, open_mr());
