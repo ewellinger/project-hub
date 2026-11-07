@@ -1,8 +1,8 @@
 ---
 type: workflow
 title: Review, merged, set-base, finish, and remove
-description: The lifecycle commands that advance or close a feature's changes — `feature review`, `feature set-base`, `feature merged`, `feature finish`, and `feature remove`, which frees a finished feature's name — including the dirty-worktree (exit 20) and in-use (exit 21, via lsof) refusals, adopted-worktree confirmation, tmux handling, irreversible-first ordering, and leftover-directory warnings.
-tags: [workflow, review, merged, finish, set-base, safety, lsof]
+description: The lifecycle commands that advance or close a feature's changes — `feature review`, `feature set-base`, `feature merged`, `feature dropped`, `feature finish`, and `feature remove`, which frees a finished feature's name — including the dirty-worktree (exit 20) and in-use (exit 21, via lsof) refusals, adopted-worktree confirmation, tmux handling, irreversible-first ordering, and leftover-directory warnings.
+tags: [workflow, review, merged, dropped, finish, set-base, safety, lsof]
 sources:
   - id: openwiki-source-95f84abff7e2ed283d50b3fb
     resource: repo://src/error.rs
@@ -22,18 +22,22 @@ sources:
     resource: repo://tests/finish.rs
   - id: openwiki-source-1955dcb2c0b390eb78ee0044
     resource: repo://tests/remove.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+  - id: openwiki-source-983d7d91e42d115a33ae5f36
+    resource: repo://tests/review_merged.rs
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Review, merged, set-base, finish, and remove
 
-These commands move changes through `working → review → merged` and close a
-feature. All run under the hub lock. All but `remove` require an **open**
-feature and never delete, merge, or push a branch; `remove` takes a
-**finished** feature and deletes its local branches. See
+These commands move changes through `working → review`, close them as `merged`
+or `dropped`, and close a feature. All run under the hub lock. None but `remove`
+deletes, merges, or pushes a branch. `merged` and `dropped` also accept a
+**finished** feature, where they change only the record; `remove` takes only a
+finished feature and deletes its local branches; the others require an **open**
+feature. See
 [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 for the model.
 
@@ -54,9 +58,10 @@ GitHub pull request, `hub status` reads that request's state from the forge.
 When the forge says it is merged, the row's hint becomes `merged on
 GitLab|GitHub; run hub feature merged ROLE`, which also catches squash merges
 that leave no ancestry; when it was closed without merging, the hint is `closed
-on GitLab|GitHub without merging`, replacing git's "gone from origin" hint so a
-closed request whose branch was deleted does not suggest `feature merged`.
-Nothing runs `feature merged` automatically. See
+on GitLab|GitHub without merging; run hub feature dropped ROLE`, replacing git's
+"gone from origin" hint so a closed request whose branch was deleted does not
+suggest `feature merged`. Nothing runs `feature merged` or `feature dropped`
+automatically. See
 [Review state from the forge](review-state.md).
 
 ## `hub feature set-base ROLE BRANCH` (`src/ops/set_base.rs`)
@@ -69,9 +74,11 @@ refuses a pinned open change ("unfreeze first"), since the pin was taken from
 the current base. Details
 are on the [concepts page](../concepts/features-changes-and-stages.md#bases).
 
-## `hub feature merged ROLE [--force]` (`src/ops/merged.rs`)
+## `hub feature merged ROLE [--force]` and `hub feature dropped ROLE [--force]` (`src/ops/merged.rs`)
 
-Closes one role's open change:
+Both close one role's open change through the same `close` function, with the
+stage as a parameter: `merged` records finished work, `dropped` an abandoned
+change. On an open feature:
 
 1. **Dirty check first** (unless `--force`): a dirty worktree fails with
    `HubError::Dirty` (exit 20) **before** anything else, because the next step
@@ -91,12 +98,19 @@ Closes one role's open change:
    - no worktree (branch lives in the main clone) → nothing to remove;
    - worktree directory already gone → nothing to remove;
    - otherwise `git worktree remove [--force]`.
-6. Set the stage to `merged` with `merged_at`, drop the role's pin if the
-   change was pinned (printing `pin at <sha> dropped`), save, and rewrite the
+6. Set the stage to `merged` with `merged_at`, or `dropped` with `dropped_at`,
+   drop the role's pin if the change was pinned (printing `pin at <sha> dropped`), save, and rewrite the
    workspace (warning on failure).
 
+On a **finished** feature the worktrees are gone, so only the record changes:
+no dirty, adopted, tmux, in-use, or workspace step, and the output says
+`marked <stage> (feature already finished)`. This lets a role left open by
+`finish --force` or an older build be recorded, so `remove` can then free the
+name.
+
 A later `feature add ROLE` opens a follow-up change, defaulting to a `-<n>`
-branch name.
+branch name. `--branch` can reopen the closed branch itself, which then has two
+records (see `remove` below).
 
 ## `hub feature finish [--force]` (`src/ops/finish.rs`)
 
@@ -105,12 +119,22 @@ Takes the whole feature down:
 1. **Refuse inside its own session**: if the command runs in the tmux session
    it would kill, it fails and tells you to run
    `hub feature finish --feature NAME` from another terminal.
-2. **Pin check, then dirty check** (unless `--force`): every frozen reference
-   worktree must still be at its pin (`require_on_pin`, exit 1, "is off its
-   pin"), checked before any dirt because the answer to a dirty refusal is
-   `--force`, which would discard commits on a detached HEAD. Then each open
-   change's worktree, each frozen worktree, and the hub worktree; the first
-   dirty one fails with exit 20 before anything is touched.
+2. **Pin check, open-roles refusal, then dirty check** (unless `--force`):
+   every frozen reference worktree must still be at its pin (`require_on_pin`,
+   exit 1, "is off its pin"), checked first because the answer to the later
+   refusals is `--force`, which would discard commits on a detached HEAD. Then
+   any role still `working` or `review` fails with exit 1:
+
+   ```
+   feature 'pay' has roles still open: api (review), web (working)
+     record each one first: hub feature merged ROLE, or hub feature dropped ROLE
+     or run hub feature finish --force to finish anyway, which also removes dirty worktrees
+   ```
+
+   A dirty open role gets this message rather than exit 20, so the way out is
+   `merged` or `dropped` with their own dirty check. Finally each frozen
+   worktree and the hub worktree; the first dirty one fails with exit 20 before
+   anything is touched.
 3. **Note the hub branch's unmerged documents**: when the hub branch exists
    and has commits not on `main` (`git rev-list --count main..<branch>`), the
    first output line is `note: hub branch <branch> has <n> commit(s) not on
@@ -123,13 +147,14 @@ Takes the whole feature down:
 4. **Kill the tmux session** so its shells cannot block removals.
 5. **In-use check** across all remaining worktree paths, frozen worktrees, and
    the hub worktree (exit 21).
-6. Close every open change (`close_change`, as above), remove each frozen
+6. Close every open change (only `--force` gets here with any, and it removes
+   dirty and adopted worktrees without asking), remove each frozen
    reference worktree, clear the pins, then remove the hub worktree.
 7. Mark the feature `finished` and save. Change stages are left as they were
-   (not set to merged), and every branch — including the hub branch — is kept.
+   (`--force` can leave `working` or `review`), and every branch — including the hub branch — is kept.
 
-A finished feature is history: only `feature list --all`, `status`, and
-`remove` accept it. `status` keeps counting the finished hub branch's commits
+A finished feature is history: only `feature list --all`, `status`,
+`merged`/`dropped` (record only), and `remove` accept it. `status` keeps counting the finished hub branch's commits
 not on `main` as `base_ahead` (see [Status, list, and pull](status-and-pull.md)).
 
 ## `hub feature remove NAME` (`src/ops/remove.rs`)
@@ -150,9 +175,12 @@ left to infer it from.
      it from origin;
    - already gone locally → skipped, so a rerun after a partial cleanup
      completes;
-   - otherwise deletable only when the change's stage is `merged` or the
-     branch is an ancestor of `origin/<base>`. Stage is the main signal:
-     squash merges leave no ancestry;
+   - otherwise deletable only when no record of that branch is still open, or
+     the branch is an ancestor of `origin/<base>`. Stage is the main signal:
+     squash merges leave no ancestry, and dropped work never reached the base.
+     Every record counts because `feature add --branch` can reopen a closed
+     branch, so `dropped` then `working` on one branch is still open. The refusal
+     names both `feature merged` and `feature dropped`;
    - checked out in any worktree → refused, since `git branch -D` would fail
      partway.
 3. **Check the hub branch** (fetching first when the hub has remotes):
@@ -160,7 +188,9 @@ left to infer it from.
    holds the feature's plans and notes.
 4. **All or nothing**: any refusal returns one `Precondition` error listing
    every refused branch, and nothing is deleted.
-5. Delete the member branches, then the hub branch, then the record
+5. Delete the member branches, then the hub branch, each printing its tip
+   (`Deleted branch api: feature/x (was abc1234)`) because a dropped branch may
+   hold commits that exist nowhere else, then the record
    (`.git/hub/features/NAME.json`) last, so a failure partway leaves the record
    for a rerun. The record is not in git, so this cannot be undone. Remote
    branches are never touched. The feature's remembered review state
@@ -171,10 +201,11 @@ Frozen roles have no branches, so `remove` has nothing to do for them.
 
 ## Ordering and recovery
 
-Worktree removal and session kills are irreversible, so both `merged` and
+Worktree removal and session kills are irreversible, so `merged`, `dropped`, and
 `finish` do them **before** writing the record. If the write then fails, the
 old record (still open) remains, and rerunning the command finds the worktrees
-already gone and completes.
+already gone and completes. A `finish` that needed `--force` needs it again on
+the rerun.
 
 When `git worktree remove` unregisters a worktree but cannot delete its
 directory (`WorktreeRemoval::ResidueLeft`; see
@@ -195,17 +226,19 @@ directory behind.
 
 ## Dashboard
 
-The dashboard's `v`, `b`, `m`, and `f` keys, and `x` on a finished dashboard
-row, run these same functions after a preview; for `merged`/`finish`/`remove`
+The dashboard's `v`, `b`, `m`, `d`, and `f` keys, and `x` on a finished dashboard
+row, run these same functions after a preview; for `merged`/`dropped`/`finish`/`remove`
 the preview is the confirmation (see
 [Dashboard flows and overlays](../ui/dashboard-flows-and-overlays.md)).
 
 ## Tests
 
-`tests/review_merged.rs`, `tests/finish.rs` (dirty, in-use via the fake `lsof`,
-adopted, residue via `block_deletion`, own-session refusal, the
-not-on-main note), `tests/remove.rs`
-(restart after remove adopts nothing; open, unmerged, still-pushed, and
+`tests/review_merged.rs` (including `dropped` and the record-only path on a
+finished feature), `tests/finish.rs` (open-roles refusal, `--force` keeping
+stages, in-use via the fake `lsof`, residue via `block_deletion`, own-session
+refusal, the not-on-main note), `tests/remove.rs`
+(restart after remove adopts nothing; dropped branches deleted with their tip;
+open, unmerged, still-pushed, reopened-after-dropped, and
 hub-commit refusals change nothing), `tests/set_base.rs`;
 `procs.rs` has parser unit tests.
 

@@ -69,9 +69,12 @@ fn list_shows_open_features_first_with_role_stages() {
 #[test]
 fn list_hints_at_all_when_only_finished_features_exist() {
     let (fx, hub) = world();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     let text = stdout(&fx, &hub, &["feature", "list"]);
     let lines: Vec<&str> = text.lines().collect();
     assert!(lines[0].starts_with("FEATURE"), "{text}");
@@ -770,9 +773,12 @@ fn status_moves_merged_roles_to_a_completed_table() {
 #[test]
 fn finished_feature_status_shows_only_the_completed_table() {
     let (fx, hub) = world();
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     let text = stdout(&fx, &hub, &["status", "--feature", "feat-1"]);
     let lines: Vec<&str> = text.lines().collect();
     assert_eq!(lines[0], "Feature: feat-1", "{text}");
@@ -960,9 +966,12 @@ fn hub_row_counts_documents_not_on_main() {
 
     // A finished feature keeps its branch, so the count survives finish.
     fx.commit_file(&hub_wt, "handoff.md", "handoff");
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     let json: serde_json::Value = serde_json::from_str(&stdout(
         &fx,
         &hub,

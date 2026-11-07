@@ -10,10 +10,10 @@ sources:
     resource: repo://src/review.rs
   - id: openwiki-source-3ea48b9bb97138d656617af0
     resource: repo://tests/review_state.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Reviewing a merge or pull request
@@ -118,7 +118,9 @@ The feature behaves like any other: `hub status` shows the role in `review`
 with its `review_url` and base lag, plus the request's state read from the
 forge (see [Review state from the forge](review-state.md)); `hub feature finish` cleans up without
 provider access, so it works after the review closes or its branch is deleted.
-Finishing records nothing about the review outcome.
+Finishing records nothing about the review outcome, so while the role is still
+in `review` it refuses until the role is recorded with `feature merged` or
+`feature dropped`, or `--force` is passed.
 
 ## Tests
 

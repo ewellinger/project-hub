@@ -4,8 +4,8 @@ title: Review state from the forge
 description: How hub reads the state of a role's merge request (GitLab) or pull request (GitHub) through `glab` / `gh` — status, approval, pipeline, unresolved threads, conflicts — remembers it per feature, and shows it in `hub status`, `hub feature list`, and the dashboard; when the forge is read, and why a failed read never fails a command.
 tags: [workflow, review, forge, gitlab, github, status, cache]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 sources:
   - id: openwiki-source-b55a21a31ede1b56cd31a6a6
     resource: repo://src/main.rs
@@ -17,7 +17,7 @@ sources:
     resource: repo://src/ops/status.rs
   - id: openwiki-source-4b4dd1a8424927498a257bc6
     resource: repo://src/review_state.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 ---
 
 # Review state from the forge
@@ -133,7 +133,8 @@ file. Review state is added afterwards by
   `review`, sets `row.review`, and appends the warnings to the report.
 - When the request is **merged**, the row's hint becomes
   `merged on GitLab|GitHub; run hub feature merged ROLE`. When it is
-  **closed**, the hint becomes `closed on GitLab|GitHub without merging`.
+  **closed**, the hint becomes `closed on GitLab|GitHub without merging; run hub
+  feature dropped ROLE`. Neither command runs automatically.
   Either replaces whatever hint git produced for that row.
 
 Because `attach` is a separate step, the callers of `status` that only want a

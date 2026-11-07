@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:b576b618113c93a50ab9f1402f6d9b50e8a22ec19e2f77d70e6924dddf3f546a",
+  "pageVersion": "sha256:27f152492303b43cb4fe17a8ccf2adc33d7883d9ce2538636cd076ebb626a8e5",
   "claims": [
     {
       "id": "claim_a78d6f229fc1491c81feeea40d788334",
@@ -82,11 +82,11 @@
     },
     {
       "id": "claim_d8d75a608b3841f29efe9f3122f3f7cc",
-      "statement": "merged drops a role's pin together with its change.",
+      "statement": "merged and dropped drop a role's pin together with its change.",
       "evidence": [
         {
-          "resource": "repo://src/ops/merged.rs#L187-L202",
-          "version": "repo-lines-v1:sha256:e6a17af71cf407fbcfad7c127ba290adb86126036cdbd4e70c169c117dec3d99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZjI2ZDE1MGRhNjM3ZWVkZTRjN2I3MGVmYzkxOWRjM2Q2ODQxOGMwY2YzMDIyNjFkZDY2MzFiNGIwYWY3OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5OGFiMmY3NzBjZWUyMzExNDJiNzkyNDJmOTNlMTAzZmFlOTI4NTY5NWFiNTdiY2IwZDdjMWFiNWVkNDdlYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/ops/merged.rs#L224-L237",
+          "version": "repo-lines-v1:sha256:f45b0420fb607b38aacdda16b6c29d18b7a4294f7133bc577e86a78b6078fa33:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlYTE4MmE3MGYwYzAzYjZmNTA3NmVlNTBjMGQyOGVkYTc2ODQ4NDJhZGRhMGY2ZDZkOWMwZDc4MTBlZjI5NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzBlYjQ1YjJiM2M5MmI2N2VhZjgzMDE5MjIzYWJjMzA1NmY3NDEwOTgwMDM2MzBjM2Q5OWQyN2JjMjBlNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjZThhZWNkNTk4MjhmZDk5NzI1MzBlZTI3ZTE2ZGJjMjk0NDI2ZjQ1ZTE4ZmM5OTE5Zjg3ZTExY2I4MWY5OWQifQ"
         }
       ]
     },
@@ -105,18 +105,32 @@
       "statement": "`feature remove` considers only the feature's changes and its hub branch; frozen reference roles have no branch and `finish` clears pins, so remove deletes nothing for them, while a pinned open change's branch is handled like any member branch.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L129-L136",
-          "version": "repo-lines-v1:sha256:5399253a6a9a79bb507f1949c8d42c5fe995d16ff5b2e042f0e1072cd4e43767:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTE3NjdlOGM3ZTRjMDU2MTdmZWYxYWRjNTlhODJhZTVmNWRmMWQ0NWVmMDBhMDRmZGFjZGQ4MmEwNGQ1OWRiNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg0OGU0ZmI1MmUyNDc4MmMyNjNiMzYzOTRlMzJlOWEzZTQzODhhN2MyZjk4MTY0ZDE0ZjdjMWMyMmNlMTVkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWE0ZDhmNjkxMmVlOTk2MmFmNWJhMjE1Mjg3ZGIyNjViZWZlODU4Y2U4MTNmMTAyYjM2YTk2MTQxM2I5MTQxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGE2NzQ4YTA5ZjNlMjgyM2Q3OTkyMDk2NTBlYjFhNGE1YzIzY2Y4OTlkZjY2NzZmZjVkOTUwMmJkZDI4OWFhZCJ9"
+          "resource": "repo://src/ops/finish.rs#L125-L136",
+          "version": "repo-lines-v1:sha256:c573475412de1fe8a06a858146c41d621951fc55e0d400418d03686cb44a4f44:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1Y2RlZjgwODVhZTc0YWI2MzZkNjQ1OWY1YzZkNWZiZmIwZGIyNjRmMWIwZDc1YmFjNTE5YzliM2Y2NzE3YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYjYwNWJmZTNhMDYxOTE3MWY3Y2JjM2QyODcyMmIzNDUxYmQxMDMxYmZhNmIxZjM5N2Q5YTFkODliOWIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMjU0NGU2Y2NjMGU5NWE2ZjZhM2RhYTUzZDRkMzliMTAwODBhZTEyYjBhM2I1Nzc5NGY5YTAwNmYxODYwODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWUwZWVhM2Q5ZmQyOTAzNzMyYTBhNzU1ZTExZmEwOTg1ZTU2ZDc4MDhmODYyZWU2OWRmY2JhZDcxNmZmMDUifQ"
         },
         {
-          "resource": "repo://src/ops/remove.rs#L30-L88",
-          "version": "repo-lines-v1:sha256:ca5bca908657fcffcf36c53663da25420c483ad5f99aa50cf83f3a6233967e2a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlYjE4ZTljNjQ2ZTU4MWEzNjFiNDQxODdkM2ZjZGJkM2QzMGY4MzA3YjM2NzczNzdmYTdiMGVjNzY4NGYwZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhYTllMGMyMWI1OWNkYmQ1ZjkzZGE4NjIxM2E3MDdlNzhlY2NhYmNjY2FlM2YwOTQ1ZTY3ZDZjZTYxM2ZjMWYifQ"
+          "resource": "repo://src/ops/remove.rs#L32-L92",
+          "version": "repo-lines-v1:sha256:58416e9e370deb635bfbe586a3a991b1d67e03bdcb9a41a82c13153fcbea3b66:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwYTZhZWRiYzQ4NThkOTFlODcyYWUwZjA5NzY4ZmE0MjdkYmExNDEyNjY3MDliMzI3NTJjMmVhYzQ0NDJhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5M2RlNDhkZDZjNDQ5MjZkMWUyYjEyYWM2ODRiMGY2OWMyNWI0YzdhOTU4NmJhMzk1MzJhODI4MjNjMDFjZjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_87574073f8c0491f9fdaf7a553d756fb",
+      "statement": "finish checks every frozen worktree's pin before its open-roles refusal and before any dirty check, so neither refusal hides commits that `--force` would discard.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/finish.rs#L32-L55",
+          "version": "repo-lines-v1:sha256:819281667258254835c71747a96d8d6fdab2a97a995dc14d75699da04c9333fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2OTEyYzY4NTI1YzIyOWEwYWIwNTk2N2NmYTU0ZjZhZTAzN2FlNzUxNTZkMGUxYmY3MjEwNTBkNGVlODI0ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZGM2Mjg4MGZlMmM0NjRlNmY1YWNiY2Q4YjIyMDRjZDA4NGNhM2RhYjM1OWZjNTg4ZWFlZjI2NzFhZjk2YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3OGU5OTA2ZjBiNDE5NjUwZjBmZTM1YWZhNTVhYWNjMzQ4NjQ3OGYxNWZmYTA0ODliNWQ3ODM5ZTQ0NGNhYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlZTRjODdkNDEwNDk4OWQxODI5NDU1NTA2MmIxMTQ2OGZlYzE4YmViM2NiMTNiMjEyMjEwMzM3NGM2ZDYzMzAifQ"
+        },
+        {
+          "resource": "repo://tests/freeze.rs#L452-L470",
+          "version": "repo-lines-v1:sha256:c5d31089bb1974642c751dd824096fcb9917e103ba070f9a4b9d2528fc59199a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhOGVlOWJiNDNlYTkxNGI1NWM2ZTA4MjNkNzdmMjIwMDJhOTI5MDEzZmNhMDQ4NjJkOWYzZmU1YmNkMTQyYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMjM3ODU4NzA4ZjE5NDc2NDkwMDNjYWY0MTA1ZDlhZjQ0MzExYmRmM2RiZDYyNmZkNmFiMzBiOGM1NDUwMzQifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }

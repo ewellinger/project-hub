@@ -16,10 +16,12 @@ sources:
     resource: repo://src/ops/remove.rs
   - id: openwiki-source-70c2e2f99d62af87dfbdb300
     resource: repo://src/ops/repo.rs
-generated: { by: "claude-code", at: "2026-10-13T22:33:09.880Z" }
+  - id: openwiki-source-642f1c913a50430ef0592ce3
+    resource: repo://tests/freeze.rs
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Frozen bases: freeze, unfreeze, and refreeze
@@ -98,7 +100,7 @@ Every command that would move or remove a reference worktree checks this
 |---|---|---|
 | `refreeze` | always refuses | refuses when the pin would move (exit 20) |
 | `unfreeze` | refuses unless `--force` | refuses unless `--force` (exit 20) |
-| `finish` | checks every pin before any dirty check; refuses unless `--force` | refuses unless `--force` (exit 20) |
+| `finish` | checks every pin first, before the open-roles refusal and any dirty check, so neither hides stray commits; refuses unless `--force` | refuses unless `--force` (exit 20) |
 | `feature add` on the role | refuses; `add` has no `--force` | refuses (exit 20) |
 
 `status` reports such a worktree as `off-pin` and exits 30 (drift).
@@ -164,8 +166,8 @@ These read pins without changing them; details are in
   - The branch and worktree are created first; then the tmux window is
     re-pointed and checked for processes; then the record is written; and
     only then is the reference worktree removed.
-- **`merged`** drops the pin with the change, and the role goes back to
-  having no checkout in the feature.
+- **`merged`** and **`dropped`** drop the pin with the change, and the role goes
+  back to having no checkout in the feature.
 - **`set-base`** refuses a pinned change until it is unfrozen. See
   [Review, merged, set-base, and finish](review-merged-finish.md).
 - **`finish`** removes frozen worktrees along with the rest.

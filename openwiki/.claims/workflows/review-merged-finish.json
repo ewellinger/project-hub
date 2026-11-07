@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:79ef054d6b23f42f3ab54366d20ba71a2d90ccc7b36626837921d6f05e254a3d",
+  "pageVersion": "sha256:18735f856670f99918793c8c42aeed99d51c1b6541a54fc614ff30795ee8f88a",
   "claims": [
     {
       "id": "claim_0f7be9383d424624981b0526642970c4",
@@ -17,7 +17,7 @@
       "statement": "feature merged checks for a dirty worktree, and asks about an adopted worktree, before re-pointing the role's tmux window at the main clone with repoint_window, because respawning kills processes in that window.",
       "evidence": [
         {
-          "resource": "repo://src/ops/merged.rs#L132-L175",
+          "resource": "repo://src/ops/merged.rs#L169-L212",
           "version": "repo-lines-v1:sha256:6907393c79f9a1cd8fc81be6c184d489ffc0245f7d01202d6f506e4e11cdf77b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMTBlMjQ4YWViZmI1MWY2ZjE2NGRiY2Y1N2Y0OTM4NTY2MWM5ZDQzNmNhMDI1Y2QzMmZhZjAxNzJhM2JlYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4YTZiYzBhYmVkZjkzNzEwZmY1M2ZmNjIwZmU2ZjdkMDg2NDMxMDY4OThiYjc4MTJjYTkzOWQ2MGU5YTY0MGQifQ"
         }
       ]
@@ -48,25 +48,25 @@
     },
     {
       "id": "claim_fb5272cd6a8f48c2bce6c5751f068f71",
-      "statement": "merged and finish perform irreversible removals before writing the feature record, so a failed write can be completed by rerunning the command.",
+      "statement": "merged, dropped, and finish perform irreversible removals before writing the feature record, so a failed write can be completed by rerunning the command.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L82-L145",
-          "version": "repo-lines-v1:sha256:56a8b59b08233a998159b7dde743816449712804a8ec22352dd1a6029c1a9401:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0YTU1Y2ZkZDc3NmE5NWFmOGMxNzJiNzYxNGE5NzVlOGZjZDllMzc5NTRhZjYwNzg2MGViNWZjM2NmNjZlNTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmM2UzN2Y2NzljZDY2NzAyYjcxZjNmOThkN2IyYjYyZTAwMGEzM2FkYjQ4OTE1NDdjNjZhOTJkNDEyNGIxNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlNTliYzlmY2YxMjkxMjQ2Mjk1YWYzOGUwNWMzMGIwZjk1Y2E1NjFiMGRhMWFmZjEyODIzNTkyMTVlYzAwNmYifQ"
+          "resource": "repo://src/ops/finish.rs#L78-L141",
+          "version": "repo-lines-v1:sha256:73acaf582a3eabfa8c2b9e2203d4ef91aaa65a9f83415ff81a5adfac2e831125:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5YzY5NzZkNTNiOTIyMDViNzA5NzE4NGJlOTkyZDkwOWRiNDcwYmQ2OGFjNDk0ZmZjM2JlYTk4NTQ0MmM3ZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxN2ZiY2YxMGQ5OGZiOTEwNGI5ODVhNjMwMGNiOWJhYWNiMmIxMTc3MzdlMGJiODA2ZTg3ZGFmMDhkNGI1MDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         },
         {
-          "resource": "repo://src/ops/merged.rs#L180-L192",
-          "version": "repo-lines-v1:sha256:5a0f45c76a8cc81e0ba57bacab04feae55e6caabc356f3c32b21f9cdf59da952:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjMTc0NzI4ZmIwMzllMzAxNmVhMmI1OTcxYzgzNjRlMGMxNzg5MTY4NDNmYmU2YzZlOGU2M2ExMzUxYTEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYjYwNWJmZTNhMDYxOTE3MWY3Y2JjM2QyODcyMmIzNDUxYmQxMDMxYmZhNmIxZjM5N2Q5YTFkODliOWIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4YzJlZWQ0ZDc3ZWJiYWMyNjM5NzAyOWM0ZGQ3ODY0OGJmNGZiYTZlZDVkNTY5YTU1NDhiZmE0YzVmNTBhMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5MjA4ZDJhODY5Mjc4ZWM2NjAyMmY2ZTViODcwNzcxZTNmODQyYzQ2MTI4MGNkOTU3MGFhZGNjYTYxZDU0OGMifQ"
+          "resource": "repo://src/ops/merged.rs#L217-L237",
+          "version": "repo-lines-v1:sha256:f62ad2277a374ed96e865a9985d82ee0970b257299bbb5f67720607cdcd4e17e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjMTc0NzI4ZmIwMzllMzAxNmVhMmI1OTcxYzgzNjRlMGMxNzg5MTY4NDNmYmU2YzZlOGU2M2ExMzUxYTEzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4YzJlZWQ0ZDc3ZWJiYWMyNjM5NzAyOWM0ZGQ3ODY0OGJmNGZiYTZlZDVkNTY5YTU1NDhiZmE0YzVmNTBhMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjZThhZWNkNTk4MjhmZDk5NzI1MzBlZTI3ZTE2ZGJjMjk0NDI2ZjQ1ZTE4ZmM5OTE5Zjg3ZTExY2I4MWY5OWQifQ"
         }
       ]
     },
     {
       "id": "claim_fd1b83bc2115478fa21fdbc284edb3ad",
-      "statement": "feature finish refuses to run inside the feature's own tmux session, checks frozen worktrees for commits off their pin and then every worktree including the hub worktree for dirtiness before acting, kills the session, removes all worktrees including frozen ones, clears the pins, and marks the feature finished without changing stages or deleting branches.",
+      "statement": "feature finish refuses to run inside the feature's own tmux session; without force it checks frozen worktrees for commits off their pin, then refuses while any role is working or review, then checks frozen and hub worktrees for dirtiness, all before acting; it then kills the session, removes all worktrees including frozen ones, clears the pins, and marks the feature finished without changing stages or deleting branches.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L15-L145",
-          "version": "repo-lines-v1:sha256:69725cdc24706d8e1cf4b17fb602f71dd75579d8eb884ca0780ed6a0adf2b816:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2OTAzMjgzMGI0N2U5NGY0ZTY3MzhkZGQwNzRlYmEyNmVhOGVkNzYzZjNkMGEyMjc0OTExMTJiMGMxYWYxMzAwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNGE1NWNmZGQ3NzZhOTVhZjhjMTcyYjc2MTRhOTc1ZThmY2Q5ZTM3OTU0YWY2MDc4NjBlYjVmYzNjZjY2ZTUyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MGNjYWEyYTk3NTEzNzUwYTZmZGIwZjcxODVlYTRiYTcwZWQ2ZGY5YzNlNTFmM2M3OTNhY2E2N2IwZTM2ODM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhZTU5YmM5ZmNmMTI5MTI0NjI5NWFmMzhlMDVjMzBiMGY5NWNhNTYxYjBkYTFhZmYxMjgyMzU5MjE1ZWMwMDZmIn0"
+          "resource": "repo://src/ops/finish.rs#L15-L141",
+          "version": "repo-lines-v1:sha256:df0fd28a183ad05be2e1c6dff4f8bc106e30b5fbded9c767261cc2638817503c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0YjcyNWE3MjE0MGZmNjZhNjcwYzUxZGFhMGU5Njg0NDljYjBjYjNjZmM0MGY2NmQ0N2EzZjZiZjliMGRjYjgwIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxMjFmZDBiZDFmNDYyNzY0NzZmM2YwNzQ4YzM3N2YyZTIxYTZlMTdiNzNiMDNhMDY1Zjc0NTNkZDljMjc1OTg1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxN2ViMjQ1MTc1Yjg3ZTVmYTNmZjM1NDYxZmI0OTExMDcwZDk5YjQwMjJlYjVmMWI3NGIzZWRhYTVjMDUyNGVhIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
         }
       ]
     },
@@ -92,25 +92,25 @@
     },
     {
       "id": "claim_70666ea173e446daba083b7c76f7ac6e",
-      "statement": "feature merged drops the role's pin along with its change when it saves the record.",
+      "statement": "feature merged and feature dropped drop the role's pin along with its change when they save the record.",
       "evidence": [
         {
-          "resource": "repo://src/ops/merged.rs#L187-L202",
-          "version": "repo-lines-v1:sha256:e6a17af71cf407fbcfad7c127ba290adb86126036cdbd4e70c169c117dec3d99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjZjI2ZDE1MGRhNjM3ZWVkZTRjN2I3MGVmYzkxOWRjM2Q2ODQxOGMwY2YzMDIyNjFkZDY2MzFiNGIwYWY3OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5OGFiMmY3NzBjZWUyMzExNDJiNzkyNDJmOTNlMTAzZmFlOTI4NTY5NWFiNTdiY2IwZDdjMWFiNWVkNDdlYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/ops/merged.rs#L224-L237",
+          "version": "repo-lines-v1:sha256:f45b0420fb607b38aacdda16b6c29d18b7a4294f7133bc577e86a78b6078fa33:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlYTE4MmE3MGYwYzAzYjZmNTA3NmVlNTBjMGQyOGVkYTc2ODQ4NDJhZGRhMGY2ZDZkOWMwZDc4MTBlZjI5NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzBlYjQ1YjJiM2M5MmI2N2VhZjgzMDE5MjIzYWJjMzA1NmY3NDEwOTgwMDM2MzBjM2Q5OWQyN2JjMjBlNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjZThhZWNkNTk4MjhmZDk5NzI1MzBlZTI3ZTE2ZGJjMjk0NDI2ZjQ1ZTE4ZmM5OTE5Zjg3ZTExY2I4MWY5OWQifQ"
         }
       ]
     },
     {
       "id": "claim_e4d4816aa2ea423ea745e1ee88937ecd",
-      "statement": "`hub feature remove` refuses a member branch that still exists on origin, deletes one only when its change's stage is `merged` or it is an ancestor of `origin/<base>`, skips branches already gone locally, and refuses branches checked out in a worktree.",
+      "statement": "`hub feature remove` refuses a member branch that still exists on origin, deletes one only when no record of that branch is still open or it is an ancestor of `origin/<base>`, skips branches already gone locally, and refuses branches checked out in a worktree.",
       "evidence": [
         {
-          "resource": "repo://src/ops/remove.rs#L117-L132",
-          "version": "repo-lines-v1:sha256:7db06d39c4b8222ac379e86dfb13aae839a48251addf658e0f383e7085ae3fb1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhYWEwYjg1MDk2NjA3ZGRjYTNlNTI3MjY0ZmIxZDczMDI0NzY4MWViNWQ5MmE2ZjdkZDJmZDQyNzJkMzQ1M2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/ops/remove.rs#L122-L142",
+          "version": "repo-lines-v1:sha256:943098fe6265e938658a903c4346ae5ff4f9ebb95065817376918a479c60d866:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNTNlNzQ2MzhkOTcxODRiNDEzNjE2MWU2Yjg4OWI0YTM1YTliMGZiM2NmYjY5NWM3MjA2NThlZjUxYjY4M2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyODYwNGQ5YTYwNmZhMjQzODViNWY4ZDE4MDk0Mjg4YzY2YThmNTk1NDMzYTg2NDUyMTNmZDM4Y2U2OTkzOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://src/ops/remove.rs#L30-L69",
-          "version": "repo-lines-v1:sha256:88f5607f35e65acd65bb3e7930ad86bfa93db75a9e8596b75209c3303bf96053:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlYjE4ZTljNjQ2ZTU4MWEzNjFiNDQxODdkM2ZjZGJkM2QzMGY4MzA3YjM2NzczNzdmYTdiMGVjNzY4NGYwZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyNTVlMGVjODgyZWNjZjZhOWUwOGRlMjllZmYyYzk0ODcyODM5Zjc2N2UzZDZhMTJkZDQ3ZTJmOWZmY2EyZmEifQ"
+          "resource": "repo://src/ops/remove.rs#L32-L73",
+          "version": "repo-lines-v1:sha256:deb4b24eed0528f1538467c14a77acd3ac09d6d4819b9e06978802d0b893065a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwYTZhZWRiYzQ4NThkOTFlODcyYWUwZjA5NzY4ZmE0MjdkYmExNDEyNjY3MDliMzI3NTJjMmVhYzQ0NDJhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2YjE4ODQxZWQwY2Q3NGY3OThhZTgxZjRhYWVmN2ZlMzA4MmJkMDViMWU5OTI3MjNjYzNjOTViMjc4MWE4ZjcifQ"
         }
       ]
     },
@@ -119,7 +119,7 @@
       "statement": "`hub feature remove` refuses the hub branch when it is still on origin or has commits not on `main`.",
       "evidence": [
         {
-          "resource": "repo://src/ops/remove.rs#L69-L88",
+          "resource": "repo://src/ops/remove.rs#L74-L93",
           "version": "repo-lines-v1:sha256:917756443ab3c95bfe630665c7a2dd4b95d09b47aebf7472e67363c5c9549ea3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3YzgwMjMyZTg3MzczNGQ4ZGFhZTMxZjE2NzgzNDQ2MDJlOTE0YWY4MzdmNTA0NWUwNTIwNWExNTFkNmViNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhYTllMGMyMWI1OWNkYmQ1ZjkzZGE4NjIxM2E3MDdlNzhlY2NhYmNjY2FlM2YwOTQ1ZTY3ZDZjZTYxM2ZjMWYifQ"
         }
       ]
@@ -129,12 +129,12 @@
       "statement": "`hub feature remove` is all-or-nothing: any refusal returns one error listing every refused branch before anything is deleted; otherwise it deletes member branches, then the hub branch, then the record, and last the remembered review state file.",
       "evidence": [
         {
-          "resource": "repo://src/ops/remove.rs#L90-L105",
-          "version": "repo-lines-v1:sha256:05cee66841515dc26cea0035e8cec5c1bc6cde6f1bb16a31150ae84cfa8045fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3YjZjMzQ3ZTY2ZDMxNTczNDQ4MmY0YzliMzdiNjUyMmNjNzAxOTVlMDY0YTUyYzAwMTkzMmIyOGQ5NGRhMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MzUyZWU5MjA5YTAzZmZmYzg3NzlmZjU5MzFkNGNjN2Y5Y2VjMTg4ZDY1NTQ2OWY2OTkyOTdmZTUyYjIxYjgifQ"
+          "resource": "repo://src/ops/remove.rs#L95-L115",
+          "version": "repo-lines-v1:sha256:eb9ed126c6ab9884c22dcdf657da1184ac9f1d7ff56cab837d02103b5f9ac9d6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3YjZjMzQ3ZTY2ZDMxNTczNDQ4MmY0YzliMzdiNjUyMmNjNzAxOTVlMDY0YTUyYzAwMTkzMmIyOGQ5NGRhMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MzUyZWU5MjA5YTAzZmZmYzg3NzlmZjU5MzFkNGNjN2Y5Y2VjMTg4ZDY1NTQ2OWY2OTkyOTdmZTUyYjIxYjgifQ"
         },
         {
-          "resource": "repo://tests/remove.rs#L75-L124",
-          "version": "repo-lines-v1:sha256:0e508d1588a2fb86066c50112eb5c3f3722bc27eafa8df282484f2c5cf6599c1:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxOTNlM2Y4ZWExYTczYzFhY2MwNGFkZDJkYmM3Y2JlNDU1MWRkMzhkZTU0ZTkxOTZhYzBmYWY5YWUyMTIyYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1ZTIzMmY1YzYyOTY1N2Q4NzVhN2EyZmRjYjRjOTQ0NTZhZTY5NmFjMzY3YjU0ODQ4NDQ4NGY0N2Q0YmE2ZDEifQ"
+          "resource": "repo://tests/remove.rs#L108-L135",
+          "version": "repo-lines-v1:sha256:c2a1e5c2924b9a4b53e483c170cbb45d16283018946b6d64c4e374b2a5e42337:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxOTNlM2Y4ZWExYTczYzFhY2MwNGFkZDJkYmM3Y2JlNDU1MWRkMzhkZTU0ZTkxOTZhYzBmYWY5YWUyMTIyYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1YWU5N2FmZDY5YmY4YjE2MGY1ZmMxZGZiNzBhZWFhMmFiNTMxZjQ4OGJkN2UzZjNmNDBkZTVhYTczOWRiNTQifQ"
         }
       ]
     },
@@ -143,28 +143,84 @@
       "statement": "feature finish prints an informational `note:` line (never a warning or refusal) naming how many commits the feature's hub branch has that are not on main, computed with git rev-list main..<branch> in the hub's main clone, and leaves those commits on the branch unmerged.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L87-L99",
-          "version": "repo-lines-v1:sha256:62bd21bd992c8e193c037e62e3abdc54f5d2e36b2cad9d77f558b098546b2c7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMWM5NDA4YWRiNTA2ZmNlNjQwMTJmMWNjMDdjZWQ1YWUzMDhjOTEzZGNiZTkwYzAwMGIyOGMyM2FlOTY1ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNWFmMTFhYzBjYjc0NjgxM2E0OWE4ZjkwZmY2MGZiY2U4MjNhNDcxYTcyN2M3ZGRmNjExY2JmMWJlNGVhNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5N2IwMWUwZTQ0N2YzOWE4ZGEzYTg3YTViYTg1ZTU0ZDg2YWQ2NzE0OWY0ZTEzMjdjMDRhNzA3MGU2MWMwOTEifQ"
+          "resource": "repo://src/ops/finish.rs#L81-L93",
+          "version": "repo-lines-v1:sha256:c73edd262df147591d0c111932f6ceca6139a860435ddda29486730dab5890a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4NjFkNDM2NGFhYjA1NDUwN2FlZDYzNmIwMDc2Njc4NmMwYTcyYWM5NjgyYmRlYTQ1NjIwMTVjZGM1NTI4NjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5YTQwMTE0ZDY2MWQzZGJjYzNhYWFjMzgxZjhkZGYzZmUzZTI1ZWE4YzFjMGY2YzcyMDNlZWU1N2ZjMTk4NTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0YjU3ZjEyYTk2ZGU3Y2U0YWVmODNlMTQwNWY3OWRkMGZjZGVmMzQ3YmFhZDAzODk5Zjc1OTY4ZjUyNWYwZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlNWIzYWQ1NjM4Y2Y3ZTMwNTBkZDUxMTAwNWUzODM4MjQ0NTgzMDU3YTIwMDNkMmZhYzcwYjYyYTI3YzhlZTMifQ"
         },
         {
-          "resource": "repo://tests/finish.rs#L65-L81",
-          "version": "repo-lines-v1:sha256:1dd1f8a0b63486dd22f8b7fbc7d34561d2712214b160d6ec34fd874a8a0eaa1d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhMDE1ZWQzMWE2NmM1YTZiNzUyZmMyNzBlMzg1NzNjNWZkODg3Y2FhMjEzOTdmZTRiZWNjZjNjY2I0OGYwMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFiNGQzNmNiYzA0ZTA0YjQ3ZjcyZjNiM2UzY2FkNzFhNmM2ODNlNDM0NjE2MjJmYjQ2OTM3ZmViYjhlZDQyYzkifQ"
+          "resource": "repo://tests/finish.rs#L72-L91",
+          "version": "repo-lines-v1:sha256:f68e0b3964d366271027c6f221266e68eab5eb4cfbbba4b5c7b722259f874599:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhMDE1ZWQzMWE2NmM1YTZiNzUyZmMyNzBlMzg1NzNjNWZkODg3Y2FhMjEzOTdmZTRiZWNjZjNjY2I0OGYwMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFiNGQzNmNiYzA0ZTA0YjQ3ZjcyZjNiM2UzY2FkNzFhNmM2ODNlNDM0NjE2MjJmYjQ2OTM3ZmViYjhlZDQyYzkifQ"
         }
       ]
     },
     {
       "id": "claim_c63c318912714fe2b83fcd7bc47da73a",
-      "statement": "When the forge reports a role's request as merged, status replaces the row's hint with `merged on GitLab|GitHub; run hub feature merged ROLE`; when it reports it closed, with `closed on GitLab|GitHub without merging`.",
+      "statement": "When the forge reports a role's request as merged, status replaces the row's hint with `merged on GitLab|GitHub; run hub feature merged ROLE`; when it reports it closed, with `closed on GitLab|GitHub without merging; run hub feature dropped ROLE`.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L155-L168",
-          "version": "repo-lines-v1:sha256:fa231715698c72498a99d9c63f8d47cc7bbbb469d85a1dec9fab91e453c457df:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNmQ4MGM1YTU3ZTFmNjYxZTE1Mzg0ODJlM2JlNTM3YTE0Mjk1ZjcwYzA0MTllMjU0N2U1NWU3MDg2YWYyOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiMjYwYjkyNzdkODRkMzVkMjU0YTQzZGYzOGEzZTYyZmYwMTZmODRmMDY4OTU1NDI3NTUyMTUyNmFkNDUxNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0ODcwZDM4MjhjMWJlODUwMDY3NTQ2ZWU4MGJlNDRlZTUwNGEyOTdhYzUyNjVhNmQzNDk5YzljMThmOGZiMGYifQ"
+          "resource": "repo://src/ops/review_state.rs#L155-L171",
+          "version": "repo-lines-v1:sha256:a3d93c4c922465a47170f538509081fdf82b5c8e77bd0da4bcfbb0d70a24fb29:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiNmQ4MGM1YTU3ZTFmNjYxZTE1Mzg0ODJlM2JlNTM3YTE0Mjk1ZjcwYzA0MTllMjU0N2U1NWU3MDg2YWYyOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiMjYwYjkyNzdkODRkMzVkMjU0YTQzZGYzOGEzZTYyZmYwMTZmODRmMDY4OTU1NDI3NTUyMTUyNmFkNDUxNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0ODcwZDM4MjhjMWJlODUwMDY3NTQ2ZWU4MGJlNDRlZTUwNGEyOTdhYzUyNjVhNmQzNDk5YzljMThmOGZiMGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_97be158b04f34377ae7f3441fd676622",
+      "statement": "feature dropped is the same operation as feature merged, sharing one close function with the stage as a parameter, and records dropped with dropped_at instead of merged with merged_at.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/merged.rs#L111-L142",
+          "version": "repo-lines-v1:sha256:573123dd9d7f383941b693a7ea843fde422bc2317cafb8a3463f705783dba447:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZDQ2MDZiZWEzOTMwYjYxMTlkMzM0ODM0NTBkYzY4MTc5OTQyMjBmMTRhMDRkMGUwMDRmZGY4NzA1NTQzNTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MWRhYTUzYmRlM2JmZGVlMjRkOTllMzg1ODg4MWRhOWI1MWVlZTZlMDMyOTAzNjViMjQ0ZTFkY2IxOWY5YjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzZTlkYWU1NDA4YzZhYWZjM2IzMGFjNzUwMGFjY2QzOTIxYTVhZmM4MjMyZWI3OWI2ZDY0MWNjOTBlODRmOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkY2U2ZWRjYjA3MGI1YzYwODJmYzY1NmYyMjI0MWUwMjBjNTU5ZTc2OWExN2M3MzdjNzczNWFhYzA2MjIwNDcifQ"
+        },
+        {
+          "resource": "repo://src/ops/merged.rs#L241-L249",
+          "version": "repo-lines-v1:sha256:c19b4cea8571a600f29b895c3d5774867fa813b9af80217898c72993b063da0a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2NmMjZkMTUwZGE2MzdlZWRlNGM3YjcwZWZjOTE5ZGMzZDY4NDE4YzBjZjMwMjI2MWRkNjYzMWI0YjBhZjc5MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2NlOGFlY2Q1OTgyOGZkOTk3MjUzMGVlMjdlMTZkYmMyOTQ0MjZmNDVlMThmYzk5MTlmODdlMTFjYjgxZjk5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_acaf6650d9474737993d143843a0a627",
+      "statement": "On a finished feature, merged and dropped change only the record: they skip the dirty, adopted, tmux, in-use, and workspace steps.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/merged.rs#L143-L163",
+          "version": "repo-lines-v1:sha256:8cce90d53ae2530b6dda376c6bfecdfd98f11e0b1e84a00eecc1388fa205ea60:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkNTVkZTMyYTk2YzY1YjViNDUyMjFlZDYxNWEzNzkzZjQ3YTUyNWRlODAxYzNmMjIzOTdjMjNkNTc5YTU2NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjMGJiYmU4MDIzOTljYjAwMTM1YzQ3MmE1ZjdkMzYzZTQxOWI5MmIyMzFiOTA0MjkzZjdkYmM5MGU1M2VmZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0NmFhOGFmNDRkOWI3MzA4NmI3Njc5NTE0NGEwYjMwNTM2NTEyMDA0MTY2YzNhNTEwNDY4NDVkNzljYjBjYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkY2M5ZWQ3NWNhZjFkMWY2ODk4MmMzMjQ2NDE3YjEwNWM4NDM2YjNkYzIwYTFiZmU3NmJkMzNkNzY2NjYxMjAifQ"
+        },
+        {
+          "resource": "repo://tests/review_merged.rs",
+          "version": "repo-file-v1:sha256:15058c89332938857abb6872bd1a77206c830be451b579cf70f48922c894feb4"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd17a2661a7c4c0aacd5b91c8cc736ac",
+      "statement": "feature remove prints each deleted branch's tip, because a dropped branch may hold commits that exist nowhere else.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/remove.rs#L99-L107",
+          "version": "repo-lines-v1:sha256:9cccda9066e77a89b6bfc5d47ec3518f026cd37b0e9af06381c6fc03eab7b71d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzJmZmVjZWI0ZjMxNTliZmEzNDE4NTQzMGE2OTM1NjMzNjA0MzExOTJkZDYwODk1NjUyZmI3YzA3ZjM4ZGU0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjYxZGJiZmRkZGQ1YzQ4MDAzMTNjODc2ODI4YjRjOWJlOWQ3ZmRlYzdmNTEwMTRmOTEwYTdkNWU4ZDcyN2FlMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGUyODZjYzFiOTZkNDczNTYyNTJjZWI3NTI5MTMwYTI5MDk2OWFkN2Q2MTczNzBlZjFmZDNiMGQ5OTcwZGIwNiJ9"
+        },
+        {
+          "resource": "repo://tests/remove.rs#L65-L95",
+          "version": "repo-lines-v1:sha256:2631cf367e290f3ec17ccc747bd4ef744fb483ae105dc51dceadf9e8e31baec0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhODY4MDM3NTAyMjAzYzE2NWQwYTFlNWYwNDk0MDAyZmE3OTE2MjgzNGM2MjMxNjBjOWIzZDk5ZWNlYTUwZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NDNmZWQ5MWE4MWNmZmNmYTM3ZTZiNDcwMzA3MzQ2ZjM5ZTU0ZGZmNzUxNzBlNGFjNDZiOTAyZmYyMmE1ZmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dc0aabde3e404d9682e940340dad6ca1",
+      "statement": "feature remove treats a branch as open when any record of it is open, so a closed branch reopened with `feature add --branch` is refused rather than deleted.",
+      "evidence": [
+        {
+          "resource": "repo://src/ops/remove.rs#L58-L70",
+          "version": "repo-lines-v1:sha256:23f85fed508360a5f1cc38fe5cf56d1fa46b7f3264f6fbd2d30f69af4d7bd0d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzN2IzNTEwYWNiYTgzYTZmMDNjYTJhNGZjMTNmYjU4ZDQzZDVjYWQwODU3NWNjZDlhMDg1ZjQ3ZDVjMGJlNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4MTkwYjQ4OWIxYjIwZjdlNTc3ODlmYzg4MTUyNzQ2ZWVkM2M1ZjRlNGVmODExNjMwNDU1MjQ4NGFmMGViMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3YzgwMjMyZTg3MzczNGQ4ZGFhZTMxZjE2NzgzNDQ2MDJlOTE0YWY4MzdmNTA0NWUwNTIwNWExNTFkNmViNzkifQ"
+        },
+        {
+          "resource": "repo://tests/remove.rs#L217-L250",
+          "version": "repo-lines-v1:sha256:012c8383650353a3fb0144f4e116c8d88ac605f94a458bffed84cf4f77ffe79a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5MjY2YjExMjQxMjhmNDU3ZWZlMmFkMzRhZGE5MzNiODA1ZjZkNTQzNjUzYzg3ZWM3ZTlhNDRjMGE5ZmNjZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzNzM0ZmJhNWFhMDYwYjQzNGQzODk1YzE2NDFmMmNiMjBjYzJkMjU4YjNkOTVlOWNhMTY5Njc2YWUxNWJkYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzOTI2OWU3ZTJiMGRmYzRjZDBhZTgyMmNhYmFiMmY2NzdiMDZkMGUyZmE5YWUwYjdkYzAwMjQ2NGJhNGFiNjkifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }

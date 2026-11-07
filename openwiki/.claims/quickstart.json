@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:93dff5da2423bdfe9770f1ec812259b075ffed0ff17853cf9033514e38c0c8d9",
+  "pageVersion": "sha256:650565c56bdb6ff8fdb369ac287b6e3483dc684c781454c1ae782fe36d4df55b",
   "claims": [
     {
       "id": "claim_047f11ca67ea49c7929bce7126c3f6c8",
@@ -8,7 +8,7 @@
       "evidence": [
         {
           "resource": "repo://Cargo.toml#L1-L20",
-          "version": "repo-lines-v1:sha256:c1162fd89a1a30c47d7b9e12d7c09a975f88dc7cafb1caa15dc385497004b32f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2NkNWE4MWIzZjlhNjIxYWE0OTNkOTBjNDVmNDJhYjU3MWQ0ZTQyYjhhZTVhZmYzNTFjYjBhMDJkMDZkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYWJiMmJhNWU2ZmI5MTQwMGQwNTdlOTMxY2U5MTk5OGI2ZjcwZmM1OGI3MzMwNTIxMzI2YTRlYzVlNWI2YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlMDQ2ZTAwMjVmZGIyYWE1NGJkNzBjYjYwNDFjYmFhNjg1ZThiOGMxMjUyYWI5NmM1N2FmMWM4M2Q0MjU0MGMifQ"
+          "version": "repo-lines-v1:sha256:80905bab2e46416ec2bb3c825c82760060bdebb619429e32ca6a3608f4d45480:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2NkNWE4MWIzZjlhNjIxYWE0OTNkOTBjNDVmNDJhYjU3MWQ0ZTQyYjhhZTVhZmYzNTFjYjBhMDJkMDZkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYWJiMmJhNWU2ZmI5MTQwMGQwNTdlOTMxY2U5MTk5OGI2ZjcwZmM1OGI3MzMwNTIxMzI2YTRlYzVlNWI2YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlMDQ2ZTAwMjVmZGIyYWE1NGJkNzBjYjYwNDFjYmFhNjg1ZThiOGMxMjUyYWI5NmM1N2FmMWM4M2Q0MjU0MGMifQ"
         }
       ]
     },
@@ -37,7 +37,7 @@
       "statement": "Running hub requires git 2.31 or newer, optionally tmux, an editor launcher (code by default), and glab or gh for start-review and for the review state `hub status` reads; when the forge program is missing, status warns and carries on.",
       "evidence": [
         {
-          "resource": "repo://README.md#L118-L126",
+          "resource": "repo://README.md#L119-L127",
           "version": "repo-lines-v1:sha256:bfecc5f35849cb36877cce3b997e2662b9498da1a5d2a758b0bcfe64e409431d:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGJmYTE5OGE2NTEzMzA3NzJlYzVmMGJlMTgyZDA5N2Y3ZThlODgyMWM5ZjA0MjYzNjMzM2RjNGI1NDdjNDg2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzAwNGJkNjJmNTgzNjhmM2I5M2I4ZTk5YzZiMWQ1MDgwOTY0ZTQ0NzhlNDAxYzVkZmU4NDU2ZWE1N2M1OTVkMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzVjZWZiYzM0ZTlmY2M2ZjgyYWRmMjk0NmEzMzE1MmVkM2E5NTUwNThkM2QxMjBiOTRjMzc5NTE1NDBhY2EyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTk2ZWZiZTE4MmY5ZjJiYzJmZmY0YjFmZDhiZTVlZjMwYmI3MTIwMTNkNDZmYmUxMjcxOTJjMTVlOGVjNzI4YSJ9"
         }
       ]
@@ -47,18 +47,18 @@
       "statement": "Within a feature a role resolves to exactly one checkout: its open change's worktree, a frozen reference worktree, or the main clone; record validation rejects a frozen worktree beside an open change.",
       "evidence": [
         {
-          "resource": "repo://src/feature.rs#L245-L270",
+          "resource": "repo://src/feature.rs#L253-L278",
           "version": "repo-lines-v1:sha256:0dc38d48ffb29801f2fcf25b27339c3b035526b6fc6d3f254e7c98ecb1a724d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliYzNhMjg1ODRiOGUyOWU5NzAzZDI3ZjI4NTZiZjZjMzkwYTlhY2Y4ZjgwY2YwNWE4M2U5YjYxOGFkYTc1YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNzFjNmU5MjJkNjRlM2MyZDEyZDFiNDAwODRjMzFjYzRlNzgwN2ZiNDJlN2Y3MjI5Y2M4ODYwNWU3ZmM4YjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiMTc0ZjY4ZGU0ZjEwMTViZjlmNDU3NzBiMTE1MDljMDRlZGQ3NDA3YjIzNWEwNDE5YjQwOTAwMTc5MWIzM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMWE1ZTU5M2UwNzBkYTUyZmNjY2ZhNDFjMGJiZTgwOTI5NjIyYTU2ODkxOGE5YjRmZjZiYmY4NjQ1M2NmZWUifQ"
         },
         {
-          "resource": "repo://src/feature.rs#L89-L104",
+          "resource": "repo://src/feature.rs#L97-L112",
           "version": "repo-lines-v1:sha256:ecb5c124d513caf70bc1b9e57eef0ffa5f696d35ab25cb451eb04057c7fe2faa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MGVjOGFjYWVhMWJhNWU5OWRjNGY1NTJmZWFhNTE2OWQ3MmYxZGFhOGIyYzE1MzYzYjgyNjM0ODI1YmM2MTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0ODhhZGM0NDg0ZjM4MTZiMTVkNWEzMWYzNzFmMmVjMzQ0NDg0ZWY3MjllOTk2Nzk1ZmEwNzRjM2I0NzI3MzUifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }

@@ -55,7 +55,8 @@ to it:
   for the feature.
 - Each repo's change is reviewed and merged on its own, through a GitLab
   merge request or GitHub pull request; `hub feature review` and
-  `hub feature merged` record that progress one repo at a time.
+  `hub feature merged` or `hub feature dropped` (an abandoned change) record that
+  progress one repo at a time.
 - When the feature is done, `hub feature finish` removes its worktrees and
   session and keeps every branch.
 - Optionally, each feature gets a tmux session, and an editor workspace
@@ -161,14 +162,14 @@ config unset KEY` removes one.
 
 ### Without tmux
 
-With `tmux = false` in `config.toml`, or when `tmux` is not on `PATH`, `hub`
-still creates every worktree, workspace file, and feature record but no
-session: `feature start`, `start-review`, and `add` print `tmux is off; no
-session created`, `finish` and `merged` skip their session steps, `status`
-and the dashboard leave out the attach hints, and `hub tmux` refuses. Open
-the feature with `hub open` or `cd` into the paths `hub status` lists.
-Setting `tmux = true` with no `tmux` installed prints one warning and carries
-on without sessions.
+With `tmux = false` in `config.toml`, or when `tmux` is not on `PATH`,
+`hub` still creates every worktree, workspace file, and feature record but
+no session: `feature start`, `start-review`, and `add` print `tmux is off;
+no session created`, `finish`, `merged`, and `dropped` skip their session
+steps, `status` and the dashboard leave out the attach hints, and `hub
+tmux` refuses. Open the feature with `hub open` or `cd` into the paths `hub
+status` lists. Setting `tmux = true` with no `tmux` installed prints one
+warning and carries on without sessions.
 
 With tmux on, a session `hub` creates starts `hub` in its `hub` window, so
 the feature view is waiting when you attach; quitting it leaves a shell.
@@ -220,10 +221,11 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature refreeze ROLE` | Move the pin, and the reference worktree, to the local base's current tip |
 | `hub feature review ROLE [URL]` | Record that the role's change is in review |
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
-| `hub feature finish [--force]` | Remove every worktree and the session; keep every branch |
-| `hub feature remove NAME` | Free a finished feature's name for reuse: delete its local member branches (each marked merged or contained in its base, and gone from origin), its hub branch (nothing beyond `main`), and its record; any refusal changes nothing |
+| `hub feature dropped ROLE [--force]` | Close the change as abandoned: remove its worktree, keep the branch |
+| `hub feature finish [--force]` | Remove every worktree and the session; keep every branch. Refuses while a role is `working` or `review` unless `--force`, which also removes dirty worktrees |
+| `hub feature remove NAME` | Free a finished feature's name for reuse: delete its local member branches (each marked merged or dropped, or contained in its base, and gone from origin), its hub branch (nothing beyond `main`), and its record; any refusal changes nothing |
 | `hub feature list [--all] [--refresh] [--json]` | Open features with the stage of each role, a review word after a role in review (`api:review(ci failed)`), and frozen roles as `ROLE:frozen`; `--all` includes finished ones; `--refresh` reads review state from the forge for every open feature first |
-| `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; a feature's merge and pull requests list in a review section; exit 30 on structural drift |
+| `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged or dropped roles and finished features list under `Completed`; a feature's merge and pull requests list in a review section; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
 | `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
 | `hub tmux` / `hub open` / `hub sync` | Repair the session / open the workspace / regenerate it; from the main hub, `tmux` and `open` use all base checkouts |
@@ -242,14 +244,14 @@ bad arguments, `20` dirty worktree, `21` worktree in use, `30` drift.
 
 A feature holds at most one open change per role: one branch, in one
 worktree. To work on another branch of the same repo, first close the open
-change with `hub feature merged ROLE`, then run
+change with `hub feature merged ROLE` (or `hub feature dropped ROLE`), then run
 `hub feature add ROLE --branch OTHER`. Until then, `feature add` refuses
 with `role 'ROLE' already has an open change on branch '...'`.
 
 This is deliberate. Within a feature, a role always resolves to exactly
 one checkout: the feature's open change while it is working or in review,
 and the base checkout otherwise. The commands that name a role (`review`,
-`merged`, `set-base`), the rows of `status` and `pull`, the workspace file,
+`merged`, `dropped`, `set-base`), the rows of `status` and `pull`, the workspace file,
 the tmux window named after the role, and an agent reading the hub all rely
 on that answer being unambiguous. With two open branches of the same repo,
 each of them would first have to ask which one you meant. Work that needs
@@ -337,7 +339,7 @@ hub row measures its hub branch against the main clone's `main` and adds
 
 Dirtiness and base lag are operational state, reported but never failing
 the command. Missing or unregistered checkouts and wrong branches are
-structural drift and exit 30. A merged role, or every row of a finished
+structural drift and exit 30. A merged or dropped role, or every row of a finished
 feature, has no worktree by design, so `status` lists it in a separate
 `Completed` table with role, branch, and stage rather than as missing. Paths
 under your home directory print as `~/…`; `--json` keeps them absolute.
@@ -365,7 +367,8 @@ the forge does not supply shows `?`; for a merged or closed request,
 APPROVED, THREADS, and CONFLICTS show `-`. The age line gives the oldest
 read shown. A merged request puts
 `merged on GitLab; run hub feature merged ROLE` (or `GitHub`) in STATE, and
-a closed one `closed on GitLab without merging`; either replaces git's hint
+a closed one `closed on GitLab without merging; run hub feature dropped ROLE`
+(or `GitHub`); either replaces git's hint
 for that row.
 
 `hub` remembers the last read per role, so a failed read (no `glab` or `gh`,
@@ -435,16 +438,17 @@ and rolls back exactly that if anything up to the record write fails. After
 the write, a failed workspace or tmux step is printed as a `warning:` with
 the command that retries it (`hub sync`, `hub tmux`).
 
-`feature merged` and `feature finish` refuse to remove a dirty worktree
-without `--force`, and refuse (exit 21) while a process has its working
-directory inside a worktree they are about to remove: a dev server or test
-watcher recreating files mid-delete leaves an unregistered directory behind.
-Both commands re-point or kill the feature's own tmux windows first, so only
-processes started elsewhere trip the check. Should git unregister a worktree
-and still fail to delete its directory, the role or feature is recorded as
-closed anyway and a `warning:` names the leftover directory to inspect and
-delete by hand. Finished features are history: only `feature list --all` and
-`status` accept them.
+`feature merged`, `feature dropped`, and `feature finish` refuse to remove
+a dirty worktree without `--force`, and refuse (exit 21) while a process
+has its working directory inside a worktree they are about to remove: a dev
+server or test watcher recreating files mid-delete leaves an unregistered
+directory behind. These commands re-point or kill the feature's own tmux
+windows first, so only processes started elsewhere trip the check. Should
+git unregister a worktree and still fail to delete its directory, the role
+or feature is recorded as closed anyway and a `warning:` names the leftover
+directory to inspect and delete by hand. Finished features are history:
+only `feature list --all`, `status`, and `feature merged`/`feature dropped`
+(which then change only the record) accept them.
 
 ### Hub files
 
@@ -543,12 +547,13 @@ nothing.
 | `c` | copy the role's branch name (a frozen role's pinned commit), worktree path, or review URL to the OS clipboard; only what exists is offered |
 | `v` | `feature review` for the role, with an optional URL |
 | `m` | `feature merged` for the role, after a preview of the worktree it removes; `F` in the preview forces |
+| `d` | `feature dropped` for the role, the same preview and `F` as `m` |
 | `b` | `feature set-base` for the role |
 | `+` | `feature add`: pick a role, then a branch; for a new branch of a frozen role, then whether it starts from the frozen commit (keeping the pin) or from `origin/<base>` (dropping it). An existing branch keeps the pin without asking |
 | `z` | `feature freeze`: pick any role that is not frozen yet, with the role under the cursor preselected. A role with an open change has it pinned; any other role, including one not in the feature, gets a reference checkout at its local base tip |
 | `u` | `feature unfreeze` for the frozen role or pinned change under the cursor. A reference worktree is previewed first, with a warning when it is dirty or off its pin; `F` in the preview forces. A pinned open change is unpinned at once |
 | `Z` | `feature refreeze` for the frozen role or pinned change under the cursor: move its pin to the base's current local tip. An off-pin reference worktree is refused, and a dirty one is refused when the pin would move; the error is shown |
-| `f` | `feature finish`, after a preview of every worktree it removes and a warning for roles not yet merged; `F` forces |
+| `f` | `feature finish`, after a preview of every worktree it removes and a warning for roles still open (`! still open: api (review), web (working); record them with m or d, or F finishes anyway`); `F` forces |
 | `o` | open the feature's workspace |
 | `p` | `hub pull` for the feature: fast-forward every open role |
 | `r` | refresh, with review state |

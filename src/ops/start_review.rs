@@ -352,6 +352,7 @@ fn create(
         stage: Stage::Review,
         review_url: Some(info.url.canonical()),
         merged_at: None,
+        dropped_at: None,
         origin_seen: true,
         base: Some(info.target_branch.clone()),
         base_sha: Some(member.base_sha.clone()),

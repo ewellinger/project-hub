@@ -18,10 +18,10 @@ sources:
     resource: repo://src/skill.rs
   - id: openwiki-source-ec32cfd44569eaa164e68020
     resource: repo://tests/skill.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Bundled agent skill
@@ -77,8 +77,9 @@ hub command retries.
 - **Commands** table mapping intents to `hub` subcommands. Its
   `hub feature remove NAME` row is the one destructive entry: the agent runs
   it only when the user asks, and on a refusal reports the listed branches
-  instead of deleting them itself. The workflow rule that `merged`,
-  `unfreeze`, `finish`, and `add` never delete a branch still holds.
+  instead of deleting them itself. Its `hub feature dropped ROLE` row runs only
+  when the user says the change is abandoned. The workflow rule that `merged`,
+  `dropped`, `unfreeze`, `finish`, and `add` never delete a branch still holds.
 - **Reading output**: take paths from `hub status --json` `rows[].path` and
   the attach command from `checkout`; field meanings such as `base`,
   `base_behind`, `custom_base`, `review_url`, for frozen bases
@@ -88,11 +89,16 @@ hub command retries.
   `rows[].review`, the request's state as last read from the forge (`null`
   when there is none), and `roles[].review` in `feature list --json`; a
   `merged on GitLab|GitHub; run hub feature merged ROLE` hint is acted on like
-  git's own merged hints, while `closed on ... without merging` is reported to
-  the user and never followed by `hub feature merged` (see
-  [Review state from the forge](../workflows/review-state.md)).
+  git's own merged hints, while `closed on ... without merging; run hub feature
+  dropped ROLE` is reported to the user, `dropped` runs only on their yes, and
+  `hub feature merged` never follows it (see
+  [Review state from the forge](../workflows/review-state.md)). `stage` can be
+  `dropped` in both JSON outputs.
 - **Workflow** responses to exit codes 20/21, `warning:` lines, tmux-off,
-  adopted worktrees, and finished features. Two bullets cover the hub
+  adopted worktrees, and finished features. When `finish` refuses because a role
+  is `working` or `review`, the agent reports the roles and asks whether each
+  merged, was abandoned, or whether to finish anyway with `--force`, showing
+  dirty rows first because `--force` also removes dirty worktrees. Two bullets cover the hub
   branch's documents: nothing merges them into `main` automatically, so a
   nonzero `base_ahead` is reported and, when the user asks to finish, the
   merge is offered once and `finish` runs regardless of the answer.

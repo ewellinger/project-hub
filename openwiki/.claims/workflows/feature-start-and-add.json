@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:c2d11985e29b3723266e2fbeb4b0060295953699492847cafa17d5861b1a00d4",
+  "pageVersion": "sha256:1541a9e130dfacea78950856e636e0dd604deb1509c473d0fa6dbe263dc27cd2",
   "claims": [
     {
       "id": "claim_50edc17e96fd4bc182a2c240d4cff463",
@@ -91,7 +91,7 @@
       "statement": ".vscode/settings.json and .env are copied from the main clone into a new worktree only when the clone ignores them.",
       "evidence": [
         {
-          "resource": "repo://src/ops/resolve.rs#L432-L459",
+          "resource": "repo://src/ops/resolve.rs#L433-L460",
           "version": "repo-lines-v1:sha256:44e3bdeb6b6dbec8d0b8616446540ba1ff5e835d8d9916e0e2972ec021ea2a87:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NDBjOTdkMDhjZmE4NDMyMzE2ODljNjQ3Yzg3Nzg5MDYwZmNiYTBkMDI5ZDczNWVhNDEzOWJhNjI4MzE0NzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
@@ -101,7 +101,7 @@
       "statement": "The default branch for a role is its branch template for a first change and a -<n> follow-up after a merged one, with git errors propagated instead of looping.",
       "evidence": [
         {
-          "resource": "repo://src/ops/resolve.rs#L397-L430",
+          "resource": "repo://src/ops/resolve.rs#L398-L431",
           "version": "repo-lines-v1:sha256:69634ffe7bda922f37d218a40036ce1616f0348e7e7b3e92e8e86525d1770e01:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhMjg4NjkyYmYzNTY5ZGVhZDY4NGNiOWE3OGY5MWU1MmYyMGVjY2QzNTBmNDg0OWZhZTk1NGY4MWMyODFhZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1YWIyMzU1YjljMGM5NmIyNDQ2NWRiYTRhODA2NDk2Y2FiMDM4MGU1N2E0YjU2ZjdiYmJhYjExOGRhYzdjNWYifQ"
         }
       ]
@@ -121,7 +121,7 @@
       "statement": "Prompts run only when stdin and stderr are terminals, before the lock; start with no --repo asks for roles (none means docs-only), then which remaining roles to freeze, then branches; add always goes through its prompt in a terminal, asking for an addable role, a branch, and for a new branch of a frozen role whether to start from the pin or the latest base.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L460-L545",
+          "resource": "repo://src/main.rs#L474-L559",
           "version": "repo-lines-v1:sha256:1c28779272dd312d5af4839545aacc8eaa24cada4de0a1b63923942f314e242b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNzQ3OWU3NzNlMWIwMDJiNTI2MGJkNzgyMzJkMWI5ZTBmOWQ2ODFlZjIzYTM3N2JiMmNmNDU2NjcyYTBiZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzNTljNjA5Njc3OWVjMmRkMDA2NjkxN2E5NDkxZDExYTNlZDdhZDI5NDhlMDQ3NTgzMjdhNmQ3YjViYjU3ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNTRjNWYyMmQzYzZjYjdmN2U4MjYwZDUwMDEyZGQ4ODI4YWVmNTA4ODMxOTRlMjJlNzA0OThlODMyMTZiMDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2YzA2MzhhY2JlOTkwYTNhZGVjNDI0NjFmZWJlODFhM2UwOWVmOTZhNGE0Yjc5ZmM3M2FlNWNiM2RlYWI5Y2IifQ"
         },
         {
@@ -183,8 +183,8 @@
       "statement": "start adopts an existing local or origin hub branch named after the feature instead of refusing it, so a reused feature name resumes old branches unless `feature remove` deleted them first.",
       "evidence": [
         {
-          "resource": "repo://src/ops/remove.rs#L1-L15",
-          "version": "repo-lines-v1:sha256:18e4ed7d2f614e5b29e46300768b87b10d2fd4692a6ef2d30bf0f1f914745486:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwZmQ5MThhMGJkZGUxZWVlY2YwZTVlZDNkYjY3NzAyNGM2NzQ5MDJiOTRhODlmNjZjM2VlODAyMDQ5MDdmNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMjZiNTM4N2FhMWFkYjFlOWQ0MmJkMjkyMmU1ZTJmMjhmZjY4N2I2YmI4OWVmYzU0MTFkNGU5NTU1ZWI5NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczNWNiNjkzZTFiMjEwMTA0YzU4MTlkNjg3YjU0MTc0NzA1N2FmMTQzNGVkZDVhMWZiYjY0ODBiMDUyMGNmNTYifQ"
+          "resource": "repo://src/ops/remove.rs#L1-L16",
+          "version": "repo-lines-v1:sha256:a933d7016a6a5b6fcfac599abc51388946ba7d0b8ee78de0d0371ce358dba929:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3OWNkZDM1OTFhYmZhYzk5ZjdjMzMxNDZlMjcyNDlmYmVmYWJkODdkOWYxNjFhYzU1ZTVhMWI0NGVhMTJhMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyMjZiNTM4N2FhMWFkYjFlOWQ0MmJkMjkyMmU1ZTJmMjhmZjY4N2I2YmI4OWVmYzU0MTFkNGU5NTU1ZWI5NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczNWNiNjkzZTFiMjEwMTA0YzU4MTlkNjg3YjU0MTc0NzA1N2FmMTQzNGVkZDVhMWZiYjY0ODBiMDUyMGNmNTYifQ"
         },
         {
           "resource": "repo://src/ops/start.rs#L139-L148",
@@ -194,7 +194,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-10-13T22:12:12.058Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }
