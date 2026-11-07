@@ -41,7 +41,9 @@ struct MemberPlan {
     base_sha: String,
 }
 
-pub fn start_review(hub: &Hub, opts: &StartReviewOptions) -> Result<Vec<String>> {
+/// Returns the feature's name (it is computed here when `opts.name` is
+/// `None`) and the lines describing what was created.
+pub fn start_review(hub: &Hub, opts: &StartReviewOptions) -> Result<(String, Vec<String>)> {
     let url = review::parse_review_url(&opts.url)?;
     let repo = review::match_role(&hub.manifest, &url)?.clone();
     require_no_drift(hub)?;
@@ -94,7 +96,7 @@ pub fn start_review(hub: &Hub, opts: &StartReviewOptions) -> Result<Vec<String>>
             "warning: {err}; any hub command retries the skill install"
         ));
     }
-    Ok(lines)
+    Ok((name, lines))
 }
 
 /// Structural drift anywhere the command would rely on stops it before any

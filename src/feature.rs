@@ -372,6 +372,7 @@ mod tests {
             base: base.into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         });
         manifest
     }

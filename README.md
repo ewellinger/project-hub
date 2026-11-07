@@ -207,13 +207,14 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | Command | What it does |
 |---|---|
 | `hub init [--name N] [--checkout-template T] [--force]` | Turn the current directory into a hub; `--force` refreshes an existing hub's init-owned files |
-| `hub repo add ROLE CLONE [--base B] [--branch-template T] [--description D]` | Register `<project_home>/CLONE` under a role |
-| `hub repo set ROLE [--clone C] [--base B] [--branch-template T] [--description D]` | Change a role's fields in place, keeping its position |
+| `hub repo add ROLE CLONE [--base B] [--branch-template T] [--description D] [--setup P]` | Register `<project_home>/CLONE` under a role; `--setup` names a script run in each new worktree (see [Setup scripts](#setup-scripts)) |
+| `hub repo set ROLE [--clone C] [--base B] [--branch-template T] [--description D] [--setup P]` | Change a role's fields in place, keeping its position; `--setup ""` clears the script |
 | `hub repo rename OLD NEW [--records-only [--clone C]]` | Rename a role in `hub.json` and this machine's feature records |
 | `hub repo remove ROLE` / `hub repo list [--json]` | Unregister / show the member repos |
-| `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]...` | Hub branch + worktree, one change per `--repo`, one frozen reference worktree per `--freeze` (local base tip), tmux session; prompts for roles, roles to freeze, and branches in a terminal |
-| `hub feature start-review URL [--name N] [--checkout C]` | Review feature for the one role whose remote the GitLab MR or GitHub PR URL names: its real source branch at the verified head, base = the MR's target, stage `review`, workspace and session; refuses forks, closed reviews, and occupied branches |
-| `hub feature add [ROLE] [--branch B] [--from REF \| --from-latest] [--base B] [--worktree W]` | Bring one more role into the feature; prompts for the role and branch in a terminal. On a frozen role a new branch starts from the pin unless `--from-latest` |
+| `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]... [--no-setup]` | Hub branch + worktree, one change per `--repo`, one frozen reference worktree per `--freeze` (local base tip), tmux session, then each new worktree's setup script; prompts for roles, roles to freeze, and branches in a terminal |
+| `hub feature start-review URL [--name N] [--checkout C] [--no-setup]` | Review feature for the one role whose remote the GitLab MR or GitHub PR URL names: its real source branch at the verified head, base = the MR's target, stage `review`, workspace and session; refuses forks, closed reviews, and occupied branches |
+| `hub feature add [ROLE] [--branch B] [--from REF \| --from-latest] [--base B] [--worktree W] [--no-setup]` | Bring one more role into the feature, then run its setup script; prompts for the role and branch in a terminal. On a frozen role a new branch starts from the pin unless `--from-latest` |
+| `hub feature setup [ROLE]` | Run the role's setup script again in its worktree, or every hub-created worktree's when no role is given; exit 1 when one fails |
 | `hub feature set-base ROLE BRANCH` | Record the branch the role's open change merges into; the member branch and its git upstream are untouched |
 | `hub feature freeze ROLE [--at REF]` | Pin a role to the tip of its local base (or `REF`, a commit on it): a role outside the feature gets a detached reference worktree, an open change is pinned at its merge base and measured against the pin |
 | `hub feature unfreeze ROLE [--force]` | Release the pin and remove the reference worktree |
@@ -446,6 +447,48 @@ closed anyway and a `warning:` names the leftover directory to inspect and
 delete by hand. Finished features are history: only `feature list --all` and
 `status` accept them.
 
+### Setup scripts
+
+A fresh worktree often needs a step before it is usable: `uv sync` for a
+`.venv`, `npm ci` for `node_modules`. Give the role a script and hub runs it
+in every worktree it creates for that role:
+
+```bash
+hub repo set api --setup scripts/setup-api.sh
+```
+
+The path is relative to the hub repo (so the script ships with `hub.json`
+and the whole team gets it on pull) and is resolved against the hub's main
+clone. It must stay inside the repo: absolute paths and `..` are refused.
+Hub executes the file directly, so it needs a shebang and the executable
+bit. It runs with the new worktree as its working directory, stdin closed,
+and these variables set:
+
+| Variable | Value |
+|---|---|
+| `HUB_ROLE` | the role |
+| `HUB_FEATURE` | the feature |
+| `HUB_BRANCH` | the branch checked out in the worktree |
+| `HUB_WORKTREE` | the worktree (also the working directory) |
+| `HUB_BASE` | the role's base checkout, the main clone |
+| `HUB_ROOT` | the hub's main clone |
+
+`feature start`, `feature add`, and `feature start-review` run it after the
+feature record is written and the hub lock is released, one role at a time
+in manifest order, so a slow install never blocks another terminal's hub
+command and never rolls a feature back. Only worktrees hub created run it:
+an adopted worktree, a branch used in place in the main clone, and a frozen
+reference checkout do not. `--no-setup` skips it.
+
+Each run prints `Running setup for <role>: <script>` first, then one result
+line. Output goes to `.git/hub/setup/<feature>/<role>.log` in the hub's
+main clone; on failure the last 20 lines follow the result line. A failed
+or missing script is reported, never fatal: the command's exit code is
+unchanged, and `hub feature setup [ROLE]` runs it again later (that command
+alone exits 1 when a script fails). The dashboard shows the same rows in
+the popup that follows a start or add, updating as each script finishes,
+and refuses to quit while one is running.
+
 ### Hub files
 
 `hub init` writes an `AGENTS.md` unless the directory already has one or a
@@ -458,8 +501,9 @@ the instructions file are never modified. Generated workspace files remain local
 every workspace write adds its exact filename to Git's local exclude file.
 
 Feature records are plain JSON under `.git/hub/features/` in the hub's main
-clone; every hub worktree reads the same files, so `hub feature list` and
-`hub status` agree everywhere. `hub feature list --json` and `hub status
+clone, and setup script logs under `.git/hub/setup/`; every hub worktree
+reads the same files, so `hub feature list` and `hub status` agree
+everywhere. `hub feature list --json` and `hub status
 --json` are the supported way to read them.
 
 ### Sharing a hub

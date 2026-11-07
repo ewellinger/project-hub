@@ -18,14 +18,15 @@ A hub is a git repo, shared through a remote when the project has one, whose `hu
 | Intent | Command |
 |---|---|
 | Turn the current directory into a hub; `--force` refreshes an existing one | `hub init [--name N] [--checkout-template T] [--force]` |
-| Register `<project_home>/CLONE` under a role | `hub repo add ROLE CLONE [--base B] [--branch-template T] [--description D]` |
-| Change a role's clone, base, branch template, or description in place | `hub repo set ROLE [--clone C] [--base B] [--branch-template T] [--description D]` |
+| Register `<project_home>/CLONE` under a role; `--setup` names a script hub runs in each new worktree of the role | `hub repo add ROLE CLONE [--base B] [--branch-template T] [--description D] [--setup P]` |
+| Change a role's clone, base, branch template, description, or setup script (`--setup ""` clears it) in place | `hub repo set ROLE [--clone C] [--base B] [--branch-template T] [--description D] [--setup P]` |
 | Rename a role in `hub.json` and this machine's records; `--records-only` catches up records after pulling a rename | `hub repo rename OLD NEW [--records-only [--clone C]]` |
 | Unregister a role (clone untouched) | `hub repo remove ROLE` |
 | Show the member repos | `hub repo list [--json]` |
-| Start a feature: hub branch and worktree, one change per `--repo`, one frozen reference worktree per `--freeze`, tmux session | `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]...` |
-| Set up an isolated review of a GitLab MR or GitHub PR: its role from the URL, the real source branch at the verified head, base = the MR's target, stage `review` | `hub feature start-review URL [--name NAME] [--checkout C]` |
-| Bring one more role into the feature | `hub feature add ROLE [--branch B] [--from REF \| --from-latest] [--base B] [--worktree W]` (the role is required without a terminal) |
+| Start a feature: hub branch and worktree, one change per `--repo`, one frozen reference worktree per `--freeze`, tmux session | `hub feature start NAME [--checkout C] [--repo ROLE[:BRANCH]]... [--freeze ROLE]... [--no-setup]` |
+| Set up an isolated review of a GitLab MR or GitHub PR: its role from the URL, the real source branch at the verified head, base = the MR's target, stage `review` | `hub feature start-review URL [--name NAME] [--checkout C] [--no-setup]` |
+| Bring one more role into the feature | `hub feature add ROLE [--branch B] [--from REF \| --from-latest] [--base B] [--worktree W] [--no-setup]` (the role is required without a terminal) |
+| Rerun a role's setup script, or every hub-created worktree's, in the current feature | `hub feature setup [ROLE]` |
 | Record the branch a role's open change merges into, when it is not the role's base | `hub feature set-base ROLE BRANCH` |
 | Pin a role to a fixed commit of its local base: a read-only reference worktree for a role outside the feature, a comparison point for an open change | `hub feature freeze ROLE [--at REF]` |
 | Release a pin and remove the reference worktree | `hub feature unfreeze ROLE [--force]` |
@@ -65,6 +66,7 @@ After any command that changes state, run `hub status --json` (with `--feature N
 - **`finish` refuses because it is running inside the feature's own tmux session:** killing that session would also kill the command. Do not retry from this window; tell the user to run `hub feature finish --feature NAME` from a terminal outside the session.
 - **`tmux is off; no session created`, or `hub tmux` refusing with `tmux is off`:** sessions are disabled by `tmux = false` in the config or tmux is not installed. This is not an error; report the worktree paths from `hub status --json` instead of an attach command, and do not install or start tmux.
 - **Adopted worktrees:** `merged` and `finish` ask before removing a worktree the hub did not create, and stop without `--force` when they cannot ask. Name the worktree path and get the user's yes before passing `--force`.
+- **A `setup failed`, `setup killed`, or `setup could not start` line after `start`, `add`, or `start-review`:** that role's setup script (its `setup` in `hub.json`) did not succeed; the worktree and the feature are complete and nothing needs rolling back. Report the line and the log path it names (`.git/hub/setup/<feature>/<role>.log`). Run `hub feature setup ROLE` to rerun it only when the user asks; never pass `--no-setup` unless the user asks to skip the scripts.
 - **A `warning:` line:** the feature record was written but a workspace or tmux step failed; the line names the command that retries it (`hub sync` or `hub tmux`). Run that command once. If it fails again, report the error and stop. The `warning: tmux = true … but tmux is not on PATH; skipping sessions` line is informational; do not run `hub tmux` for it.
 - **A `warning:` line saying a worktree's directory remains:** git unregistered the worktree but could not delete the directory, and the role or feature is already recorded as closed. Report the path and git's reason; do not delete the directory unless the user asks.
 - **A `warning:` naming a fetch, `origin/<base>`, or the hub skill:** a failed fetch or a missing `origin/<base>` means that clone's counts are stale and `base_behind` may be `null`; fix the fetch (network, credentials, or a sandbox that cannot write to the clone) and rerun `status`. `hub sync` and `hub tmux` do not help. A warning that the hub skill could not be refreshed or excluded concerns only the generated skill copies; report it and nothing else is affected.

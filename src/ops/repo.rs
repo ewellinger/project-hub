@@ -13,6 +13,7 @@ pub struct AddRepoOptions {
     pub base: Option<String>,
     pub branch_template: Option<String>,
     pub description: Option<String>,
+    pub setup: Option<String>,
 }
 
 /// The clone directory must be a git repository with an `origin`; returns
@@ -72,6 +73,9 @@ pub fn add(hub: &Hub, opts: &AddRepoOptions) -> Result<Vec<String>> {
         .clone()
         .unwrap_or_else(|| names::DEFAULT_BRANCH_TEMPLATE.to_string());
     check_template(&branch_template)?;
+    if let Some(setup) = &opts.setup {
+        names::validate_setup_path(setup)?;
+    }
     let clone_dir = hub.env.clone_path(&opts.clone);
     let (git, remote) = inspect_clone(hub, &opts.clone)?;
     let base = match &opts.base {
@@ -91,6 +95,7 @@ pub fn add(hub: &Hub, opts: &AddRepoOptions) -> Result<Vec<String>> {
         base: base.clone(),
         branch_template,
         description: opts.description.clone().unwrap_or_default(),
+        setup: opts.setup.clone(),
     });
     hub.save_manifest(&manifest, &format!("repo add {}", opts.role))?;
     Ok(vec![format!(
@@ -106,6 +111,8 @@ pub struct SetRepoOptions {
     pub base: Option<String>,
     pub branch_template: Option<String>,
     pub description: Option<String>,
+    /// `Some("")` clears the script.
+    pub setup: Option<String>,
 }
 
 /// Change some of a role's fields in place, keeping its position; one commit.
@@ -114,9 +121,10 @@ pub fn set(hub: &Hub, opts: &SetRepoOptions) -> Result<Vec<String>> {
         && opts.base.is_none()
         && opts.branch_template.is_none()
         && opts.description.is_none()
+        && opts.setup.is_none()
     {
         return Err(HubError::Usage(
-            "repo set needs at least one of --clone, --base, --branch-template, --description"
+            "repo set needs at least one of --clone, --base, --branch-template, --description, --setup"
                 .into(),
         ));
     }
@@ -161,6 +169,14 @@ pub fn set(hub: &Hub, opts: &SetRepoOptions) -> Result<Vec<String>> {
     if let Some(description) = &opts.description {
         note("description", &repo.description, description);
         repo.description = description.clone();
+    }
+    if let Some(setup) = &opts.setup {
+        let new = (!setup.is_empty()).then(|| setup.clone());
+        if let Some(path) = &new {
+            names::validate_setup_path(path)?;
+        }
+        note("setup", repo.setup.as_deref().unwrap_or(""), setup);
+        repo.setup = new;
     }
     if let Some(clone) = opts.clone.as_ref().filter(|c| **c != repo.clone) {
         names::validate_clone(clone)?;
@@ -235,12 +251,20 @@ pub fn list_table(hub: &Hub) -> Vec<String> {
                 r.clone.clone(),
                 r.base.clone(),
                 r.branch_template.clone(),
+                r.setup.clone().unwrap_or_default(),
                 r.description.clone(),
             ]
         })
         .collect();
     table(
-        &["ROLE", "CLONE", "BASE", "BRANCH TEMPLATE", "DESCRIPTION"],
+        &[
+            "ROLE",
+            "CLONE",
+            "BASE",
+            "BRANCH TEMPLATE",
+            "SETUP",
+            "DESCRIPTION",
+        ],
         &rows,
     )
 }

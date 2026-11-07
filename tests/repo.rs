@@ -290,6 +290,46 @@ fn repo_add_records_a_provider_remote_that_git_rewrites_locally() {
     );
 }
 
+#[test]
+fn add_and_set_record_the_setup_script() {
+    let fx = Fixture::new();
+    let hub = fx.init_hub("acme");
+    fx.make_repo("api-clone", "main");
+    fx.hub(
+        &hub,
+        &[
+            "repo",
+            "add",
+            "api",
+            "api-clone",
+            "--setup",
+            "scripts/api.sh",
+        ],
+    )
+    .assert()
+    .success();
+    assert_eq!(manifest(&hub)["repos"][0]["setup"], "scripts/api.sh");
+    fx.hub(&hub, &["repo", "list"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("SETUP"))
+        .stdout(predicate::str::contains("scripts/api.sh"));
+    fx.hub(&hub, &["repo", "set", "api", "--setup", ""])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "setup: \"scripts/api.sh\" -> \"\"",
+        ));
+    assert!(
+        manifest(&hub)["repos"][0].get("setup").is_none(),
+        "cleared means omitted"
+    );
+    fx.hub(&hub, &["repo", "set", "api", "--setup", "/abs/x.sh"])
+        .assert()
+        .code(1)
+        .stderr(predicate::str::contains("setup script"));
+}
+
 fn manifest(hub: &std::path::Path) -> serde_json::Value {
     serde_json::from_str(&std::fs::read_to_string(hub.join("hub.json")).unwrap()).unwrap()
 }

@@ -486,6 +486,7 @@ mod tests {
             base: "master".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         };
         let git = Git::new(Path::new("/nonexistent/definitely-not-a-repo"));
         let err = default_branch(&feature, &repo, &git).unwrap_err();

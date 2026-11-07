@@ -19,6 +19,12 @@ impl App {
                     self.say(text, true);
                     return Vec::new();
                 }
+                // A quit here would orphan the script and lose its result.
+                if let Some(role) = self.setup_in_flight() {
+                    let text = format!("setup running for {role}; Ctrl-C quits anyway");
+                    self.say(text, true);
+                    return Vec::new();
+                }
                 self.quit = true;
                 Vec::new()
             }
