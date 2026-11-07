@@ -145,11 +145,7 @@ fn close(
             feature.name
         ))
     })?;
-    let word = if stage == Stage::Dropped {
-        "dropped"
-    } else {
-        "merged"
-    };
+    let word = stage.as_str();
     let mut lines = Vec::new();
     if !feature.is_open() {
         record_stage(feature, role, stage);
@@ -227,7 +223,7 @@ fn close(
     lines.extend(closed);
     record_stage(feature, role, stage);
     // The pin belonged to the change; the role goes back to absent.
-    let dropped = feature.remove_pin(role);
+    let pin = feature.remove_pin(role);
     hub.save_feature(feature)?;
     after_save(
         &mut lines,
@@ -235,7 +231,7 @@ fn close(
         &format!("hub sync --feature {}", feature.name),
     );
     lines.push(format!("{role}: {} marked {word}", change.branch));
-    if let Some(pin) = dropped {
+    if let Some(pin) = pin {
         lines.push(format!("{role}: pin at {} dropped", pin.short()));
     }
     Ok(lines)

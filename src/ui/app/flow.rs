@@ -569,7 +569,7 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
                 if open_row(record, report, &change.role).is_some_and(|r| r.dirty) {
                     lines.push((
                         format!(
-                            "! {} is dirty; finish will refuse without force",
+                            "! {} is dirty; m or d will refuse without force",
                             change.role
                         ),
                         Tone::Warn,
@@ -629,7 +629,7 @@ fn remove(feature: &str, answer: Answer, app: &App) -> Step {
                 ("Delete the record; there is no undo".into(), Tone::Plain),
                 (String::new(), Tone::Plain),
                 (
-                    "Each branch must be merged and gone from origin; any refusal changes nothing"
+                    "Each branch must be merged or dropped and gone from origin; any refusal changes nothing"
                         .into(),
                     Tone::Dim,
                 ),

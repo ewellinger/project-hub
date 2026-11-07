@@ -162,14 +162,14 @@ config unset KEY` removes one.
 
 ### Without tmux
 
-With `tmux = false` in `config.toml`, or when `tmux` is not on `PATH`, `hub`
-still creates every worktree, workspace file, and feature record but no
-session: `feature start`, `start-review`, and `add` print `tmux is off; no
-session created`, `finish` and `merged` skip their session steps, `status`
-and the dashboard leave out the attach hints, and `hub tmux` refuses. Open
-the feature with `hub open` or `cd` into the paths `hub status` lists.
-Setting `tmux = true` with no `tmux` installed prints one warning and carries
-on without sessions.
+With `tmux = false` in `config.toml`, or when `tmux` is not on `PATH`,
+`hub` still creates every worktree, workspace file, and feature record but
+no session: `feature start`, `start-review`, and `add` print `tmux is off;
+no session created`, `finish`, `merged`, and `dropped` skip their session
+steps, `status` and the dashboard leave out the attach hints, and `hub
+tmux` refuses. Open the feature with `hub open` or `cd` into the paths `hub
+status` lists. Setting `tmux = true` with no `tmux` installed prints one
+warning and carries on without sessions.
 
 With tmux on, a session `hub` creates starts `hub` in its `hub` window, so
 the feature view is waiting when you attach; quitting it leaves a shell.
@@ -225,7 +225,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch. Refuses while a role is `working` or `review` unless `--force`, which also removes dirty worktrees |
 | `hub feature remove NAME` | Free a finished feature's name for reuse: delete its local member branches (each marked merged or dropped, or contained in its base, and gone from origin), its hub branch (nothing beyond `main`), and its record; any refusal changes nothing |
 | `hub feature list [--all] [--refresh] [--json]` | Open features with the stage of each role, a review word after a role in review (`api:review(ci failed)`), and frozen roles as `ROLE:frozen`; `--all` includes finished ones; `--refresh` reads review state from the forge for every open feature first |
-| `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged roles and finished features list under `Completed`; a feature's merge and pull requests list in a review section; exit 30 on structural drift |
+| `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged or dropped roles and finished features list under `Completed`; a feature's merge and pull requests list in a review section; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
 | `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
 | `hub tmux` / `hub open` / `hub sync` | Repair the session / open the workspace / regenerate it; from the main hub, `tmux` and `open` use all base checkouts |
@@ -251,7 +251,7 @@ with `role 'ROLE' already has an open change on branch '...'`.
 This is deliberate. Within a feature, a role always resolves to exactly
 one checkout: the feature's open change while it is working or in review,
 and the base checkout otherwise. The commands that name a role (`review`,
-`merged`, `set-base`), the rows of `status` and `pull`, the workspace file,
+`merged`, `dropped`, `set-base`), the rows of `status` and `pull`, the workspace file,
 the tmux window named after the role, and an agent reading the hub all rely
 on that answer being unambiguous. With two open branches of the same repo,
 each of them would first have to ask which one you meant. Work that needs
@@ -438,16 +438,17 @@ and rolls back exactly that if anything up to the record write fails. After
 the write, a failed workspace or tmux step is printed as a `warning:` with
 the command that retries it (`hub sync`, `hub tmux`).
 
-`feature merged`, `feature dropped`, and `feature finish` refuse to remove a dirty worktree
-without `--force`, and refuse (exit 21) while a process has its working
-directory inside a worktree they are about to remove: a dev server or test
-watcher recreating files mid-delete leaves an unregistered directory behind.
-Both commands re-point or kill the feature's own tmux windows first, so only
-processes started elsewhere trip the check. Should git unregister a worktree
-and still fail to delete its directory, the role or feature is recorded as
-closed anyway and a `warning:` names the leftover directory to inspect and
-delete by hand. Finished features are history: only `feature list --all` and
-`status` accept them.
+`feature merged`, `feature dropped`, and `feature finish` refuse to remove
+a dirty worktree without `--force`, and refuse (exit 21) while a process
+has its working directory inside a worktree they are about to remove: a dev
+server or test watcher recreating files mid-delete leaves an unregistered
+directory behind. These commands re-point or kill the feature's own tmux
+windows first, so only processes started elsewhere trip the check. Should
+git unregister a worktree and still fail to delete its directory, the role
+or feature is recorded as closed anyway and a `warning:` names the leftover
+directory to inspect and delete by hand. Finished features are history:
+only `feature list --all`, `status`, and `feature merged`/`feature dropped`
+(which then change only the record) accept them.
 
 ### Hub files
 

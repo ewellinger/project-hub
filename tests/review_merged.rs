@@ -525,6 +525,8 @@ fn merged_and_dropped_on_a_finished_feature_change_only_the_record() {
     assert_eq!(f["status"], "finished");
     assert_eq!(f["changes"][0]["stage"], "dropped");
     assert_eq!(f["changes"][1]["stage"], "merged");
+    assert!(f["changes"][0]["dropped_at"].is_string());
+    assert!(f["changes"][1]["merged_at"].is_string());
     assert_eq!(
         fx.tmux_log(),
         tmux_before,

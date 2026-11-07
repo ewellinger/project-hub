@@ -294,11 +294,11 @@ enum FeatureCommand {
         /// Feature name; inferred from the hub worktree when omitted
         #[arg(long)]
         feature: Option<String>,
-        /// Remove dirty, adopted, and off-pin frozen worktrees without asking (discards commits on a frozen worktree's detached HEAD)
+        /// Finish while roles are still open, and remove dirty, adopted, and off-pin frozen worktrees without asking (discards commits on a frozen worktree's detached HEAD)
         #[arg(long)]
         force: bool,
     },
-    /// Delete a finished feature's merged branches and its record, freeing the name
+    /// Delete a finished feature's merged or dropped branches and its record, freeing the name
     Remove {
         /// Feature name
         name: String,

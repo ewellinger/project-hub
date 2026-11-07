@@ -919,7 +919,7 @@ mod tests {
             "Finish suspense".into(),
             vec![
                 ("Kill tmux session acme-suspense".into(), Tone::Plain),
-                ("! not merged: api (working)".into(), Tone::Warn),
+                ("! still open: api (working)".into(), Tone::Warn),
             ],
             true,
         ));
@@ -935,7 +935,7 @@ mod tests {
             "key bold"
         );
         assert_eq!(
-            find_style(100, 30, &a, "! not merged").fg,
+            find_style(100, 30, &a, "! still open").fg,
             Some(Color::Yellow)
         );
         // The real blocker, built the way `flow::finish` builds it: one

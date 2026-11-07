@@ -9,7 +9,7 @@ use crate::hub::Hub;
 /// Delete a finished feature's local branches (every member branch and the
 /// hub branch) and then its record, so `start` can use the name again with
 /// fresh branches. Every branch is checked first and any refusal changes
-/// nothing: a member branch must be marked merged (squash merges leave no
+/// nothing: a member branch must be marked merged or dropped (squash merges leave no
 /// ancestry) or be contained in `origin/<base>`, and must be gone from origin,
 /// where `start` would adopt it; the hub branch must have nothing beyond
 /// `main`. Branches already deleted are skipped, so a rerun completes.

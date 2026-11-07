@@ -449,7 +449,7 @@ fn finish_refuses_commits_off_the_pin_unless_forced() {
 }
 
 #[test]
-fn finish_reports_stray_commits_before_a_dirty_change_worktree() {
+fn finish_reports_stray_commits_before_the_open_roles_refusal() {
     let (fx, hub) = world();
     fx.hub(&hub_wt(&fx), &["feature", "freeze", "api"])
         .assert()
