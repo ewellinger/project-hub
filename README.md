@@ -553,9 +553,9 @@ read-only reference checkout. A pinned open change is still a member and is
 styled like one.
 The footer shows the frequent keys, and `u` and `Z` with the cursor on a
 frozen role or pinned change; `?` lists them all.
-Its keys call the same commands the CLI has, under the hub lock, and show the
-command's output when it finishes; a failure shows the error and changes
-nothing.
+Its keys call the same commands the CLI has, under the hub lock (`V` without
+it, as `hub feature viewed` does), and show the command's output when it
+finishes; a failure shows the error and changes nothing.
 
 | Key | Action |
 |---|---|

@@ -52,7 +52,7 @@ pub enum RowId {
     Feature(String),
 }
 
-/// One hub op with its resolved arguments; runs under the lock on a worker.
+/// One hub op with its resolved arguments; runs on a worker, under the lock except `Viewed`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Action {
     Start {
