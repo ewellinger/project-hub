@@ -12,10 +12,10 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-c17c8e3e271a8329ed7a5e63
     resource: repo://src/feature.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Quickstart
@@ -69,7 +69,7 @@ Bare `hub` in a terminal opens the dashboard.
 | Work on `hub init` or `hub repo add/set/remove/rename` | [Hub init and repo registration](workflows/hub-and-repo-management.md) |
 | Work on `feature start`/`add`, adoption, rollback, prompts, branch suggestions | [Starting features and adding roles](workflows/feature-start-and-add.md) |
 | Work on `feature start-review` and GitLab/GitHub handling | [Reviewing a merge or pull request](workflows/start-review.md) |
-| Work on `review`, `set-base`, `merged`, `finish`, `remove` (reusing a finished feature's name), dirty/in-use refusals | [Review, merged, set-base, finish, and remove](workflows/review-merged-finish.md) |
+| Work on `review`, `set-base`, `merged`, `dropped`, `finish`, `remove` (reusing a finished feature's name), dirty/in-use refusals | [Review, merged, set-base, finish, and remove](workflows/review-merged-finish.md) |
 | Work on frozen bases: `freeze`/`unfreeze`/`refreeze`, pins, `start --freeze`, `add` on a frozen role | [Frozen bases: freeze, unfreeze, and refreeze](workflows/frozen-bases.md) |
 | Work on `status`, drift, hints, `feature list`, or `pull` | [Status, list, and pull](workflows/status-and-pull.md) |
 | Work on what hub reads from a merge/pull request (approval, pipeline, threads, conflicts), the review section, the list word, or when the forge is read | [Review state from the forge](workflows/review-state.md) |
@@ -91,7 +91,8 @@ Bare `hub` in a terminal opens the dashboard.
   what it created; workspace and tmux steps after the write are warnings with a
   retry command.
 - Nothing pushes or rebases, and only `feature remove` deletes a branch (a
-  finished feature's merged local ones); removals refuse dirty
+  finished feature's merged or dropped local ones); `finish` refuses while a
+  role is still `working` or `review`; removals refuse dirty
   (exit 20) or in-use (exit 21) worktrees without `--force`; `status` exits 30
   on structural drift. A frozen worktree whose detached HEAD left its pin is
   refused (exit 1) before any dirty check, so `--force` never silently

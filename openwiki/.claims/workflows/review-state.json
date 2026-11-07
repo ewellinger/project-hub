@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9037fb9bca51055efc4fba104c33864de4ef72403f21300609b3f4e36e959a38",
+  "pageVersion": "sha256:4eabb1d50307c28b9d59fa982166dc96e84146eefe3e15c842b3fd8c71287f96",
   "claims": [
     {
       "id": "claim_fb3efe01b61d443e9b5633c0d4f0d706",
@@ -95,8 +95,8 @@
       "statement": "`attach` fills `row.review` for each target's review row from the forge or from the remembered store, replaces the row's hint when the request is merged or closed, and appends the read's warnings to the report.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L135-L171",
-          "version": "repo-lines-v1:sha256:30c43845086497d7539c0316d4be6fbecedf41ed12f9d6982a7ec62b54c7b8aa:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2MTg3OWJlOWE3MjJhYWE4Y2QyMzgyZTg5NDg2NjNmNmMyMGQxMDMyNDhkZWQ3NzViYWFkMzRiNmZiMTk4MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyOGQyOTMwZWJjNjkyM2Y5NDVmNjU3OGNlZmI5MmUxYTgyYTU5NzRiYTI3MWFmYmIxMDY5NWY5ZGYxM2Q0MTgifQ"
+          "resource": "repo://src/ops/review_state.rs#L135-L174",
+          "version": "repo-lines-v1:sha256:66f96fc9f2147c70fd21a437925f4a989a73dd3f7f4a5c718461e8f567bd365c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2MTg3OWJlOWE3MjJhYWE4Y2QyMzgyZTg5NDg2NjNmNmMyMGQxMDMyNDhkZWQ3NzViYWFkMzRiNmZiMTk4MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNjNjNGQxYWY4Y2Q4OWJiMGJkZDc2NTdmZmNiZjY4MDZhNjEwZDc5ZDZjOGQ0YzMwN2MyNDFkZjM5MDA1MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyOGQyOTMwZWJjNjkyM2Y5NDVmNjU3OGNlZmI5MmUxYTgyYTU5NzRiYTI3MWFmYmIxMDY5NWY5ZGYxM2Q0MTgifQ"
         }
       ]
     },
@@ -105,7 +105,7 @@
       "statement": "`hub feature list --refresh` reads review state for all open features before listing and prints any problem, including a failure of the refresh itself, as `warning:` lines (on stderr with --json) without failing the command.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L590-L623",
+          "resource": "repo://src/main.rs#L609-L642",
           "version": "repo-lines-v1:sha256:7ca877433c25508a62aa0a621e4fbaee948cf80347ea5a9ccffe8f46f0207858:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YWZmNmI1NGFmZTZlMTBkMmZkZTgyMWVhMGVkOTU5MDUwNDJiOTkzNDNlY2JhMzQzMDE5ZTJhYmYxZWI2OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiYjYwYTEyNTkyOGJkMDFkOTkyZTA1ZDQzNDg0ZDczNGUyYWYzZTgyNDNhNDQyYjM1NmVmMTQ4NmRiNzlkY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NGE0NTA2NjYyMGIyY2QxMzY5MTA1OGY2NzlhN2FiMWJhNDdiYWZjMDdiYmU2Yzc2Y2E5M2Y0ZTI1ZTVjMWIifQ"
         }
       ]
@@ -129,7 +129,7 @@
       "statement": "The list word is the first that applies in the order merged, closed, conflicts, ci failed, N threads, changes, ci running, approved, draft; an open request with none of these has no word.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L227-L253",
+          "resource": "repo://src/ops/review_state.rs#L230-L256",
           "version": "repo-lines-v1:sha256:525bcc62a631b4cb02ada7a0f76f0968efcc9729209ba2878b4a78edc84d14a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYzQ0ZGI4YzFmZTFlYzhiZGViYTFlMjdiMTY2MTY5NjU1ZThkOTZhYTJkMzg2YzNmZTU2MDAwNmMyYTE2YWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1NGYwMTEyZDk5YzdlODE2OTJlMTJlZGMwZjU4ZDk0MzIyNTg0Nzc2MWE0Y2JmNWJmMTJjZmEzODY5YjgxYzAifQ"
         }
       ]
@@ -139,18 +139,18 @@
       "statement": "The status review section appears only when some open row is in stage review with a parseable URL; its cells show `?` for an unknown field and `-` for approval, threads and conflicts of a merged or closed request, and its age line uses the oldest read among the rows.",
       "evidence": [
         {
-          "resource": "repo://src/ops/review_state.rs#L265-L377",
+          "resource": "repo://src/ops/review_state.rs#L268-L380",
           "version": "repo-lines-v1:sha256:50d5896c80a2655fa458f9d48cf1b3785bda48d049a32b412886583c9c1535f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlYWQwOWZhMjg1MDBiYzM3NzFlMGI5MzllMDg1NjUyMzc4YjdhNDRiNzk3MGVkZDZmN2JjNjJhMmNiY2YwZmY5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MDA3NzhhZDNlZDE3N2Q2NTI5ODkzYTk3Zjc2ZmY5NmEzYjdiOWQ1MGE0ZWJkOGZiZDk5MTg4NTYzMjg5YmJkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4NTk2ZDNmMTk4Njk2MzY2MDUxMTM3NzdjN2YxYzFhZmIzZDMxM2JmZjg2NjllZTVkYjkzZjM3YWJlZTc2ZDUzIn0"
         },
         {
-          "resource": "repo://src/ops/status.rs#L585-L588",
+          "resource": "repo://src/ops/status.rs#L590-L593",
           "version": "repo-lines-v1:sha256:680ecf1ffde58abf47b2d610f1973d25d9dc985df4ab3e8d6410d55ed8f05b96:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2YyN2QxNWNhMzJmOGZmNDhlYzUyMjQ4MzRiMjU5MmI2ZjNmY2YzNzhhMDM3ZDczZDBiMjFhYWYxYjY3ODc4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDBlMjAwNzdjZGFmNDRjYmM5NmYyNzI4Y2IzMGRhMjgwZDE1ZjhmNDFjZTVkYjMwYmU4YjkyNWQ3Y2U3MWJmNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTYwNzI4MmZiNmVhNzBjNjUzY2NhMTU5MDMwMjJhNzNlOGY3NDExMjA4YzJiZGIxMTkyYzYxZDljN2E2NzdkYyJ9"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ce5bcbc0dcf3cc263e01dfdda7bdf0084d2fad46a2b54548ccb496737b319f58",
+  "pageVersion": "sha256:37f1c057c27c097bb87efc2392db256ba91fa43856c8f7572416ea2e75cb5d72",
   "claims": [
     {
       "id": "claim_e4ab32e300dd456aa6ca521e062a31b9",
@@ -37,7 +37,7 @@
       "statement": "Every hub-scoped command refreshes the skill in all existing hub worktrees, collecting failures as warnings printed to stderr rather than failing the command.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L335-L344",
+          "resource": "repo://src/main.rs#L346-L355",
           "version": "repo-lines-v1:sha256:6f524497c0611fae0a15c3772e835dd75e73c5e968c5c892d8b10fca170c6e3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZDMxYWM0NzhlYjY5NjkyNzA3OGZmYmIxYzY2ODVlYmMxNmI4YjkzODE2OTA5MTA3NjQ4ZTdhOGI3ZmIxMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkNDQ2NDE5ODBkMGY4ZjJiOWMyYjFjODQ2ZTBiNmNjMzJkYWEzNjIwZDUxYTAxMjc2N2M5OTZlNWM3NThiYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhZmUxMWE2ODc2MDQzMmFhMmRjNWVhNzYzNmYxNmFlNzNmMGM2M2U4ZTMzMGI5MDE5ZGIyZWMwNmE3NGU1ZTcifQ"
         },
         {
@@ -83,8 +83,8 @@
           "version": "repo-lines-v1:sha256:f18a6a3da0afe5fad871d2c4332cf8c7e456f88b4dffaef86bd44d1c89e7d0c7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTI0YjA4N2M0YzA0MjJmYTg0NDUxNDY4MDg5YThhYzczYzBmYjFhYzRjYTg3OGZlMmU0MzUwOWY0ODZhYmI2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmMwNjY3OWY2N2QxM2FjNWVmNjY2NDdkYmJjZTQ2YzgxYzY0MmEwOWRlMWQ3MzFjMzEyOWI2ZTFiNDA1NjIyYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzQ1YTUzMmI0NTk2M2NkZWFhNjAxYjI1Y2NmMWZkMTQzY2VlNWNkM2I0OTg4NTBjODI5NmU2OWQwOGU5ZTRlNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGNkY2Q3ZWQyNWM4YWQ5YjQ3MDg4MTczMTk3Y2Y2OGU3M2I4ZTY1Y2Q3YTdjNmZjMDYxODYyNjAxZmJiM2JkYSJ9"
         },
         {
-          "resource": "repo://skills/hub/SKILL.md#L50-L50",
-          "version": "repo-lines-v1:sha256:1c30a8f92710e85340f884df37a72e1bda016b7dfbb2b2cf928be54328c27a20:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMzMGE4ZjkyNzEwZTg1MzQwZjg4NGRmMzdhNzJlMWJkYTAxNmI3ZGZiYjJiMmNmOTI4YmU1NDMyOGMyN2EyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMzMGE4ZjkyNzEwZTg1MzQwZjg4NGRmMzdhNzJlMWJkYTAxNmI3ZGZiYjJiMmNmOTI4YmU1NDMyOGMyN2EyMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNkNjY3ZDkyMWM2YjQ0MzY5MmQ4MDJkMDRiZTg2NzkzZTEwYTI5OGY5OGVhMWU1ODM3Nzk4YmI0ZDM1NDVkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1YTIzMDM5MDdlNmVlYWUxNTAxZWU5NDUzOTIwNjc3ODI1NTgxODc2MzBkNWE5ZDNlNjc1MGVhODhlNjE4NyJ9"
+          "resource": "repo://skills/hub/SKILL.md#L51-L51",
+          "version": "repo-lines-v1:sha256:a150239ed98b4740ef5dad770974cc9e37f1ed9c1c7dd40586726781b239e872:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTE1MDIzOWVkOThiNDc0MGVmNWRhZDc3MDk3NGNjOWUzN2YxZWQ5YzFjN2RkNDA1ODY3MjY3ODFiMjM5ZTg3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTE1MDIzOWVkOThiNDc0MGVmNWRhZDc3MDk3NGNjOWUzN2YxZWQ5YzFjN2RkNDA1ODY3MjY3ODFiMjM5ZTg3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNkNjY3ZDkyMWM2YjQ0MzY5MmQ4MDJkMDRiZTg2NzkzZTEwYTI5OGY5OGVhMWU1ODM3Nzk4YmI0ZDM1NDVkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1YTIzMDM5MDdlNmVlYWUxNTAxZWU5NDUzOTIwNjc3ODI1NTgxODc2MzBkNWE5ZDNlNjc1MGVhODhlNjE4NyJ9"
         }
       ]
     },
@@ -93,8 +93,8 @@
       "statement": "The skill tells agents that a frozen row is a read-only reference checkout never to edit, commit in, or check out, to run refreeze only when the user asks, and never to pass --force past an 'is off its pin' refusal without the user's explicit yes.",
       "evidence": [
         {
-          "resource": "repo://skills/hub/SKILL.md#L61-L63",
-          "version": "repo-lines-v1:sha256:733237008faf50f0ec48a5355913c3db5955fd1a5f5c6d357df41d678f6d598b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGQwNDVmMGUzZWIxNDBhZjgyMTNkOWQyZDg5ZjE2ZDc2MGJiNDBlMmE5YjIzOTc5NTRiYjhlMjc4Yjg3MmU2NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTA0YWU2NGMwYzU1YTYxNTAwYjk2Nzg2YWExMjlmZTdkODVlMTVkOTJhZTdhMzdlYjQ1MGM0NDM0MDc2MzQ2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODk5OGFmMjk4NDhlNjFlNDZlNjdkZWIwZGFmYjgwZDI0NDVkODJmMzMyODNiZTZhMWE5YTg3YzM1MDRmNTZmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTVkMTY4NTJlZjIwYjNlYjZjYjc0MDY4NTIxZjQxYWViY2UwMmViZGE0YTczMjE1NDI5ZmYzOGY1NGUzNjJiYSJ9"
+          "resource": "repo://skills/hub/SKILL.md#L62-L64",
+          "version": "repo-lines-v1:sha256:d603a2a962bf27e3923fec00b48cdbdbdabd7be0184733eb8326653dda6c252c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGQwNDVmMGUzZWIxNDBhZjgyMTNkOWQyZDg5ZjE2ZDc2MGJiNDBlMmE5YjIzOTc5NTRiYjhlMjc4Yjg3MmU2NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTA0YWU2NGMwYzU1YTYxNTAwYjk2Nzg2YWExMjlmZTdkODVlMTVkOTJhZTdhMzdlYjQ1MGM0NDM0MDc2MzQ2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWU0ODFhNzUyNzJiOWMxZjI0MTY4OWYzZDVlNjI2NjE2Y2MyZGVhZGI4Mzg0NDdhYTI4N2JhYTMzNDRlY2UxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzk5M2FjYTU4ZWEzNTgwZDZlNjcxMGQ5OTdmODdhNjFiNzUxMGEzZTJhZWQ2YTg1MWEyODQ4NTc3MzE2ODQzMyJ9"
         }
       ]
     },
@@ -103,8 +103,8 @@
       "statement": "The skill's command table lists `hub feature remove NAME` and tells agents to run it only when the user asks and, on a refusal, to report the listed branches rather than delete them.",
       "evidence": [
         {
-          "resource": "repo://skills/hub/SKILL.md#L36-L36",
-          "version": "repo-lines-v1:sha256:1701f27e6505b616def63f2ff31d31ca11db4b263645489b2531bf2fa9ab953f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTcwMWYyN2U2NTA1YjYxNmRlZjYzZjJmZjMxZDMxY2ExMWRiNGIyNjM2NDU0ODliMjUzMWJmMmZhOWFiOTUzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTcwMWYyN2U2NTA1YjYxNmRlZjYzZjJmZjMxZDMxY2ExMWRiNGIyNjM2NDU0ODliMjUzMWJmMmZhOWFiOTUzZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWY1ZTc4YWIwNjczOWQ3ODBlZGNiNmQwNzgwY2E5MGE3MGM5NDViNDhlMWQxNzM0YjQ5ODA4MWM1NjBjMjVmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDE1MzA0NTgxY2NiYzczYjQ0ZjhjOTRiMzg3YWEwZjlmMzMxYzRjYzJhYjVjNmMzYmQxNWQ2MTUwMzY2MGJiZiJ9"
+          "resource": "repo://skills/hub/SKILL.md#L37-L37",
+          "version": "repo-lines-v1:sha256:1548ae046f7611a865f245ecf11d4455ab70582eb427c18ab2f7b5a4ae9d85ef:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTU0OGFlMDQ2Zjc2MTFhODY1ZjI0NWVjZjExZDQ0NTVhYjcwNTgyZWI0MjdjMThhYjJmN2I1YTRhZTlkODVlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTU0OGFlMDQ2Zjc2MTFhODY1ZjI0NWVjZjExZDQ0NTVhYjcwNTgyZWI0MjdjMThhYjJmN2I1YTRhZTlkODVlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2FmNjExOTBjMWRiNjJkYmI0MTFiYjljOWMzMGYwYzI5ZTU4Mjk3NTg4NjBlNWJmOGY2ZjY5MmVjNWMxMjA5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTk0Y2ZlNTA2YjcwZmNmNmYwNDRmOThlYjkzMWRmN2U2OTMyMDQ2ZTg5YjY5MjdmMGJhZTVlNDdjYWQ0NDMzNCJ9"
         }
       ]
     },
@@ -113,12 +113,12 @@
       "statement": "The skill's Merging feature documents into main section is the only route by which a hub branch's documents reach main: it is authorized by an explicit request or a yes to the one-time pre-finish offer, performs one local git merge --no-ff of the hub branch into the main clone's main with clean-tree checks on both sides, pushes nothing, deletes no branch, and changes no feature state; a finished feature is merged by branch name, and the reverse direction (main into the hub branch with git merge --ff) follows the same rules on request.",
       "evidence": [
         {
-          "resource": "repo://skills/hub/SKILL.md#L113-L137",
+          "resource": "repo://skills/hub/SKILL.md#L115-L139",
           "version": "repo-lines-v1:sha256:3c964d88b07ef5ceb38e1a3991726446478cca94fd8b604c22c362a0438d7c70:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ODNjNmVmYWZlNThhMjExZjA2MzgzOGRlZWQ5ZTk1YTlkM2YxNzcxZDM1ODQ1Y2Y4NTg0N2UxN2RjZmI1NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzMmZhZWY4OWI0ZmJhZGQ1NDllNzNkOGY0OTZmOGNjNTNlNzQxMWZkNGYzOGRhYjI1ZGExZWY1MzM3OTFlNmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiYWNhYjM2ZDAwOGFjODcxZmRiNzBiNzYzZjE1YzgxOTE4ZWQzZGI0ZDVkZWJjNDcyZTRjMmVhNmU3MWNlN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
-          "resource": "repo://skills/hub/SKILL.md#L58-L58",
-          "version": "repo-lines-v1:sha256:a25ce085cbf270a4db5ef26c30fd23d60df1566f0e82ce5c5273f0a9c5e90627:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTI1Y2UwODVjYmYyNzBhNGRiNWVmMjZjMzBmZDIzZDYwZGYxNTY2ZjBlODJjZTVjNTI3M2YwYTljNWU5MDYyNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTI1Y2UwODVjYmYyNzBhNGRiNWVmMjZjMzBmZDIzZDYwZGYxNTY2ZjBlODJjZTVjNTI3M2YwYTljNWU5MDYyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjUyZGY1NTc2NDk2Zjk2MDZjZTVjMjQ0ODBiMDIwMmI1ZDliOWM0ZWIzNTVlNDI5MWEwNjUxMzQyZDI3MGRiMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzUyZWQ3Y2Q3Zjg5YzI4MWQ2ODAwOGE4YjZlMzZlODMzMDFlZDY4NzA3ZDBlODcyNzU3MTM1ODkwOTczOGFjNyJ9"
+          "resource": "repo://skills/hub/SKILL.md#L59-L59",
+          "version": "repo-lines-v1:sha256:db530cec8b38c514fa499a086e44f662306b21ff1c28824e456c2fbeb86b0c75:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI1MzBjZWM4YjM4YzUxNGZhNDk5YTA4NmU0NGY2NjIzMDZiMjFmZjFjMjg4MjRlNDU2YzJmYmViODZiMGM3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI1MzBjZWM4YjM4YzUxNGZhNDk5YTA4NmU0NGY2NjIzMDZiMjFmZjFjMjg4MjRlNDU2YzJmYmViODZiMGM3NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQyODFhYTgyMGExYjg4NTllYTFlOTdmM2Y5NmI0NTkzZDI5MWY1MjBhMDIzZTAyNTA5YTllMTY4ZWZiYTBhOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzUyZWQ3Y2Q3Zjg5YzI4MWQ2ODAwOGE4YjZlMzZlODMzMDFlZDY4NzA3ZDBlODcyNzU3MTM1ODkwOTczOGFjNyJ9"
         }
       ]
     },
@@ -127,32 +127,38 @@
       "statement": "The skill tells agents that a nonzero base_ahead on the feature's hub row (shown as docs not on main: <n>) means documents not yet merged back, to report it, and when asked to finish such a feature to offer the merge once and then finish regardless of the answer.",
       "evidence": [
         {
-          "resource": "repo://skills/hub/SKILL.md#L50-L50",
-          "version": "repo-lines-v1:sha256:1c30a8f92710e85340f884df37a72e1bda016b7dfbb2b2cf928be54328c27a20:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMzMGE4ZjkyNzEwZTg1MzQwZjg4NGRmMzdhNzJlMWJkYTAxNmI3ZGZiYjJiMmNmOTI4YmU1NDMyOGMyN2EyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMzMGE4ZjkyNzEwZTg1MzQwZjg4NGRmMzdhNzJlMWJkYTAxNmI3ZGZiYjJiMmNmOTI4YmU1NDMyOGMyN2EyMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNkNjY3ZDkyMWM2YjQ0MzY5MmQ4MDJkMDRiZTg2NzkzZTEwYTI5OGY5OGVhMWU1ODM3Nzk4YmI0ZDM1NDVkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1YTIzMDM5MDdlNmVlYWUxNTAxZWU5NDUzOTIwNjc3ODI1NTgxODc2MzBkNWE5ZDNlNjc1MGVhODhlNjE4NyJ9"
+          "resource": "repo://skills/hub/SKILL.md#L51-L51",
+          "version": "repo-lines-v1:sha256:a150239ed98b4740ef5dad770974cc9e37f1ed9c1c7dd40586726781b239e872:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTE1MDIzOWVkOThiNDc0MGVmNWRhZDc3MDk3NGNjOWUzN2YxZWQ5YzFjN2RkNDA1ODY3MjY3ODFiMjM5ZTg3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTE1MDIzOWVkOThiNDc0MGVmNWRhZDc3MDk3NGNjOWUzN2YxZWQ5YzFjN2RkNDA1ODY3MjY3ODFiMjM5ZTg3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNkNjY3ZDkyMWM2YjQ0MzY5MmQ4MDJkMDRiZTg2NzkzZTEwYTI5OGY5OGVhMWU1ODM3Nzk4YmI0ZDM1NDVkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1YTIzMDM5MDdlNmVlYWUxNTAxZWU5NDUzOTIwNjc3ODI1NTgxODc2MzBkNWE5ZDNlNjc1MGVhODhlNjE4NyJ9"
         },
         {
-          "resource": "repo://skills/hub/SKILL.md#L58-L58",
-          "version": "repo-lines-v1:sha256:a25ce085cbf270a4db5ef26c30fd23d60df1566f0e82ce5c5273f0a9c5e90627:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTI1Y2UwODVjYmYyNzBhNGRiNWVmMjZjMzBmZDIzZDYwZGYxNTY2ZjBlODJjZTVjNTI3M2YwYTljNWU5MDYyNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTI1Y2UwODVjYmYyNzBhNGRiNWVmMjZjMzBmZDIzZDYwZGYxNTY2ZjBlODJjZTVjNTI3M2YwYTljNWU5MDYyNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjUyZGY1NTc2NDk2Zjk2MDZjZTVjMjQ0ODBiMDIwMmI1ZDliOWM0ZWIzNTVlNDI5MWEwNjUxMzQyZDI3MGRiMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzUyZWQ3Y2Q3Zjg5YzI4MWQ2ODAwOGE4YjZlMzZlODMzMDFlZDY4NzA3ZDBlODcyNzU3MTM1ODkwOTczOGFjNyJ9"
-        },
-        {
-          "resource": "repo://skills/hub/SKILL.md#L72-L73",
-          "version": "repo-lines-v1:sha256:e7e6e6ad273040bc026c88af2bb742f5e8de8b910683987df7561a8d63618e91:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTM5MmQ1Mjc1MDMzYjk3MzFhZWNlMjJkZmQzMjI4MTVjYmE3ZjM5OGU2NjI3MWFlZTA2ZjQzOGI5YTVmMmQ4OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODEzOGM3NjZjZjliYzBjNmVhZmE4ZWQ4NDUwMDM5Mjk0NDBhYWU1Y2E4ODZjNjI1NTA4Mzk1MjUxODM5MzFkZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDRhYjM3M2RjNDQxMWM2NGMxMDMwYjBlNDI4M2YxYTBhOTkzYmI0MzdjOWI4ZjYxYWFhY2VhYjQwODc4NzUyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWQ0ODA5NmQxNDkyYTc0MmUyOTBlNGExODlkOWM2ZmMwNWI0ZjJlZmU3ZDQ1N2Y1MTgyOTE1ZGZmMGZlMDkyMiJ9"
+          "resource": "repo://skills/hub/SKILL.md#L59-L59",
+          "version": "repo-lines-v1:sha256:db530cec8b38c514fa499a086e44f662306b21ff1c28824e456c2fbeb86b0c75:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI1MzBjZWM4YjM4YzUxNGZhNDk5YTA4NmU0NGY2NjIzMDZiMjFmZjFjMjg4MjRlNDU2YzJmYmViODZiMGM3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI1MzBjZWM4YjM4YzUxNGZhNDk5YTA4NmU0NGY2NjIzMDZiMjFmZjFjMjg4MjRlNDU2YzJmYmViODZiMGM3NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQyODFhYTgyMGExYjg4NTllYTFlOTdmM2Y5NmI0NTkzZDI5MWY1MjBhMDIzZTAyNTA5YTllMTY4ZWZiYTBhOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzUyZWQ3Y2Q3Zjg5YzI4MWQ2ODAwOGE4YjZlMzZlODMzMDFlZDY4NzA3ZDBlODcyNzU3MTM1ODkwOTczOGFjNyJ9"
         }
       ]
     },
     {
       "id": "claim_cab05d3e65f54dad8cc7c94665f0e294",
-      "statement": "The skill tells agents that a `merged on GitLab|GitHub; run hub feature merged ROLE` hint means the same as git's merged hints, and that a `closed on ... without merging` hint must be reported to the user and not followed by `hub feature merged`.",
+      "statement": "The skill tells agents that a `merged on GitLab|GitHub; run hub feature merged ROLE` hint means the same as git's merged hints, and that a `closed on ... without merging; run hub feature dropped ROLE` hint must be reported to the user, with `dropped` run only on their yes and `hub feature merged` never run for it.",
       "evidence": [
         {
-          "resource": "repo://skills/hub/SKILL.md#L50-L50",
-          "version": "repo-lines-v1:sha256:1c30a8f92710e85340f884df37a72e1bda016b7dfbb2b2cf928be54328c27a20:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMzMGE4ZjkyNzEwZTg1MzQwZjg4NGRmMzdhNzJlMWJkYTAxNmI3ZGZiYjJiMmNmOTI4YmU1NDMyOGMyN2EyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMzMGE4ZjkyNzEwZTg1MzQwZjg4NGRmMzdhNzJlMWJkYTAxNmI3ZGZiYjJiMmNmOTI4YmU1NDMyOGMyN2EyMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNkNjY3ZDkyMWM2YjQ0MzY5MmQ4MDJkMDRiZTg2NzkzZTEwYTI5OGY5OGVhMWU1ODM3Nzk4YmI0ZDM1NDVkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1YTIzMDM5MDdlNmVlYWUxNTAxZWU5NDUzOTIwNjc3ODI1NTgxODc2MzBkNWE5ZDNlNjc1MGVhODhlNjE4NyJ9"
+          "resource": "repo://skills/hub/SKILL.md#L51-L51",
+          "version": "repo-lines-v1:sha256:a150239ed98b4740ef5dad770974cc9e37f1ed9c1c7dd40586726781b239e872:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTE1MDIzOWVkOThiNDc0MGVmNWRhZDc3MDk3NGNjOWUzN2YxZWQ5YzFjN2RkNDA1ODY3MjY3ODFiMjM5ZTg3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTE1MDIzOWVkOThiNDc0MGVmNWRhZDc3MDk3NGNjOWUzN2YxZWQ5YzFjN2RkNDA1ODY3MjY3ODFiMjM5ZTg3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNkNjY3ZDkyMWM2YjQ0MzY5MmQ4MDJkMDRiZTg2NzkzZTEwYTI5OGY5OGVhMWU1ODM3Nzk4YmI0ZDM1NDVkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY1YTIzMDM5MDdlNmVlYWUxNTAxZWU5NDUzOTIwNjc3ODI1NTgxODc2MzBkNWE5ZDNlNjc1MGVhODhlNjE4NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_978aacd37a534221a2060e08512e01b9",
+      "statement": "The skill tells agents that when finish refuses because a role is working or review, they report the listed roles and ask whether each merged, was abandoned, or whether to finish anyway with --force, showing dirty rows first because --force also removes dirty worktrees.",
+      "evidence": [
+        {
+          "resource": "repo://skills/hub/SKILL.md#L73-L73",
+          "version": "repo-lines-v1:sha256:a8cbd75ac78a982a386a83bab41283f2948e99947f4d530d9f3449e8b522f615:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYThjYmQ3NWFjNzhhOTgyYTM4NmE4M2JhYjQxMjgzZjI5NDhlOTk5NDdmNGQ1MzBkOWYzNDQ5ZThiNTIyZjYxNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYThjYmQ3NWFjNzhhOTgyYTM4NmE4M2JhYjQxMjgzZjI5NDhlOTk5NDdmNGQ1MzBkOWYzNDQ5ZThiNTIyZjYxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDRhYjM3M2RjNDQxMWM2NGMxMDMwYjBlNDI4M2YxYTBhOTkzYmI0MzdjOWI4ZjYxYWFhY2VhYjQwODc4NzUyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzc1OGE1MjhmNDNhOGZlYzg0NzU2ZDM0NmFhOGVkZTAwOWNlZDA3NmUxZDZhN2E2ZmVmOGQ5ODI4YjgxZjgyYiJ9"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }

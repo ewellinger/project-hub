@@ -10,6 +10,8 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-482a254fc9f19462c83aa694
     resource: repo://src/names.rs
+  - id: openwiki-source-663ac1b065deb6f67a90cc27
+    resource: repo://src/ops/merged.rs
   - id: openwiki-source-d7623854325d1c8d971147e7
     resource: repo://src/ops/remove.rs
   - id: openwiki-source-e0a6376d32dd6b3f48d01cbe
@@ -20,10 +22,12 @@ sources:
     resource: repo://src/ops/status.rs
   - id: openwiki-source-1b5cfaa33f22a91204f59602
     resource: repo://src/tmux.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+  - id: openwiki-source-983d7d91e42d115a33ae5f36
+    resource: repo://tests/review_merged.rs
+generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-07T06:20:58.481Z
 ---
 
 # Features, changes, stages, and bases
@@ -36,8 +40,8 @@ record per feature under `<git common dir>/hub/features/<name>.json` (see
 
 ```
 Feature { name, checkout, status: open|finished, created, changes: [Change] }
-Change  { role, clone, branch, worktree: Option<Worktree>, stage: working|review|merged,
-          review_url?, merged_at?, origin_seen, base?, base_sha? }
+Change  { role, clone, branch, worktree: Option<Worktree>, stage: working|review|merged|dropped,
+          review_url?, merged_at?, dropped_at?, origin_seen, base?, base_sha? }
 Worktree { name, owner: hub|adopted }
 ```
 
@@ -58,8 +62,13 @@ Worktree { name, owner: hub|adopted }
     origin, and always for `start-review`). `status` uses it to tell a merged
     branch apart from one merely fast-forwarded to its base, and to hint
     "gone from origin" after a pruning fetch.
-- **Stage** — `working` → `review` → `merged`. A change is *open* while its
-  stage is not `merged`.
+- **Stage** — `working` → `review`, then closed as `merged` or as `dropped`
+  (abandoned). A change is *open* while its stage is `working` or `review`
+  (`Stage::is_open`); `merged` and `dropped` are both closed, and everything
+  built on `Change::is_open` treats them alike. `merged_at` and `dropped_at` hold
+  the time each was recorded. A closed change is not reopened in place:
+  `feature add` opens a new change for the role, on a `-<n>` follow-up branch
+  by default, or on the same branch with `--branch`.
 
 ## Invariant: one open change per role
 
@@ -128,14 +137,16 @@ the ordinary "no open change" refusal.
 
 `Feature::require_open` gates lifecycle and environment commands (`add`,
 `set-base`, `tmux`, `open`, `sync`, ...) with "feature 'NAME' is finished".
-Only `feature list --all`, `status`, and `feature remove` accept finished
-features; `status` lists their rows under `Completed`.
+Only `feature list --all`, `status`, `feature merged`/`feature dropped`, and
+`feature remove` accept finished features; `status` lists their rows under
+`Completed`. `merged` and `dropped` change only the record there, so a role left
+open by `finish --force` or an older build can still be recorded.
 
 `feature remove` is the inverse: it refuses an open feature ("run hub feature
-finish ... first") and, for a finished one, deletes its merged local branches,
+finish ... first") and, for a finished one, deletes its local member branches,
 its hub branch, and the record, freeing the name for a new `feature start`.
-A member branch counts as merged when its change's stage is `merged` (so
-squash merges qualify) or when it is contained in `origin/<base>`. See
+A member branch qualifies when no record of it is still open (so squash merges
+and dropped work qualify) or when it is contained in `origin/<base>`. See
 [Review, merged, finish, and remove](../workflows/review-merged-finish.md).
 
 ## Names and templates (`src/names.rs`)
