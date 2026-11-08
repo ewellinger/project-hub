@@ -10,6 +10,12 @@ sources:
     resource: repo://src/git.rs
   - id: openwiki-source-b55a21a31ede1b56cd31a6a6
     resource: repo://src/main.rs
+  - id: openwiki-source-f44614058892a27046d634e5
+    resource: repo://src/ops/add.rs
+  - id: openwiki-source-de3a6bb0f340e7d1caaf6a0d
+    resource: repo://src/ops/freeze.rs
+  - id: openwiki-source-663ac1b065deb6f67a90cc27
+    resource: repo://src/ops/merged.rs
   - id: openwiki-source-ec55c4ac9d71666850b1040d
     resource: repo://src/ops/session.rs
   - id: openwiki-source-3f5c288f59bdbf6815ffcff1
@@ -22,10 +28,10 @@ sources:
     resource: repo://src/workspace.rs
   - id: openwiki-source-f13236b3ab41e3f4cea296b6
     resource: repo://tests/misc.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
 verified:
   - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+    at: 2026-11-07T20:01:15.981Z
 ---
 
 # Git, tmux, and editor integration
@@ -123,7 +129,7 @@ same name, `feature start` refuses that checkout (see
 [Feature start and add](../workflows/feature-start-and-add.md)).
 
 `repoint_window(hub, feature, role, dir)` respawns a role's existing window
-in another directory, killing whatever ran there. `merged`, `unfreeze`, and
+in another directory, killing whatever ran there. `merged`, `dropped`, `unfreeze`, and
 `feature add` on a frozen role call it before removing a worktree, so the
 window's own shell does not count as a process still using it.
 

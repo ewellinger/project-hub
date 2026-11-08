@@ -3,9 +3,6 @@ type: workflow
 title: Review state from the forge
 description: How hub reads the state of a role's merge request (GitLab) or pull request (GitHub) through `glab` / `gh` — status, approval, pipeline, unresolved threads, conflicts — remembers it per feature, and shows it in `hub status`, `hub feature list`, and the dashboard; when the forge is read, and why a failed read never fails a command.
 tags: [workflow, review, forge, gitlab, github, status, cache]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
 sources:
   - id: openwiki-source-b55a21a31ede1b56cd31a6a6
     resource: repo://src/main.rs
@@ -15,9 +12,16 @@ sources:
     resource: repo://src/ops/review_state.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
+  - id: openwiki-source-35c9fd26cbbe5a478a01ee5a
+    resource: repo://src/ops/viewed.rs
   - id: openwiki-source-4b4dd1a8424927498a257bc6
     resource: repo://src/review_state.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+  - id: openwiki-source-d36a1897ad2613d7d98e64cb
+    resource: repo://src/ui/worker.rs
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 ---
 
 # Review state from the forge
@@ -33,7 +37,8 @@ Two modules own this:
 | Module | Responsibility |
 |---|---|
 | `src/review_state.rs` | The typed state (`Fields`, `ReviewState`), pure JSON parsers for both forges, and `fetch_state`, the forge read |
-| `src/ops/review_state.rs` | Which roles are read (`targets`), the remembered store (`remembered`, `refresh`, `refresh_all`), filling a status report (`attach`), and the rendering shared by the CLI and the dashboard (`review_cells`, `section_lines`, `word`) |
+| `src/ops/review_state.rs` | Which roles are read (`targets`), the remembered store (`remembered`, `refresh`, `store`, `refresh_all`), filling a status report (`attach`), what moved since a viewed mark (`attention`), and the rendering shared by the CLI and the dashboard (`review_cells`, `section_lines`, `word`) |
+| `src/ops/viewed.rs` | `hub feature viewed ROLE`: one forge read, then the viewed mark |
 
 ## Which roles are read
 
@@ -57,6 +62,8 @@ forge did not say, shown as `?`.
 | `threads` | count of unresolved threads | discussions with a note that is resolvable and unresolved | `reviewThreads` nodes with `isResolved` false |
 | `threads_more` | bool | the page of 100 discussions came back full | `totalCount` exceeds the nodes returned |
 | `conflicts` | bool | `has_conflicts`, unknown while `merge_status` is `unchecked`/`checking` | `mergeable` (`CONFLICTING`/`MERGEABLE`; anything else unknown) |
+| `head` | 40-hex commit, lowercased | the merge request's `sha` | `headRefOid` |
+| `comments` | a count that rises with every comment or reply | non-system notes across the first page of 100 discussions | `comments.totalCount` + `reviews(states:[COMMENTED,CHANGES_REQUESTED]).totalCount`: each review-thread reply is its own `COMMENTED` review (checked on cli/cli#14951), while approvals, draft (`PENDING`) and dismissed reviews are left out, so an approval alone never reads as a reply; unknown unless both are present |
 
 Two details in the parsers exist because the forges' own flags mislead:
 
@@ -68,8 +75,12 @@ Two details in the parsers exist because the forges' own flags mislead:
   parser falls back to `latestOpinionatedReviews`: any `CHANGES_REQUESTED`
   gives `changes`, else any `APPROVED` gives `yes`, else `no`.
 
+`head` is kept only when it is a 40-character hex string. The GitLab comment
+count is a known shortcut: it counts the first 100 discussions only.
+
 `ReviewState` is `Fields` plus `url` (the recorded `review_url` exactly as it
-was when read) and `read_at` (Unix seconds).
+was when read), `read_at` (Unix seconds), and `viewed`: `null`, or the
+`Viewed { at, head, comments }` snapshot that `hub feature viewed` recorded.
 
 ## The forge read (`fetch_state`)
 
@@ -82,8 +93,11 @@ already have; hub stores no tokens (see
   `/discussions?per_page=100`. Only the merge request itself must answer. If
   approvals or discussions fail, their fields become unknown and the read
   still succeeds.
-- **GitHub**: one `gh api graphql --hostname HOST` call with a fixed query,
-  because unresolved review threads exist only in GraphQL.
+- **GitHub**: one `gh api graphql --hostname HOST` call with a fixed query
+  (state, draft, mergeable, reviewDecision, `headRefOid`, the comment and
+  review totals, latest opinionated reviews, review threads, and the head
+  commit's status check rollup), because unresolved review threads exist only
+  in GraphQL.
 
 There is no timeout on these calls beyond the programs' own.
 
@@ -99,13 +113,19 @@ the record (see [Hub state, manifest, and locking](../architecture/hub-state-and
   the old answer disappear rather than describe the wrong request. A missing or
   corrupt file reads as empty.
 - `refresh(hub, feature)` starts from `remembered`, reads every target
-  concurrently, replaces the entries that answered, creates the `reviews/`
-  directory if needed, and writes the file. A target whose read failed **keeps
-  its remembered entry** and adds a warning.
+  concurrently, replaces the entries that answered, and saves through `store`.
+  A target whose read failed **keeps its remembered entry** and adds a
+  warning.
+- `store(hub, feature, states, marking)` creates the `reviews/` directory if
+  needed and, under a blocking lock on `<feature>.lock`, rereads the file,
+  carries each role's `viewed` mark from disk (except `marking`, the role
+  `hub feature viewed` is marking now), keeps roles this run could not read,
+  and writes. Status runs without the hub lock, so without this a slow
+  `hub status` that started before a mark would overwrite it with `null`.
 - `refresh_all(hub)` runs `refresh` for every open feature that has a target,
   eight features at a time, because each GitLab role runs three `glab`
   processes and one thread per feature could exhaust file descriptors.
-- `hub feature remove` deletes the file with the record.
+- `hub feature remove` deletes the file and its lock with the record.
 
 ## Nothing here fails a command
 
@@ -133,11 +153,42 @@ file. Review state is added afterwards by
   `review`, sets `row.review`, and appends the warnings to the report.
 - When the request is **merged**, the row's hint becomes
   `merged on GitLab|GitHub; run hub feature merged ROLE`. When it is
-  **closed**, the hint becomes `closed on GitLab|GitHub without merging`.
+  **closed**, the hint becomes `closed on GitLab|GitHub without merging; run hub
+  feature dropped ROLE`. Neither command runs automatically.
   Either replaces whatever hint git produced for that row.
+- Otherwise, when the row has **no hint** yet and the review has moved since
+  its viewed mark (`attention`), the hint becomes `pushed since viewed` or
+  `N replies since viewed` (`1 reply since viewed`). Closing the change wins
+  over "look again".
 
 Because `attach` is a separate step, the callers of `status` that only want a
 drift check (such as `start-review`) cannot reach the forge.
+
+## Marking a review viewed (`hub feature viewed ROLE`)
+
+`hub feature viewed ROLE` (dashboard `V`) runs without the hub lock, so its
+forge read never makes other hub commands fail, and records
+the point the user last looked at a review, so later reads can say what moved:
+
+1. The feature must be open and `ROLE` must be one of its targets (in
+   `review` with a parseable URL); otherwise it fails with `role 'ROLE' in
+   feature 'F' is not in review with a merge/pull request URL`.
+2. It runs `refresh` for the feature, which reads the forge for every target.
+   If `ROLE`'s entry was not freshly read (its `read_at` predates the call), it
+   fails with that role's warning (matched as `for ROLE:`, so `api` never
+   reports `api-gw`'s; with no such warning, the first one, such as a missing
+   program), so a mark is never taken from a stale answer.
+3. It sets `viewed = { at: read_at, head, comments }` on that entry and saves
+   through `store` with `marking = ROLE`. It never changes the feature record.
+4. It prints `ROLE: viewed !N head <short sha>, <n> comments` (`#N` on
+   GitHub; `?` for an unknown head or count).
+
+`attention(state)` compares the latest read with the mark: a different `head`
+is **pushed**; otherwise a higher `comments` count is **N replies** (the
+difference). Without a mark, with both sides equal, with a lower count, or
+when either side is unknown, nothing is flagged. A changed URL drops the mark
+along with the rest of the remembered entry. Nothing clears a mark except
+marking again.
 
 ## When the forge is read
 
@@ -147,6 +198,7 @@ drift check (such as `start-review`) cannot reach the forge.
 | `hub feature list --refresh` | every open feature with a target, before listing |
 | Dashboard `Enter` on a feature, `r` | that feature |
 | Dashboard `R` | every open feature with a target |
+| `hub feature viewed ROLE`, dashboard `V` | that feature |
 
 Never: on cursor movement in the dashboard, on a timer, for
 `hub status --base`, for a plain `hub feature list`, or from a command that
@@ -180,7 +232,8 @@ or closed request, where they no longer apply; THREADS reads `N open`, or
 dashboard draws the same cells in its own table.
 
 `hub status --json` carries `rows[].review`: `null`, or the `ReviewState`
-object (`url`, `read_at`, and the fields flattened).
+object (`url`, `read_at`, the fields flattened including `head` and
+`comments`, and `viewed`, which is `null` until marked).
 
 ### The list word
 
@@ -192,13 +245,15 @@ review, from the remembered state only: the first of these that applies
 |---|---|---|---|
 | 1 | `merged` | status is merged | green |
 | 2 | `closed` | status is closed | red |
-| 3 | `conflicts` | conflicts is true | red |
-| 4 | `ci failed` | pipeline failed | red |
-| 5 | `N threads` (`1 thread`) | at least one unresolved thread | yellow |
-| 6 | `changes` | changes were requested | yellow |
-| 7 | `ci running` | pipeline running | yellow |
-| 8 | `approved` | approved is yes | green |
-| 9 | `draft` | status is draft | none |
+| 3 | `pushed` | the head moved since the viewed mark | cyan |
+| 4 | `N replies` (`1 reply`) | the comment count rose since the viewed mark | cyan |
+| 5 | `conflicts` | conflicts is true | red |
+| 6 | `ci failed` | pipeline failed | red |
+| 7 | `N threads` (`1 thread`) | at least one unresolved thread | yellow |
+| 8 | `changes` | changes were requested | yellow |
+| 9 | `ci running` | pipeline running | yellow |
+| 10 | `approved` | approved is yes | green |
+| 11 | `draft` | status is draft | none |
 
 An open request with nothing to report has no word. In the CLI table the word
 follows the stage, as `api:review(ci failed)`; in JSON it is `roles[].review`.
@@ -210,11 +265,14 @@ call, and a finished feature shows none.
 - Unit tests in `src/review_state.rs` cover both parsers, including answers
   captured from real requests on both forges (among them a GitLab project
   that requires no approvals).
-- Unit tests in `src/ops/review_state.rs` cover the word order, the cells, and
-  the age line.
+- Unit tests in `src/ops/review_state.rs` cover the word order (including
+  where `pushed` and `N replies` fall), `attention`, the cells, and the age
+  line.
 - `tests/review_state.rs` drives the binary against the fake `glab`/`gh` (see
   [Testing and the integration harness](../testing/integration-test-harness.md)):
   the store, the status section and hints, JSON, the list word, `--refresh`,
+  `feature viewed` and the `pushed` / `N replies` words and hints, marks
+  surviving a concurrent `status` write (raced with `FAKE_PROVIDER_SLEEP`),
   and that `status --base` and `start-review`'s drift check make no review
   state call.
 

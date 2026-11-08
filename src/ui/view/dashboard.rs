@@ -14,10 +14,10 @@ use ratatui::widgets::{
 use crate::ui::app::feature::display_order;
 use crate::ui::app::{App, Report, RowId};
 use hub::env::{home_dir, shorten_home};
-use hub::feature::{FeatureStatus, Stage};
+use hub::feature::FeatureStatus;
 use hub::ops::format_age;
 use hub::ops::review_state::{REVIEW_HEADERS, ReviewWord, now_secs, review_age_line, review_cells};
-use hub::ops::status::{StateColour, StatusRow, state_colour, state_text};
+use hub::ops::status::{StateColour, StatusRow, closed, state_colour, state_text};
 
 pub(super) const SPINNER: [&str; 4] = ["⠋", "⠙", "⠸", "⠴"];
 
@@ -32,31 +32,30 @@ pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
     // Borders (2) and the highlight symbol `▸ ` (2), which ratatui reserves
     // on every row while one is selected.
     let inner = area.width.saturating_sub(4) as usize;
-    let items: Vec<ListItem> = app
-        .rows
-        .iter()
-        .map(|row| match &row.summary {
-            None => ListItem::new("base"),
-            Some(s) if s.status == FeatureStatus::Finished => {
-                ListItem::new(Line::styled(format!("{}  finished", s.name), dim))
-            }
-            Some(s) => {
-                let mut text = vec![Line::from(s.name.clone())];
-                text.extend(
-                    s.roles
-                        .iter()
-                        .filter(|r| r.stage != Stage::Merged)
-                        .map(|r| stage_line(&r.role, r.review.as_ref(), r.stage.as_str(), inner)),
-                );
-                text.extend(
-                    s.frozen
-                        .iter()
-                        .map(|f| stage_line(&f.role, None, "frozen", inner).style(read_only())),
-                );
-                ListItem::new(text)
-            }
-        })
-        .collect();
+    let items: Vec<ListItem> =
+        app.rows
+            .iter()
+            .map(|row| match &row.summary {
+                None => ListItem::new("base"),
+                Some(s) if s.status == FeatureStatus::Finished => {
+                    ListItem::new(Line::styled(format!("{}  finished", s.name), dim))
+                }
+                Some(s) => {
+                    let mut text = vec![Line::from(s.name.clone())];
+                    text.extend(
+                        s.roles.iter().filter(|r| r.stage.is_open()).map(|r| {
+                            stage_line(&r.role, r.review.as_ref(), r.stage.as_str(), inner)
+                        }),
+                    );
+                    text.extend(
+                        s.frozen
+                            .iter()
+                            .map(|f| stage_line(&f.role, None, "frozen", inner).style(read_only())),
+                    );
+                    ListItem::new(text)
+                }
+            })
+            .collect();
     let list = List::new(items)
         .block(Block::bordered().title(" features "))
         .highlight_symbol("▸ ")
@@ -260,6 +259,7 @@ fn colour_of(c: StateColour) -> Color {
         StateColour::Red => Color::Red,
         StateColour::Yellow => Color::Yellow,
         StateColour::Green => Color::Green,
+        StateColour::Cyan => Color::Cyan,
     }
 }
 
@@ -374,7 +374,7 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
             Cell::from(state_text(r)).style(Style::new().fg(colour)),
             Cell::from(shorten_home(&r.path, home)),
         ]);
-        if r.stage == "merged" {
+        if closed(&r.stage) {
             row.style(Style::new().add_modifier(Modifier::DIM))
         } else if r.stage == "frozen" {
             row.style(read_only())

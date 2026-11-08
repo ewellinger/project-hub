@@ -16,6 +16,7 @@ pub enum Stage {
     Working,
     Review,
     Merged,
+    Dropped,
 }
 
 impl Stage {
@@ -24,7 +25,12 @@ impl Stage {
             Stage::Working => "working",
             Stage::Review => "review",
             Stage::Merged => "merged",
+            Stage::Dropped => "dropped",
         }
+    }
+
+    pub fn is_open(self) -> bool {
+        matches!(self, Stage::Working | Stage::Review)
     }
 }
 
@@ -58,6 +64,8 @@ pub struct Change {
     #[serde(default)]
     pub merged_at: Option<String>,
     #[serde(default)]
+    pub dropped_at: Option<String>,
+    #[serde(default)]
     pub origin_seen: bool,
     /// Branch this change merges into, without `origin/`. Recorded when the
     /// change opens. `None` only on records written before the field
@@ -73,7 +81,7 @@ pub struct Change {
 
 impl Change {
     pub fn is_open(&self) -> bool {
-        self.stage != Stage::Merged
+        self.stage.is_open()
     }
 
     /// The branch this change merges into: the recorded base, else the
@@ -357,6 +365,7 @@ mod tests {
             stage,
             review_url: None,
             merged_at: None,
+            dropped_at: None,
             origin_seen: false,
             base: None,
             base_sha: None,
@@ -440,12 +449,36 @@ mod tests {
             .unwrap();
         f.push_change(change("api", "feature/x-2", Stage::Working))
             .unwrap();
+        let mut dropped = change("ui", "feature/y", Stage::Dropped);
+        dropped.dropped_at = Some("2026-11-06T00:00:00Z".into());
+        f.push_change(dropped).unwrap();
         f.save(&path).unwrap();
         let text = std::fs::read_to_string(&path).unwrap();
         assert!(text.contains("\"stage\": \"merged\""));
+        assert!(text.contains("\"stage\": \"dropped\""));
         assert!(text.contains("\"owner\": \"hub\""));
         assert!(text.contains("\"status\": \"open\""));
         assert_eq!(Feature::load(&path).unwrap(), f);
+    }
+
+    #[test]
+    fn dropped_is_a_closed_stage() {
+        assert_eq!(Stage::Dropped.as_str(), "dropped");
+        assert!(!Stage::Dropped.is_open());
+        assert!(Stage::Working.is_open() && Stage::Review.is_open());
+        assert!(!Stage::Merged.is_open());
+        let c = change("api", "feature/x", Stage::Dropped);
+        assert!(!c.is_open());
+        assert_eq!(serde_json::to_value(Stage::Dropped).unwrap(), "dropped");
+    }
+
+    #[test]
+    fn a_dropped_change_allows_a_new_open_change_for_the_role() {
+        let mut f = Feature::new("feat-1", "feat-1");
+        f.push_change(change("api", "a", Stage::Dropped)).unwrap();
+        f.push_change(change("api", "api-2", Stage::Working))
+            .unwrap();
+        assert_eq!(f.open_change("api").unwrap().branch, "api-2");
     }
 
     #[test]
@@ -461,6 +494,7 @@ mod tests {
         let f = Feature::load(&path).unwrap();
         assert_eq!(f.changes[0].review_url, None);
         assert_eq!(f.changes[0].merged_at, None);
+        assert_eq!(f.changes[0].dropped_at, None);
         assert!(!f.changes[0].origin_seen);
         assert_eq!(f.changes[0].base, None);
         assert_eq!(f.changes[0].base_sha, None);

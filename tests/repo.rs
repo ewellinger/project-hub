@@ -443,9 +443,12 @@ fn set_clone_refreshes_remote_and_guards_open_changes() {
         .stderr(predicate::str::contains(
             "feature 'feat-1' has an open change for role 'api'",
         ));
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success();
     fx.hub(&hub, &["repo", "set", "api", "--clone", "api-new"])
         .assert()
         .success();
@@ -498,9 +501,12 @@ fn rename_rewrites_the_manifest_records_window_and_workspace() {
     fx.hub(&hub, &["feature", "start", "done-1", "--repo", "api"])
         .assert()
         .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "done-1"])
-        .assert()
-        .success();
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "done-1"],
+    )
+    .assert()
+    .success();
     fx.hub(
         &hub,
         &["feature", "start", "live", "--repo", "api", "--repo", "ui"],
@@ -593,7 +599,7 @@ fn rename_refuses_unknown_taken_or_recorded_names() {
     fx.hub(&hub, &["feature", "start", "f1", "--repo", "ui"])
         .assert()
         .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "f1"])
+    fx.hub(&hub, &["feature", "finish", "--force", "--feature", "f1"])
         .assert()
         .success();
     fx.hub(&hub, &["repo", "rename", "ui", "old-ui"])
@@ -631,7 +637,7 @@ fn the_swap_keeps_order_and_history() {
     )
     .assert()
     .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "f1"])
+    fx.hub(&hub, &["feature", "finish", "--force", "--feature", "f1"])
         .assert()
         .success();
     for args in [
@@ -701,7 +707,7 @@ fn records_only_with_clone_repairs_a_remove_and_add() {
     fx.hub(&hub, &["feature", "start", "f1", "--repo", "ui"])
         .assert()
         .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "f1"])
+    fx.hub(&hub, &["feature", "finish", "--force", "--feature", "f1"])
         .assert()
         .success();
     // The old way: remove and re-add, leaving f1's `ui` pointing at ams-clone.
@@ -832,7 +838,7 @@ fn records_only_refuses_two_open_changes_in_a_finished_feature() {
     )
     .assert()
     .success();
-    fx.hub(&hub, &["feature", "finish", "--feature", "f1"])
+    fx.hub(&hub, &["feature", "finish", "--force", "--feature", "f1"])
         .assert()
         .success();
     let record = hub.join(".git/hub/features/f1.json");

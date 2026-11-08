@@ -232,6 +232,11 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
     ))
 }
 
+/// Whether a row's stage names a change that is over: merged or dropped.
+pub fn closed(stage: &str) -> bool {
+    matches!(stage, "merged" | "dropped")
+}
+
 /// Compare the feature's recorded state against the repos, including how
 /// far each open branch is behind its base. Changes no hub state, worktree,
 /// or branch; it does `git fetch --prune origin` in each clone with an open
@@ -581,7 +586,7 @@ fn render_table_with_home(
     let (closed, open): (Vec<&StatusRow>, Vec<&StatusRow>) = report
         .rows
         .iter()
-        .partition(|r| report.status == FeatureStatus::Finished || r.stage == "merged");
+        .partition(|r| report.status == FeatureStatus::Finished || closed(&r.stage));
     if !open.is_empty() {
         lines.extend(open_table(&open, home));
         lines.extend(section_lines(&open, now_secs()));
@@ -683,6 +688,7 @@ pub enum StateColour {
     Red,
     Yellow,
     Green,
+    Cyan,
 }
 
 fn structural_drift(row: &StatusRow) -> bool {
@@ -821,6 +827,7 @@ pub(crate) fn comfy_colour(c: StateColour) -> Color {
         StateColour::Red => Color::Red,
         StateColour::Yellow => Color::Yellow,
         StateColour::Green => Color::Green,
+        StateColour::Cyan => Color::Cyan,
     }
 }
 

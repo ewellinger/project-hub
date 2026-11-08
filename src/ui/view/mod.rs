@@ -37,6 +37,16 @@ const FEATURE_LEGEND: &[(&str, &str)] = &[
     ("?", "help"),
     ("Esc", "back"),
 ];
+/// The feature legend with the cursor on a change in review: `V` acts, and
+/// takes the place of `z` to fit the minimum width.
+const REVIEW_LEGEND: &[(&str, &str)] = &[
+    ("↑↓/jk", "role"),
+    ("c", "copy"),
+    ("V", "viewed"),
+    ("f", "finish"),
+    ("?", "help"),
+    ("Esc", "back"),
+];
 /// The feature legend with the cursor on a frozen row (`frozen_sha` set),
 /// where `u` and `Z` act. It trades `↑↓/jk` and `f` for them to fit the
 /// minimum width; `?` still lists every key.
@@ -173,6 +183,13 @@ fn render_footer(app: &App, frame: &mut Frame, area: Rect) {
                         .is_some_and(|r| r.frozen_sha.is_some()) =>
                 {
                     legend_line(FROZEN_LEGEND)
+                }
+                Screen::Feature { .. }
+                    if app
+                        .selected_role_row()
+                        .is_some_and(|r| r.stage == "review" && r.review_url.is_some()) =>
+                {
+                    legend_line(REVIEW_LEGEND)
                 }
                 Screen::Feature { .. } => legend_line(FEATURE_LEGEND),
             },
@@ -698,6 +715,12 @@ mod tests {
         );
         assert!(text.contains("+ add a role"), "{text}");
         assert!(
+            text.contains(
+                "V mark the review viewed; flag it when the other side pushes or replies"
+            ),
+            "{text}"
+        );
+        assert!(
             text.contains("z freeze a role: pin its open change, or check out its local base tip"),
             "{text}"
         );
@@ -794,6 +817,38 @@ mod tests {
     }
 
     #[test]
+    fn a_dropped_row_is_dim_and_absent_from_the_list_panes_role_lines() {
+        let mut a = app();
+        deliver(
+            &mut a,
+            RowId::Base,
+            Report::Base(BaseStatusReport {
+                hub: "acme".into(),
+                rows: vec![
+                    row("hub", "main", "-", false, None),
+                    row("ui", "feature/y", "dropped", false, None),
+                ],
+                warnings: vec![],
+                drift: false,
+            }),
+        );
+        let dropped_style = find_style(100, 30, &a, "dropped");
+        assert!(
+            dropped_style.add_modifier.contains(Modifier::DIM),
+            "dropped row is dim: {dropped_style:?}"
+        );
+        let mut s = summary("suspense", FeatureStatus::Open);
+        s.roles.push(RoleSummary {
+            role: "bff".into(),
+            branch: "z".into(),
+            stage: Stage::Dropped,
+            review: None,
+        });
+        let text = joined(&lines(100, 30, &App::new("acme", vec![s])));
+        assert!(!text.contains("bff"), "dropped role listed: {text}");
+    }
+
+    #[test]
     fn status_table_shortens_paths_under_home() {
         let rows = [row("api", "feature/x", "working", false, None)];
         let rows: Vec<&StatusRow> = rows.iter().collect();
@@ -887,7 +942,7 @@ mod tests {
             "Finish suspense".into(),
             vec![
                 ("Kill tmux session acme-suspense".into(), Tone::Plain),
-                ("! not merged: api (working)".into(), Tone::Warn),
+                ("! still open: api (working)".into(), Tone::Warn),
             ],
             true,
         ));
@@ -903,7 +958,7 @@ mod tests {
             "key bold"
         );
         assert_eq!(
-            find_style(100, 30, &a, "! not merged").fg,
+            find_style(100, 30, &a, "! still open").fg,
             Some(Color::Yellow)
         );
         // The real blocker, built the way `flow::finish` builds it: one
@@ -1139,6 +1194,24 @@ mod tests {
     }
 
     #[test]
+    fn the_feature_footer_adds_viewed_only_on_a_review_row() {
+        use crate::ui::app::feature::tests::{api_in_review, on_report};
+        let a = on_report(api_in_review());
+        let out = lines(MIN_WIDTH, 30, &a);
+        assert_eq!(
+            out.last().unwrap(),
+            " ↑↓/jk role  c copy  V viewed  f finish  ? help  Esc back"
+        );
+        let a = crate::ui::app::feature::tests::on_feature();
+        let out = lines(MIN_WIDTH, 30, &a);
+        assert_eq!(
+            out.last().unwrap(),
+            " ↑↓/jk role  c copy  z freeze  f finish  ? help  Esc back",
+            "a working row keeps the usual legend"
+        );
+    }
+
+    #[test]
     fn the_unfreeze_preview_keeps_its_key_line_under_a_long_wrapped_path() {
         use crate::ui::app::feature::tests::{frozen_ui, on_report};
         let Report::Feature {
@@ -1256,7 +1329,10 @@ mod tests {
                 threads: Some(2),
                 threads_more: false,
                 conflicts: Some(false),
+                head: None,
+                comments: None,
             },
+            viewed: None,
         });
         r
     }

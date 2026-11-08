@@ -265,6 +265,7 @@ mod tests {
             stage: Stage::Working,
             review_url: None,
             merged_at: None,
+            dropped_at: None,
             origin_seen: false,
             base: None,
             base_sha: None,

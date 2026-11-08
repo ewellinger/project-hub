@@ -95,7 +95,15 @@ pub const FEATURE_HELP: &[(&str, &str)] = &[
     ("↑↓/jk", "select a role"),
     ("c", "copy the branch or pinned commit, path, or review URL"),
     ("v", "record the review URL"),
+    (
+        "V",
+        "mark the review viewed; flag it when the other side pushes or replies",
+    ),
     ("m", "mark the role merged and remove its worktree"),
+    (
+        "d",
+        "mark the role dropped (abandoned) and remove its worktree",
+    ),
     ("b", "set the branch the role merges into"),
     ("+", "add a role"),
     (

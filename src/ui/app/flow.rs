@@ -3,7 +3,7 @@
 //! wait on, the action to run, or a cancellation.
 
 use hub::env::{home_dir, shorten_home};
-use hub::feature::{Feature, Owner, Worktree};
+use hub::feature::{Feature, Owner, Stage, Worktree};
 use hub::names;
 use hub::ops::status::StatusRow;
 use hub::ops::suggest::BranchRow;
@@ -42,6 +42,10 @@ pub enum Flow {
         feature: String,
         role: String,
     },
+    Dropped {
+        feature: String,
+        role: String,
+    },
     Freeze {
         feature: String,
         /// Roles offered, in manifest order; filled at `Begin`.
@@ -75,7 +79,8 @@ impl Flow {
         match self {
             Flow::Review { feature, role } => review(feature, role, answer, app),
             Flow::SetBase { feature, role } => set_base(feature, role, answer, app),
-            Flow::Merged { feature, role } => merged(feature, role, answer, app),
+            Flow::Merged { feature, role } => close(feature, role, Stage::Merged, answer, app),
+            Flow::Dropped { feature, role } => close(feature, role, Stage::Dropped, answer, app),
             Flow::Freeze { feature, roles } => freeze(feature, roles, answer, app),
             Flow::Unfreeze { feature, role } => unfreeze(feature, role, answer, app),
             Flow::Finish { feature } => finish(feature, answer, app),
@@ -305,7 +310,7 @@ fn frozen_warnings(role: &str, row: Option<&StatusRow>, op: &str) -> Vec<(String
     out
 }
 
-fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
+fn close(feature: &str, role: &str, stage: Stage, answer: Answer, app: &App) -> Step {
     match answer {
         Answer::Begin => {
             let Some((record, report)) = app.feature_report().filter(|(f, _)| f.name == feature)
@@ -337,7 +342,10 @@ fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
             lines.push((String::new(), Tone::Plain));
             if row.is_some_and(|r| r.dirty) {
                 lines.push((
-                    format!("! {role} is dirty; merged will refuse without force"),
+                    format!(
+                        "! {role} is dirty; {} will refuse without force",
+                        stage.as_str()
+                    ),
                     Tone::Warn,
                 ));
             }
@@ -349,16 +357,29 @@ fn merged(feature: &str, role: &str, answer: Answer, app: &App) -> Step {
                 lines.push(("! adopted worktree will be removed".into(), Tone::Warn));
             }
             Step::Show(Overlay::confirm(
-                format!("Merge {role} in {feature}"),
+                match stage {
+                    Stage::Merged => format!("Merge {role} in {feature}"),
+                    _ => format!("Drop {role} in {feature}"),
+                },
                 lines,
                 true,
             ))
         }
-        Answer::Confirmed { force } => Step::Run(Action::Merged {
-            feature: feature.to_string(),
-            role: role.to_string(),
-            force,
-        }),
+        Answer::Confirmed { force } => {
+            let (feature, role) = (feature.to_string(), role.to_string());
+            Step::Run(match stage {
+                Stage::Merged => Action::Merged {
+                    feature,
+                    role,
+                    force,
+                },
+                _ => Action::Dropped {
+                    feature,
+                    role,
+                    force,
+                },
+            })
+        }
         _ => Step::Cancel("unexpected answer".into()),
     }
 }
@@ -536,13 +557,19 @@ fn finish(feature: &str, answer: Answer, app: &App) -> Step {
                 .map(|c| format!("{} ({})", c.role, c.stage.as_str()))
                 .collect();
             if !unmerged.is_empty() {
-                lines.push((format!("! not merged: {}", unmerged.join(", ")), Tone::Warn));
+                lines.push((
+                    format!(
+                        "! still open: {}; record them with m or d, or F finishes anyway",
+                        unmerged.join(", ")
+                    ),
+                    Tone::Warn,
+                ));
             }
             for change in record.open_changes() {
                 if open_row(record, report, &change.role).is_some_and(|r| r.dirty) {
                     lines.push((
                         format!(
-                            "! {} is dirty; finish will refuse without force",
+                            "! {} is dirty; F discards its uncommitted changes",
                             change.role
                         ),
                         Tone::Warn,
@@ -602,7 +629,7 @@ fn remove(feature: &str, answer: Answer, app: &App) -> Step {
                 ("Delete the record; there is no undo".into(), Tone::Plain),
                 (String::new(), Tone::Plain),
                 (
-                    "Each branch must be merged and gone from origin; any refusal changes nothing"
+                    "Each branch must be merged or dropped and gone from origin; any refusal changes nothing"
                         .into(),
                     Tone::Dim,
                 ),
@@ -1756,6 +1783,30 @@ mod tests {
     }
 
     #[test]
+    fn dropped_previews_like_merged_and_runs_the_dropped_action() {
+        let app = on_feature();
+        let mut flow = Flow::Dropped {
+            feature: "suspense".into(),
+            role: "api".into(),
+        };
+        let Step::Show(Overlay::Confirm { title, lines, .. }) = flow.advance(Answer::Begin, &app)
+        else {
+            panic!("expected a confirm");
+        };
+        assert_eq!(title, "Drop api in suspense");
+        let text: Vec<&str> = lines.iter().map(|(t, _)| t.as_str()).collect();
+        assert_eq!(text[3], "Keep branch      feature/x");
+        assert_eq!(
+            flow.advance(Answer::Confirmed { force: false }, &app),
+            Step::Run(Action::Dropped {
+                feature: "suspense".into(),
+                role: "api".into(),
+                force: false
+            })
+        );
+    }
+
+    #[test]
     fn merged_warns_about_dirty_and_adopted_worktrees() {
         let mut app = on_feature();
         let Report::Feature {
@@ -1790,6 +1841,39 @@ mod tests {
         );
         assert!(
             lines.contains(&("! adopted worktree will be removed".to_string(), Tone::Warn)),
+            "{lines:?}"
+        );
+    }
+
+    #[test]
+    fn finish_warns_that_force_discards_a_dirty_open_role() {
+        let mut app = on_feature();
+        let Report::Feature {
+            feature,
+            mut report,
+        } = suspense()
+        else {
+            unreachable!()
+        };
+        report.rows[1].dirty = true;
+        app.cache.insert(
+            RowId::Feature("suspense".into()),
+            Cached {
+                report: Report::Feature { feature, report },
+                at: std::time::Instant::now(),
+            },
+        );
+        let mut flow = Flow::Finish {
+            feature: "suspense".into(),
+        };
+        let Step::Show(Overlay::Confirm { lines, .. }) = flow.advance(Answer::Begin, &app) else {
+            panic!()
+        };
+        assert!(
+            lines.contains(&(
+                "! api is dirty; F discards its uncommitted changes".to_string(),
+                Tone::Warn
+            )),
             "{lines:?}"
         );
     }
@@ -1842,7 +1926,11 @@ mod tests {
             "every role that ever had a change, then the hub branch"
         );
         assert!(
-            lines.contains(&("! not merged: api (working)".to_string(), Tone::Warn)),
+            lines.contains(&(
+                "! still open: api (working); record them with m or d, or F finishes anyway"
+                    .to_string(),
+                Tone::Warn
+            )),
             "{lines:?}"
         );
         assert_eq!(

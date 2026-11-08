@@ -18,10 +18,12 @@ sources:
     resource: repo://src/ui/view/feature.rs
   - id: openwiki-source-99b08242c15df3bb83462c9d
     resource: repo://src/ui/view/mod.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+  - id: openwiki-source-d36a1897ad2613d7d98e64cb
+    resource: repo://src/ui/worker.rs
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 ---
 
 # Dashboard flows and overlays
@@ -71,7 +73,8 @@ answers `Text(filter)`, which opens the name input prefilled with the typed text
 | `Review` | `v` | URL input prefilled with the current `review_url`; empty means none → `Action::Review` |
 | `SetBase` | `b` | input prefilled with the effective base; rejects empty or `origin/`-prefixed input inline → `Action::SetBase` |
 | `Merged` | `m` | confirm preview: change to close, worktree to remove (path, owner, state), branch kept; warnings for dirty or adopted worktrees; `F` forces → `Action::Merged` |
-| `Finish` | `f` | confirm preview: tmux session to kill (when tmux is on), every worktree to remove (open changes, frozen reference worktrees, then the hub worktree), branches kept, warnings for unmerged roles, dirty worktrees, and frozen worktrees off their pin; `F` forces → `Action::Finish` |
+| `Dropped` | `d` | the same preview and `F` as `Merged`, titled `Drop <role> in <feature>` → `Action::Dropped` |
+| `Finish` | `f` | confirm preview: tmux session to kill (when tmux is on), every worktree to remove (open changes, frozen reference worktrees, then the hub worktree), branches kept, a `! still open: api (review), web (working); record them with m or d, or F finishes anyway` warning, `! api is dirty; F discards its uncommitted changes` for a dirty open role, and warnings for dirty frozen or hub worktrees and frozen worktrees off their pin. `Enter` runs without force, so open roles get the CLI's refusal in the result overlay; `F` forces → `Action::Finish` |
 | `Remove` | `x` on a finished dashboard row (the base row and open features are refused in the footer) | confirm preview: each role's latest branch and the hub branch to delete, the record deleted with no undo, and a note that the op rechecks every branch and any refusal changes nothing; no force → `Action::Remove`. The list reloads after it completes, whether it succeeded or was refused |
 | `Freeze` | `z` | select among roles without a pin, each tagged `(pins its open change)` or `(reference checkout)`, the role under the cursor preselected (cancel if every role is frozen) → `Action::Freeze` (always the local base tip; never `--at`) |
 | `Unfreeze` | `u` on a frozen row | a pinned open change runs `Action::Unfreeze { force: false }` at once; a reference worktree gets a confirm preview (pin released, worktree to remove, off-pin and dirty warnings); `F` forces → `Action::Unfreeze` |
@@ -121,13 +124,14 @@ checks the pin before dirtiness because the answer to a dirty refusal is
 force, and force skips the pin check and removes the worktree.
 
 Because confirmation happens in these previews, the worker passes an
-always-yes confirm callback to `ops::merged` / `ops::finish`, so adopted
-worktrees shown in the preview are removed without a second prompt.
+always-yes confirm callback to `ops::merged`, so adopted worktrees shown in the
+preview are removed without a second prompt. `ops::finish` takes no callback:
+it only reaches an open change's worktree with force.
 
 ## The feature screen (`feature.rs`)
 
 The feature screen shows one open feature's status report: the hub row, then
-open changes and frozen reference rows, then merged ones (`display_order`).
+open changes and frozen reference rows, then merged and dropped ones (`display_order`).
 `status` emits one row per change in record order and appends frozen reference
 rows after them, so row `i + 1` is change `i` for `i < feature.changes.len()`
 and a frozen reference row beyond that.
@@ -146,22 +150,31 @@ and so does `r`; a second `r` while that read is in flight starts nothing (see
 
 Keys: `↑↓/jk` move within display order; `r` refresh, including the review
 state from the forge; `o` open the workspace;
-`p` pull the feature; `v`/`b`/`m` start the per-role flows; `+` add role;
+`p` pull the feature; `v`/`b`/`m`/`d` start the per-role flows; `+` add role;
 `z` freeze; `u` unfreeze and `Z` refreeze the frozen row under the cursor;
+`V` mark the selected review viewed;
 `f` finish; `c` copy; `?` help; `Esc`/`q` return to the dashboard (and reload
 the list).
 
-Per-role actions (`v`, `b`, `m`) go through `role_action`, which refuses with a
+Per-role actions (`v`, `b`, `m`, `d`) go through `role_action`, which refuses with a
 footer message when an action is already running, no status is cached yet
-("status not loaded yet; press r"), or the selected row is a merged change or a
+("status not loaded yet; press r"), or the selected row is a closed change or a
 frozen reference row ("no open change for role ..."). `u` and `Z` go through
 `frozen_role`, which accepts any row with `frozen_sha` set — a frozen reference
 or a pinned open change — and otherwise says the role is not frozen. `+`, `z`,
 `f`, `c`, and `?` likewise refuse while busy or before status loads.
+`V` also goes through `role_action` and then requires the selected change to be
+in stage `review` with a recorded URL, otherwise the footer says `<role> is not
+in review with a merge/pull request URL`; it runs `Action::Viewed`, the same
+`ops::viewed::viewed` as `hub feature viewed`, with no confirm overlay and,
+like the CLI command, without the hub lock.
 
 The footer normally reads `↑↓/jk role  c copy  z freeze  f finish  ? help  Esc
 back`; on a row with `frozen_sha` it swaps to `c copy  z freeze  u unfreeze  Z
-refreeze  ? help  Esc back`, so both fit the 60-column minimum.
+refreeze  ? help  Esc back`, and on a change in review with a URL to
+`↑↓/jk role  c copy  V viewed  f finish  ? help  Esc back` (`V` takes `z`'s
+place), so each fits the 60-column minimum. The frozen legend wins when both
+apply.
 
 ## Review state keys and warnings
 

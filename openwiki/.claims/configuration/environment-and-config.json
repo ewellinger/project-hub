@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:14b16e849f056186df7a29ad68378831e0800d6bf27a262c8eec52a75a24bddc",
+  "pageVersion": "sha256:5108643dec3cef9db3c98d6a9825be66843881ce3cd25eeed94c32f0830f84e5",
   "claims": [
     {
       "id": "claim_ce0630ca305b411b92f03361113b1dc2",
@@ -89,14 +89,14 @@
       "statement": "`hub tmux` refuses with the off reason when sessions are disabled.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L626-L637",
+          "resource": "repo://src/main.rs#L645-L656",
           "version": "repo-lines-v1:sha256:1bbf52c3352b7ee568ef5ad8bf888a436133d29b0d35858341cc674199bab8a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNWU2MmM3MzQzMjM1MDVmYTRiY2ZjZTUyNTNlZDYxZmMxYTMzZjJlNmU4NGM2ZWVlMzRlMTE2NzY4Nzc0NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjZThkMTM3ZmE0NGFjNjY0OGIzYTRhNmY1NmY1MGJhYmE2NzczNDE0NWQwNDc0YTRlNTU1Njk3ZmQyNmJlYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmNTczOThlOGZkOTFmYzM3YmZlZjRlOTJhMDZjNGNiZGQ4ODVhNTVkYmYzZWMwYzVjNzkwMmJhOTMyNTRiZDMifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-07T06:20:58.481Z"
   }
 }

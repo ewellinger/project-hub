@@ -114,14 +114,19 @@ fn set_clipboard(text: &str) -> Result<(), HubError> {
 /// Run one action under the hub lock on a detached thread and send one
 /// `Event::Done`. The feature record is loaded inside the lock so the op
 /// sees the state as it is now, not as the dashboard last cached it.
+/// `Viewed` runs unlocked: its forge read must not block other commands,
+/// and the reviews file lock guards its one write.
 pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
     let hub = hub.clone();
     thread::spawn(move || {
         // `with_lock` consumes its hub; the setup scripts run on this copy
         // after the lock is gone.
         let mut after = hub.clone();
-        let result = catch_unwind(AssertUnwindSafe(|| {
-            hub.with_lock(|hub| match &action {
+        let result = catch_unwind(AssertUnwindSafe(|| match &action {
+            Action::Viewed { feature, role } => {
+                ops::viewed::viewed(&hub, &hub.load_feature(feature)?, role)
+            }
+            _ => hub.with_lock(|hub| match &action {
                 Action::Start { name, repos } => ops::start::start(
                     hub,
                     &StartOptions {
@@ -171,6 +176,14 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                     let mut f = hub.load_feature(feature)?;
                     ops::merged::merged(hub, &mut f, role, *force, &mut |_| true)
                 }
+                Action::Dropped {
+                    feature,
+                    role,
+                    force,
+                } => {
+                    let mut f = hub.load_feature(feature)?;
+                    ops::merged::dropped(hub, &mut f, role, *force, &mut |_| true)
+                }
                 Action::Freeze { feature, role } => {
                     let mut f = hub.load_feature(feature)?;
                     ops::freeze::freeze(hub, &mut f, role, None)
@@ -189,7 +202,7 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                 }
                 Action::Finish { feature, force } => {
                     let mut f = hub.load_feature(feature)?;
-                    ops::finish::finish(hub, &mut f, *force, &mut |_| true)
+                    ops::finish::finish(hub, &mut f, *force)
                 }
                 Action::Remove { feature } => ops::remove::remove(hub, &hub.load_feature(feature)?),
                 Action::Pull { row: RowId::Base } => ops::pull::pull_base(hub),
@@ -199,7 +212,8 @@ pub fn run(hub: &Hub, action: Action, tx: Sender<Event>) {
                     let f = hub.load_feature(name)?;
                     ops::pull::pull_feature(hub, &f)
                 }
-            })
+                Action::Viewed { .. } => unreachable!("run unlocked above"),
+            }),
         }));
         let result = unwind_to_result(result, &action);
         let ok = result.is_ok();

@@ -1,7 +1,7 @@
 ---
 type: architecture
 title: Dashboard architecture
-description: How the ratatui dashboard (bare `hub` in a terminal) is structured — an event loop around a pure `App::update(Event) -> Vec<Effect>` state machine, background worker threads for status, actions, editor, and clipboard, generation-tagged status requests, and pure rendering — and how dashboard actions reuse the same `ops` functions under the hub lock.
+description: How the ratatui dashboard (bare `hub` in a terminal) is structured — an event loop around a pure `App::update(Event) -> Vec<Effect>` state machine, background worker threads for status, actions, editor, and clipboard, generation-tagged status requests, and pure rendering — and how dashboard actions reuse the same `ops` functions under the hub lock (all but `Viewed`).
 tags: [ui, tui, ratatui, dashboard, architecture, concurrency]
 sources:
   - id: openwiki-source-c55e62404e7071e7e42c91b9
@@ -16,10 +16,10 @@ sources:
     resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 ---
 
 # Dashboard architecture
@@ -74,7 +74,7 @@ feature), `OpenWorkspace`, `Copy`, `ReloadList`, `Run(Action)`,
 `LoadBranches`, `Preflight`. `update` never performs side effects itself.
 
 `Action` is one hub operation with resolved arguments — `Start`, `Add`
-(carrying `from_latest` for a frozen role), `Review`, `SetBase`, `Merged`,
+(carrying `from_latest` for a frozen role), `Review`, `Viewed`, `SetBase`, `Merged`, `Dropped`,
 `Freeze`, `Unfreeze { force }`, `Refreeze`, `Finish`, `Remove`, `Pull { row }` — and is
 the unit the worker executes. The dashboard never passes `--at`: `Freeze`
 always pins the local base tip.
@@ -134,10 +134,14 @@ Each effect spawns a detached thread that sends exactly one event back:
   event. Neither takes the hub lock.
 - `run(action)` executes the action **inside `hub.with_lock`**, loading the
   feature record inside the lock so it sees current state rather than the
-  dashboard's cache, and calls the same `ops::*` functions as the CLI. Panics
+  dashboard's cache, and calls the same `ops::*` functions as the CLI. The one
+  exception is `Action::Viewed`, which runs before and outside the lock (it
+  loads the record fresh but keeps the startup `hub.json`), because its forge
+  read must not make other hub commands fail; the reviews file lock guards its
+  write. Panics
   are caught with `catch_unwind` and turned into a `Precondition` error, so a
-  panicking op cannot leave the dashboard stuck "busy". Merged/finish pass a
-  confirm callback that always says yes; confirmation happens earlier, in the
+  panicking op cannot leave the dashboard stuck "busy". Merged/dropped pass a
+  confirm callback that always says yes (`finish` takes none); confirmation happens earlier, in the
   dashboard's preview overlay (see
   [Dashboard flows and overlays](dashboard-flows-and-overlays.md)).
 - `open_workspace` writes the workspace file and launches the editor with
@@ -173,7 +177,7 @@ Both screens share `status_table`: ROLE, BRANCH, STAGE, STATE, PATH. BRANCH
 is a `Length` column sized to the longest branch and is never truncated;
 STATE is a `Max` column capped at 56 so a pinned change's whole state (such as
 `behind pin <sha> by <n>, <base> +N since pin`) fits when there is room, and it
-gives way first when the terminal is narrow. Merged rows are dimmed, and
+gives way first when the terminal is narrow. Merged and dropped rows are dimmed, and
 frozen reference rows use the read-only style (dim + italic). The dashboard
 list pane also lists each open feature's frozen roles, after its members, in
 the read-only style.
@@ -190,7 +194,7 @@ In that list pane each role line (`stage_line`) colours only the stage text:
 `working` green, `review` yellow, `frozen` dark grey, any other stage the
 default. A role in review with a review word shows the word left of the stage,
 coloured by `ReviewWord::colour`; the word is dropped when role, word, and
-stage do not fit the pane width. Merged roles are left out of an open feature's lines, and a finished
+stage do not fit the pane width. Merged and dropped roles are left out of an open feature's lines, and a finished
 feature is a single dim `<name>  finished` line. On the selected row the
 `REVERSED` highlight turns the colour into the stage's background.
 

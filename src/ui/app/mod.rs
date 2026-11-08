@@ -52,7 +52,7 @@ pub enum RowId {
     Feature(String),
 }
 
-/// One hub op with its resolved arguments; runs under the lock on a worker.
+/// One hub op with its resolved arguments; runs on a worker, under the lock except `Viewed`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Action {
     Start {
@@ -72,12 +72,22 @@ pub enum Action {
         role: String,
         url: Option<String>,
     },
+    /// `feature viewed ROLE`: snapshot the review's head and comment count.
+    Viewed {
+        feature: String,
+        role: String,
+    },
     SetBase {
         feature: String,
         role: String,
         branch: String,
     },
     Merged {
+        feature: String,
+        role: String,
+        force: bool,
+    },
+    Dropped {
         feature: String,
         role: String,
         force: bool,
@@ -116,8 +126,10 @@ impl Action {
             Action::Start { .. } | Action::Pull { row: RowId::Base } => None,
             Action::Add { feature, .. }
             | Action::Review { feature, .. }
+            | Action::Viewed { feature, .. }
             | Action::SetBase { feature, .. }
             | Action::Merged { feature, .. }
+            | Action::Dropped { feature, .. }
             | Action::Freeze { feature, .. }
             | Action::Unfreeze { feature, .. }
             | Action::Refreeze { feature, .. }
@@ -136,8 +148,10 @@ impl fmt::Display for Action {
             Action::Start { name, .. } => write!(f, "start {name}"),
             Action::Add { feature, role, .. } => write!(f, "add {role} to {feature}"),
             Action::Review { role, .. } => write!(f, "review {role}"),
+            Action::Viewed { role, .. } => write!(f, "viewed {role}"),
             Action::SetBase { role, .. } => write!(f, "set-base {role}"),
             Action::Merged { role, .. } => write!(f, "merged {role}"),
+            Action::Dropped { role, .. } => write!(f, "dropped {role}"),
             Action::Freeze { role, .. } => write!(f, "freeze {role}"),
             Action::Unfreeze { role, .. } => write!(f, "unfreeze {role}"),
             Action::Refreeze { role, .. } => write!(f, "refreeze {role}"),
@@ -786,7 +800,7 @@ impl App {
                 .iter()
                 .find(|r| r.role == role.role && r.stage == "review")
                 .and_then(|r| r.review.as_ref())
-                .and_then(|s| word(&s.fields));
+                .and_then(word);
         }
         let keep = self.selected_row().id.clone();
         self.rebuild_rows(Some(&keep));
@@ -1286,6 +1300,12 @@ mod tests {
             "add ui to x"
         );
         assert_eq!(review_action().to_string(), "review api");
+        let viewed = Action::Viewed {
+            feature: "alpha".into(),
+            role: "api".into(),
+        };
+        assert_eq!(viewed.to_string(), "viewed api");
+        assert_eq!(viewed.feature(), Some("alpha"));
         assert_eq!(
             Action::SetBase {
                 feature: "x".into(),
@@ -1303,6 +1323,15 @@ mod tests {
             }
             .to_string(),
             "merged api"
+        );
+        assert_eq!(
+            Action::Dropped {
+                feature: "x".into(),
+                role: "api".into(),
+                force: false
+            }
+            .to_string(),
+            "dropped api"
         );
         assert_eq!(
             Action::Finish {

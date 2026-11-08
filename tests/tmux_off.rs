@@ -31,10 +31,13 @@ fn start_add_and_finish_work_without_sessions() {
         .success()
         .stdout(predicate::str::contains("tmux is off; no session created"))
         .stdout(predicate::str::contains("warning").not());
-    fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
-        .assert()
-        .success()
-        .stdout(predicate::str::contains("Killed tmux session").not());
+    fx.hub(
+        &hub,
+        &["feature", "finish", "--force", "--feature", "feat-1"],
+    )
+    .assert()
+    .success()
+    .stdout(predicate::str::contains("Killed tmux session").not());
     assert_eq!(fx.feature_json(&hub, "feat-1")["status"], "finished");
     assert_eq!(fx.tmux_log(), "", "tmux was never run");
 }
