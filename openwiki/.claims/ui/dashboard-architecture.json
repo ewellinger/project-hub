@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:bd1eaa988a73e748439204d21166b95b0bb55d710f601cb39d806e2b832b71f8",
+  "pageVersion": "sha256:c03dc35970767854d18a8207162ff3e7658999ba69f17e1424dc69c69f279dac",
   "claims": [
     {
       "id": "claim_17e3d0e433ec49f28691d71532ba3d2a",
@@ -21,11 +21,11 @@
           "version": "repo-lines-v1:sha256:4b781975410a5106f32a1d4683da3804394f3aa58766f60dca04bb856bbf25c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDY0MGVhOWM1MmI4MWJiMmQ3MjI1MmFmM2NiZTAwMzViYTI0OWZjZDk3NDRlNWYyYmNkZGY1YWEyYjg1YThmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjE4YjUzYjdjZDkzOGQ5YTEyMmNhYmZiMTY4Mjk3N2E4MzFiNTc3NDY4NDZjMTRhZTI1M2E5Mzk2OTc0ZWQ4YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDhhNWUwZWQ1NTkxNWE5MzhlOGMyYWQwYjExYTYzZDgzMzUzMzgyZjYyOGQ4NWJhMTJmZjNmNGIzMmFkMzgzMyJ9"
         },
         {
-          "resource": "repo://src/ui/app/mod.rs#L231-L234",
+          "resource": "repo://src/ui/app/mod.rs#L238-L241",
           "version": "repo-lines-v1:sha256:85d118ba50c1815288b541bd15b94409bc4d8543f7d1c943b1c1da7ed594c8e6:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E0MTUzZTM0MTk1ZWQ5Y2VmMWIxOWQ0MDIwNjNjZDAxMDdkMmY3ODM1MzVjOTViNmI5YzcwMzU1NGJhNWVkZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDFmYjllNTJhOWZkMzYxYTU1MjFhZTAxNjA3NTgxZjAyYTdmOTk5NzExZGZjOTg3Mjk4NTNlYjVmNWI0Y2I2NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNThkNzcxZWMzMjFkMmIxMDY2YWE3ZjQ5ZmY3NTg5ZjExZmQ5MmM2YjUyODIyMjc1M2MwOGU1MGYzMGZkYmI5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDczNzMyOWU0MzY2YjI4YWNmMDg2ODlhMjhlYWQ5YTViYmRmMmQ4OTY3MmY1MzgyN2NhMDc5NmQ2NTQ2OWI1NiJ9"
         },
         {
-          "resource": "repo://src/ui/app/mod.rs#L440-L447",
+          "resource": "repo://src/ui/app/mod.rs#L447-L454",
           "version": "repo-lines-v1:sha256:5a7e24260dcf81a95cd4ae70fec504e4bb9122a0f00fe1d56f1bdce0a7dca5bc:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDVmZjI3N2Y3YzAwNjczN2VhZjAzY2JmOGRhOWZmZDc5OGUyYThiMTUxZjg0MWRjMjZhMjNjODJjYzc4ZWIxOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUyMmM0MmNkMTljNmQwM2Q4MDhjNDUyNzIwNTUyODI1YjdlYTFjNWI0OTFiMjE4NTExY2FjNzQxNWNmOWQ5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2EzNmE1MTBhYTkzNzRjNDc3NTg0OWMzODkzZDRhN2IxYWU2MWY2NzFmYTFlMWU3NmMxMWNhZTdmODAzMDJlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmU3NTllODQ0MTc3NThmZDM0N2RhNmI1MjVjNDU1NjM1NTVlMmNjYjZmZGEzNTgzYzk4ZWRiOGZmZWM5YmYwMiJ9"
         }
       ]
@@ -35,7 +35,7 @@
       "statement": "Launched from a feature's hub worktree the dashboard opens that feature's view first; otherwise it requests the base row's status.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/mod.rs#L422-L433",
+          "resource": "repo://src/ui/app/mod.rs#L429-L440",
           "version": "repo-lines-v1:sha256:c7f3cd864a1088332e521ad0fb6c78de2e75ac13dd9089e1cfafd9c2062b8a79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2ZTJjMmJkMjRlMDY3MzZkY2NhYmQzYjllYzk0NzcwYjUzMTM5YjQ1ZDUzOTJkYThjZjYyZWJhMDA5YjhlYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2NDM3NGVkZTY2MmJhYWJlNGQwODM0NTY3OTZmOGUyYjhkZmMzY2ZhYTczNDNjMzJlZWNlOGRkNGU5ZTAzNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ZWI2MzIzZDU0MzYyMmEwMGI0ZjdlNmY4ODAwNWQ0ZmRhNjA3ZDcyNzdkYzg5ZDU2NDYzMGRmMjhiMmQxZjIifQ"
         },
         {
@@ -49,11 +49,11 @@
       "statement": "Status replies are tagged with a per-row generation and applied only when they match the newest in-flight request for a still-known row; stale replies are dropped.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/mod.rs#L368-L391",
+          "resource": "repo://src/ui/app/mod.rs#L375-L398",
           "version": "repo-lines-v1:sha256:7cc36c051d84c848ae04a8bbb6f9aeaff5d94912d1ba77fa5b004ca5d29c8136:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExM2M3OWQ4ODg2YmM3MjFlMzUzNmE5NDNhMjY1NjNhYzRiNGNlNjBlMTA4YTNiZDBjYTA3N2YxODU2Y2FmNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwOWE4OWUyYTU1ZGQyNjkzYzZiZTY0YmRhNmNmNTFkOTgyYzM2NDczMTAzZWJiNGU5OWVkNDNiOWI5ZmFiODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzMzM2ODY3ZDdjYzEwN2RlM2RjYTJiNWJiZmEyYWUwYjQ2MDM3MTAwZDZkOTBmNWQ4ODBlOWFjZjA1ZjZlZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzZGJhMGU4MzdhMWZmYTJjMmI4MjAzN2Y0NTZjMDc4MWZmZGZlYzU4ZWM1YmM5YjUzNTliODFlOGYxMjY4MDIifQ"
         },
         {
-          "resource": "repo://src/ui/app/mod.rs#L448-L478",
+          "resource": "repo://src/ui/app/mod.rs#L455-L485",
           "version": "repo-lines-v1:sha256:f0f1cf9d67bc3537ce75ce65c52bebcd7a53fd1ab5af3a33910f7d26f5faed01:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4YmE4YzIxZTAwNzdjZDRhNWE0ZjZkMjZjYmI4MjBkY2ExYjJmYTY5OTc4YzE4MTNjYTg5MjlkMjZhYzRiMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkZGNkM2I4OTkxOTU4ZDM1Y2MwYzM1ZGYzOTJhNzVkZTJiYmQ4NDI2OWY3NmViNjJiOGIzMTM3MGE4YTU3ZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2NmI5MzJjNmVkYzhlNjczNThiZjM1MjEwMmExNmQwZGM3ODAyMjcwMTc0NWZhZWE4YzEzZDM2MzZlZTE4ZDMifQ"
         },
         {
@@ -64,11 +64,11 @@
     },
     {
       "id": "claim_38d54b7da8964fc2a85d8a31237d147d",
-      "statement": "Dashboard actions, including Freeze, Unfreeze, Refreeze, and Remove, run on a worker thread inside hub.with_lock, load the feature record inside the lock, call the same ops functions as the CLI, and convert panics into a Precondition error.",
+      "statement": "Dashboard actions such as Freeze, Unfreeze, Refreeze, and Remove run on a worker thread inside hub.with_lock, load the feature record inside the lock, call the same ops functions as the CLI, and convert panics into a Precondition error; Viewed runs on the same worker outside the lock.",
       "evidence": [
         {
-          "resource": "repo://src/ui/worker.rs#L114-L228",
-          "version": "repo-lines-v1:sha256:594f00c16b5012fe1ad92f2b396c840be530e4ab232a88abbc45de9257cd75fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2N2YwMWQ1M2E4ZjVkOWE2NTA1Y2NlMGE0ZDUxNmNhYmRiNTI1ZDBlMDYwNDUwYmIxMzI0ODgxODEwYjQwNDM2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhMWE3NjFhNGZiOGVhZjNjYzk5MTMzNjAyMTRhNjI0NDQ1ZTMzYzliOWY5ZTMzNDM3ZjY4YzhiM2U2MzAwMTlkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwM2ExMDM3ZjA3MTk2MWZiM2IxM2E3ZGFmZjY5YWNjMmJhYjgxMGZlOGJkYTE2YTJiMjI3MTU1NDM3MTRjYzc1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiYTA4NmM2NmNjNzU3MmZmNTFkYjExY2JkNTkzZmQ0NDlkMDMzOGQwMGU4MWQyYWFlMDBiYjg3ZjYyZTg4MGJmIn0"
+          "resource": "repo://src/ui/worker.rs#L114-L234",
+          "version": "repo-lines-v1:sha256:91def3964fb51717a81f8ef682790129bac023a000c67ff93e6323a59a304bd0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2N2YwMWQ1M2E4ZjVkOWE2NTA1Y2NlMGE0ZDUxNmNhYmRiNTI1ZDBlMDYwNDUwYmIxMzI0ODgxODEwYjQwNDM2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhMWE3NjFhNGZiOGVhZjNjYzk5MTMzNjAyMTRhNjI0NDQ1ZTMzYzliOWY5ZTMzNDM3ZjY4YzhiM2U2MzAwMTlkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwM2ExMDM3ZjA3MTk2MWZiM2IxM2E3ZGFmZjY5YWNjMmJhYjgxMGZlOGJkYTE2YTJiMjI3MTU1NDM3MTRjYzc1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiYTA4NmM2NmNjNzU3MmZmNTFkYjExY2JkNTkzZmQ0NDlkMDMzOGQwMGU4MWQyYWFlMDBiYjg3ZjYyZTg4MGJmIn0"
         }
       ]
     },
@@ -81,11 +81,11 @@
           "version": "repo-lines-v1:sha256:3e3bf2a1efb47f5737e629bc327248c9ade3852b48d9870fc4cba547e4891a6f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmZmU5NDc5ZTYxN2U4OTZjYjU3NDI5NDk5NGRmY2I5ZTc0ZjM1NWEyYzZkYTYyMDBjODRlMzY3ZjhlNGI5MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMDU0MGYwOWFhZDNiYzZkNzI1ZDY3NTMxOWFkNTkzNmNmNzc0OTdiMDkwOWRhOGU3MmI3YjAyNTcwMjI4NzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmMDM0ZDM1ZjVkYjcyZDdiOGQ4NDcyNGEzNTQ5NDQzNmRlOWEzYjBmYjI5MDIzOGI3MWEzN2U2MTFlNDMxMDMifQ"
         },
         {
-          "resource": "repo://src/ui/app/mod.rs#L518-L522",
+          "resource": "repo://src/ui/app/mod.rs#L525-L529",
           "version": "repo-lines-v1:sha256:c357500ba82db667371fd2553a4bf9a5e67f6a70625ffab7ae8dc5892daf3c53:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTU3M2VjYTBiZjYwMDMwYjFjMjQ4ZjNmZDc3MWM5NGVhMDBjNDk3YmY3NzcyNmY0M2U4ZjJlNzBkMzY3MzVjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzg5MmIxZjgxNTYyYjE4N2Y1YjI1ODc5ODVjNzBmMDM3MDdkMTViMjc4MTUwMTZiZDEzMTI2MzgzOTI1OTAyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTA4YzIzMmQxN2E0MmMwYWRiNDVlODk3MTZkOTljOWY4ZmZmYzdkZTU5MjJmMTA2MjYxYTRmZTAxYTExYmZlMCJ9"
         },
         {
-          "resource": "repo://src/ui/app/mod.rs#L663-L681",
+          "resource": "repo://src/ui/app/mod.rs#L670-L688",
           "version": "repo-lines-v1:sha256:109be0bef3c4cbb1808f819cee494fac8f6b5bea34626eb0e23ef2bca0f5c885:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4Mjg4Y2E4Nzk2YWVmYjdjNmFmN2Q0ODk0Y2NiODdhY2U1ZWNlMDBjOTAwOTEzOGY0ZTljMGZmYWYwMDJjMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4NzQyMjlhYzgzYjk1YzhiYjM5NzA1MjFkY2FhMDE2OGQ2YTczZWE5OTI1MGZkN2JkZTYxZjliYzVmMjM3MWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZGNjOTZjZDI0Y2VlNjU2YzA0N2RlNWFiZjg4ZTI5OGJjZDUwMmJlYTE3N2Y0YzZmZmVhYTc0ZjBhYTRlODMifQ"
         }
       ]
@@ -95,7 +95,7 @@
       "statement": "After an action, single-line output goes to the footer and multi-line output or errors open a result overlay; the affected row is re-requested fresh, start and finish reload the list, and remove reloads the list whether it succeeded or was refused.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/mod.rs#L729-L764",
+          "resource": "repo://src/ui/app/mod.rs#L736-L771",
           "version": "repo-lines-v1:sha256:a0c29b43e16961df96e29475aab678d6b8a2800e2e796b8dde62e8f709ff6b6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiYjA5MDU1NWRkYmJkOTcxOWY5OWQ0MjkwM2E2MWFjMzgxYTA0ZDViMzJjOGY3MjE1MDZiNzFiOWVmNjVjMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNzliZTIyYmI1ZjA1YTVjNWIzOWQ0NGZjYzBkYTRiODliZTlhNzcyYWJlZDY0NDdhZjAyYzBjMWVhNzJjOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
         }
       ]
@@ -129,7 +129,7 @@
           "version": "repo-lines-v1:sha256:3d606c805db76a146ed6fc1be52bdc9fd72e99bd998ef39d0e2687b56a467735:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2RhZTlhODhiYmMxZTJhYzNkYzg3NmE4NmMyNzZjNjRiNDk3NDZlMjliNjExZDY1ZjllODczNmU4YWEyMDE0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTg0OWM5MmQxZjNlODA1ZWQ3MmJmN2U5NGIwZjJkNzFjMTgwMDFjNjI1YjJlNDI5YzJhYWFkNTZjN2IxYzdjZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmYzNjFkMmUxMzM0OGI1MzdmMTNmMjY1NzJkZDEwMWY5N2RiODRiNzY5OWY5MDk4NDU0MGY4ZjFkMGZhYWVkNyJ9"
         },
         {
-          "resource": "repo://src/ui/view/dashboard.rs#L344-L386",
+          "resource": "repo://src/ui/view/dashboard.rs#L345-L387",
           "version": "repo-lines-v1:sha256:7fc2aedaa2b79f3637b233bd6c53b63c90644fe8a6adf2856a870a473d0a69c6:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMTRkZmM3ZjlhYjM4MWZkYTg4ZTFkZDJkY2I4NmJkODY0ZTg5ZTg0YmEzOTBmNDg1NWNkM2M2ZjlmMjZmZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNDMxMmU5NzY5ZDFjMTFkMGVjODBjNzVkYWMzOGYwZTA1ZjExY2U1Y2RjNzllZDI2MGU2NzJlZjkyNWUzM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyYTU0ZjExOGU4YmExZWM5M2ZkMjg2YjY4ZjdjOWVmMzQ0MjQ2NDVlNjhhNDBjMmJmYjM3NWE4ZTdiMGM1YTEifQ"
         }
       ]
@@ -159,7 +159,7 @@
       "statement": "A dashboard status request either attaches the remembered review state (Effect::Request) or reads the forge first (Effect::RequestForge); rows whose outstanding request reads the forge are tracked in forge_in_flight, a second forge request for such a row is ignored, and a superseding fresh request keeps reading the forge.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/mod.rs#L368-L400",
+          "resource": "repo://src/ui/app/mod.rs#L375-L407",
           "version": "repo-lines-v1:sha256:7911d34320c3e69f760778dab56e6fcb703704f9cbc1f8594d78f0e40df8a588:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExM2M3OWQ4ODg2YmM3MjFlMzUzNmE5NDNhMjY1NjNhYzRiNGNlNjBlMTA4YTNiZDBjYTA3N2YxODU2Y2FmNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzMzM2ODY3ZDdjYzEwN2RlM2RjYTJiNWJiZmEyYWUwYjQ2MDM3MTAwZDZkOTBmNWQ4ODBlOWFjZjA1ZjZlZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5NzliYjYzMTFkMmFiNTA5YzdmMmVhNWUzM2Y3ZDY0ZDA1MjkzNWI0YmUzMTZlMzNhMzQwYjIyZjZmMTZhZWUifQ"
         },
         {
@@ -199,11 +199,11 @@
       "statement": "When an `R` refresh finishes, its warnings open a result overlay only if no overlay or flow is open (otherwise the footer reports the count), and the list is reloaded with the selected row's request superseded.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/mod.rs#L401-L414",
+          "resource": "repo://src/ui/app/mod.rs#L408-L421",
           "version": "repo-lines-v1:sha256:de52633a01c3a575d3d876ab5f283948db4b13e71354dff324a8195ae47c8b48:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MGMxZGEyNmNhYzlhNzU5NGIwZmE1YWZlMmI4YWZlNDhkNDc5MDEwNGM3ZWUzYzAwZmQ1NzRjOGRmMzkyOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NWNlYzE0N2I1NmY2OGE2NTQ0ZGQwNjMwYTI3ZWFlOWY3NGVlNDQ5OWIxOTRmZTcwZDk1NTQ5ZTU4MmU3YzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiZmNlODIzODMyZjFjYjU4YmU3OTJhYmI3ZWFhMDA0ZTIyOWFmZjE0ZTFmZGFjMTIyZDg2NzkxZWRlNDljYjcifQ"
         },
         {
-          "resource": "repo://src/ui/app/mod.rs#L701-L727",
+          "resource": "repo://src/ui/app/mod.rs#L708-L734",
           "version": "repo-lines-v1:sha256:00f51117befc5d1fd99c541b7c04de283eca3465aba7adab00dfdeb24d3524bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4ZWY2YjhlYzU1ZDhiZDU3YzdjOTNmYTc2ZWQ3Y2FkMmUxY2Y4MGM0ZmFlMTRhYTg1MDAyNjM5YmUyZTJlMmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NTRmMGUwMjk1YmZlNzgwZjNkNzMzZWNkNmM0ZmZhZjA3MjEyODI0MjJmMDFiZGJlMTNjZjk3ZGUwNWFmNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3ZGNjOTZjZDI0Y2VlNjU2YzA0N2RlNWFiZjg4ZTI5OGJjZDUwMmJlYTE3N2Y0YzZmZmVhYTc0ZjBhYTRlODMifQ"
         }
       ]
@@ -221,6 +221,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:cde3d6cf2d271dde725d234cac64a98fff1e9b7cc3a26e36a0263dc60e844379",
+  "pageVersion": "sha256:ce41e2b8bf2f9f9552e6a95c66db81f974e76351b15f15c0896ed1ae85fffdaa",
   "claims": [
     {
       "id": "claim_dd65511507be46818db4d4c49e20ca42",
@@ -11,7 +11,7 @@
           "version": "repo-lines-v1:sha256:e2ff3e866867d33ea0f45de9c63658302312795f6499e42be2583a70cbf29424:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyYjY0ZTgzZTE0NTM0OWY5Y2RiYWVlMTBiNjFiZDc1MzJkNGQwYTI1NWU3NDdmZWE2ZDNkY2Q1YmJkZGZjZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3MmQzMGJhM2FkZjQ1MmU4MDE2MDExNDc2Nzk0NzdlODI5M2VjMDEyMzVkMDQyMDJkMDJlZDRhZDcyNjIyNzkifQ"
         },
         {
-          "resource": "repo://src/ui/app/mod.rs#L530-L567",
+          "resource": "repo://src/ui/app/mod.rs#L537-L574",
           "version": "repo-lines-v1:sha256:46b070513d9a429e00114e46cf8a8107cff2e349f92d6b970e4a211ed3b0bd3d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMmIxMGM2ODRmZTNkYThhNjU0NmZmMTgxMTZmOWZkZGU0NDY2M2YzZDY4OGRiZThjMmM0NzY1ZGJjNmEwMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4YzI1NDc4N2ZkNjAyZDdlMTM0ODFhMWQ3ZDliZTBjMzdkZjc2YzRjMGNlNTFlMWQzNGMyNjQxMjQ0YmM3NmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExNGU4YzVmODM4MWJhYjM3NDFmNmRlMDY1MTk4YTA3OGE0YjA1YzVkNjM3MjU3YTE0MmM4MGRmMWM0NWE3MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4MDY0YTQ2OTNiYmI5MDYxMDZmOWM5M2EwYzcyNzgxNTg2NTJhNDNjODg1OTBlM2MwMDcxYjAyZDNjNWFkNWEifQ"
         }
       ]
@@ -21,11 +21,11 @@
       "statement": "Esc in any overlay cancels the active flow with nothing changed; a Result overlay is dismissed instead.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/mod.rs#L523-L539",
+          "resource": "repo://src/ui/app/mod.rs#L530-L546",
           "version": "repo-lines-v1:sha256:3722bfd465c7ef0edc26406a655871d491b83b8e28d3126ea403a01194f121dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMzFiY2MwMDI2M2M5MmE3ZTZmOGYzMDY5MzQ0NDJkZDY5NzAyY2NiNTI0MDQyNmM4MGM0MzBhZmJlMWFhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2NDE1MzQ2MDk4YjdmOGRhODYyMzBkMmJmY2IzM2UzYmRlYjhhNjA5YjFmZjNkZGUxM2VjMjc2MTMyZDI5YTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NjVkNzM4OTQ3NDA5ZTA3MTRhYjczOGMyNTEyZDdiMGIxYjhjNTRkNjU0N2RkOTc3YTBkNzhlNjIyMmJlOTkifQ"
         },
         {
-          "resource": "repo://src/ui/app/overlay.rs#L238-L244",
+          "resource": "repo://src/ui/app/overlay.rs#L242-L248",
           "version": "repo-lines-v1:sha256:dda8beba9cd1980653ff9c234f9092d2ec4867c4e3a70aadca9725e5fd94c369:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM5MWVkZmE3OTk3ODBjYTE4ODIxNWFjOTQ5OGMzNzA1NmM5NjJiNzIxOWVjYTc3MTc1ODY1ZDRhYzRhYWMyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjYxNGNmNDk0MDEwMzc4NWU4OGZhMjgzNTlmMjIyZjViNDBkMmI3YmI4YWQwOGI1NDIxMGU2NWU0NDM5MGRmNSJ9"
         }
       ]
@@ -35,7 +35,7 @@
       "statement": "A Confirm overlay accepts with Enter, accepts with force on F only when force is offered, and ignores both when blocked.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/overlay.rs#L330-L341",
+          "resource": "repo://src/ui/app/overlay.rs#L334-L345",
           "version": "repo-lines-v1:sha256:f8c312de133a61a9bb3437b8932dd27e09823701f67deec7a79552c6938fd0dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNjU1Y2ViZTZiYTAwNDllOTcyZTkwMDhlZWEyYTYxOGQyYWU3MTIwMjcxZjdlOGRlNjRhYmRhOWZmNjMxMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5MWE1NjA1MWY0YWUyN2VmM2RhZGMxOTJiZTc0MmE3ODViZjc1NWY1NzMxNTU2MGU2Y2NhYWRiZmE3NjY4ZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxNTcxY2I0N2JkYzUwYWEzOWFlNDdjNGFiNTFlYmNjMzQ4YjJlNjEyZGI4MDgzNjIxZDM5NTViMjA5ZWUyZjgifQ"
         }
       ]
@@ -45,7 +45,7 @@
       "statement": "In a Select overlay, Enter on the pinned row while a filter is typed answers with the filter text instead of a pick.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/overlay.rs#L259-L266",
+          "resource": "repo://src/ui/app/overlay.rs#L263-L270",
           "version": "repo-lines-v1:sha256:5da2a0c2e72643edff396861ad3114c052bfc38a4d71a9e044a97ecdc7827221:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjg5NjQ2NjI4MjUxNGEwODlhNjY4MmRiMGM5NTExMjdmMmE1ZDg3ZGY4YmEyZTRiNmMxZDE4MmE5NTAzYThjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUwOGZiMjY2ZGEyYzRlZTlkNWM5YzA1YTUwMTJjMjY4YTdkNWZmZjJkNjdmODQ4MDIxOTFhYjVlYWQ2NzVmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGQ1MDE4NzNlNDg1MDk5YzdjZGI5NDg0NjdjOTIyNWUwOTM3MWIwZGM1Njc5NDU5YTgyZjU5OTEzNDJjN2MzMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGY3ZDZlYmQ2NGI0OTU2Y2JkMDk0MDk2NjJkOGUwYWIwN2YwMmQ0YzVlYWUzNjc2Y2Q0N2ViY2EyZWQyNGJiOSJ9"
         },
         {
@@ -117,7 +117,7 @@
       "statement": "Per-role feature-screen actions are refused while an action runs, before status loads, or when the selected row is a merged change or a frozen reference row.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/feature.rs#L203-L236",
+          "resource": "repo://src/ui/app/feature.rs#L219-L252",
           "version": "repo-lines-v1:sha256:340c2986df10cf31c49835d61d848c129e2f2657da3e933cb3522d075cb77f6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljN2Y3MGVhZGNlZTUzM2Q4MjkzYTYwNmY0NWJhNDdiMGUyZWEwMDdiMzE3MmViNmE2YTgwMzc0YmVmODk5YzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzY2FiOTIxZWM3NmYzOTYxOTk5OWI2Zjk5NzAzZTI3NGUwNDM5Y2E3N2MwMzQ2NDliMmQ3YjQzMWQwNjMyMTgifQ"
         }
       ]
@@ -161,11 +161,11 @@
       "statement": "u unfreezes a pinned open change at once but previews a reference worktree's removal with off-pin and dirty warnings, F forcing; Z runs Action::Refreeze directly; both act only on rows with frozen_sha.",
       "evidence": [
         {
-          "resource": "repo://src/ui/app/feature.rs#L165-L172",
+          "resource": "repo://src/ui/app/feature.rs#L181-L188",
           "version": "repo-lines-v1:sha256:a3891ef4752dd99dee4df3216e36b469fe141d944a5f2323ee7be9e808e973ad:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmVkYjE2ZGZlZGI0MDUwODg5ZjM0MTE3NmYxYmVhZWYzMDFmYzViOWY3MjMxZmM0NzMyNDUwZmU0ZjI2NzNlMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmJjYWRkZGQzZTk2MjNhOWVmYzc5NzU1YjhmNjBlMGE2ZGZjMjUyMzU5MGJjMTFmNTVmZWUzN2YxMGEwYjg4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWZiYWMzNjcxMDY3YzY3ZTFkNmQ0Njk5ZWI4ODA4OThkNWRmOTUyMTczYjE0NjUzOTVmNTMxMzIwY2Q0NTM4MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTc1Y2MwOTAxMmMwY2M2OGEyZjQ3ZWY2YTA0ZGVmZjJiN2RkMGJiZTVmNWVhNGZkYjIzN2E4NTlhNWRmZGU0NyJ9"
         },
         {
-          "resource": "repo://src/ui/app/feature.rs#L238-L262",
+          "resource": "repo://src/ui/app/feature.rs#L254-L278",
           "version": "repo-lines-v1:sha256:2cce14a452aefcbbd00499477666264fdceca7c3b4da3c153d6f9cef99b7f815:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljOTI2MzRhNTAwMTU0NDgxYmFlZWU4OGMyZDM2ZDFiYTljZGJkMTZkYThhMWJjMDRkYTU0MTQ4NTBkM2M0ZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwOWMyZTBlNGZjMTQ3OTExODFjZDk5ZGFkYjJmMzRjNjJjZjcwZDZlYzM2ZTUyMjZiODk1YzQyZDlkZjFiY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxMTM5Y2UwZjMzMDNmNDkyYWMwYTE1ZmI4NjhjMWFmM2I5MWQxMjQ4MDIyOGQ3MGI2Mjk4ZjE3NDZiNGM0YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmODRmNzE5M2U5YzZjMDUzMDY5ZDc4YTEyOGU5MTNiMTA1ODkyYzU4Njc4YzljNTIyYTIzYTM5NzAxN2E4N2MifQ"
         },
         {
@@ -189,12 +189,12 @@
       "statement": "The feature footer shows u unfreeze and Z refreeze in place of the role-move and finish hints only when the cursor is on a row with frozen_sha.",
       "evidence": [
         {
-          "resource": "repo://src/ui/view/mod.rs#L142-L182",
-          "version": "repo-lines-v1:sha256:a9692248e52a485b38f370ebf23f5900bae43cc4438073cdd9f57509a6bb1b56:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMDNlYWQ0NzNhZjlkYWI5YjVkNjQ4YWU3NWFiYTVhMzMzMjE3MjY2OWU4NDNmZGEzNmVmZTNkYzE0YmM3NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2YjE4MDJjNTQwMjA4NTFjMGI4NzE3MDFmMTkyMGM5MGVmYzI3MzA5OGMxOTg3MTYzNzE5NDE2ZTA1NjE3YjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+          "resource": "repo://src/ui/view/mod.rs#L176-L195",
+          "version": "repo-lines-v1:sha256:dc7fed0ff29e8edc38b82ab9088079592309c84a404e15686b8d124a214830e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjYTc5NjI3MmIzZGM3NDkxMDRhYWIxZjQ0ZTk4ZDA3ZGFmZDFhM2NhMTg5NjQ3OWMwZTM1NGZkM2QyODI3MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwOTNkY2UwMmZhM2U1YzBiOGMxYzg2YWM2N2U4NzYzZTNhMjQ5YWFhZDAxZjlhOGVkZTJkNjcyNzE1MGJkNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiZDRjMjZkOWIxNmZkZTBhNWRkN2U1ODAyMjA4MThlMDVmZmZkMTUwYjNiZTRiN2ZiY2Y2ZjhlYTgyNTY3OGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNzhlMzVkZjQxMTc4YTE2NmUyYTI2OTFlYjBjMGE5NDAwMDMyZmUzMTQ0YjY2Y2Y0MmUyNzY4MGIzMjVmYWYifQ"
         },
         {
-          "resource": "repo://src/ui/view/mod.rs#L32-L50",
-          "version": "repo-lines-v1:sha256:9db49bbaab0973f2f9bed7b2ee6227ff86c15a8128f830fc078b64ee7a4239f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZTc3YjlmMzRjMWFmNTFkMGZkNDQ4ZDdhMWNkZjJiN2JjMDhlYzQzZTZiZDgwMzMwMmM4NDVhMDg3YjU4ZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwM2JjNGM1Y2NlOTAyMTBiMGEyYjA5OTc2NDU2ZDEyZDc3MmI0ZmUyMjU0Mjk3NWU5MDY1MzE2MmY5YjQ5ZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5MWY1MGJhZGYzMTRmOTQwYTc4OTZmYjE0NGQ4MDYyNWFkYzc1ZTZiMjAxY2Q4ZmQ0ZjYzMzlkYjE4MjQwYzAifQ"
+          "resource": "repo://src/ui/view/mod.rs#L50-L60",
+          "version": "repo-lines-v1:sha256:4546ea927fc6c388db0297d13e55da87ac487a0f794ab077b88a6ba175ff936c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzMTQ4Y2VkMDcyYjY1MDYzOTBjM2Y5MzdjMmU5OTcxZWQwZmM4YjEyNzFkZjg5ZTE2YzU3NWU0MTgxMzdhZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlNDlkYWMzNzc1NjBkZTQ1M2Q2MzYwM2FhMzc3OTIwMDM3NDFmODJkODViOGM5MjRhYmEyM2Q5YTAxNDk2YjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5MWY1MGJhZGYzMTRmOTQwYTc4OTZmYjE0NGQ4MDYyNWFkYzc1ZTZiMjAxY2Q4ZmQ0ZjYzMzlkYjE4MjQwYzAifQ"
         }
       ]
     },
@@ -231,14 +231,42 @@
       "statement": "While a dashboard `R` refresh runs and no action is running, the footer shows `reading review state…` with the spinner.",
       "evidence": [
         {
-          "resource": "repo://src/ui/view/mod.rs#L156-L168",
+          "resource": "repo://src/ui/view/mod.rs#L166-L178",
           "version": "repo-lines-v1:sha256:120c4b205fa048b0986da98d4e4b9c38b536cd106ac822460be065f6de82fcd0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5YTA1NmVjZDU5NmJhNTNmYjhlOTlkYzE1ZTA5YmU3NzViMWFmNjQzNWFiOWM5MDAzMjgzOGMxYjRmZmQzMTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTJlYjhmYjhkNzhmOGZmM2I2ZDgxMzQ5YzkxNGY4MmU3ZTJiNjgyZmI4MDk4YTJmYmQ2NTk3MGUzZmU5N2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzMjZlM2QwYzBjODFjOWY3NzBkYzI3MzRhMmUwMmZmMzRlOGRlNWM2YTc4MzA0NTcyYzM5ZTRlOGE5OGI4MGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlZTllODczZGYwODU0NjMzYTI3MWU5OTNjOTgyNTQ4ZDUwODhkNDBmNzg5YjQzMDg4YWU5NjZlNjMwYjU3NzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c00e9c6d5510465ca82749adb50743bf",
+      "statement": "On a change in stage review with a recorded URL the feature footer shows V viewed in place of z freeze; the frozen legend takes precedence when the row also has frozen_sha.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/view/mod.rs#L176-L195",
+          "version": "repo-lines-v1:sha256:dc7fed0ff29e8edc38b82ab9088079592309c84a404e15686b8d124a214830e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjYTc5NjI3MmIzZGM3NDkxMDRhYWIxZjQ0ZTk4ZDA3ZGFmZDFhM2NhMTg5NjQ3OWMwZTM1NGZkM2QyODI3MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwOTNkY2UwMmZhM2U1YzBiOGMxYzg2YWM2N2U4NzYzZTNhMjQ5YWFhZDAxZjlhOGVkZTJkNjcyNzE1MGJkNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiZDRjMjZkOWIxNmZkZTBhNWRkN2U1ODAyMjA4MThlMDVmZmZkMTUwYjNiZTRiN2ZiY2Y2ZjhlYTgyNTY3OGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNzhlMzVkZjQxMTc4YTE2NmUyYTI2OTFlYjBjMGE5NDAwMDMyZmUzMTQ0YjY2Y2Y0MmUyNzY4MGIzMjVmYWYifQ"
+        },
+        {
+          "resource": "repo://src/ui/view/mod.rs#L40-L49",
+          "version": "repo-lines-v1:sha256:4ad17a94b9ad189bab41ab35503ba45156108f6fd2244a42c2fe11b8c035e501:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmZjBmZWVlMzdjMDgzN2JhY2RkNjBmZGQyYjdiZWM1Zjk4ODQ0NTA2MzQwNzgzOTI1Y2RhZDIwMTcyNzA4NGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlNDlkYWMzNzc1NjBkZTQ1M2Q2MzYwM2FhMzc3OTIwMDM3NDFmODJkODViOGM5MjRhYmEyM2Q5YTAxNDk2YjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiNjUxMDZjYzU3OTNhYmE1ZWQ3NGRjYTU4MzExY2VjY2M4MzA2ODQxYWY5NWVmM2Q3ZGQzNGU2Y2E2NzhmMTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_47a71426a1b74854a5bf1dea4a06b085",
+      "statement": "The feature screen's V key refuses in the footer unless the selected change is in review with a URL, and otherwise runs Action::Viewed, which the worker maps to ops::viewed::viewed outside the hub lock.",
+      "evidence": [
+        {
+          "resource": "repo://src/ui/app/feature.rs#L125-L142",
+          "version": "repo-lines-v1:sha256:598dae7c2cb441d70eb554075b54a88d9441b6229bdffe4f979aae93ddabaaeb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZmNjMWU5YTcwNzJjOTU0MmJkZTA0ZjgwN2JhZGE1N2VjYmM5ZWJhNmQ2Y2MzODI4YjE5NmU2NGNiODQ0YzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwOTNkY2UwMmZhM2U1YzBiOGMxYzg2YWM2N2U4NzYzZTNhMjQ5YWFhZDAxZjlhOGVkZTJkNjcyNzE1MGJkNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliNGFhMTE2OWU0Nzg3MjhjNjFmZTMwYmYyNGFjMWMyODIwNDA3M2RlMmI0ODczNzAzZGJkOWE1ZjBmODNlOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkNmQ4ZDk0ZWQ0OTdkYjM1YTM3ZjdiNzUyNmYxNDFhZGVjYjk1MjI1ZGQ4NGY4ZmQxZDQzZDNkYWZhYjE4MzAifQ"
+        },
+        {
+          "resource": "repo://src/ui/worker.rs#L121-L127",
+          "version": "repo-lines-v1:sha256:ca388d141dbc0d5c6ea133008fb73e79a69abed03b5798e36573e3e62c2f9850:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGJhNWFkZGI2NTJjYjJhOTUzMzE1NzQ2MTIxOTlmNGVlZDVjYTY5Zjg4MTFjNjIzNjI2YmY1OTI0NTI0NDgzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjEyZjhhMGRjMTczNjM4MWMxZDk0MzRmMWJkY2RjY2VhOWZjNTdiODcyNTEzZjRkMTg0MjIxZDg1MjA4OTIyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDNlMzY5NDY5Y2Y2NWIzNzIzZmZhNWI0OWVkODNiMmEzYjdlMjJkNjQzYzEzNzM2OTEwNDFlMmZlM2FmYTQ2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWFmMzY5NzFhZTE2MTkxYTZhNGYzZGEwNGM0NTNiYjU1OTFlZDFiYTQ4ZGE3NTg0Y2EwNzMwMmRhOTM5MDY0NiJ9"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }

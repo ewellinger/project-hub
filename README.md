@@ -220,6 +220,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature unfreeze ROLE [--force]` | Release the pin and remove the reference worktree |
 | `hub feature refreeze ROLE` | Move the pin, and the reference worktree, to the local base's current tip |
 | `hub feature review ROLE [URL]` | Record that the role's change is in review |
+| `hub feature viewed ROLE` | Mark the role's review as viewed: record its head and comment count, and flag it as `pushed` or `N replies` when they grow |
 | `hub feature merged ROLE [--force]` | Close the change: remove its worktree, keep the branch |
 | `hub feature dropped ROLE [--force]` | Close the change as abandoned: remove its worktree, keep the branch |
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch. Refuses while a role is `working` or `review` unless `--force`, which also removes dirty worktrees |
@@ -381,6 +382,21 @@ state after the stage of a role in review: the first of `merged`, `closed`,
 `draft` that applies; `--json` carries it as `roles[].review`. `hub feature
 list --refresh` reads the forge for every open feature first.
 
+`hub feature viewed ROLE` (TUI `V`) says "I have done my part; the ball is
+with the other side": it reads the request once more and records its head
+commit and comment count beside the remembered state. Every later read
+compares against that mark. A new head gives the word `pushed`; a higher
+comment count gives `N replies`. Both sit after `merged` and `closed` and
+before every other word, in cyan, so the reviews that need you stand out in
+the list. `hub status` and the TUI show the same thing as a hint in STATE,
+`pushed since viewed` or `N replies since viewed`; the merged and closed
+hints and git's own hints come first, since closing the change outranks
+looking again. A review that was never marked is never flagged, and a new
+mark replaces the old one; there is no undo. `--json` carries `head`,
+`comments` and `viewed` (`null` until marked) in each row's `review`. A mark
+is taken only from a fresh read: when the forge cannot be reached the
+command fails and records nothing.
+
 ### Pull and base updates
 
 `hub pull` acts on the `+a/-b` column: from the main hub it fast-forwards
@@ -537,15 +553,16 @@ read-only reference checkout. A pinned open change is still a member and is
 styled like one.
 The footer shows the frequent keys, and `u` and `Z` with the cursor on a
 frozen role or pinned change; `?` lists them all.
-Its keys call the same commands the CLI has, under the hub lock, and show the
-command's output when it finishes; a failure shows the error and changes
-nothing.
+Its keys call the same commands the CLI has, under the hub lock (`V` without
+it, as `hub feature viewed` does), and show the command's output when it
+finishes; a failure shows the error and changes nothing.
 
 | Key | Action |
 |---|---|
 | `↑` `↓` `j` `k` | select a role |
 | `c` | copy the role's branch name (a frozen role's pinned commit), worktree path, or review URL to the OS clipboard; only what exists is offered |
 | `v` | `feature review` for the role, with an optional URL |
+| `V` | `feature viewed` for the role in review under the cursor |
 | `m` | `feature merged` for the role, after a preview of the worktree it removes; `F` in the preview forces |
 | `d` | `feature dropped` for the role, the same preview and `F` as `m` |
 | `b` | `feature set-base` for the role |

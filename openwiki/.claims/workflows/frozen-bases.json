@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:27f152492303b43cb4fe17a8ccf2adc33d7883d9ce2538636cd076ebb626a8e5",
+  "pageVersion": "sha256:53f06d1c7746c5c39602749373758b630fb4db903b6cb886cedac2866faaabc7",
   "claims": [
     {
       "id": "claim_a78d6f229fc1491c81feeea40d788334",
@@ -85,7 +85,7 @@
       "statement": "merged and dropped drop a role's pin together with its change.",
       "evidence": [
         {
-          "resource": "repo://src/ops/merged.rs#L224-L237",
+          "resource": "repo://src/ops/merged.rs#L186-L199",
           "version": "repo-lines-v1:sha256:f45b0420fb607b38aacdda16b6c29d18b7a4294f7133bc577e86a78b6078fa33:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlYTE4MmE3MGYwYzAzYjZmNTA3NmVlNTBjMGQyOGVkYTc2ODQ4NDJhZGRhMGY2ZDZkOWMwZDc4MTBlZjI5NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMWZkMGJkMWY0NjI3NjQ3NmYzZjA3NDhjMzc3ZjJlMjFhNmUxN2I3M2IwM2EwNjVmNzQ1M2RkOWMyNzU5ODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzBlYjQ1YjJiM2M5MmI2N2VhZjgzMDE5MjIzYWJjMzA1NmY3NDEwOTgwMDM2MzBjM2Q5OWQyN2JjMjBlNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjZThhZWNkNTk4MjhmZDk5NzI1MzBlZTI3ZTE2ZGJjMjk0NDI2ZjQ1ZTE4ZmM5OTE5Zjg3ZTExY2I4MWY5OWQifQ"
         }
       ]
@@ -105,12 +105,12 @@
       "statement": "`feature remove` considers only the feature's changes and its hub branch; frozen reference roles have no branch and `finish` clears pins, so remove deletes nothing for them, while a pinned open change's branch is handled like any member branch.",
       "evidence": [
         {
-          "resource": "repo://src/ops/finish.rs#L125-L136",
-          "version": "repo-lines-v1:sha256:c573475412de1fe8a06a858146c41d621951fc55e0d400418d03686cb44a4f44:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1Y2RlZjgwODVhZTc0YWI2MzZkNjQ1OWY1YzZkNWZiZmIwZGIyNjRmMWIwZDc1YmFjNTE5YzliM2Y2NzE3YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYjYwNWJmZTNhMDYxOTE3MWY3Y2JjM2QyODcyMmIzNDUxYmQxMDMxYmZhNmIxZjM5N2Q5YTFkODliOWIxNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmMjU0NGU2Y2NjMGU5NWE2ZjZhM2RhYTUzZDRkMzliMTAwODBhZTEyYjBhM2I1Nzc5NGY5YTAwNmYxODYwODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWUwZWVhM2Q5ZmQyOTAzNzMyYTBhNzU1ZTExZmEwOTg1ZTU2ZDc4MDhmODYyZWU2OWRmY2JhZDcxNmZmMDUifQ"
+          "resource": "repo://src/ops/finish.rs#L121-L130",
+          "version": "repo-lines-v1:sha256:9d2afd60127cfa43c5f8dfd82c352f89d5b5ebc3c03315776f2809e400cd93ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxNzY3ZThjN2U0YzA1NjE3ZmVmMWFkYzU5YTgyYWU1ZjVkZjFkNDVlZjAwYTA0ZmRhY2RkODJhMDRkNTlkYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNDVkOTAxOTRmMWEzNGJhOTQyMTA2NzM4ZjI3NmIwZDhiMzMzZGI5N2ZiNWUyNjhhOGRlODFhNjdhOTc5MzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRjYWNiMzc5MDYxMWQzOGY2NzkwNDBiOWNiOGY0MzFlZjZlZTY1MTIxOTMxZDAxNzQxMmE1ZTlmY2Q0M2Q3N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwMzI5OTFlYjIzNjUxZDdjNTY3MjhjNTBkNjliZmQwYjZkY2MwNWE3NTY1MGJkYjhiOWRiNTI3NWIzNjljYjMifQ"
         },
         {
-          "resource": "repo://src/ops/remove.rs#L32-L92",
-          "version": "repo-lines-v1:sha256:58416e9e370deb635bfbe586a3a991b1d67e03bdcb9a41a82c13153fcbea3b66:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwYTZhZWRiYzQ4NThkOTFlODcyYWUwZjA5NzY4ZmE0MjdkYmExNDEyNjY3MDliMzI3NTJjMmVhYzQ0NDJhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5M2RlNDhkZDZjNDQ5MjZkMWUyYjEyYWM2ODRiMGY2OWMyNWI0YzdhOTU4NmJhMzk1MzJhODI4MjNjMDFjZjUifQ"
+          "resource": "repo://src/ops/remove.rs#L32-L98",
+          "version": "repo-lines-v1:sha256:b874938e67b280906536fa6ef502132b410e230a9c20eae094cbe1f5dd139558:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYTVjOTZmOTdiY2ZhNWE2MjAzODk2YmNmOWYyOGUxMDYxOWM5NzgwYjhkNWNmNjc3Y2U0ZWE3NTQxY2UzMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzYTNjZWE1ZDkwZTZlZjUzNzFmMmIwNDg3YjMxODE3ZWYyODY4OTQyNWVmYjFiYmI1MThmZGI5ZWI5NmExY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwYTZhZWRiYzQ4NThkOTFlODcyYWUwZjA5NzY4ZmE0MjdkYmExNDEyNjY3MDliMzI3NTJjMmVhYzQ0NDJhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhOGQ3MWY1ZmQ5NzQyYTgxYWIzMzEwNzMxODI3YWRiOTkzNWUyZmNkYmEyNWJkMjVhNzY1NjllZDE1NmQxZDAifQ"
         }
       ]
     },
@@ -130,7 +130,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "by": "openwiki/0.7.2",
+    "at": "2026-11-07T20:01:15.981Z"
   }
 }

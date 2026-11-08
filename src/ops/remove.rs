@@ -109,8 +109,10 @@ pub fn remove(hub: &Hub, feature: &Feature) -> Result<Vec<String>> {
     let path = hub.feature_path(&feature.name);
     std::fs::remove_file(&path)
         .map_err(|e| HubError::io(format!("removing {}", path.display()), e))?;
-    // The record is gone; a leftover reviews file is harmless.
-    let _ = std::fs::remove_file(hub.reviews_path(&feature.name));
+    // The record is gone; a leftover reviews file or its lock is harmless.
+    let reviews = hub.reviews_path(&feature.name);
+    let _ = std::fs::remove_file(reviews.with_extension("lock"));
+    let _ = std::fs::remove_file(reviews);
     lines.push(format!("Removed feature '{}'", feature.name));
     Ok(lines)
 }

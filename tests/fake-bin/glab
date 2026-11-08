@@ -4,10 +4,12 @@
 # $FAKE_PROVIDER_DIR/<key>.json, where key is ENDPOINT with `/` -> `__` and
 # `%` -> `_`. `gh api graphql ... -F number=N` reads endpoint `graphql/N`.
 # FAKE_PROVIDER_FAIL=<text> makes every call fail with <text>.
+# FAKE_PROVIDER_SLEEP=<seconds> delays every answer, to race the caller.
 set -eu
 : "${FAKE_PROVIDER_DIR:?}" "${FAKE_PROVIDER_LOG:?}"
 name=$(basename "$0")
 printf '%s %s\n' "$name" "$*" >> "$FAKE_PROVIDER_LOG"
+[[ -n "${FAKE_PROVIDER_SLEEP:-}" ]] && sleep "$FAKE_PROVIDER_SLEEP"
 if [[ -n "${FAKE_PROVIDER_FAIL:-}" ]]; then
   echo "$FAKE_PROVIDER_FAIL" >&2
   exit 1

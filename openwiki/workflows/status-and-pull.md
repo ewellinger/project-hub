@@ -14,14 +14,16 @@ sources:
     resource: repo://src/ops/pull.rs
   - id: openwiki-source-d7623854325d1c8d971147e7
     resource: repo://src/ops/remove.rs
+  - id: openwiki-source-1da066772d42f80cecf3225c
+    resource: repo://src/ops/review_state.rs
   - id: openwiki-source-c73c116b0313275504b5f637
     resource: repo://src/ops/status.rs
   - id: openwiki-source-ca06566e1b7ac17d65e3380f
     resource: repo://tests/list_status.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
 verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+  - by: openwiki/0.7.2
+    at: 2026-11-07T20:01:15.981Z
 ---
 
 # Status, list, and pull
@@ -106,7 +108,10 @@ read from the forge. A request the forge reports as merged sets the row's hint
 to `merged on GitLab|GitHub; run hub feature merged ROLE` (this also catches
 squash merges, which leave no ancestry for the git hint to find), and one
 closed without merging sets `closed on GitLab|GitHub without merging; run hub
-feature dropped ROLE`. Either replaces the git hint above for that row.
+feature dropped ROLE`. Either replaces the git hint above for that row. When
+the row has no hint and the review moved since `hub feature viewed` marked it,
+the hint is `pushed since viewed` or `N replies since viewed` (see
+[Review state from the forge](review-state.md#marking-a-review-viewed-hub-feature-viewed-role)).
 
 **Fetching**: each clone with an open change is fetched once with
 `git fetch --prune origin`, and the hub's origin is fetched too. Changes are
@@ -160,8 +165,9 @@ git calls and no forge calls.
 
 Each role in review carries a **review word** from the remembered state
 (`roles[].review` in JSON, `null` when there is none): the first that applies
-of `merged`, `closed`, `conflicts`, `ci failed`, `N threads`, `changes`,
-`ci running`, `approved`, `draft`. The table shows it after the stage, as
+of `merged`, `closed`, `pushed`, `N replies`, `conflicts`, `ci failed`,
+`N threads`, `changes`, `ci running`, `approved`, `draft` (`pushed` and
+`N replies` appear only after a viewed mark). The table shows it after the stage, as
 `api:review(ci failed)`. `--refresh` first reads the forge for every open
 feature with a role in review (`review_state::refresh_all`), then lists;
 problems are `warning:` lines after the table, or on stderr with `--json`,

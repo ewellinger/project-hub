@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d2fd0ac7c186b6b887b54ea1294827522a9d5aa2af635a736b466e4f1b8f9d5b",
+  "pageVersion": "sha256:4c0eeeacded7417c9d09b10093e9aaa1b5953b905a20782d4609e9be58aa7664",
   "claims": [
     {
       "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
@@ -44,15 +44,15 @@
     },
     {
       "id": "claim_3e326cfdc76743328b252d33147f9b50",
-      "statement": "The fake gh/glab support only `api`, log calls to FAKE_PROVIDER_LOG, and answer from JSON files under FAKE_PROVIDER_DIR keyed by the endpoint; a `gh api graphql` call with `-F number=N` answers from the key `graphql/N`.",
+      "statement": "The fake gh/glab support only `api`, log calls to FAKE_PROVIDER_LOG, and answer from JSON files under FAKE_PROVIDER_DIR keyed by the endpoint; a `gh api graphql` call with `-F number=N` answers from the key `graphql/N`, and FAKE_PROVIDER_SLEEP delays every answer.",
       "evidence": [
         {
           "resource": "repo://tests/common/mod.rs#L180-L204",
           "version": "repo-lines-v1:sha256:e7eb2c2785df5aa9cdcba2de84d61ca3b8763d9988b9ad11e6f2cbb994793d65:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhOTJmZTY3OTc4MzdlYzA3MzlhOWRhNTJhYTIxMzRmMDM3ODhkMmU2NGRlZWRkODRhMTNjNTg4YjVlYmVjYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZDQ3ZDA3YmRjMTU2NGMxMzE0MGExNjU1YTE0MmQwYjRkNzcyYmJmZWI5MWE0NTYxYjExYmMzZTk2NTQxNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMDlkYTlmYzEwMzE3YWZmODBiMzk4OTA1NDM4YzZjN2I2MDQ5MzFkNjc4YmRiMGEzYmNmYjM1Y2M4N2M3NWMifQ"
         },
         {
-          "resource": "repo://tests/fake-bin/glab#L1-L36",
-          "version": "repo-lines-v1:sha256:fd100f8e75a860a12d0c3d2d27890cf7ad087534f2cd9ed2be36cb441cb441c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ZDNiOWU4ODBhNzc5NzU0OTNkYzdlMzU5MTQ0YzAyOTVhNGY2OTRjZmUwYWY0ZjkyOGMyMjMwN2JjNWMzMjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://tests/fake-bin/glab#L1-L38",
+          "version": "repo-lines-v1:sha256:ba1393203fb511d6f15c3a778c0c7e8a808ea65537f7443ba148b9d188137e2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ZDNiOWU4ODBhNzc5NzU0OTNkYzdlMzU5MTQ0YzAyOTVhNGY2OTRjZmUwYWY0ZjkyOGMyMjMwN2JjNWMzMjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -88,27 +88,27 @@
     },
     {
       "id": "claim_2c46174f9cc1466ba383ef930760cedd",
-      "statement": "tests/remove.rs covers `feature remove`: a removed name restarts with fresh branches, dropped branches are deleted with their tip printed, and open features, unmerged or still-on-origin branches, a branch reopened after being dropped, and a hub branch with commits are refused without deleting anything.",
+      "statement": "tests/remove.rs covers `feature remove`: a removed name restarts with fresh branches, dropped branches are deleted with their tip printed, each clone is fetched once, branches resolve correctly when a tag shares their name, and open features, unmerged or still-on-origin branches, a branch reopened after being dropped, and a hub branch with commits are refused without deleting anything.",
       "evidence": [
         {
           "resource": "repo://tests/remove.rs",
-          "version": "repo-file-v1:sha256:33b9645114518141f56f82503aa2fb40ec2ed39fc566b0c4c1d7a1b392a17f67"
+          "version": "repo-file-v1:sha256:2ba40565cbcff9f87bcdf1915440325dbe8ad86dc31ba70655702f747fba4834"
         }
       ]
     },
     {
       "id": "claim_831b35f8f3a7420890e6517254e30d74",
-      "statement": "tests/review_state.rs covers review state end to end through the fake forge programs: the reviews store, the status review section, hints and JSON, the feature list word and --refresh, and that `status --base` and start-review's drift check do not read review state.",
+      "statement": "tests/review_state.rs covers review state end to end through the fake forge programs: the reviews store, the status review section, hints and JSON, the feature list word and --refresh, `feature viewed` (including running while the hub lock is held and naming its own role in a failure) and pushed/replies attention, viewed marks surviving a concurrent status write, and that `status --base` and start-review's drift check do not read review state.",
       "evidence": [
         {
           "resource": "repo://tests/review_state.rs",
-          "version": "repo-file-v1:sha256:a8440cb90edf3d88a490636cd8277387a15e10a73f63dd6bdadba795b0ab0336"
+          "version": "repo-file-v1:sha256:04e9028208f4d01555425f3f743401fffb3adbe59c28a2bbbc146eb3b3814f01"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }

@@ -37,6 +37,16 @@ const FEATURE_LEGEND: &[(&str, &str)] = &[
     ("?", "help"),
     ("Esc", "back"),
 ];
+/// The feature legend with the cursor on a change in review: `V` acts, and
+/// takes the place of `z` to fit the minimum width.
+const REVIEW_LEGEND: &[(&str, &str)] = &[
+    ("↑↓/jk", "role"),
+    ("c", "copy"),
+    ("V", "viewed"),
+    ("f", "finish"),
+    ("?", "help"),
+    ("Esc", "back"),
+];
 /// The feature legend with the cursor on a frozen row (`frozen_sha` set),
 /// where `u` and `Z` act. It trades `↑↓/jk` and `f` for them to fit the
 /// minimum width; `?` still lists every key.
@@ -173,6 +183,13 @@ fn render_footer(app: &App, frame: &mut Frame, area: Rect) {
                         .is_some_and(|r| r.frozen_sha.is_some()) =>
                 {
                     legend_line(FROZEN_LEGEND)
+                }
+                Screen::Feature { .. }
+                    if app
+                        .selected_role_row()
+                        .is_some_and(|r| r.stage == "review" && r.review_url.is_some()) =>
+                {
+                    legend_line(REVIEW_LEGEND)
                 }
                 Screen::Feature { .. } => legend_line(FEATURE_LEGEND),
             },
@@ -698,6 +715,12 @@ mod tests {
         );
         assert!(text.contains("+ add a role"), "{text}");
         assert!(
+            text.contains(
+                "V mark the review viewed; flag it when the other side pushes or replies"
+            ),
+            "{text}"
+        );
+        assert!(
             text.contains("z freeze a role: pin its open change, or check out its local base tip"),
             "{text}"
         );
@@ -1171,6 +1194,24 @@ mod tests {
     }
 
     #[test]
+    fn the_feature_footer_adds_viewed_only_on_a_review_row() {
+        use crate::ui::app::feature::tests::{api_in_review, on_report};
+        let a = on_report(api_in_review());
+        let out = lines(MIN_WIDTH, 30, &a);
+        assert_eq!(
+            out.last().unwrap(),
+            " ↑↓/jk role  c copy  V viewed  f finish  ? help  Esc back"
+        );
+        let a = crate::ui::app::feature::tests::on_feature();
+        let out = lines(MIN_WIDTH, 30, &a);
+        assert_eq!(
+            out.last().unwrap(),
+            " ↑↓/jk role  c copy  z freeze  f finish  ? help  Esc back",
+            "a working row keeps the usual legend"
+        );
+    }
+
+    #[test]
     fn the_unfreeze_preview_keeps_its_key_line_under_a_long_wrapped_path() {
         use crate::ui::app::feature::tests::{frozen_ui, on_report};
         let Report::Feature {
@@ -1288,7 +1329,10 @@ mod tests {
                 threads: Some(2),
                 threads_more: false,
                 conflicts: Some(false),
+                head: None,
+                comments: None,
             },
+            viewed: None,
         });
         r
     }

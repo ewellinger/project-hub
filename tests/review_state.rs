@@ -61,7 +61,15 @@ fn gitlab_state(fx: &Fixture, number: u64, mr: serde_json::Value) {
     let base = format!("projects/g%2Fsub%2Fproj/merge_requests/{number}");
     fx.provider_response(&base, &mr);
     fx.provider_response(&format!("{base}/approvals"), &json!({"approved": false}));
-    fx.provider_response(&format!("{base}/discussions?per_page=100"), &json!([]));
+    fx.provider_response(
+        &format!("{base}/discussions?per_page=100"),
+        &json!([{"notes": [{"system": false}]}]),
+    );
+}
+
+fn viewed(fx: &Fixture, hub: &Path, feature: &str, role: &str) -> assert_cmd::assert::Assert {
+    fx.hub(hub, &["feature", "viewed", role, "--feature", feature])
+        .assert()
 }
 
 /// Store the GraphQL answer for PR `#number`.
@@ -75,7 +83,8 @@ fn github_state(fx: &Fixture, number: u64, pr: serde_json::Value) {
 fn open_mr() -> serde_json::Value {
     json!({
         "state": "opened", "draft": false, "merge_status": "can_be_merged",
-        "has_conflicts": false, "head_pipeline": {"status": "running"}
+        "has_conflicts": false, "head_pipeline": {"status": "running"},
+        "sha": "0123456789abcdef0123456789abcdef01234567"
     })
 }
 
@@ -274,6 +283,7 @@ fn feature_remove_deletes_the_reviews_file() {
         .success();
 
     assert!(!hub.join(".git/hub/reviews/feat-1.json").exists());
+    assert!(!hub.join(".git/hub/reviews/feat-1.lock").exists());
 }
 
 #[test]
@@ -593,4 +603,368 @@ fn a_finished_feature_shows_no_word() {
     assert!(row.contains("finished"), "{out}");
     assert!(row.contains("api:review"), "{out}");
     assert!(!row.contains("api:review("), "{out}");
+}
+
+/// Write `viewed` under `role` in the feature's reviews file by hand.
+fn seed_mark(fx: &Fixture, hub: &Path, feature: &str, role: &str, viewed: serde_json::Value) {
+    let path = hub.join(".git/hub/reviews").join(format!("{feature}.json"));
+    let mut file = fx.reviews_json(hub, feature).expect("reviews file");
+    file[role]["viewed"] = viewed;
+    std::fs::write(&path, serde_json::to_string(&file).unwrap()).unwrap();
+}
+
+#[test]
+fn a_refresh_keeps_the_mark() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]);
+    seed_mark(
+        &fx,
+        &hub,
+        "feat-1",
+        "api",
+        json!({"at": 1, "head": null, "comments": 0}),
+    );
+
+    status(&fx, &hub, &[]);
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
+    assert!(
+        file["api"]["read_at"].as_u64().unwrap() > 1,
+        "fields were refreshed"
+    );
+}
+
+#[test]
+fn viewed_reads_the_forge_and_stores_the_snapshot() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+
+    let out = stdout(&viewed(&fx, &hub, "feat-1", "api").success());
+
+    assert!(
+        matches(r"api: viewed !412 head [0-9a-f]{7}, 1 comments", &out),
+        "{out}"
+    );
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 1);
+    assert_eq!(file["api"]["viewed"]["head"], file["api"]["head"]);
+    assert!(fx.provider_log().contains("merge_requests/412"));
+    assert_eq!(
+        fx.feature_json(&hub, "feat-1")["changes"][0]["stage"],
+        "review",
+        "record untouched"
+    );
+}
+
+#[test]
+fn viewed_refuses_a_role_not_in_review_and_a_failed_read() {
+    let (fx, hub) = world();
+    viewed(&fx, &hub, "feat-1", "api")
+        .failure()
+        .stderr(predicates::str::contains(
+            "not in review with a merge/pull request URL",
+        ));
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    fx.hub(&hub, &["feature", "viewed", "api", "--feature", "feat-1"])
+        .env("FAKE_PROVIDER_FAIL", "401 Unauthorized")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains("review state not read for api"));
+    // `refresh` still writes the file (possibly `{}`); only the mark must be absent.
+    assert!(
+        fx.reviews_json(&hub, "feat-1")
+            .is_none_or(|f| f["api"]["viewed"].is_null()),
+        "no mark written"
+    );
+}
+
+#[test]
+fn viewed_with_unknown_comments_marks_and_says_so() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    // No discussions answer: the fake fails that one call, the MR itself still reads.
+    std::fs::remove_file(
+        fx.provider_dir
+            .join("projects__g_2Fsub_2Fproj__merge_requests__412__discussions?per_page=100.json"),
+    )
+    .unwrap();
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+
+    let out = stdout(&viewed(&fx, &hub, "feat-1", "api").success());
+
+    assert!(out.contains(", ? comments"), "{out}");
+    assert_eq!(
+        fx.reviews_json(&hub, "feat-1").unwrap()["api"]["viewed"]["comments"],
+        serde_json::Value::Null
+    );
+}
+
+#[test]
+fn viewed_succeeds_while_another_command_holds_the_hub_lock() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    let lock = std::fs::File::create(hub.join(".git/hub/hub.lock")).unwrap();
+    let mut lock = fd_lock::RwLock::new(lock);
+    let _guard = lock.write().unwrap();
+    // The lock really is held: a locking command refuses.
+    fx.hub(&hub, &["feature", "review", "ui", "--feature", "feat-1"])
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains("another hub command is running"));
+
+    viewed(&fx, &hub, "feat-1", "api").success();
+
+    assert_eq!(
+        fx.reviews_json(&hub, "feat-1").unwrap()["api"]["viewed"]["comments"],
+        1
+    );
+}
+
+#[test]
+fn a_failed_viewed_names_its_own_role_not_a_longer_one() {
+    use predicates::prelude::*;
+    let (fx, hub) = world();
+    fx.make_provider_repo(
+        "gw-clone",
+        "master",
+        "https://gitlab.example.com/g/sub/gw.git",
+    );
+    fx.add_repo(&hub, "api-gw", "gw-clone");
+    fx.hub(&hub, &["feature", "add", "api-gw", "--feature", "feat-1"])
+        .assert()
+        .success();
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    review(
+        &fx,
+        &hub,
+        "feat-1",
+        "api-gw",
+        Some("https://gitlab.example.com/g/sub/gw/-/merge_requests/7"),
+    );
+    // `-` sorts before `:`, so a bare `contains("api")` would find api-gw's warning first.
+    fx.hub(&hub, &["feature", "viewed", "api", "--feature", "feat-1"])
+        .env("FAKE_PROVIDER_FAIL", "401 Unauthorized")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains("review state not read for api:"))
+        .stderr(predicates::str::contains("api-gw").not());
+}
+
+#[test]
+fn a_changed_url_drops_the_mark() {
+    let (fx, hub) = world();
+    gitlab_state(&fx, 412, open_mr());
+    review(&fx, &hub, "feat-1", "api", Some(MR_412));
+    viewed(&fx, &hub, "feat-1", "api").success();
+    review(
+        &fx,
+        &hub,
+        "feat-1",
+        "api",
+        Some("https://gitlab.example.com/g/sub/proj/-/merge_requests/413"),
+    );
+
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+
+    assert!(
+        out.contains("api:review") && !out.contains("api:review("),
+        "{out}"
+    );
+}
+
+/// Mark `api` viewed on `open_mr()`, then queue the next answers so the
+/// following read sees `next_mr` and `next_discussions`.
+fn marked_then_moved(
+    fx: &Fixture,
+    hub: &Path,
+    next_mr: serde_json::Value,
+    next_discussions: serde_json::Value,
+) {
+    gitlab_state(fx, 412, open_mr());
+    review(fx, hub, "feat-1", "api", Some(MR_412));
+    viewed(fx, hub, "feat-1", "api").success();
+    let base = "projects/g%2Fsub%2Fproj/merge_requests/412";
+    fx.provider_response(base, &next_mr);
+    fx.provider_response(
+        &format!("{base}/discussions?per_page=100"),
+        &next_discussions,
+    );
+}
+
+fn one_note() -> serde_json::Value {
+    json!([{"notes": [{"system": false}]}])
+}
+
+#[test]
+fn a_push_after_the_mark_shows_pushed_in_list_and_status() {
+    let (fx, hub) = world();
+    let mut moved = open_mr();
+    moved["sha"] = json!("ffffffffffffffffffffffffffffffffffffffff");
+    marked_then_moved(&fx, &hub, moved, one_note());
+
+    let out = status(&fx, &hub, &[]);
+    assert!(out.contains("pushed since viewed"), "{out}");
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+    assert!(out.contains("api:review(pushed)"), "{out}");
+}
+
+#[test]
+fn replies_after_the_mark_show_a_count() {
+    let (fx, hub) = world();
+    let three = json!([{"notes": [{"system": false}, {"system": false}, {"system": true}]},
+        {"notes": [{"system": false}]}]);
+    marked_then_moved(&fx, &hub, open_mr(), three);
+
+    let out = status(&fx, &hub, &[]);
+    assert!(out.contains("2 replies since viewed"), "{out}");
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+    assert!(out.contains("api:review(2 replies)"), "{out}");
+}
+
+#[test]
+fn merged_outranks_pushed_in_word_and_hint() {
+    let (fx, hub) = world();
+    let mut moved = open_mr();
+    moved["sha"] = json!("ffffffffffffffffffffffffffffffffffffffff");
+    moved["state"] = json!("merged");
+    marked_then_moved(&fx, &hub, moved, one_note());
+
+    let out = status(&fx, &hub, &[]);
+    assert!(
+        out.contains("merged on GitLab; run hub feature merged api"),
+        "{out}"
+    );
+    assert!(!out.contains("pushed"), "{out}");
+    let out = stdout(&fx.hub(&hub, &["feature", "list"]).assert().success());
+    assert!(out.contains("api:review(merged)"), "{out}");
+}
+
+#[test]
+fn status_json_carries_head_comments_and_viewed() {
+    let (fx, hub) = world();
+    marked_then_moved(&fx, &hub, open_mr(), one_note());
+    github_state(&fx, 31, open_pr());
+    review(&fx, &hub, "feat-1", "ui", Some(PR_31));
+    let json: serde_json::Value = serde_json::from_str(&status(&fx, &hub, &["--json"])).unwrap();
+    let row = |role: &str| {
+        json["rows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|r| r["role"] == role)
+            .unwrap()
+            .clone()
+    };
+
+    assert_eq!(row("api")["review"]["viewed"]["comments"], 1);
+    assert_eq!(row("api")["review"]["comments"], 1);
+    assert_eq!(row("api")["review"]["head"].as_str().unwrap().len(), 40);
+    assert_eq!(
+        row("ui")["review"].get("viewed"),
+        Some(&serde_json::Value::Null),
+        "the key is present and null until marked"
+    );
+}
+
+#[test]
+fn a_mark_set_while_status_reads_the_forge_survives_its_write() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]); // the file exists, with no mark
+    std::thread::scope(|scope| {
+        scope.spawn(|| {
+            fx.hub(&hub, &["status", "--feature", "feat-1"])
+                .env("FAKE_PROVIDER_SLEEP", "3")
+                .assert()
+                .success();
+        });
+        // Status has snapshotted the file and is waiting on the forge.
+        std::thread::sleep(std::time::Duration::from_millis(1500));
+        seed_mark(
+            &fx,
+            &hub,
+            "feat-1",
+            "api",
+            json!({"at": 1, "head": null, "comments": 0}),
+        );
+    });
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
+}
+
+/// Hold the reviews lock while `status` runs, call `write`, then release.
+/// Status must still be waiting at that point: an unlocked write would have
+/// gone through already, and would overwrite `write` in a slower interleaving.
+fn write_while_status_waits_for_the_lock(
+    fx: &Fixture,
+    hub: &Path,
+    failing_forge: bool,
+    write: impl FnOnce(),
+) {
+    let lock = std::fs::File::create(hub.join(".git/hub/reviews/feat-1.lock")).unwrap();
+    let mut lock = fd_lock::RwLock::new(lock);
+    let guard = lock.write().unwrap();
+    let mut cmd = fx.hub(hub, &["status", "--feature", "feat-1"]);
+    if failing_forge {
+        cmd.env("FAKE_PROVIDER_FAIL", "boom");
+    }
+    let early = std::thread::scope(|scope| {
+        let status = scope.spawn(move || {
+            cmd.assert().success();
+        });
+        std::thread::sleep(std::time::Duration::from_millis(1000));
+        let early = status.is_finished();
+        write();
+        drop(guard);
+        early
+    });
+    assert!(!early, "status wrote without taking the lock");
+}
+
+#[test]
+fn a_mark_written_just_before_status_saves_survives() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]);
+    write_while_status_waits_for_the_lock(&fx, &hub, false, || {
+        seed_mark(
+            &fx,
+            &hub,
+            "feat-1",
+            "api",
+            json!({"at": 1, "head": null, "comments": 0}),
+        );
+    });
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
+}
+
+#[test]
+fn a_mark_on_a_role_this_status_could_not_read_survives() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    status(&fx, &hub, &[]);
+    let path = hub.join(".git/hub/reviews/feat-1.json");
+    let saved = std::fs::read_to_string(&path).unwrap();
+    // Status starts with nothing remembered for api, and its forge read fails.
+    std::fs::write(&path, "{}").unwrap();
+    write_while_status_waits_for_the_lock(&fx, &hub, true, || {
+        std::fs::write(&path, &saved).unwrap();
+        seed_mark(
+            &fx,
+            &hub,
+            "feat-1",
+            "api",
+            json!({"at": 1, "head": null, "comments": 0}),
+        );
+    });
+
+    let file = fx.reviews_json(&hub, "feat-1").unwrap();
+    assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
 }
