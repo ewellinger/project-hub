@@ -4,8 +4,8 @@ title: Hub state, manifest, and locking
 description: How `hub` locates a hub repository, what state is committed (`hub.json`) versus kept per machine (feature records under the git common dir), how the advisory lock serializes mutating commands, and how JSON is written atomically.
 tags: [architecture, state, manifest, locking, persistence]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 sources:
   - id: openwiki-source-a9fddfa72ce7af0e031fedf8
     resource: repo://src/hub.rs
@@ -19,7 +19,7 @@ sources:
     resource: repo://src/ops/review_state.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 ---
 
 # Hub state, manifest, and locking
@@ -146,13 +146,19 @@ Every mutating command runs inside `hub.with_lock(|hub| ...)`:
   while it was starting.
 
 The CLI wraps `repo add/set/rename/remove`, `feature start`, `start-review`,
-`add`, `set-base`, `freeze`, `unfreeze`, `refreeze`, `review`, `viewed`, `merged`,
+`add`, `set-base`, `freeze`, `unfreeze`, `refreeze`, `review`, `merged`,
 `dropped`, `finish`, `remove`, and `pull` in the lock
 (`src/main.rs`); read-only commands such as `status` and `list` do not take it
 (they may still write the remembered review state, under the reviews file's
 own lock rather than the hub lock).
+`feature viewed` does not take it either: it reads the forge, which can take
+seconds, and holding the non-blocking hub lock across that read would make
+every other command fail meanwhile. It only reads the feature record and
+writes the reviews file through `store`, whose own lock guards that write.
 The dashboard runs its actions through the same lock from a worker thread
-(`src/ui/worker.rs`). Interactive prompts run before the lock is taken.
+(`src/ui/worker.rs`), except `Action::Viewed` (`V`), which runs unlocked for
+the same reason and so uses the `hub.json` loaded at dashboard start.
+Interactive prompts run before the lock is taken.
 
 ## Related pages
 

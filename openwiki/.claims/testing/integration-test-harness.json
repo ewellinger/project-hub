@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:061c8553ffaf7701ec217c936b92c18b3eaa81a399eaa1494856adc991609b56",
+  "pageVersion": "sha256:4c0eeeacded7417c9d09b10093e9aaa1b5953b905a20782d4609e9be58aa7664",
   "claims": [
     {
       "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
@@ -98,17 +98,17 @@
     },
     {
       "id": "claim_831b35f8f3a7420890e6517254e30d74",
-      "statement": "tests/review_state.rs covers review state end to end through the fake forge programs: the reviews store, the status review section, hints and JSON, the feature list word and --refresh, `feature viewed` and pushed/replies attention, viewed marks surviving a concurrent status write, and that `status --base` and start-review's drift check do not read review state.",
+      "statement": "tests/review_state.rs covers review state end to end through the fake forge programs: the reviews store, the status review section, hints and JSON, the feature list word and --refresh, `feature viewed` (including running while the hub lock is held and naming its own role in a failure) and pushed/replies attention, viewed marks surviving a concurrent status write, and that `status --base` and start-review's drift check do not read review state.",
       "evidence": [
         {
           "resource": "repo://tests/review_state.rs",
-          "version": "repo-file-v1:sha256:5592b6ba65bb8e3b086e327c4ed16ecb8e80a3b7b7b0ea88de2d5e380f8d6c9d"
+          "version": "repo-file-v1:sha256:04e9028208f4d01555425f3f743401fffb3adbe59c28a2bbbc146eb3b3814f01"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-07T20:01:15.981Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }

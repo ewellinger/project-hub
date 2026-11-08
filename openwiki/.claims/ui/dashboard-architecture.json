@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:b0de01ed7df181e029d9612843f0e21bedc1df58359b9208ba01113615017a49",
+  "pageVersion": "sha256:c03dc35970767854d18a8207162ff3e7658999ba69f17e1424dc69c69f279dac",
   "claims": [
     {
       "id": "claim_17e3d0e433ec49f28691d71532ba3d2a",
@@ -64,11 +64,11 @@
     },
     {
       "id": "claim_38d54b7da8964fc2a85d8a31237d147d",
-      "statement": "Dashboard actions, including Viewed, Freeze, Unfreeze, Refreeze, and Remove, run on a worker thread inside hub.with_lock, load the feature record inside the lock, call the same ops functions as the CLI, and convert panics into a Precondition error.",
+      "statement": "Dashboard actions such as Freeze, Unfreeze, Refreeze, and Remove run on a worker thread inside hub.with_lock, load the feature record inside the lock, call the same ops functions as the CLI, and convert panics into a Precondition error; Viewed runs on the same worker outside the lock.",
       "evidence": [
         {
-          "resource": "repo://src/ui/worker.rs#L114-L232",
-          "version": "repo-lines-v1:sha256:86390f07c5805bd95377fd72a69938b9af94a36d3f89e88ee7362e8ff6c5f9e2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2N2YwMWQ1M2E4ZjVkOWE2NTA1Y2NlMGE0ZDUxNmNhYmRiNTI1ZDBlMDYwNDUwYmIxMzI0ODgxODEwYjQwNDM2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhMWE3NjFhNGZiOGVhZjNjYzk5MTMzNjAyMTRhNjI0NDQ1ZTMzYzliOWY5ZTMzNDM3ZjY4YzhiM2U2MzAwMTlkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwM2ExMDM3ZjA3MTk2MWZiM2IxM2E3ZGFmZjY5YWNjMmJhYjgxMGZlOGJkYTE2YTJiMjI3MTU1NDM3MTRjYzc1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiYTA4NmM2NmNjNzU3MmZmNTFkYjExY2JkNTkzZmQ0NDlkMDMzOGQwMGU4MWQyYWFlMDBiYjg3ZjYyZTg4MGJmIn0"
+          "resource": "repo://src/ui/worker.rs#L114-L234",
+          "version": "repo-lines-v1:sha256:91def3964fb51717a81f8ef682790129bac023a000c67ff93e6323a59a304bd0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2N2YwMWQ1M2E4ZjVkOWE2NTA1Y2NlMGE0ZDUxNmNhYmRiNTI1ZDBlMDYwNDUwYmIxMzI0ODgxODEwYjQwNDM2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhMWE3NjFhNGZiOGVhZjNjYzk5MTMzNjAyMTRhNjI0NDQ1ZTMzYzliOWY5ZTMzNDM3ZjY4YzhiM2U2MzAwMTlkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwM2ExMDM3ZjA3MTk2MWZiM2IxM2E3ZGFmZjY5YWNjMmJhYjgxMGZlOGJkYTE2YTJiMjI3MTU1NDM3MTRjYzc1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiYTA4NmM2NmNjNzU3MmZmNTFkYjExY2JkNTkzZmQ0NDlkMDMzOGQwMGU4MWQyYWFlMDBiYjg3ZjYyZTg4MGJmIn0"
         }
       ]
     },
@@ -220,7 +220,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-07T20:01:15.981Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }

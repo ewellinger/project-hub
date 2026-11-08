@@ -1,7 +1,7 @@
 ---
 type: architecture
 title: Dashboard architecture
-description: How the ratatui dashboard (bare `hub` in a terminal) is structured — an event loop around a pure `App::update(Event) -> Vec<Effect>` state machine, background worker threads for status, actions, editor, and clipboard, generation-tagged status requests, and pure rendering — and how dashboard actions reuse the same `ops` functions under the hub lock.
+description: How the ratatui dashboard (bare `hub` in a terminal) is structured — an event loop around a pure `App::update(Event) -> Vec<Effect>` state machine, background worker threads for status, actions, editor, and clipboard, generation-tagged status requests, and pure rendering — and how dashboard actions reuse the same `ops` functions under the hub lock (all but `Viewed`).
 tags: [ui, tui, ratatui, dashboard, architecture, concurrency]
 sources:
   - id: openwiki-source-c55e62404e7071e7e42c91b9
@@ -16,10 +16,10 @@ sources:
     resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 ---
 
 # Dashboard architecture
@@ -134,7 +134,11 @@ Each effect spawns a detached thread that sends exactly one event back:
   event. Neither takes the hub lock.
 - `run(action)` executes the action **inside `hub.with_lock`**, loading the
   feature record inside the lock so it sees current state rather than the
-  dashboard's cache, and calls the same `ops::*` functions as the CLI. Panics
+  dashboard's cache, and calls the same `ops::*` functions as the CLI. The one
+  exception is `Action::Viewed`, which runs before and outside the lock (it
+  loads the record fresh but keeps the startup `hub.json`), because its forge
+  read must not make other hub commands fail; the reviews file lock guards its
+  write. Panics
   are caught with `catch_unwind` and turned into a `Precondition` error, so a
   panicking op cannot leave the dashboard stuck "busy". Merged/dropped pass a
   confirm callback that always says yes (`finish` takes none); confirmation happens earlier, in the

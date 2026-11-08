@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:8d5a7a85e1cc003e7a013825610bffafd49cf22a4556b7e5ce873c3f8208c751",
+  "pageVersion": "sha256:13b92bb59646381a0355981bdbb349f9544e2a5a5cec6dfa89e101568a545964",
   "claims": [
     {
       "id": "claim_fb3efe01b61d443e9b5633c0d4f0d706",
@@ -24,11 +24,11 @@
     },
     {
       "id": "claim_450c48ec2cf34c03b079322ed1b143bc",
-      "statement": "On GitHub the read is one `gh api graphql` call with a fixed query covering state, draft, mergeable, reviewDecision, the head commit oid, comment and review totals, latest opinionated reviews, review threads and the head commit's status check rollup.",
+      "statement": "On GitHub the read is one `gh api graphql` call with a fixed query covering state, draft, mergeable, reviewDecision, the head commit oid, the comment total and the total of COMMENTED and CHANGES_REQUESTED reviews, latest opinionated reviews, review threads and the head commit's status check rollup.",
       "evidence": [
         {
-          "resource": "repo://src/review_state.rs#L227-L227",
-          "version": "repo-lines-v1:sha256:c93055422cc7dc970799b6c2c7d1b0e02621b62e03feb951af9c4217a58ea3ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzkzMDU1NDIyY2M3ZGM5NzA3OTliNmMyYzdkMWIwZTAyNjIxYjYyZTAzZmViOTUxYWY5YzQyMTdhNThlYTNmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzkzMDU1NDIyY2M3ZGM5NzA3OTliNmMyYzdkMWIwZTAyNjIxYjYyZTAzZmViOTUxYWY5YzQyMTdhNThlYTNmZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTllNzYzNTVjZjExOTk0ODBjM2Y5OTgzNmIxNDg2Yzg0MWQ4OTFmYWFkOTA0YzYwOGUwOTMwMjJkMzc1N2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzBlODAyOWFmZDA3OTg2OTFlMTEwNzFlOGIxNDA3NDExZGJmZjhjMWRjZDA2YTUyYjJiNDNjODYwM2MxYmYyZSJ9"
+          "resource": "repo://src/review_state.rs#L226-L228",
+          "version": "repo-lines-v1:sha256:c9fd1b1636b6d26cb731dbf9c3c306468dd9018ee618489c300359c7c3ed8c89:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjA0OWZhNWFmODdjNWZiZGRhOWM4NDBhNTc2NmQ4NWQ0MTI3NWI5OThkOTdiNWUwNjNkMTQ2MmZkZjQ4OTBjMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGYzNmExODRhMzU3YmM3NGE5ZTAyODYxMjc1M2FjZmMxOTNjNWU1YWUyNDhjZWQzNjk0NDlmNThhNDhiMWZhNCJ9"
         },
         {
           "resource": "repo://src/review_state.rs#L250-L265",
@@ -150,11 +150,11 @@
     },
     {
       "id": "claim_b7fbf5ec1197400ca7e1ce3768da7a8e",
-      "statement": "`hub feature viewed ROLE` requires the role to be a review target, reads the forge for the feature, fails unless that role was freshly read, and then records `viewed { at, head, comments }` in the reviews file without changing the feature record.",
+      "statement": "`hub feature viewed ROLE` requires the role to be a review target, reads the forge for the feature, fails unless that role was freshly read (reporting the warning that names `for ROLE:`, else the first warning), and then records `viewed { at, head, comments }` in the reviews file without changing the feature record.",
       "evidence": [
         {
-          "resource": "repo://src/ops/viewed.rs#L11-L55",
-          "version": "repo-lines-v1:sha256:387e6daa9fbd680c58e602b7a3d0752d4f069eafbccbb778421335d572521e04:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3ZDRjYzkxNTdjMjAzY2U0NDJiYTdiNmY2ODY1MjNlNWE4YjA2ZDE3MmJiNmFiZGFlMDU3MTgxNDY3MDU4MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5MTRlMTdmMjE2YWNhMTdjNjM2YjVkYzhlYTdhODUzNDA1MjAyZjg5ZDBkMzA0MTkwYmQ5OTJiODA0MzY2YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/ops/viewed.rs#L11-L56",
+          "version": "repo-lines-v1:sha256:6b61725a159fdd082ae1de4da8b7b24413ec891b86a2b3b81ef9a061fc2f6dc4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3ZDRjYzkxNTdjMjAzY2U0NDJiYTdiNmY2ODY1MjNlNWE4YjA2ZDE3MmJiNmFiZGFlMDU3MTgxNDY3MDU4MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5MTRlMTdmMjE2YWNhMTdjNjM2YjVkYzhlYTdhODUzNDA1MjAyZjg5ZDBkMzA0MTkwYmQ5OTJiODA0MzY2YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -170,25 +170,39 @@
     },
     {
       "id": "claim_b02fc263d50b4bbc887af0416a4e70ce",
-      "statement": "The GitLab comment count is the number of non-system notes in the first page of 100 discussions, and the GitHub count is comments.totalCount plus reviews.totalCount, unknown unless both are present; head is kept only as a 40-hex sha, lowercased.",
+      "statement": "The GitLab comment count is the number of non-system notes in the first page of 100 discussions, and the GitHub count is comments.totalCount plus the totalCount of reviews in state COMMENTED or CHANGES_REQUESTED (so approvals and draft reviews are excluded), unknown unless both are present; head is kept only as a 40-hex sha, lowercased.",
       "evidence": [
         {
           "resource": "repo://src/review_state.rs#L134-L142",
           "version": "repo-lines-v1:sha256:522c867dfc17bccc1286b0d83610b9cdad75225d1c36c270066f96aa3b9ced9c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMxZTA5MThkM2U4MzJhMzg4ZTIwNTdkN2Y3MWQwZjViNGNjYTU0YTk2NTkxZTk0MDNhMDdiN2NjYTU4MDZmYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTEwZTQ1YzM3Mzg4NGY5N2FhYmJkZjQwZTNiMzc3Njk2YmQ0MGFhYmJiNzA3MGNiZjFhZTRjZjQ0ZGQxZWU2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTIxYThlNjkxZDkxOWZkYWI5ZWZlMmQwZDE2ODE3MTEwOTY4ZGJmNmQ1ODFkZGRiNTQ5MjUxMTc0NGI2NDg4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA4MDA4MTA2NjI5N2U4ZTEwZjZhOWZkMWU2OTEzZTVhZmNjNTI1MzlmNzMxNWE5MzYxOThiNDM4YmYxYTJiYSJ9"
         },
         {
-          "resource": "repo://src/review_state.rs#L207-L215",
-          "version": "repo-lines-v1:sha256:409226aa5c6089ceb0681ce2c3c031b371b46ff4376b3332cc1536c88588e861:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQxNWJlNWQ3YzE3YzZhMDg3MGMyZTA4NGViYzlmOWFmYWFjZDY2ODRkNzRkOWMyODNkMDZmOTdkYzA5YWIxNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTEwZTQ1YzM3Mzg4NGY5N2FhYmJkZjQwZTNiMzc3Njk2YmQ0MGFhYmJiNzA3MGNiZjFhZTRjZjQ0ZGQxZWU2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzYwMzJhY2U4ZjY2MjVlMzgwYjU5ZDNkNzQwOTUwOWY1Njg3MzQ0YTZiYzA5ZTkwMjE3Zjc2YTg4NGFjMTA2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzA4MDA4MTA2NjI5N2U4ZTEwZjZhOWZkMWU2OTEzZTVhZmNjNTI1MzlmNzMxNWE5MzYxOThiNDM4YmYxYTJiYSJ9"
+          "resource": "repo://src/review_state.rs#L207-L228",
+          "version": "repo-lines-v1:sha256:25887a04d7f46ba29f856c70c8168336868e95a02fd07877591532a2e379c4ef:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkODRiNWRmMDNkODBlYWFhMGY2OWM4OGI5MWRkZDliMmNhNGM0N2JhZmE3NmQwMjNiYTM5ZDI5N2FhN2M2OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2MDMyYWNlOGY2NjI1ZTM4MGI1OWQzZDc0MDk1MDlmNTY4NzM0NGE2YmMwOWU5MDIxN2Y3NmE4ODRhYzEwNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmMzZhMTg0YTM1N2JjNzRhOWUwMjg2MTI3NTNhY2ZjMTkzYzVlNWFlMjQ4Y2VkMzY5NDQ5ZjU4YTQ4YjFmYTQifQ"
         },
         {
           "resource": "repo://src/review_state.rs#L55-L60",
           "version": "repo-lines-v1:sha256:23f47b4bc93637cd290cbbb49f7e25f65a8a36bece1d4e90a7bc1f441ac2e29d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmU1Yjg3NzFhYzUwOTU4ZTkyMzAwNDU3MjE1YzNlMTlkNzc5N2EwNWZiMmJhYjA1ZDk0NTY3ZDdmMWE4NGI3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTRkMDVlNTQxZDZkMjM4OWQyNTMzYjQ1ZDFlZDM4MWZhOTY0YThjYTI1OTYwOTI1NmU5OWM4MTQ5MTY3NGM1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmFjZGMzNjBlNDJjNzBhNzQ5Y2I3NDdkMjlmNmQ3ODExZWVkOTVlZTRmYjYyZDY5NTg4OTA5NzFmMWY5YjcyNSJ9"
         }
       ]
+    },
+    {
+      "id": "claim_63f2ef1c30cf4e79888b9082c87e962b",
+      "statement": "`hub feature viewed` is dispatched without the hub lock in both the CLI and the dashboard worker, so its forge read does not block other hub commands.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L594-L597",
+          "version": "repo-lines-v1:sha256:5fe83e366e6f434442678a01829a924ab2a645084438f307fc6a75a94fb3abf4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTA4ZDI2YzRhOTU0MWVhNDMxNWU2Zjg4YmViNTNkZTQwYTBhOTdhYzgzNGUyMzAzNzA0MjBkNDA3ZDkzNmE0OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM2NDc5Y2MyMzA0NDBmZDQxZTgyMjQyMTg2Nzk2OTg1NTlkMjg5M2JkNjdiNDM4MGFmYWI4MTFiMzhhNTVhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTkyYjUzMzM1MTdhNGQ4MzdlZDRmOWMzMTM5YmRlN2FmM2U1NjY2ZjkxYmVjZTI0NzY1YzkzMjc0N2ViY2I2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWJiOTdjNzhlMjUxZDk3Njc1ODgxMGIwMTZkYjMwYzYzZmI0OWU3MjhmOTBmNWEyZDAzNTVjODdlYzVlNTkzMCJ9"
+        },
+        {
+          "resource": "repo://src/ui/worker.rs#L121-L127",
+          "version": "repo-lines-v1:sha256:ca388d141dbc0d5c6ea133008fb73e79a69abed03b5798e36573e3e62c2f9850:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGJhNWFkZGI2NTJjYjJhOTUzMzE1NzQ2MTIxOTlmNGVlZDVjYTY5Zjg4MTFjNjIzNjI2YmY1OTI0NTI0NDgzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjEyZjhhMGRjMTczNjM4MWMxZDk0MzRmMWJkY2RjY2VhOWZjNTdiODcyNTEzZjRkMTg0MjIxZDg1MjA4OTIyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDNlMzY5NDY5Y2Y2NWIzNzIzZmZhNWI0OWVkODNiMmEzYjdlMjJkNjQzYzEzNzM2OTEwNDFlMmZlM2FmYTQ2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWFmMzY5NzFhZTE2MTkxYTZhNGYzZGEwNGM0NTNiYjU1OTFlZDFiYTQ4ZGE3NTg0Y2EwNzMwMmRhOTM5MDY0NiJ9"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-07T20:01:15.981Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }

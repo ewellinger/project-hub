@@ -16,10 +16,12 @@ sources:
     resource: repo://src/ops/viewed.rs
   - id: openwiki-source-4b4dd1a8424927498a257bc6
     resource: repo://src/review_state.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+  - id: openwiki-source-d36a1897ad2613d7d98e64cb
+    resource: repo://src/ui/worker.rs
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 ---
 
 # Review state from the forge
@@ -61,7 +63,7 @@ forge did not say, shown as `?`.
 | `threads_more` | bool | the page of 100 discussions came back full | `totalCount` exceeds the nodes returned |
 | `conflicts` | bool | `has_conflicts`, unknown while `merge_status` is `unchecked`/`checking` | `mergeable` (`CONFLICTING`/`MERGEABLE`; anything else unknown) |
 | `head` | 40-hex commit, lowercased | the merge request's `sha` | `headRefOid` |
-| `comments` | a count that rises with every comment or reply | non-system notes across the first page of 100 discussions | `comments.totalCount` + `reviews.totalCount` (every review-thread reply is wrapped in a review); unknown unless both are present |
+| `comments` | a count that rises with every comment or reply | non-system notes across the first page of 100 discussions | `comments.totalCount` + `reviews(states:[COMMENTED,CHANGES_REQUESTED]).totalCount`: each review-thread reply is its own `COMMENTED` review (checked on cli/cli#14951), while approvals, draft (`PENDING`) and dismissed reviews are left out, so an approval alone never reads as a reply; unknown unless both are present |
 
 Two details in the parsers exist because the forges' own flags mislead:
 
@@ -164,7 +166,8 @@ drift check (such as `start-review`) cannot reach the forge.
 
 ## Marking a review viewed (`hub feature viewed ROLE`)
 
-`hub feature viewed ROLE` (dashboard `V`) runs under the hub lock and records
+`hub feature viewed ROLE` (dashboard `V`) runs without the hub lock, so its
+forge read never makes other hub commands fail, and records
 the point the user last looked at a review, so later reads can say what moved:
 
 1. The feature must be open and `ROLE` must be one of its targets (in
@@ -172,8 +175,9 @@ the point the user last looked at a review, so later reads can say what moved:
    feature 'F' is not in review with a merge/pull request URL`.
 2. It runs `refresh` for the feature, which reads the forge for every target.
    If `ROLE`'s entry was not freshly read (its `read_at` predates the call), it
-   fails with that role's warning, so a mark is never taken from a stale
-   answer.
+   fails with that role's warning (matched as `for ROLE:`, so `api` never
+   reports `api-gw`'s; with no such warning, the first one, such as a missing
+   program), so a mark is never taken from a stale answer.
 3. It sets `viewed = { at: read_at, head, comments }` on that entry and saves
    through `store` with `marking = ROLE`. It never changes the feature record.
 4. It prints `ROLE: viewed !N head <short sha>, <n> comments` (`#N` on

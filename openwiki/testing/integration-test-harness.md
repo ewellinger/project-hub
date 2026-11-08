@@ -20,10 +20,10 @@ sources:
     resource: repo://tests/remove.rs
   - id: openwiki-source-3ea48b9bb97138d656617af0
     resource: repo://tests/review_state.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 ---
 
 # Testing and the integration harness
@@ -121,7 +121,7 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/finish.rs` | `feature finish`, including its refusal while a role is open and `--force` leaving stages as they were |
 | `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, a branch reopened after being dropped, and a hub branch with commits, all without partial deletion; deleting dropped branches and printing each deleted tip; fetching each clone once; resolving branches as `refs/heads/...` when a tag shares the name |
 | `tests/list_status.rs` | `feature list`, `status` |
-| `tests/review_state.rs` | review state from the forge: the reviews store (changed URL, corrupt file, failed read, missing program, `feature remove`), the `status` review section, hints and JSON, `feature list` words and `--refresh`, and that `status --base` and `start-review`'s drift check never read review state; `feature viewed` (snapshot, refusals, unknown comment counts), `pushed` / `N replies` attention in list and status, and viewed marks surviving a concurrent `status` write under the reviews lock |
+| `tests/review_state.rs` | review state from the forge: the reviews store (changed URL, corrupt file, failed read, missing program, `feature remove`), the `status` review section, hints and JSON, `feature list` words and `--refresh`, and that `status --base` and `start-review`'s drift check never read review state; `feature viewed` (snapshot, refusals, unknown comment counts, succeeding while another command holds the hub lock, and an error naming its own role rather than a longer one such as `api-gw` for `api`), `pushed` / `N replies` attention in list and status, and viewed marks surviving a concurrent `status` write under the reviews lock |
 | `tests/pull.rs` | `hub pull` |
 | `tests/tmux_off.rs` | behavior with sessions off |
 | `tests/skill.rs` | generated agent skill and its command table |

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:581d724da9d5c1250cd7a65686b819d9e6ae955efab864c48ffe68471c73b663",
+  "pageVersion": "sha256:ce41e2b8bf2f9f9552e6a95c66db81f974e76351b15f15c0896ed1ae85fffdaa",
   "claims": [
     {
       "id": "claim_dd65511507be46818db4d4c49e20ca42",
@@ -252,21 +252,21 @@
     },
     {
       "id": "claim_47a71426a1b74854a5bf1dea4a06b085",
-      "statement": "The feature screen's V key refuses in the footer unless the selected change is in review with a URL, and otherwise runs Action::Viewed, which the worker maps to ops::viewed::viewed.",
+      "statement": "The feature screen's V key refuses in the footer unless the selected change is in review with a URL, and otherwise runs Action::Viewed, which the worker maps to ops::viewed::viewed outside the hub lock.",
       "evidence": [
         {
           "resource": "repo://src/ui/app/feature.rs#L125-L142",
           "version": "repo-lines-v1:sha256:598dae7c2cb441d70eb554075b54a88d9441b6229bdffe4f979aae93ddabaaeb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZmNjMWU5YTcwNzJjOTU0MmJkZTA0ZjgwN2JhZGE1N2VjYmM5ZWJhNmQ2Y2MzODI4YjE5NmU2NGNiODQ0YzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwOTNkY2UwMmZhM2U1YzBiOGMxYzg2YWM2N2U4NzYzZTNhMjQ5YWFhZDAxZjlhOGVkZTJkNjcyNzE1MGJkNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliNGFhMTE2OWU0Nzg3MjhjNjFmZTMwYmYyNGFjMWMyODIwNDA3M2RlMmI0ODczNzAzZGJkOWE1ZjBmODNlOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkNmQ4ZDk0ZWQ0OTdkYjM1YTM3ZjdiNzUyNmYxNDFhZGVjYjk1MjI1ZGQ4NGY4ZmQxZDQzZDNkYWZhYjE4MzAifQ"
         },
         {
-          "resource": "repo://src/ui/worker.rs#L155-L158",
-          "version": "repo-lines-v1:sha256:21c8713ab6fbe62b108393a75399cfa8379187860322a18315e923798d119381:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTAyNGYyMWE1NzRlMzlmMmQwYTIxYWJmYzg0Y2NmYzkwMmY3ZTUyNTQ3NjBiZDMzMmY5YWUzZTIyMDg1YWIwMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM2NDc5Y2MyMzA0NDBmZDQxZTgyMjQyMTg2Nzk2OTg1NTlkMjg5M2JkNjdiNDM4MGFmYWI4MTFiMzhhNTVhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI0OTFmZTA0YWU3ZWE1MjQzNmIzN2QwNDNlOTJjZjMzNTM1MDYyNTUwMGIwZmViMTIyMGYxMzRmZmIzMjMwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZhNTE0ZWYwY2JkMDA2MTFmNWVkNTE1Mjc4MmQ2OTI2YmFlZDg2ZGJhYWM2OGNiZTM5MjBlZjg4ZGRhZmJhOSJ9"
+          "resource": "repo://src/ui/worker.rs#L121-L127",
+          "version": "repo-lines-v1:sha256:ca388d141dbc0d5c6ea133008fb73e79a69abed03b5798e36573e3e62c2f9850:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGJhNWFkZGI2NTJjYjJhOTUzMzE1NzQ2MTIxOTlmNGVlZDVjYTY5Zjg4MTFjNjIzNjI2YmY1OTI0NTI0NDgzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjEyZjhhMGRjMTczNjM4MWMxZDk0MzRmMWJkY2RjY2VhOWZjNTdiODcyNTEzZjRkMTg0MjIxZDg1MjA4OTIyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDNlMzY5NDY5Y2Y2NWIzNzIzZmZhNWI0OWVkODNiMmEzYjdlMjJkNjQzYzEzNzM2OTEwNDFlMmZlM2FmYTQ2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWFmMzY5NzFhZTE2MTkxYTZhNGYzZGEwNGM0NTNiYjU1OTFlZDFiYTQ4ZGE3NTg0Y2EwNzMwMmRhOTM5MDY0NiJ9"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-07T20:01:15.981Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }

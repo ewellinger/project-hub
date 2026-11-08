@@ -20,10 +20,10 @@ sources:
     resource: repo://src/ui/view/mod.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-08T00:30:19.819Z
 ---
 
 # Dashboard flows and overlays
@@ -166,7 +166,8 @@ or a pinned open change — and otherwise says the role is not frozen. `+`, `z`,
 `V` also goes through `role_action` and then requires the selected change to be
 in stage `review` with a recorded URL, otherwise the footer says `<role> is not
 in review with a merge/pull request URL`; it runs `Action::Viewed`, the same
-`ops::viewed::viewed` as `hub feature viewed`, with no confirm overlay.
+`ops::viewed::viewed` as `hub feature viewed`, with no confirm overlay and,
+like the CLI command, without the hub lock.
 
 The footer normally reads `↑↓/jk role  c copy  z freeze  f finish  ? help  Esc
 back`; on a row with `frozen_sha` it swaps to `c copy  z freeze  u unfreeze  Z

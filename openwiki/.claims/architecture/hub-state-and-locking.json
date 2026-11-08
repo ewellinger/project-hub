@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:7a055a36c6e331aaad1f65c11674c7e0c0bb22fe69122ca9e9e5b8b32efbeef2",
+  "pageVersion": "sha256:6f2ca73a2a3aef9f584bd5c8b8a726e1a2f40fd9b76dc3e78a7299cc2869f567",
   "claims": [
     {
       "id": "claim_7faf23742e7d45059c90a46f52411633",
@@ -80,15 +80,15 @@
     },
     {
       "id": "claim_f3f0cb91c718425e9a7a4d061bfd9be4",
-      "statement": "Mutating CLI commands (repo add/set/rename/remove, feature start/start-review/add/set-base/freeze/unfreeze/refreeze/review/viewed/merged/dropped/finish/remove, pull) run under the hub lock, as do dashboard actions.",
+      "statement": "Mutating CLI commands (repo add/set/rename/remove, feature start/start-review/add/set-base/freeze/unfreeze/refreeze/review/merged/dropped/finish/remove, pull) run under the hub lock, as do dashboard actions other than Viewed.",
       "evidence": [
         {
           "resource": "repo://src/main.rs#L430-L700",
-          "version": "repo-lines-v1:sha256:377f6eda94da8c98101d51eac7e24b001b683bc12505e5050939643a2709b671:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMWU1N2JlYjUzMzk0OWY5NTJhOWUxZjYzMjUwYzY4Zjc0YWIzMjcxYjE2YzM3NzkyZTA2ZjJiNzliZGY0Yjk1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiYjIwNGNjNWExODAwOWQ2Y2U0NDZkMjFhMzIwOGE3Y2JjNGEzOWE5N2ExOTQwMDEzN2Y3ZGM3YTJhMjc1MzQ0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlOWY3MTZjMzg2MjY0YWZlOTQxOTc5ZmRiMzUwM2JmNmE2MjUzMmVmMzQ2NWVmMDJkY2JmMDhkZjQyZWNiYjgyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZDg2OTQwYmFlNThmNzI4NzZkZmM5M2QwOTE4ODM1MDk1ZWM5Y2M3YjU1OTFhMmIwYzkzMjhlZjEwMDE2ZWE5In0"
+          "version": "repo-lines-v1:sha256:627bb64c2aa82ad72917d5c56d69e36e5cfee2d537d5a597cab7c04cd117445d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMWU1N2JlYjUzMzk0OWY5NTJhOWUxZjYzMjUwYzY4Zjc0YWIzMjcxYjE2YzM3NzkyZTA2ZjJiNzliZGY0Yjk1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiYjIwNGNjNWExODAwOWQ2Y2U0NDZkMjFhMzIwOGE3Y2JjNGEzOWE5N2ExOTQwMDEzN2Y3ZGM3YTJhMjc1MzQ0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlOWY3MTZjMzg2MjY0YWZlOTQxOTc5ZmRiMzUwM2JmNmE2MjUzMmVmMzQ2NWVmMDJkY2JmMDhkZjQyZWNiYjgyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZDg2OTQwYmFlNThmNzI4NzZkZmM5M2QwOTE4ODM1MDk1ZWM5Y2M3YjU1OTFhMmIwYzkzMjhlZjEwMDE2ZWE5In0"
         },
         {
-          "resource": "repo://src/ui/worker.rs#L117-L125",
-          "version": "repo-lines-v1:sha256:1b43af98c91ceca19672462333ab622cbe039ae0f196c327cbd75933e7bdc48c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGNhM2U4NTVhMDljZmE3MjMwOGUyZjlmYTJmNmY3ODVkNTcwY2Y3YTQ3ZTc1MTI1Y2NkOWU3ZDNhZWQyYzFkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2UxZWVhZTQwZDc1NzU3ZjY2MTM1NWRiNjFkYmMzZDA5NGRkZWUyZjYxNmRiZDE3MDE0ZjhiODcyZjgwMzZjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjQ2MTAyMzYzMDc1MTA0ZjZkMmIxOTJiNDNiMGU5NGNjMWYyMjNmYjJhNjZlYzA1MDFjZmI1OWNkNzY0NTk2YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzRiYTY4Y2QwNTViODg3NWY1ZWMwNGYwNTQyN2U2NTg4ZjE3NjVmYjI1ZmQ0MzIyMTQzMzlmN2Y2NzM1MzU3MCJ9"
+          "resource": "repo://src/ui/worker.rs#L117-L130",
+          "version": "repo-lines-v1:sha256:4304ee5f1a1c3cf19511961f690449b0f32dc6b4fd52987b6a42ff77e8510e76:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMjc2NDAzZjE0YzQxODQ2NGQyMzI5NDBkNmQ1OTAxNmI1ZDcwZjIwMjg3MmQ3MDIwOGJiMjVlYTQ5MmIxOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlMWVlYWU0MGQ3NTc1N2Y2NjEzNTVkYjYxZGJjM2QwOTRkZGVlMmY2MTZkYmQxNzAxNGY4Yjg3MmY4MDM2YzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NjEwMjM2MzA3NTEwNGY2ZDJiMTkyYjQzYjBlOTRjYzFmMjIzZmIyYTY2ZWMwNTAxY2ZiNTljZDc2NDU5NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM0YmE2OGNkMDU1Yjg4NzVmNWVjMDRmMDU0MjdlNjU4OGYxNzY1ZmIyNWZkNDMyMjE0MzM5ZjdmNjczNTM1NzAifQ"
         }
       ]
     },
@@ -159,10 +159,28 @@
           "version": "repo-lines-v1:sha256:9721f5fb58d5aa8236c11d51d25b8656671bc07cf059ed7a5a057fd191807f9c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxN2Y1NjRlYzBhYTFkY2JkODQ3NmU0ZjQ1MWIyM2Q2MWMyYTlkNzQzNjdmN2QzYTU1YmIxOGJjNzZhNDMwYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1Nzg0ODBmOGFmNWQzYzIyMDliOTUyNDFmZjdiZTczODA3ZWNiMjUyYWVlNDY2YzA3OGViMWE4MDM4N2Y3YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0ZjNiYzdkNDAzMzJkOTg0NzA5ZjU5NjExNTcyZTlkMzYzMWFmOTE3NTliNWNlYjI5ZjkwOTMxOGUyMjcyYTEifQ"
         }
       ]
+    },
+    {
+      "id": "claim_11faf0282b5f42549f6d8780dd789346",
+      "statement": "`hub feature viewed` and the dashboard's `Action::Viewed` run without the hub lock, so a slow forge read does not make other hub commands fail; the reviews file lock in `store` guards their write.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L594-L597",
+          "version": "repo-lines-v1:sha256:5fe83e366e6f434442678a01829a924ab2a645084438f307fc6a75a94fb3abf4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTA4ZDI2YzRhOTU0MWVhNDMxNWU2Zjg4YmViNTNkZTQwYTBhOTdhYzgzNGUyMzAzNzA0MjBkNDA3ZDkzNmE0OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM2NDc5Y2MyMzA0NDBmZDQxZTgyMjQyMTg2Nzk2OTg1NTlkMjg5M2JkNjdiNDM4MGFmYWI4MTFiMzhhNTVhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTkyYjUzMzM1MTdhNGQ4MzdlZDRmOWMzMTM5YmRlN2FmM2U1NjY2ZjkxYmVjZTI0NzY1YzkzMjc0N2ViY2I2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWJiOTdjNzhlMjUxZDk3Njc1ODgxMGIwMTZkYjMwYzYzZmI0OWU3MjhmOTBmNWEyZDAzNTVjODdlYzVlNTkzMCJ9"
+        },
+        {
+          "resource": "repo://src/ops/review_state.rs#L129-L150",
+          "version": "repo-lines-v1:sha256:b9e1b58126cf35808f90be51b13306369cafb8178a591a5f760bb98327b859f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkODdiMzFlNjY3MmJlZDMyZTQyM2E5Njg2Mzc0Y2Y3ZjYxYzhlNGQyZGUyOTQzMjhjOTUyMWE3NWI5MGEyYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNTFhOGQzNmRhODQ4OGJlNDM2NjY2NWQ5MTM4YmI0ZjA2M2UzYzA2N2UxYzNlZGU2MmZkYjNjMzMzOWZiMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1MzMyMjIzN2ZkMjk5ZDEyMTk1YWNlNTFhOTM0M2QwNzAxMGQ1YzJiZDhkNDEyMzA5MGI3ZDEyZTYwZTRhZDUifQ"
+        },
+        {
+          "resource": "repo://src/ui/worker.rs#L114-L127",
+          "version": "repo-lines-v1:sha256:d969405f10631e1cf9cfd3314187204a209440ee6c0bce0e13a6d5c327be81fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3ZjAxZDUzYThmNWQ5YTY1MDVjY2UwYTRkNTE2Y2FiZGI1MjVkMGUwNjA0NTBiYjEzMjQ4ODE4MTBiNDA0MzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxMmY4YTBkYzE3MzYzODFjMWQ5NDM0ZjFiZGNkY2NlYTlmYzU3Yjg3MjUxM2Y0ZDE4NDIyMWQ4NTIwODkyMjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzYTEwMzdmMDcxOTYxZmIzYjEzYTdkYWZmNjlhY2MyYmFiODEwZmU4YmRhMTZhMmIyMjcxNTU0MzcxNGNjNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhZjM2OTcxYWUxNjE5MWE2YTRmM2RhMDRjNDUzYmI1NTkxZWQxYmE0OGRhNzU4NGNhMDczMDJkYTkzOTA2NDYifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-07T20:01:15.981Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-08T00:30:19.819Z"
   }
 }
