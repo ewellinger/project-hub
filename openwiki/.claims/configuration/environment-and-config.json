@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:5108643dec3cef9db3c98d6a9825be66843881ce3cd25eeed94c32f0830f84e5",
+  "pageVersion": "sha256:2aac12845066b5741d1e6d2241f765355e8c0306e74627a96ba789d124747212",
   "claims": [
     {
       "id": "claim_ce0630ca305b411b92f03361113b1dc2",
@@ -89,14 +89,28 @@
       "statement": "`hub tmux` refuses with the off reason when sessions are disabled.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L645-L656",
+          "resource": "repo://src/main.rs#L766-L777",
           "version": "repo-lines-v1:sha256:1bbf52c3352b7ee568ef5ad8bf888a436133d29b0d35858341cc674199bab8a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNWU2MmM3MzQzMjM1MDVmYTRiY2ZjZTUyNTNlZDYxZmMxYTMzZjJlNmU4NGM2ZWVlMzRlMTE2NzY4Nzc0NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjZThkMTM3ZmE0NGFjNjY0OGIzYTRhNmY1NmY1MGJhYmE2NzczNDE0NWQwNDc0YTRlNTU1Njk3ZmQyNmJlYzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmNTczOThlOGZkOTFmYzM3YmZlZjRlOTJhMDZjNGNiZGQ4ODVhNTVkYmYzZWMwYzVjNzkwMmJhOTMyNTRiZDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8584e20e34a040999f168a5605723760",
+      "statement": "A setup script inherits the environment of the process that ran hub plus HUB_ROLE, HUB_FEATURE, HUB_BRANCH, HUB_WORKTREE, HUB_BASE (the role's main clone), and HUB_ROOT (the hub's main clone), and its output is logged at <git common dir>/hub/setup/<feature>/<role>.log.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L109-L139",
+          "version": "repo-lines-v1:sha256:9918b03dc3acd7b26beaecd1f83aa7f7d964f7cc1d9d2e93ee06784365c6d6b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2U3ODE3MzYwOGU5NDc5YTI1YmZlNmNkNzRhMGQ3ZWI5ZmI4Y2M4Yzg2YjAwMzQ1ZGIzYmEyNjc3NzIxZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1MDgwZDNjZGIxZDk4NGQzNTBkNTBhMjFlOWNhMjZjZTU2M2FkNjc2MjM4ODIxZjViMTU5N2JlZGM0MWM5MDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwYjc0ZTA5MTkzNjdmZGMzNTg5NTIyYzJjMTMyMDBjYjJhNWY4NDBhN2JjNjQ0M2NiNTdkNjAzNGM5MmZiMGEifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L186-L193",
+          "version": "repo-lines-v1:sha256:3f03e12d53ecafe99ed61b3ae9362d5e969f2981edac8a8b91e85fe8a2c744f6:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTg0NWRjZDk4MTZjNjI0YWZhYjAwZjMxMjVlZTdlZDdjODRmNDhiNWJjYmIzYjk3MWQ4MTE2MDMwYjhiNTA2NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODQxMzlkNjQ1OTcwZTgyM2MzZGJkMWM3OGUzNGVhM2IxODRjOWM2ZmNmZDQ0ZWMwM2E2MGY4MTYzNzU1ZWYyNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDg5NjRmMGFmMTk5MmU2NjBjN2YxNjg1Y2JiOGNmZGEzM2RiYmExOWI3ZGJjNTg0OWM2YmRkZDMxNzhmYmJlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDg3NWVhZDg4NzgxZTI0YTk1ZDE1YzE0MDE2YTBhYjViOThiNWZhZmVjZWEwZTc3ZjRkNzM5NDk4NjUwNDJhOSJ9"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "at": "2026-11-09T20:44:31.979Z"
   }
 }

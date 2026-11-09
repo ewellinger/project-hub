@@ -8,6 +8,16 @@ file by [towncrier](https://towncrier.readthedocs.io/) when a release is cut.
 
 <!-- towncrier release notes start -->
 
+## [0.28.0] - 2026-11-09
+
+### Added
+
+- A role's `setup` script in `hub.json` (`hub repo add/set --setup`) runs in every worktree hub creates for it after `feature start`, `feature add` and `start-review`, with its output logged under `.git/hub/setup/` and its result shown in the CLI and the dashboard; `--no-setup` skips it and `hub feature setup [ROLE]` reruns it.
+- The bundled `hub` skill gains a `setup-scripts.md` reference, written next to `SKILL.md` in every hub worktree, on writing, registering, and testing a role's setup script.
+- `hub feature dropped ROLE` records an abandoned change (worktree removed, branch kept); `hub feature finish` refuses while a role is still working or in review unless `--force`; `hub feature remove` deletes dropped branches and prints each deleted tip; the `closed on … without merging` hint names the command; TUI key `d`.
+- `hub feature viewed ROLE` (TUI `V`) records a review's head commit and comment count; `hub feature list`, the dashboard and `hub status` then flag the review as `pushed` or `N replies` when the other side moves.
+- `hub status`, `hub feature list` and the dashboard show the state of each role's merge or pull request (status, approval, pipeline, unresolved threads, conflicts), read through `glab`/`gh`; `R` in the dashboard and `hub feature list --refresh` read it for every open feature.
+
 ## [0.27.0] - 2026-11-01
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:fc4790654cb5a73eaa127570e714fe771df794c436e777602bf370af9eadd82b",
+  "pageVersion": "sha256:22132df2a9cee40daeebf58ff41dc73883149d44ea0599667538c8aa080b1e4e",
   "claims": [
     {
       "id": "claim_edd1b80e67eb4d53b00113e164c9aa54",
@@ -12,7 +12,7 @@
         },
         {
           "resource": "repo://src/lib.rs",
-          "version": "repo-file-v1:sha256:d2c8611dc705db82d3c49cfe183571d88c7978b1c87b629ea1d2510e35c1e284"
+          "version": "repo-file-v1:sha256:0d29e119f84c8a20c5b394473a577b620cb85b7af37dd5b98be7f46ebec0c968"
         }
       ]
     },
@@ -22,7 +22,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib.rs",
-          "version": "repo-file-v1:sha256:d2c8611dc705db82d3c49cfe183571d88c7978b1c87b629ea1d2510e35c1e284"
+          "version": "repo-file-v1:sha256:0d29e119f84c8a20c5b394473a577b620cb85b7af37dd5b98be7f46ebec0c968"
         },
         {
           "resource": "repo://src/main.rs#L12-L13",
@@ -35,7 +35,7 @@
       "statement": "Bare `hub` opens the dashboard only when stdin and stdout are terminals; otherwise it exits with clap's missing-subcommand error.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L365-L379",
+          "resource": "repo://src/main.rs#L421-L435",
           "version": "repo-lines-v1:sha256:45370418202725a60952c037437b2e5412c6a9b709de21a6febfc97acb17c9ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjODFiMGM2Mjc2OGU5ZDI3MjVjOWVhZDFkOWUwZTBjNmY5ZWNhYjI1NGQ2YTZlNjg5MTBmYjE2ZDcwMmVhOTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMDQ1MGEzYjhlZWUwZDUxOThjMDY2OGI4M2I3NjUxZjMzMmU2ZWQwNTVkODAwNjIzMzY1ZTNmYjQxNWYxN2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ3MTZmM2EwZDhmNzAyMTAxZWMwYWNjYTAzNWRlMThhYmU3Y2JiOGM3OWE3NTFhYzM4MDcwNTIyM2VhN2ZkOTMifQ"
         }
       ]
@@ -45,7 +45,7 @@
       "statement": "Every hub-scoped command locates the hub and then refreshes the generated agent skill, printing skill problems as stderr warnings so JSON stdout stays clean.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L354-L363",
+          "resource": "repo://src/main.rs#L410-L419",
           "version": "repo-lines-v1:sha256:6f524497c0611fae0a15c3772e835dd75e73c5e968c5c892d8b10fca170c6e3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZDMxYWM0NzhlYjY5NjkyNzA3OGZmYmIxYzY2ODVlYmMxNmI4YjkzODE2OTA5MTA3NjQ4ZTdhOGI3ZmIxMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkNDQ2NDE5ODBkMGY4ZjJiOWMyYjFjODQ2ZTBiNmNjMzJkYWEzNjIwZDUxYTAxMjc2N2M5OTZlNWM3NThiYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJhZmUxMWE2ODc2MDQzMmFhMmRjNWVhNzYzNmYxNmFlNzNmMGM2M2U4ZTMzMGI5MDE5ZGIyZWMwNmE3NGU1ZTcifQ"
         }
       ]
@@ -55,8 +55,8 @@
       "statement": "Interactive prompts for feature start and feature add run before the hub lock is taken; in a terminal feature add always goes through its prompt, which asks where a new branch of a frozen role starts.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L482-L567",
-          "version": "repo-lines-v1:sha256:1c28779272dd312d5af4839545aacc8eaa24cada4de0a1b63923942f314e242b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNzQ3OWU3NzNlMWIwMDJiNTI2MGJkNzgyMzJkMWI5ZTBmOWQ2ODFlZjIzYTM3N2JiMmNmNDU2NjcyYTBiZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzNTljNjA5Njc3OWVjMmRkMDA2NjkxN2E5NDkxZDExYTNlZDdhZDI5NDhlMDQ3NTgzMjdhNmQ3YjViYjU3ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNTRjNWYyMmQzYzZjYjdmN2U4MjYwZDUwMDEyZGQ4ODI4YWVmNTA4ODMxOTRlMjJlNzA0OThlODMyMTZiMDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2YzA2MzhhY2JlOTkwYTNhZGVjNDI0NjFmZWJlODFhM2UwOWVmOTZhNGE0Yjc5ZmM3M2FlNWNiM2RlYWI5Y2IifQ"
+          "resource": "repo://src/main.rs#L543-L650",
+          "version": "repo-lines-v1:sha256:9e55c5bc5e6cea97df5e8757851be626acf96c726c8ef11522ce15faa75838a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmNDBmNmRmZTdkNGVlNjk5YWY5ZTUwY2U4ZDUwYjQyNmIwZTEyNGM4MzIyMGI1N2VlNzk1ZGJlNzk4ZTA1NmMzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzZTQwY2Y0YTNhY2I5ZWY0OWQzYzE1ZGUyM2YwZjczZGZmMmI3NTcxNzA0Zjc2NWUyMTc5M2VmNTg0Y2FkYTc5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxYzhkZjFmYjAwYjE4ZGNjYTE1NDM0MDM5NmNmY2M3YzQzODQyYzRhNWY2OWFhYmFhOTc4OTdlNGY0ZDAwOGMzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4ZDBkOWEyNTc4NmJmZWMyZWMxMjQ5MjY2Y2YyZDM1MDA2OWM1ZTJjNWZkNzA0OWJjNjFlMTMyMmU4MDQ0YmI1In0"
         }
       ]
     },
@@ -69,7 +69,7 @@
           "version": "repo-lines-v1:sha256:6fc68ca4f135f5f8fa7a6ce197c11c65ab04d53e57b56b078f9d02ed57690f36:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDIyYzk1OTJkYjA3MDgzZTkwZmM2OTYyMTY0NDhjMjViMjNhNjg4NTE2OTZhMzlmNTFlZGRiMzkyODI4NmFiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjc2YTU0NGNjMDIzZWQ0MDVlM2I5OGI4YTM1NDA5MGZhZDE2ZTllMThkNWVlOWY3YmE2YzNlNzAwNTMwMDlkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjQ3MTFlMTA2MjMyYmM5ZWJiNDYyODkzYTAwMDVhNTg1OTAyZDI4YWM5YmEwMzA2ZmFhNzE2ZGE3ZDk3MWFmYyJ9"
         },
         {
-          "resource": "repo://src/main.rs#L699-L731",
+          "resource": "repo://src/main.rs#L808-L840",
           "version": "repo-lines-v1:sha256:3f49eac4a78776397a2bdbc7f87880ec8e586bcead17c9ef319049b683a3d20a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwY2Q1N2RhMWUzOWRmMGMxMzEwYTFjNzdhMTNlMjhiMmU1YThhYWY0YmIyN2E0MmRhMjA2ZWU2N2E3ODM0YjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkZjI0OTg3N2YyMmFkYmJlN2Y2MWIyYTY5ZmQ0NjNjMDRlMzdiYmNiOGVjNTdjNTU3MmExZjdlMDZiYzgxZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTRkMDJhODEyMTk0NGQxNzZkMjY1ZTliYjljYzU5ZjZhYjg5MGJjYWRmOGFlZmRlYmRiYmI0ZjJlYTg0NDQifQ"
         }
       ]
@@ -83,7 +83,7 @@
           "version": "repo-lines-v1:sha256:d3df4daa1de4e21507de221dac23211c06719324f2efd5063cf93c282102d9ec:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MzE5ZDljYmNiY2E4Yjk2YWI3YzFjMjNlYjA3ZjM3MzJlYWY2Mzk1MTk4YTA0MDBkMjU1ZDI3NDA3ZGI4MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1ODJhMTMyZGQyMTkzZjgzNzZlMWI5Y2Y4NThkODc2ZWYzZGE0M2JlMWU2MjYzOTE0ODJmNDhkODdlZGFlMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NzExZTEwNjIzMmJjOWViYjQ2Mjg5M2EwMDA1YTU4NTkwMmQyOGFjOWJhMDMwNmZhYTcxNmRhN2Q5NzFhZmMifQ"
         },
         {
-          "resource": "repo://src/main.rs#L335-L348",
+          "resource": "repo://src/main.rs#L391-L404",
           "version": "repo-lines-v1:sha256:9f3991c28e2d13f7111cdee83ace1b9226fe342c024071931333a3f483f2597e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwYjllZWU5MWJjMGIxYTc3YjVmMjI0ZmQ2OTQ1ZjNkZWMyMzRlNTU5NmI5NDc1YzkwYzVhZWM5ZTZhZTIwYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmN2JjMmQ5NGI3ZWZkODliYzc5NzMxOWIzMDg4Y2I1ZmUxNDgwZmEyOTg0M2RhMzViNGI3ZGUwYTYwMDY1MDAifQ"
         }
       ]
@@ -93,11 +93,11 @@
       "statement": "merged and dropped receive a confirm_removal callback that only removes an adopted worktree after a terminal yes, answering no when stdin is not a terminal; finish takes no callback.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L382-L394",
+          "resource": "repo://src/main.rs#L438-L450",
           "version": "repo-lines-v1:sha256:733af9fd2b0d74d32934dcf6429d7006d82b70f4e0ea01874e7aa7c70ea03712:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyNjZlMjZjNDRiNzc4NTNmMTU1NDFlOGFhMzliMTJhN2I1NDNkZmU0ZDk5NTc3N2JhMGU5NDhlZGVjMGNiMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzNDc0N2FhMjZlZDFhNDI4ZmFhNzI0ZTVlYTI2NTk4MDE4NWRkYmJmNjhhNzY0YjE3Mjk5YzA4NzUwM2FlMmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliNWNiYTc0YjRkNGEyMWRmMjlkZTU2MTQyMGVkMDNmM2YzM2JhYThlOGQ4NjU1ZGQ3YmFmYzQyNzY3ODRjYTAifQ"
         },
         {
-          "resource": "repo://src/main.rs#L598-L617",
+          "resource": "repo://src/main.rs#L707-L726",
           "version": "repo-lines-v1:sha256:47cea8d8bad2064b985a7de559ae36822e6f02b87098d6e6c62254385518c361:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyNDM2NTRmZjhhYzJiNGQ1NjMzN2ExZTUyMGQ0OTVjOTAzZjJmNWUyNmU3ZmUzODliMGY0ODY5M2Y3MGY4ZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlNjE5MDcwOWE1MmYxNTI0OWQ5YjgzMmNiM2M4MTJlY2ZkZWQyOWVhOGJlODkwZjMxMGZhNmZkNjc5Njk0MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5MmI1MzMzNTE3YTRkODM3ZWQ0ZjljMzEzOWJkZTdhZjNlNTY2NmY5MWJlY2UyNDc2NWM5MzI3NDdlYmNiNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiYjYwYTEyNTkyOGJkMDFkOTkyZTA1ZDQzNDg0ZDczNGUyYWYzZTgyNDNhNDQyYjM1NmVmMTQ4NmRiNzlkY2QifQ"
         }
       ]
@@ -107,7 +107,7 @@
       "statement": "For a feature, the CLI's `status` calls `ops::review_state::attach` with `Source::Forge` on the report after `ops::status::status` returns; the status operation itself does not read the forge.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L703-L710",
+          "resource": "repo://src/main.rs#L812-L819",
           "version": "repo-lines-v1:sha256:57ab1e86a32ec379e137e0dbbecdd9d3ef6d8d880268c533349cb0fa9ee4b0fe:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzZhZWI5ZmQxMjhjN2I5YzU3NTdkYzM4OTdlODE4NGRjYTNhNWQ1NmY5MDAxYjdhYjM5NGQ1ODk2ZDNhMDk3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjk5MWEzNGM1MjZkYTkxM2NjMDg4Y2IwMjI1MDJmMjg1YWNjMWRiY2RiZmUyOTkyZGUyMDBiYWU4ZDg4ZmUyOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDI1ZjVhNGNmMmY1MzA3YzE5NWE5N2MyNTNiYTdhNzdhYWVmMzNiMzg2ZGViZmRmYTBkYzgzNjI4MGI3YTUzNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDA2M2IwNmM1YmU4MDY2YTIwYTMwOGUyN2VkOTQwZmEyNjZkNzYwYzFmZDViN2M3ZTk0YjVjMjIzYTFhZDNjMyJ9"
         },
         {
@@ -115,10 +115,24 @@
           "version": "repo-lines-v1:sha256:aa7e54e6fd01bf6da3aa8b5e7379376c177eca768fcc52c7aa3443d040709426:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzM2ZmM2I0OGExNmQxZWJlZmI5ZTFkOTk1OGJlOGY1MzQ3ZWJmNDQ5NGE5YjgxNDZkNzJlYjVjOTRlMTVjOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMzk1ODNhOTBkYmZlZTUwMTMwZThmZjY3NDZmZjZhMzViNjNiNjFhOWM2M2NmZDA5Y2EwMjIwMmNkOGVhYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyOGQyOTMwZWJjNjkyM2Y5NDVmNjU3OGNlZmI5MmUxYTgyYTU5NzRiYTI3MWFmYmIxMDY5NWY5ZGYxM2Q0MTgifQ"
         }
       ]
+    },
+    {
+      "id": "claim_a311d578701a4fc288d44cd0ea71a5e4",
+      "statement": "feature start, start-review, and add run the affected roles' setup scripts after the hub lock is released unless --no-setup is given, and a failed script does not change their result; feature setup returns an error when any rerun script fails.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L364-L390",
+          "version": "repo-lines-v1:sha256:1835b6ef9bc619226eaa838cfc4b9036f4fa52812b60c57873df054fc36410cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzY2NkNzIzYjdhMDk1N2RlYzNhMzdiNGYzN2FlMTA4OWZhYzFlZWQ5YjU0MzdkN2FmY2Q4ODEzNDVlYWJmZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzMjQ2MjU3NTk5ODNkNzdmMjA5NTQzNjljZTg5YTQ2MjE1ZjQzNjZjNjIwMTVkN2Y2ZjljODA4NWU4NTZjNWIifQ"
+        },
+        {
+          "resource": "repo://src/main.rs#L543-L674",
+          "version": "repo-lines-v1:sha256:b830e52adc9f80d439e4033befee04ba10b646f41c71887cc102d9f0135c2b86:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmNDBmNmRmZTdkNGVlNjk5YWY5ZTUwY2U4ZDUwYjQyNmIwZTEyNGM4MzIyMGI1N2VlNzk1ZGJlNzk4ZTA1NmMzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwYzY0NzljYzIzMDQ0MGZkNDFlODIyNDIxODY3OTY5ODU1OWQyODkzYmQ2N2I0MzgwYWZhYjgxMWIzOGE1NWFhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxYzhkZjFmYjAwYjE4ZGNjYTE1NDM0MDM5NmNmY2M3YzQzODQyYzRhNWY2OWFhYmFhOTc4OTdlNGY0ZDAwOGMzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkZGJhYjY1MDhlNDJiZDg2ZmJkMjEyM2M2OWIyOTAxMTgxNDA0M2E4N2U5MGE0N2JmOWZjNjIxNmM0YjZmNTYzIn0"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-07T20:01:15.981Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-09T20:44:31.979Z"
   }
 }

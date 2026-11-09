@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2558edabd7deccdab39bc03b18abb1a9d3337a69e9ae5d86f31647792c66e57a",
+  "pageVersion": "sha256:97076d5bc21b41a741d3f6397625a1b1db814889f06ba3273fc1b640a65331a2",
   "claims": [
     {
       "id": "claim_2f2d2972de2546659ae66cd6e26567f1",
@@ -41,12 +41,12 @@
       "statement": "repo add records the clone's configured origin URL as the remote and infers the base from origin/HEAD unless --base is given.",
       "evidence": [
         {
-          "resource": "repo://src/ops/repo.rs#L18-L34",
-          "version": "repo-lines-v1:sha256:72478adfd1b75e26e799901241762a61e02cdff6222e0b92fec93e9ad283482b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNGE4ZGJjZjM5NDFlOTA1MWM0OGJiNmYyMzk1NTkxY2YzOThiOWFjY2RiMDgzYTQzM2Y2ZmMwMWQ5OTg2NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYTBjMTE2NTU0NWY5ZWQwYzBlZDBjZmYzZjNmNjBiM2M1YmI1NTJlM2VhOTcyMzYxMzUyYWY1ZGE0Y2VlZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5ZTBjZjA1NmUxYWRhYmI1MDQzOTVkYWI2MDg1YmI5M2VjODdhZDQ2ZDNmYjUzNGIxZTI4OWExNzk5YjNkMmYifQ"
+          "resource": "repo://src/ops/repo.rs#L19-L35",
+          "version": "repo-lines-v1:sha256:72478adfd1b75e26e799901241762a61e02cdff6222e0b92fec93e9ad283482b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjNGE4ZGJjZjM5NDFlOTA1MWM0OGJiNmYyMzk1NTkxY2YzOThiOWFjY2RiMDgzYTQzM2Y2ZmMwMWQ5OTg2NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2N2NmNjliNTY3MjUxZTJjOTBhZTg2MGZmYjYyZDE2ZWNjYWFmOTRmNWY2OTA5ZGE2M2NmZTAzNjAyOTMwM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5ZTBjZjA1NmUxYWRhYmI1MDQzOTVkYWI2MDg1YmI5M2VjODdhZDQ2ZDNmYjUzNGIxZTI4OWExNzk5YjNkMmYifQ"
         },
         {
-          "resource": "repo://src/ops/repo.rs#L60-L101",
-          "version": "repo-lines-v1:sha256:4f69afc3beba3ea173c7e4153c8412703a760e7e63360baff64f60e709bfa4b5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYTMwYTMxNzc4NDJjNWEyMmY3MzM0ZjZjYjliZjE5ZjRkZDYyZWIyYzg4M2Y3N2RiMjNmMTU1OWM5NmYwNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjYTkzYjdlYjhiOTM5MmZkOTUwMTk0YTRlN2JlYjQ1ZDcyYjQ2NDQwM2M2M2Y1MGUzODlhZDA2ZWMxZTU0MTgifQ"
+          "resource": "repo://src/ops/repo.rs#L61-L106",
+          "version": "repo-lines-v1:sha256:dce2ed882599f7c690c8420b59f688a6039ab8c1473a49e34b24db1bf6439e54:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYTMwYTMxNzc4NDJjNWEyMmY3MzM0ZjZjYjliZjE5ZjRkZDYyZWIyYzg4M2Y3N2RiMjNmMTU1OWM5NmYwNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1ZjZmNDY2ZTU5Y2ZjMzA3MDNjNDVmNzJhZjY1ZGU1NGFjMzYzZDM1NGNjMWEzMzMwMzUwYWNkNDUyNDM0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjYTkzYjdlYjhiOTM5MmZkOTUwMTk0YTRlN2JlYjQ1ZDcyYjQ2NDQwM2M2M2Y1MGUzODlhZDA2ZWMxZTU0MTgifQ"
         }
       ]
     },
@@ -55,8 +55,8 @@
       "statement": "repo set edits fields in place keeping position, refuses changing the base while an open feature has the role frozen, refuses changing the clone while an open feature has an open change for the role or has it frozen, and commits nothing when values are unchanged.",
       "evidence": [
         {
-          "resource": "repo://src/ops/repo.rs#L112-L201",
-          "version": "repo-lines-v1:sha256:5447b59ab2e553d1d2633eccba69c254676ddc3613e7374b8ea4c68f21eb86cc:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlOWYxMGQ3YzE0NTM5NjBkOTBiYjU2MTBjODFlZjczNTgxYWU3ODNjNDJmMmY1MzQxOTk5M2UwNzRhOWM4YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExMzJlNzIzYmNlOTgzMGYzNmMyYzgwMWRlY2U5NzY5MDE5Yjc5ZTU0ZDRmMWY4OTI2OGI1NmE0NDYyMTI3MjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YjE3ZDNmZGM2ZDg5MzY1ZDQ4OWJmZGNiZjRhYTNhZmQ1MmNkZGNmYTM2ZDAxYjJiYTNhOGQwMmQxZGRhYzUifQ"
+          "resource": "repo://src/ops/repo.rs#L119-L217",
+          "version": "repo-lines-v1:sha256:4ae0a6d17a87fd2f4fa48e657dcf8fe70caaab6565612f23ed6039dc2f1aef89:eyJzZWxlY3RlZExpbmVDb3VudCI6OTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlOWYxMGQ3YzE0NTM5NjBkOTBiYjU2MTBjODFlZjczNTgxYWU3ODNjNDJmMmY1MzQxOTk5M2UwNzRhOWM4YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExMzJlNzIzYmNlOTgzMGYzNmMyYzgwMWRlY2U5NzY5MDE5Yjc5ZTU0ZDRmMWY4OTI2OGI1NmE0NDYyMTI3MjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YjE3ZDNmZGM2ZDg5MzY1ZDQ4OWJmZGNiZjRhYTNhZmQ1MmNkZGNmYTM2ZDAxYjJiYTNhOGQwMmQxZGRhYzUifQ"
         }
       ]
     },
@@ -65,7 +65,7 @@
       "statement": "repo remove refuses while any open feature has an open change for the role or has it frozen, and leaves the clone and branches untouched.",
       "evidence": [
         {
-          "resource": "repo://src/ops/repo.rs#L203-L225",
+          "resource": "repo://src/ops/repo.rs#L219-L241",
           "version": "repo-lines-v1:sha256:e574dd97abbbe245878b81783bd1c0e16570bfeede91396b0df698d70a6c4e05:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhOTExMDEzYjRkMTRlYmQ4ZGI0ZGY3OTNjZjE1YjMyODE2ODBjOTgzNjM0MTQxNTUzZjMxODdkOWU0NTI4OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4NWRiMjI2OWEzZmRlNWQyYTU2MDU4YzIyZThmOWRlOGQyY2YwZjNhNTM3ZGQ2MGUyOTJjZGQwNzcwZDk3MDgifQ"
         }
       ]
@@ -75,11 +75,11 @@
       "statement": "repo rename renames the role in hub.json in place and rewrites local feature records' changes and pins, then renames tmux windows and regenerates workspaces for features with an open change or frozen reference worktree for the new role, as warnings-only steps.",
       "evidence": [
         {
-          "resource": "repo://src/ops/repo.rs#L262-L310",
+          "resource": "repo://src/ops/repo.rs#L286-L334",
           "version": "repo-lines-v1:sha256:5e15f9f8f471657905cfa32125780b175ee53bfeaace1ffef1aa6810886bc765:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExYzg1Y2E5NGQ3ZTJhZGIzOTRkZDU1YmE3MmMwMTNiNmJlMTk0MTI4YmY4MTY0ZGY0ZGY0NTRjY2YyYTdhZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyMzM3MDQ0YTQwY2M5YTJjNGNmNmIzOTIyZjRlZTdlNjZkNDhjM2JmMjUwMDIyYWNmOTkzNDQwZDdiNTczM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjZjJiNGQ0ZGVmYjFkNmUwNTA4MGZmYjNlZTQ0M2I3YWJmNDQyMzc0ZTM3YmYzMmNjMzEzMjhiODRmNzI2NDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxY2M3YjdhYmM5OTAwNjI5MDI0NzgzZDVhNjU2YmE3MTM0OGMxOTA3ZjRiMjIyYjA0ZTEzYzMzODM3YmM4MDkifQ"
         },
         {
-          "resource": "repo://src/ops/repo.rs#L370-L455",
+          "resource": "repo://src/ops/repo.rs#L394-L479",
           "version": "repo-lines-v1:sha256:2317c484d0492531e60e1f984319de1d007d9ca0d1534de3a3da7a70521e559b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwZDBiMzNlYWEzOWU2YTY5OTU3YmIyM2JjNjUzZDg1YjkyNGI5MzVmM2MxOTIyMjQ4Mzk3MDI2OTM0YTBlY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkYjBlYzE3YjJhNDgyZWI1NTBmYjhmNTUxYzJjODRmMTM1ZTdjYzhmYTE5N2JiNzZmMmM1ZGMzZTJkYWNkMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1ODJkYjY4NGQyM2Q5ZmM4YzI1ZTIxMGM0MGM3Mjk4OGM2MTAzNDNiMWIyNzAzYzI0YzBjZjljNjBjNDM5MjIifQ"
         }
       ]
@@ -89,14 +89,36 @@
       "statement": "repo rename --records-only rewrites only local records, never commits, requires NEW in hub.json, refuses before writing a rewrite that would give a role two open changes, two pins, or a pin beside an open change, and --clone limits it to records with that clone.",
       "evidence": [
         {
-          "resource": "repo://src/ops/repo.rs#L312-L368",
+          "resource": "repo://src/ops/repo.rs#L336-L392",
           "version": "repo-lines-v1:sha256:3f02a063cb45b361dc12ff7a126fc17a0715851398c55c27d9ae5aec3e3c6a69:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZDMwNzlhNDdlMGFkZDI0ODBiNjA4ZjMxZWE5ODhmMzc5ZGJhMjhiNTA5NzJiYWEzMmI0ZTc0NzJlNjRhNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3ZTRmMGEyMWU0YWVjNzRkMWZmYmIwZjlmMzFjZGE0ZjUzMWZhNDRhMGZjYTEyNTRmNzMyMmYxZWZhMjE3ZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhZTdkOThmZDI1NTM3NGYyOTEzZjMzNDA4ZDYxMWQxMjYyOWI1Y2RiMjgyOTMxMGRkNjdmOTExYWViMDk3ODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0NWFmMmM1ZTJhYTNhNTg0OWI5NjQ5YTNlYzkzMjBlZjI0ZGY5NDAxOThkNjY2Yzg4ODhmZTg3YmQ3Yzg2OTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9977ba6b5c8548b7aee4ba46c56c58a7",
+      "statement": "repo add --setup and repo set --setup validate only the path's form (relative, inside the hub repo, no '..'), commit only hub.json, and repo set --setup \"\" clears the script.",
+      "evidence": [
+        {
+          "resource": "repo://src/names.rs#L79-L92",
+          "version": "repo-lines-v1:sha256:fcaae226272fcbbf08b25452f609e1b117be1053f349779f338f1bccd424c49b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5Y2ZiNzExODJjODMzNGUyODM4ZDVlNjUzMDkwZDg3NDgwN2M3MjNkMzUwZTA3MDFkNGNmYTdmMTM5NTUyYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5OTczMGZiNjE3Yzg4ZDE3ODg1MDhhYmM2YzUxYzljMGNjNTMzYjg4MmEyMmIxOGU0N2U1MTFlOTBhNGI2ZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjZTZlZDVhZDczYWE3ZWM1YTg3ZDYwY2Y0ZjYxYzE2NzM4YTZiZTc0NjEwMmQ5ZDg5YzEyYzdmMWI1NmFjOTMifQ"
+        },
+        {
+          "resource": "repo://src/ops/repo.rs#L173-L180",
+          "version": "repo-lines-v1:sha256:cdcfc0a0124b35d05db2a00ac0c392c9408d9eda17f36b463e586726a3078111:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjVmODM1ZGJkMmVhNGYzODRiYjc5NzliNDE1NTE4Nzk4YjlhNjkwYWY1MDc3MzQzYTlhNDRlMzY4MThiZDE5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTIxYTIxZDdkZjE3ZDg4ZTY5ZmVhZTEyMGFkYTc2ZDI0YzIwOGNiMDkyZGI4ZmEwOWVlYWZkYWVhZDlhMWNkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUxNDQ4ZDEyN2Y3NmExOTRlNWE5MmMyMzI1OTc4MjkzY2JlZDQzMjBjNWYwYjA0MGVlNDc3ZWZiNGJlNjYxOCJ9"
+        },
+        {
+          "resource": "repo://src/ops/repo.rs#L76-L78",
+          "version": "repo-lines-v1:sha256:ed5dc7d4066c4794a73d0888b1c2128e3dc69f8d41ea3cb54c2904049dc76c12:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjVmODM1ZGJkMmVhNGYzODRiYjc5NzliNDE1NTE4Nzk4YjlhNjkwYWY1MDc3MzQzYTlhNDRlMzY4MThiZDE5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjY5Yjk5ODkyNTU5NGFlNTAzYzBhMDk4OTFhOGIwNzFmMWNiY2E3ODEwMmIyYjRhNDVlNjAxYjAxYjQzZDczYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWI2NmE5MGFiM2QyYWZkMTNkZDI0OWRiZGZiZTQxYTBlZWU1MjZjODQzYTU2OTk5MDJkMzI2ZDYzNzlmYmQ5YiJ9"
+        },
+        {
+          "resource": "repo://tests/repo.rs#L294-L325",
+          "version": "repo-lines-v1:sha256:1efb1338eb66c3fcb34fb030379a9f9c3fb6b3ecb888288d00750248dd783428:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3M2QyNWI5YmY0MmQ0N2U0YzcxMWJjNmJkNjhlZTZkYTJlMTQzNDY4Zjc1YjAyYTI3MzNmYzJjNmVkMjRiNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxMzhjODAwY2YzN2YyMmIxOGI4MjFkNDBjZGQ2MGIzM2RiOWVmN2FkMDdiOWJkNDE1YTQ1MmY0MDcwNDQyZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExNmYzMTUzMTU3NDE4YjRkM2ZmNGUxZDI3Y2EyYTcxYTVhNmNkOTcwMjdmOTYyMTY2NjFkMGNmMzg3ZTc3OWQifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-09T20:44:31.979Z"
   }
 }

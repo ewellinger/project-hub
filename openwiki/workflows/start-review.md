@@ -4,16 +4,20 @@ title: Reviewing a merge or pull request
 description: How `hub feature start-review URL` turns a GitLab merge request or GitHub pull request into an isolated review feature — URL parsing and matching to exactly one role, reading the review through `glab api` or `gh api`, verifying the head, refusing forks, closed reviews, occupied or diverged branches and collisions, and conditional rollback.
 tags: [workflow, start-review, gitlab, github, review, safety, rollback]
 sources:
+  - id: openwiki-source-b55a21a31ede1b56cd31a6a6
+    resource: repo://src/main.rs
   - id: openwiki-source-e782c5002a54f711ccbae710
     resource: repo://src/ops/start_review.rs
   - id: openwiki-source-61647d0ebb1f751a6acc22a7
     resource: repo://src/review.rs
   - id: openwiki-source-3ea48b9bb97138d656617af0
     resource: repo://tests/review_state.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+  - id: openwiki-source-e89fdc875b2c55e64982d891
+    resource: repo://tests/setup.rs
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Reviewing a merge or pull request
@@ -102,6 +106,12 @@ The result is `ReviewInfo { url, source_branch, target_branch, head_sha }`.
    `base_sha` from step 6, `owner: hub`.
 9. After the write: workspace, tmux session, and skill install, as warnings on
    failure (see [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)).
+10. `start_review` returns the feature name (computed when `--name` is
+    absent) with its lines. After the lock is released, the CLI runs the
+    reviewed role's setup script in the new worktree unless `--no-setup` is
+    given; a failure is reported and does not change the exit code (see
+    [Per-role setup scripts](setup-scripts.md)). The dashboard has no
+    start-review flow.
 
 ## Rollback
 
@@ -135,3 +145,4 @@ rewritten to a local bare repo) and the fake `glab`/`gh`, including
 - [Starting features and adding roles](feature-start-and-add.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
 - [Review state from the forge](review-state.md)
+- [Per-role setup scripts](setup-scripts.md)

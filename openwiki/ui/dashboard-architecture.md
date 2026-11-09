@@ -16,10 +16,10 @@ sources:
     resource: repo://src/ui/view/dashboard.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-08T00:30:19.819Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Dashboard architecture
@@ -144,6 +144,11 @@ Each effect spawns a detached thread that sends exactly one event back:
   confirm callback that always says yes (`finish` takes none); confirmation happens earlier, in the
   dashboard's preview overlay (see
   [Dashboard flows and overlays](dashboard-flows-and-overlays.md)).
+  After the `Done` event of a successful `Start` or `Add`, the same thread
+  reloads `hub.json` on a `Hub` copy kept for after the lock, and runs the
+  new worktrees' setup scripts one at a time, sending an `Event::Setup` with
+  `SetupState::Running` before each script and `SetupState::Done(outcome)`
+  after it (see [Per-role setup scripts](../workflows/setup-scripts.md)).
 - `open_workspace` writes the workspace file and launches the editor with
   silenced stdio (the terminal is in raw mode).
 - `copy` uses `arboard` with one process-wide clipboard handle, because on X11
@@ -155,13 +160,22 @@ Each effect spawns a detached thread that sends exactly one event back:
 
 `App.running` holds the action in flight. `App::run` refuses a second one
 with `busy: <action>…` in the footer. `q`/`Esc` refuse to quit while an action
-runs (`Ctrl-C quits anyway`); `Ctrl-C` always quits immediately, killing the
+runs (`Ctrl-C quits anyway`), and also while a setup script is still running
+(`setup running for <role>; Ctrl-C quits anyway`), since quitting would orphan
+the script and lose its result. Setup scripts do not count as busy, so other
+actions can run meanwhile. `Ctrl-C` always quits immediately, killing the
 worker with the process. When an action completes (`done`), a single-line
 result goes to the footer, multi-line output or an error opens a result
 overlay, and the affected row is refreshed with `request_fresh` (or the list
 reloaded after `start`/`finish`, and after every `remove`, whether it
 succeeded or was refused; finishing the open feature returns to the
-dashboard).
+dashboard). A successful `Start` or `Add` also remembers its output lines in
+`App.action_lines`, and `App.setups` collects one `SetupRow` per script:
+while that action's result popup is open, each setup event redraws the popup
+with the action's lines plus one line per script (running, or its result with
+up to five log lines after a failure, marking the popup as an error when a
+script failed); once the popup is gone, a setup event goes to the footer
+instead.
 
 ## Rendering
 
@@ -218,3 +232,4 @@ covered in [Dashboard flows and overlays](dashboard-flows-and-overlays.md).
 - [Status, list, and pull](../workflows/status-and-pull.md)
 - [Architecture overview](../architecture/overview.md)
 - [Review state from the forge](../workflows/review-state.md)
+- [Per-role setup scripts](../workflows/setup-scripts.md)

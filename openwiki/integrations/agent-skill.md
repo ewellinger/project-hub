@@ -18,26 +18,33 @@ sources:
     resource: repo://src/skill.rs
   - id: openwiki-source-ec32cfd44569eaa164e68020
     resource: repo://tests/skill.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Bundled agent skill
 
 project-hub ships an agent skill that teaches Claude Code and Codex how to drive
-the `hub` binary. The single source of truth is `skills/hub/SKILL.md`; the
-code that distributes it is `src/skill.rs`.
+the `hub` binary. The single source of truth is `skills/hub/`: `SKILL.md` plus
+the reference files it links (currently `setup-scripts.md`); the code that
+distributes them is `src/skill.rs`.
 
 ## Embedding and placement
 
-- `skill::SKILL` is `include_str!("../skills/hub/SKILL.md")`, so the skill is
-  compiled into the binary. Editing `SKILL.md` therefore changes the binary and
-  needs a version bump when released (see [CI and release](../operations/ci-and-release.md)).
+- `skill::SKILL` is `include_str!("../skills/hub/SKILL.md")`, and
+  `skill::SKILL_FILES` lists every file of the skill as `(name, content)`,
+  each embedded with `include_str!`: `SKILL.md` and `setup-scripts.md`. The
+  skill is therefore compiled into the binary, and editing any file under
+  `skills/hub/` changes the binary and needs a version bump when released
+  (see [CI and release](../operations/ci-and-release.md)).
 - `skill::SKILL_DIRS` lists the two destinations inside a worktree:
   `.claude/skills/hub/` (Claude Code) and `.agents/skills/hub/` (Codex), each
-  with a `SKILL.md`.
+  receiving every file in `SKILL_FILES`.
+- Reference files keep the always-loaded `SKILL.md` short: `SKILL.md` links
+  each one by relative path, and a unit test in `src/skill.rs` fails when a
+  file in `SKILL_FILES` is not linked from `SKILL.md`.
 - Nothing is installed at user scope; each hub carries the copy matching the
   installed `hub`.
 
@@ -49,8 +56,8 @@ code that distributes it is `src/skill.rs`.
 | `hub init` (and `--force`) | `ops::init` | Adds the directories to `.gitignore` and the local exclude, installs into the hub root; the generated `AGENTS.md` names the skill and its merge-back section |
 | `feature start`, `start-review` | `ops::start`, `ops::start_review` | Installs into the new hub worktree |
 
-`skill::install` only writes when a copy is missing or differs from the
-embedded text, so up-to-date files are untouched while an edited copy is
+`skill::install` writes each file only when its copy is missing or differs
+from the embedded text, so up-to-date files are untouched while an edited copy is
 overwritten by the next command. `skill::ensure_ignored` adds each directory to
 the repository's local exclude file (shared by all linked worktrees) so the
 generated copies never show up as untracked.
@@ -95,6 +102,15 @@ hub command retries.
   `hub feature merged` never follows it (see
   [Review state from the forge](../workflows/review-state.md)). `stage` can be
   `dropped` in both JSON outputs.
+- **Setup scripts**: the `repo add/set --setup`, `--no-setup`, and
+  `hub feature setup [ROLE]` rows; a Workflow bullet that sends the agent to
+  `setup-scripts.md` before writing, changing, or registering a script; and a
+  bullet treating `setup failed`, `setup killed`, or `setup could not start` as
+  a report-only result (the feature is complete, the log path is reported,
+  and a rerun happens only on the user's request). `setup-scripts.md` holds the
+  script contract, when scripts run, how to commit a script alongside the
+  `hub.json` change, and how to test both the rerun and fresh paths (see
+  [Per-role setup scripts](../workflows/setup-scripts.md)).
 - **Workflow** responses to exit codes 20/21, `warning:` lines, tmux-off,
   adopted worktrees, and finished features. When `finish` refuses because a role
   is `working` or `review`, the agent reports the roles and asks whether each
@@ -138,6 +154,10 @@ hub command retries.
 - `every_command_in_the_skill_table_exists` strips placeholders and flags from
   every `hub ...` command in the skill's table and asks the binary for its
   `--help`, so renaming or removing a command requires a matching skill edit.
+- `the_setup_reference_names_real_commands_and_flags` checks a fixed list of
+  the commands and flags `setup-scripts.md` names (`--setup`, `--no-setup`,
+  `feature setup --feature`, `dropped --force`, `status --base`) against each
+  command's `--help`; the list is maintained by hand alongside the reference.
 - Other tests check that any command restores the skill in every worktree,
   that hubs created before the skill existed stay clean, that a worktree
   removed behind git's back does not fail the command, and that `init` and
@@ -148,3 +168,4 @@ hub command retries.
 - [Hub init and repo registration](../workflows/hub-and-repo-management.md)
 - [CI and release](../operations/ci-and-release.md)
 - [Review state from the forge](../workflows/review-state.md)
+- [Per-role setup scripts](../workflows/setup-scripts.md)

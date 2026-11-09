@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ec2a86669bd772a098a073399e173e1785235a51476578fac7c4e929e3a4215d",
+  "pageVersion": "sha256:abbc170133cca0b0f993bd63d1867047d5a0169135999aa199e5a54d8c97f7c0",
   "claims": [
     {
       "id": "claim_48b0760fb53f428bbbdce2fb0fbd5fe6",
@@ -51,12 +51,12 @@
       "statement": "start-review stops with drift (exit 30) before any provider call when base status or the invoking feature's status has structural drift.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L100-L114",
-          "version": "repo-lines-v1:sha256:ad34a914c29db5028580fa11c0122913aab1b447a5044728a34e87a61f81bd4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczOTBhYzdjYzNkZTA1NjZiZmI5MzU3NzJlN2FkYzAxOWE1NjFmMTg3NDZhYTczNjE0ZTcyNDMxZTQwNDM5ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5NjEwN2NjZjFlMjkwMTIxMzRlNDBiYTJjYWQ5ZjkxNmQ2MzhkYjNmZmUzZmMxOWRmZTFiMDc2NTQyYTY5ZWUifQ"
+          "resource": "repo://src/ops/start_review.rs#L102-L116",
+          "version": "repo-lines-v1:sha256:ad34a914c29db5028580fa11c0122913aab1b447a5044728a34e87a61f81bd4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczOTBhYzdjYzNkZTA1NjZiZmI5MzU3NzJlN2FkYzAxOWE1NjFmMTg3NDZhYTczNjE0ZTcyNDMxZTQwNDM5ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyYTBhNWI4MDZlMzZhY2ZhOGUzYzk0NmIzZjE5MzVjNGUzMTMwZmU2NGY4ODExMTVkMWM0NDg2Y2JlYzVlMTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5NjEwN2NjZjFlMjkwMTIxMzRlNDBiYTJjYWQ5ZjkxNmQ2MzhkYjNmZmUzZmMxOWRmZTFiMDc2NTQyYTY5ZWUifQ"
         },
         {
-          "resource": "repo://src/ops/start_review.rs#L44-L48",
-          "version": "repo-lines-v1:sha256:d1a6efc4c42102a2f96f3a5d569774a6873caa14996cabd713dc4dd93606cfa7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjQyZjBjNjk3OWNkYzM5MWMzYzc1NmRmZWE4OTZmNzZiMzAxZjhhNzU4OTVjN2MzODIzN2FkODkxZTU3OTgzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJkYWQ4Njg0NDUxOTAxMGUzODQwNWIxYmNmOTYwNDM0ZTk0NDAyNDNhNDg3OWZjODAzOTFiNjc5NjVmM2M3YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTkxNmYyZmYyMzhhMWIyZmE4NTMwNWJhYjE0MDkyNWQ5MGU5M2RjYzhiODdlZGViMGJiYjk2YjljMGZjMTQzMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYThlZjA0NjA1YjI5NzI1MGU3OGQ1YzRmYWZjNzQwNzc3MzRiM2VjNGY2OWZjMjNhZTNjZGJhN2U2YjI5NTdiYSJ9"
+          "resource": "repo://src/ops/start_review.rs#L46-L50",
+          "version": "repo-lines-v1:sha256:5e2ba1e2f23620fc379ff42448065d7666f04a8aa0cf3c1230cd5ad3795cc605:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDcwY2UxMmU2OWJmOWMzMmI5YTE4YTk0M2NjMzAyYzNhYWVkNGY1YmU0YTA5NDYyN2I1NTU2YzM5OGI2YWRiNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJkYWQ4Njg0NDUxOTAxMGUzODQwNWIxYmNmOTYwNDM0ZTk0NDAyNDNhNDg3OWZjODAzOTFiNjc5NjVmM2M3YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjlhMjk2ZjA5ZGYzMTM0MWRlOTllOTA1MjBjNTlkNDJkODM4OGVjZmYwMWVjOTZlYzA2Yzk0MWFkNjQwNjI0MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYThlZjA0NjA1YjI5NzI1MGU3OGQ1YzRmYWZjNzQwNzc3MzRiM2VjNGY2OWZjMjNhZTNjZGJhN2U2YjI5NTdiYSJ9"
         }
       ]
     },
@@ -65,11 +65,11 @@
       "statement": "start-review defaults the feature name to `<role>-review-<number>` and refuses an existing hub branch locally or on origin and an existing tmux session; it never adopts.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L115-L145",
+          "resource": "repo://src/ops/start_review.rs#L117-L147",
           "version": "repo-lines-v1:sha256:a35193c819078e1764e298dccdb131f2196c348677e3270cd7bd8748af9e10e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTc3MWZlMWI2NjI4ODc1YWEyM2U3ZGJlNGFhNzE0NjFkMDBjZGZiNjZkZGYxMWI5ZDgyMGFjNTg5N2ZkZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1YWI3YjZkOWI2ZTE5NTY1M2ZjOGI1NWY2M2YzNjQ2MDY4NTVjNDU0ZmM1NjU4NTFmMzFhMmYwOTQ1ZGE3NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2Y2M3ZDg2MTM5YTEwYzI5ZjgxYzE5MjIwMDNlYTU4NjMyYTY4YTk5M2U3ODFlMDA0YmEwZjBiMTg1NDE5MjgifQ"
         },
         {
-          "resource": "repo://src/ops/start_review.rs#L49-L54",
+          "resource": "repo://src/ops/start_review.rs#L51-L56",
           "version": "repo-lines-v1:sha256:dd5b13c748143cbe796a6c51270c090014abdfeed029e7cdb301cfc7b9c977a0:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWNmZTNlODIzN2E5MDQzZWM0ZGJhNWIxYjExZTQ5ZWZhMzc4MTVkMjc5ZTRkZjdmYzk4Yjc4ZDJiMDYxNjZmYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODNlMjhiNzg3ZTk5ODVlNGNiYWI2ZTVlMjlkZWQwYzI4ZjIwNjc2Y2NiNzliZDkzYTFkM2RhMWVlYTlmZjIzMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2ZiYjA2YjBkOGFkYzY1YzBkYmY1NTY5MDA5YjVlOTZmYjkwYzA1Y2U5ODE1NGI2MjFmNGJjNjFmZGQ2MTE1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDMxNTc3YWU4YjM0Y2E3MTZlZDU2NDk0YTM3NzMzZmYwNmQxYTM4MTY0OTBjNTAzYzA3OWRlNDVhNGZjNjM2ZiJ9"
         }
       ]
@@ -79,7 +79,7 @@
       "statement": "The member check requires origin/<source> to equal the reported head, origin/<target> to exist with shared history, the source branch to be checked out nowhere, and a local source branch to be at or strictly behind the head.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L148-L252",
+          "resource": "repo://src/ops/start_review.rs#L150-L254",
           "version": "repo-lines-v1:sha256:6476ab45f5550040430d5447efe7f34d1dbc4e66c0a4cbe602f97ee191dd94de:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiOTY1OTk0ZDdmY2ZlYjgyY2Q4NWVkN2QyOWUzMmVkZjgwZWFiOTQ2MTY4Zjg0MmFiODMzZjhlMzhiOTBmZWVkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzNWY2ZjQ2NmU1OWNmYzMwNzAzYzQ1ZjcyYWY2NWRlNTRhYzM2M2QzNTRjYzFhMzMzMDM1MGFjZDQ1MjQzNGM0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0ZjAyM2U0MjMxMDJjNzI3NzNjYTg2OGFhOWI5YzMxMGUzNzE4M2VlOTY4ODc5MjZhN2M2YWYxNWQ1MWY3MmI2In0"
         }
       ]
@@ -89,7 +89,7 @@
       "statement": "The review is fetched a second time after checks, and the command refuses if source, target, state, or head changed.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L56-L64",
+          "resource": "repo://src/ops/start_review.rs#L58-L66",
           "version": "repo-lines-v1:sha256:0dbbe49fdc0026565d3d2b1f6322514de6879fab0340b175c265077adde0de2a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTA3ZjY3NzM5NTFjYjM3OWMzZmMyY2UxYjhhYmZjNTZhODgxYzVhZjI4MjdkMDIzNWVlNDYxNmZhOWJkOTgzMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTJmMzgyZDllZjMxNDA4MDJlNTY4NGMxZjI0M2ZhZGY3MzU1YTNlYTIxY2U2Yzk0NzhmOThjMjZlNzkzOWJhZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmNkYjgzMjRmOTAyNTU5Yjk4NjRhMzZmMmVhMmZjYWJmNGU5NGNkNzVhMTA0MDkzY2JmYTdhNmMxMzE3NzliMCJ9"
         }
       ]
@@ -99,7 +99,7 @@
       "statement": "The created change has stage review, the canonical review URL, origin_seen true, the target as base, and a hub-owned worktree; branch creation and fast-forwards are registered for conditional rollback.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L256-L362",
+          "resource": "repo://src/ops/start_review.rs#L258-L364",
           "version": "repo-lines-v1:sha256:125e8414a6934412af73927e3038265fdae1f0f48c2b270d48893a0583267cfb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlNjExODdkMzRmMWNhMmVlZTg2OTc5MDMyMWVlZjQ3M2IxMWRiMzhiNjA4OWY1ODZhMDZkNjU3OGFhNjM3NzQxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0ZjAyM2U0MjMxMDJjNzI3NzNjYTg2OGFhOWI5YzMxMGUzNzE4M2VlOTY4ODc5MjZhN2M2YWYxNWQ1MWY3MmI2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
@@ -109,18 +109,36 @@
       "statement": "start-review's drift check calls the status operations directly and so makes no review state call to the forge for the invoking feature.",
       "evidence": [
         {
-          "resource": "repo://src/ops/start_review.rs#L100-L113",
+          "resource": "repo://src/ops/start_review.rs#L102-L115",
           "version": "repo-lines-v1:sha256:83837402350d976eb6ee639bbcf898b3badba1946fccf1b33cf24bc8b4b81aa8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczOTBhYzdjYzNkZTA1NjZiZmI5MzU3NzJlN2FkYzAxOWE1NjFmMTg3NDZhYTczNjE0ZTcyNDMxZTQwNDM5ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTc3MWZlMWI2NjI4ODc1YWEyM2U3ZGJlNGFhNzE0NjFkMDBjZGZiNjZkZGYxMWI5ZDgyMGFjNTg5N2ZkZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1MzA4ZTg2ZDllMWEyMDc5NmM4YzRhMzYwYTk0NDczMTk5ZjVmM2Y4NzQyZTVkOWM0OTc3MmQ3M2JlOGJmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwNzgxZmVlNDlhNjkyNWQyODJkODg2NzIyODUwNzFlMTEyNTAyNmQzZDRjYTI3YjIwM2NmNmRiZDkwNWZjZjQifQ"
         },
         {
-          "resource": "repo://tests/review_state.rs#L489-L515",
+          "resource": "repo://tests/review_state.rs#L499-L525",
           "version": "repo-lines-v1:sha256:6de3b5c0c0a03e95c68105a633fcc29742e07352d32f0a2ca6160d66a25d9bca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5YWFiNDRjMmIzNTU2ZmQ4NThlOTY0MTE2ZTY3YTEwM2FkODNjM2I3MmI0NTI0ZGM1NjJiYjk1ZWIyZDc1M2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxYzg0ZGRmMTkyZWQ3ZWY1OGNmNTY1NTE0NDFhMmIyYTgyNTc5ZjYzZGVlMjA4M2Q4MzU4ZWQ5MmFjNmIyOGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_55bf85c6fb6f4c23bff17e1b4c4c9d0d",
+      "statement": "start-review returns the feature name with its output lines, and the CLI then runs the reviewed role's setup script outside the lock unless --no-setup is given.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L579-L599",
+          "version": "repo-lines-v1:sha256:20a7b75da47e3dd6e5bfdaa2c08d254019d850d6a305ae7626a73747abb02980:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4ODdjYjAwYzAxNTY2MWI2MDY5ZWI0ZDRhMzBiOGRhOTVhZTdiMmZlZTRkMmRiMTg0ZjAzMDYwMmE2MzRkN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjODY3NTY5YjI2NWEyZTRmZjJiNzEwYzM0ZTAxY2I4MzM5NWIyZDFlYzQ4ZDljNGU0YTI0YmY2YmZlNzVkMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5Mzc1YmY5Y2YzN2UzMGU2OWQ1ZWQwN2ZjNDYzMjRlOTY2NTQ3Mzk2ZTI3YWI2ZDBlNjBjOWIyMTQ0OWQyMzkifQ"
+        },
+        {
+          "resource": "repo://src/ops/start_review.rs#L44-L50",
+          "version": "repo-lines-v1:sha256:5f86756bfc1529899d154107b3643f3d9d6b46b6f4d408b4ad50f73bd0f8a317:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDE5MThkOGI1NzgyZTBhYzVhY2Q2OGY3ZDcwNWFkNWEyZTU2MjNkMzMxMjdiYTJlOTcwNzc5YWJlZWVhMDE3NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWJkYWQ4Njg0NDUxOTAxMGUzODQwNWIxYmNmOTYwNDM0ZTk0NDAyNDNhNDg3OWZjODAzOTFiNjc5NjVmM2M3YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTkxNmYyZmYyMzhhMWIyZmE4NTMwNWJhYjE0MDkyNWQ5MGU5M2RjYzhiODdlZGViMGJiYjk2YjljMGZjMTQzMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYThlZjA0NjA1YjI5NzI1MGU3OGQ1YzRmYWZjNzQwNzc3MzRiM2VjNGY2OWZjMjNhZTNjZGJhN2U2YjI5NTdiYSJ9"
+        },
+        {
+          "resource": "repo://tests/setup.rs#L178-L218",
+          "version": "repo-lines-v1:sha256:0e687519fb0f16f75c12139c1e79a2706d641488e35d8c6d443b721044b4b15d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhN2U2ZjhkZTFhZTU4YzA1NWNkMzVmYzJiOWRlZWUyYjhhNGFlMTE1ZTFmMDJhZmRlMGIzYTU5NDg3NWI4OGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4MDFlNmY2NGY4NzZlYmYyODQzZjcyOWExZDQ0NjYxYTU3YThiNDNlMWQ3ZTJmZjdlY2Q5OTdlYmQzNDJkNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2Y2RhNGZiOGU0ZDAwOThhNTRlOTEwYTRkNDZjZWQ0YTA3NDE1OTJlNzgwNWZhYThiM2Q3MzFkNTYxNzhmMGEifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "at": "2026-11-09T20:44:31.979Z"
   }
 }

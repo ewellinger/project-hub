@@ -5,7 +5,7 @@ description: How `hub` locates a hub repository, what state is committed (`hub.j
 tags: [architecture, state, manifest, locking, persistence]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-08T00:30:19.819Z
+    at: 2026-11-09T20:44:31.979Z
 sources:
   - id: openwiki-source-a9fddfa72ce7af0e031fedf8
     resource: repo://src/hub.rs
@@ -13,13 +13,15 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-cfc759a7da3457809607f5ab
     resource: repo://src/manifest.rs
+  - id: openwiki-source-482a254fc9f19462c83aa694
+    resource: repo://src/names.rs
   - id: openwiki-source-d7623854325d1c8d971147e7
     resource: repo://src/ops/remove.rs
   - id: openwiki-source-1da066772d42f80cecf3225c
     resource: repo://src/ops/review_state.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 ---
 
 # Hub state, manifest, and locking
@@ -34,6 +36,7 @@ hub state lives in two places with very different sharing rules:
 | Remembered review state: the last forge answer per role in review, and any viewed mark | `<git common dir>/hub/reviews/<feature>.json` | No, per machine | `src/ops/review_state.rs` |
 | Reviews file lock | `<git common dir>/hub/reviews/<feature>.lock` | No | `src/ops/review_state.rs` |
 | Lock file | `<git common dir>/hub/hub.lock` | No | `src/hub.rs` |
+| Setup script logs: one per role, rewritten on each run | `<git common dir>/hub/setup/<feature>/<role>.log` | No | `src/setup.rs` |
 
 Because feature records live under the git *common* dir, every hub worktree
 (one per feature) reads the same files, so `hub feature list` and `hub status`
@@ -70,7 +73,8 @@ the hub root.
 ## The manifest (`hub.json`)
 
 `Manifest` holds `name`, an optional `checkout_template`, and an ordered list of
-`RepoSpec { role, clone, remote, base, branch_template, description }`. The
+`RepoSpec { role, clone, remote, base, branch_template, description, setup }`,
+where the optional `setup` names a [per-role setup script](../workflows/setup-scripts.md). The
 order of `repos` is meaningful: it is deployment order and tmux window order.
 
 `Manifest::validate` runs on every load and rejects:
@@ -79,7 +83,9 @@ order of `repos` is meaningful: it is deployment order and tmux window order.
 - a `checkout_template` containing none of `{feature}`, `{feature_snake}`, `{hub}`;
 - invalid or duplicate roles and clones;
 - empty `remote` or `base`;
-- a `branch_template` that lacks `{feature}` (the default template is `{feature}`).
+- a `branch_template` that lacks `{feature}` (the default template is `{feature}`);
+- a `setup` path that is absolute, contains `..`, or has no file name
+  (`names::validate_setup_path`).
 
 Validation failures surface as `HubError::Malformed` naming the file and field.
 
@@ -119,8 +125,9 @@ with `write_json`. That way an unlocked `status` refresh that started before a
 `viewed` mark cannot overwrite the mark. A missing or unparseable file reads as
 empty; an entry whose stored URL differs from the recorded one is ignored; a
 failed write during `refresh` is a warning, never an error, while `viewed`
-reports it as an error. `hub feature remove` deletes the lock file and the
-reviews file after the record, ignoring failure. See
+reports it as an error. `hub feature remove` deletes the lock file, the
+reviews file, and the feature's `setup/<feature>/` log directory after the
+record, ignoring failure. See
 [Review state from the forge](../workflows/review-state.md).
 
 ## Atomic writes
@@ -160,9 +167,19 @@ The dashboard runs its actions through the same lock from a worker thread
 the same reason and so uses the `hub.json` loaded at dashboard start.
 Interactive prompts run before the lock is taken.
 
+Setup scripts never run under the hub lock. After `feature start`,
+`start-review`, or `add` returns from `with_lock`, the CLI reloads `hub.json`,
+rereads the saved feature record, and runs the role scripts (`run_setup` in
+`src/main.rs`); the dashboard worker does the same on a clone of its `Hub`
+kept for after the lock is dropped. `hub feature setup` takes no hub lock at
+all. A slow `npm ci` therefore never makes another hub command fail; two runs
+of the same role are kept apart by an `fd-lock` on that role's log file
+instead. See [Per-role setup scripts](../workflows/setup-scripts.md).
+
 ## Related pages
 
 - [Architecture overview](overview.md)
 - [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 - [Hub init and repo registration](../workflows/hub-and-repo-management.md)
 - [Review state from the forge](../workflows/review-state.md)
+- [Per-role setup scripts](../workflows/setup-scripts.md)
