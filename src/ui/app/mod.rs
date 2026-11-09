@@ -205,7 +205,6 @@ pub enum Loaded {
     },
 }
 
-/// Everything that can happen to the app: a key, a timer tick, or a result
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SetupState {
     Running { script: String },
@@ -220,6 +219,7 @@ pub struct SetupRow {
     pub state: SetupState,
 }
 
+/// Everything that can happen to the app: a key, a timer tick, or a result
 /// coming back from the event loop's side effects.
 #[derive(Debug)]
 pub enum Event {
@@ -749,12 +749,21 @@ impl App {
                 }
             }
             self.overlay = Some(Overlay::result(title, lines, is_error));
-        } else if let SetupState::Done(outcome) = &self.setups[index].state {
-            let line = hub::setup::result_lines(outcome, 0, home.as_deref())
-                .remove(0)
-                .trim_start()
-                .to_string();
-            let is_error = outcome.status != hub::setup::Status::Ok;
+        } else {
+            let row = &self.setups[index];
+            let (line, is_error) = match &row.state {
+                // No popup (a one-line result goes to the footer): say it runs.
+                SetupState::Running { script } => {
+                    (format!("{}  setup running…  {script}", row.role), false)
+                }
+                SetupState::Done(outcome) => (
+                    hub::setup::result_lines(outcome, 0, home.as_deref())
+                        .remove(0)
+                        .trim_start()
+                        .to_string(),
+                    outcome.status != hub::setup::Status::Ok,
+                ),
+            };
             self.say(line, is_error);
         }
     }
@@ -1159,6 +1168,30 @@ mod tests {
             a.footer
                 .as_ref()
                 .is_some_and(|f| !f.is_error && f.text == "api: setup ok (4.2s)")
+        );
+    }
+
+    /// A one-line result opens no popup, so the running script shows in the footer.
+    #[test]
+    fn a_running_setup_without_a_popup_shows_in_the_footer() {
+        let mut a = app();
+        let start = Action::Start {
+            name: "beta".into(),
+            repos: vec![("api".into(), None)],
+        };
+        a.run(start.clone());
+        a.update(Event::Done {
+            action: start,
+            result: Ok(vec!["api: beta at /y".into()]),
+        });
+        assert!(a.overlay.is_none());
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| !f.is_error && f.text == "api  setup running…  scripts/api.sh")
         );
     }
 

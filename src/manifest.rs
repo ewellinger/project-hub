@@ -296,9 +296,11 @@ mod tests {
     #[test]
     fn setup_must_be_a_relative_path_inside_the_hub() {
         let mut m = manifest();
-        m.repos[0].setup = Some("scripts/setup.sh".into());
-        assert!(m.validate(Path::new("hub.json")).is_ok());
-        for bad in ["/abs/setup.sh", "../x.sh", "a/../b.sh", ""] {
+        for good in ["scripts/setup.sh", "./scripts/setup.sh"] {
+            m.repos[0].setup = Some(good.into());
+            assert!(m.validate(Path::new("hub.json")).is_ok(), "{good}");
+        }
+        for bad in ["/abs/setup.sh", "../x.sh", "a/../b.sh", "", "."] {
             m.repos[0].setup = Some(bad.into());
             assert_eq!(field_error(&m), "repos[].setup", "{bad}");
         }
