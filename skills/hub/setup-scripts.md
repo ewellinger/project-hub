@@ -5,7 +5,7 @@ A role's `setup` in `hub.json` names a script that hub runs inside each new work
 ## The contract
 
 - **Location.** The path is relative to the hub repo and is resolved against the hub's **main clone**, not the feature worktree you are in: a script that exists only on a feature's hub branch is not found until it is on `main` there. Absolute paths and `..` are refused. Where scripts live (for example `tools/hub-setup/<role>.sh`) is the hub's own decision; follow its instructions file, and record a new convention there.
-- **Execution.** Hub executes the file directly: it needs a shebang line and the executable bit. A missing file, a directory, or a file without the executable bit gives `setup could not start`.
+- **Execution.** Hub executes the file directly, so it needs the executable bit: a missing file, a directory, or a file without the bit gives `setup could not start`. Start it with a shebang line; without one it runs under `/bin/sh`, so bash-only syntax fails partway as `setup failed`.
 - **Working directory** is the new worktree. **stdin is closed** (`/dev/null`): nothing may prompt. stdout and stderr go to the log.
 - **Environment.** The script inherits the environment of the process that ran `hub` (your shell, the agent's sandbox, or the dashboard's terminal), plus:
 
@@ -18,12 +18,12 @@ A role's `setup` in `hub.json` names a script that hub runs inside each new work
   | `HUB_BASE` | the role's base checkout, its main clone (a path, not a branch) |
   | `HUB_ROOT` | the hub's main clone |
 
-- **Exit status.** 0 is `setup ok`. Non-zero is `setup failed (exit N)` with the last 20 log lines; death by signal is `setup killed by a signal`. A failure never rolls back the feature and never changes the exit code of `start`, `add`, or `start-review`; only `hub feature setup` exits 1 when a script fails.
-- **No timeout.** Hub waits for the script to exit. A script that hangs keeps `start`, `add`, `start-review`, or `feature setup` from returning (other hub commands still run, since the lock is already released), and the dashboard refuses to quit while one runs. Never wait on input, a lock, or a network call that has no timeout of its own.
+- **Exit status.** 0 is `setup ok`. Non-zero is `setup failed (exit N)`, followed in the CLI by the last 20 log lines; death by signal is `setup killed by a signal`. A failure never rolls back the feature and never changes the exit code of `start`, `add`, or `start-review`; only `hub feature setup` exits 1 when a script fails.
+- **No timeout.** Hub waits for the script to exit. A script that hangs keeps `start`, `add`, `start-review`, or `feature setup` from returning (other hub commands still run, since the lock is already released), and the dashboard refuses `q` while one runs (Ctrl-C still quits). Never wait on input, a lock, or a network call that has no timeout of its own.
 
 ## When it runs
 
-- After `hub feature start`, `hub feature add`, and `hub feature start-review`, once the feature record is written and the hub lock released, one role at a time in manifest order. `--no-setup` skips it.
+- After `hub feature start`, `hub feature add`, and `hub feature start-review` (the dashboard runs it after Start and Add only), once the feature record is written and the hub lock released, one role at a time in manifest order. `--no-setup` skips it.
 - Only in worktrees hub created. An adopted worktree, a branch used in place in the main clone, and a frozen reference checkout never run it automatically.
 - `hub feature setup` reruns every hub-created worktree's script; `hub feature setup ROLE` reruns one role's, adopted worktree included. A change living in the main clone is refused.
 - A second run of the same role while one is running gives `setup could not start: setup already running for ROLE`.
@@ -66,4 +66,13 @@ exec uv sync --locked
 Test both paths before calling a script done.
 
 - **Rerun path:** `hub feature setup ROLE --feature <open feature>`, then read `.git/hub/setup/<feature>/<role>.log` in the hub's main clone. The log is rewritten on each run. Run it twice to check idempotence.
-- **Fresh path:** start a throwaway feature with that role (`hub feature start <name> --repo ROLE`), check the result line and the log, then close it with `hub feature dropped ROLE --feature <name>` and `hub feature finish --feature <name>` from outside its session; its branches are kept. Or run the script by hand in a scratch directory with every `HUB_*` variable exported and stdin closed (`< /dev/null`).
+- **Fresh path:** run the script by hand in a scratch copy of the role's files, which leaves nothing behind. Take the role's main clone and the hub's main clone from `hub status --base --json`, then:
+
+  ```sh
+  git -C <role clone> archive HEAD | tar -x -C <scratch>
+  cd <scratch> && HUB_ROLE=<role> HUB_FEATURE=setup-test HUB_BRANCH=setup-test \
+    HUB_WORKTREE=<scratch> HUB_BASE=<role clone> HUB_ROOT=<hub clone> \
+    <hub clone>/<script> < /dev/null
+  ```
+
+  A throwaway feature (`hub feature start <name> --repo ROLE`) tests the real path end to end, but only with the user's yes: closing it needs `hub feature dropped ROLE`, which may refuse with exit 20 when the script left untracked files that are not gitignored (`--force` again needs the user's yes), then `hub feature finish`. Its branches and record stay until the user asks for `hub feature remove <name>`.

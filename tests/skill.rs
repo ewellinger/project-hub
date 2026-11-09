@@ -58,6 +58,31 @@ fn every_command_in_the_skill_table_exists() {
     );
 }
 
+/// The setup reference names commands and flags outside the table; each
+/// must still exist.
+#[test]
+fn the_setup_reference_names_real_commands_and_flags() {
+    let fx = Fixture::new();
+    let hub = fx.init_hub("acme");
+    for (args, flag) in [
+        (&["repo", "set"][..], "--setup"),
+        (&["repo", "add"][..], "--setup"),
+        (&["feature", "setup"][..], "--feature"),
+        (&["feature", "start"][..], "--no-setup"),
+        (&["feature", "add"][..], "--no-setup"),
+        (&["feature", "start-review"][..], "--no-setup"),
+        (&["feature", "dropped"][..], "--force"),
+        (&["status"][..], "--base"),
+    ] {
+        let mut argv = args.to_vec();
+        argv.push("--help");
+        fx.hub(&hub, &argv)
+            .assert()
+            .success()
+            .stdout(predicates::str::contains(flag));
+    }
+}
+
 fn skill_files(dir: &Path) -> [std::path::PathBuf; 2] {
     [
         dir.join(".claude/skills/hub/SKILL.md"),

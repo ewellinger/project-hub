@@ -28,8 +28,10 @@ logs instead of on a live tmux server. The fixture also points
 into a test.
 
 The `skill` integration test checks that every command the table in
-`skills/hub/SKILL.md` names still exists and that the generated copies stay
-untracked, so a renamed or removed command needs a matching skill edit.
+`skills/hub/SKILL.md` names still exists, that the setup commands and flags
+`skills/hub/setup-scripts.md` relies on still exist, and that the generated
+copies stay untracked, so a renamed or removed command needs a matching
+skill edit.
 
 ## Branches and pull requests
 
@@ -67,8 +69,8 @@ A release is a version bump, a tag, and a push; everything after the push is
 automated by `.github/workflows/release.yml`.
 
 1. Decide the version: minor for a new capability or increment, patch for a
-   fix. Anything that changes the binary (including `skills/hub/SKILL.md`,
-   which is embedded in it) needs a bump. The beta on `main` is only a
+   fix. Anything that changes the binary (including `skills/hub/*.md`,
+   which are embedded in it) needs a bump. The beta on `main` is only a
    guess at this number; a patch release may replace `0.27.0-beta.3` with
    `0.26.1`.
 2. Set `version` in `Cargo.toml` to the plain release version, run
