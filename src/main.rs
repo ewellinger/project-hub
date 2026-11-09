@@ -123,6 +123,9 @@ enum RepoCommand {
         /// Human-readable description of the role
         #[arg(long)]
         description: Option<String>,
+        /// Script, relative to the hub repo, run in each new worktree of this role
+        #[arg(long, value_name = "PATH")]
+        setup: Option<String>,
     },
     /// Change a registered role's fields in place, keeping its position
     Set {
@@ -140,6 +143,9 @@ enum RepoCommand {
         /// New description; "" clears it
         #[arg(long)]
         description: Option<String>,
+        /// New setup script, relative to the hub repo; "" clears it
+        #[arg(long, value_name = "PATH")]
+        setup: Option<String>,
     },
     /// Rename a role in hub.json and in this machine's feature records
     Rename {
@@ -182,6 +188,9 @@ enum FeatureCommand {
         /// Role to freeze at the tip of its local base in a detached reference worktree; repeatable
         #[arg(long = "freeze", value_name = "ROLE")]
         freeze: Vec<String>,
+        /// Do not run the roles' setup scripts
+        #[arg(long)]
+        no_setup: bool,
     },
     /// Create a review feature for one role from a GitLab merge request or GitHub pull request URL
     StartReview {
@@ -193,6 +202,9 @@ enum FeatureCommand {
         /// tmux session and hub worktree name; defaults to checkout_template
         #[arg(long)]
         checkout: Option<String>,
+        /// Do not run the role's setup script
+        #[arg(long)]
+        no_setup: bool,
     },
     /// Open a change for one more role in the current feature
     Add {
@@ -216,6 +228,17 @@ enum FeatureCommand {
         /// Directory name under <worktree_dir>/<clone>/; defaults to the flattened branch
         #[arg(long)]
         worktree: Option<String>,
+        /// Do not run the role's setup script
+        #[arg(long)]
+        no_setup: bool,
+    },
+    /// Run the setup script of one role, or of every worktree hub created, in the current feature
+    Setup {
+        /// Role whose script to run; every hub-created worktree when omitted
+        role: Option<String>,
+        /// Feature name; inferred from the hub worktree when omitted
+        #[arg(long)]
+        feature: Option<String>,
     },
     /// Record the branch a role's open change merges into; the member branch is not touched
     SetBase {
@@ -332,6 +355,39 @@ fn parse_repo_flag(value: &str) -> (String, Option<String>) {
     }
 }
 
+fn print_lines(lines: Vec<String>) {
+    for line in lines {
+        println!("{line}");
+    }
+}
+
+/// Run the setup scripts of `roles`' hub-created worktrees in `feature`,
+/// printing each result as it lands. A failure is reported, not returned:
+/// the feature is complete. Runs after the hub lock is released, so a slow
+/// script blocks nobody.
+fn run_setup(hub: &mut Hub, feature: &str, roles: &[String]) -> Result<()> {
+    // The op read `hub.json` fresh inside the lock; so must the setup.
+    hub.reload_manifest()?;
+    let f = hub.load_feature(feature)?;
+    run_jobs(&hub::setup::jobs(hub, &f, roles, false));
+    Ok(())
+}
+
+/// Run each job in order, printing the Running line before it starts and
+/// its result after; returns every outcome.
+fn run_jobs(jobs: &[hub::setup::Job]) -> Vec<hub::setup::Outcome> {
+    let home = hub::env::home_dir();
+    jobs.iter()
+        .map(|job| {
+            println!("{}", hub::setup::running_line(job));
+            let _ = std::io::stdout().flush();
+            let outcome = hub::setup::run(job);
+            print_lines(hub::setup::result_lines(&outcome, 20, home.as_deref()));
+            outcome
+        })
+        .collect()
+}
+
 fn main() {
     let cli = Cli::parse();
     match run(cli) {
@@ -427,6 +483,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     base,
                     branch_template,
                     description,
+                    setup,
                 } => {
                     let opts = ops::repo::AddRepoOptions {
                         role,
@@ -434,6 +491,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         base,
                         branch_template,
                         description,
+                        setup,
                     };
                     hub.with_lock(|hub| ops::repo::add(hub, &opts))
                 }
@@ -443,6 +501,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     base,
                     branch_template,
                     description,
+                    setup,
                 } => {
                     let opts = ops::repo::SetRepoOptions {
                         role,
@@ -450,6 +509,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         base,
                         branch_template,
                         description,
+                        setup,
                     };
                     hub.with_lock(|hub| ops::repo::set(hub, &opts))
                 }
@@ -485,6 +545,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     checkout,
                     repos,
                     freeze,
+                    no_setup,
                 } => {
                     let mut repos: Vec<(String, Option<String>)> =
                         repos.iter().map(|r| parse_repo_flag(r)).collect();
@@ -505,19 +566,36 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         repos,
                         freeze,
                     };
-                    hub.with_lock(|hub| ops::start::start(hub, &opts))
+                    let mut after = hub.clone();
+                    let lines = hub.with_lock(|hub| ops::start::start(hub, &opts))?;
+                    print_lines(lines);
+                    if !no_setup {
+                        let roles: Vec<String> =
+                            opts.repos.iter().map(|(r, _)| r.clone()).collect();
+                        run_setup(&mut after, &opts.name, &roles)?;
+                    }
+                    Ok(Vec::new())
                 }
                 FeatureCommand::StartReview {
                     url,
                     name,
                     checkout,
+                    no_setup,
                 } => {
                     let opts = ops::start_review::StartReviewOptions {
                         url,
                         name,
                         checkout,
                     };
-                    hub.with_lock(|hub| ops::start_review::start_review(hub, &opts))
+                    let mut after = hub.clone();
+                    let (name, lines) =
+                        hub.with_lock(|hub| ops::start_review::start_review(hub, &opts))?;
+                    print_lines(lines);
+                    if !no_setup {
+                        let role = after.load_feature(&name)?.changes[0].role.clone();
+                        run_setup(&mut after, &name, &[role])?;
+                    }
+                    Ok(Vec::new())
                 }
                 FeatureCommand::Add {
                     role,
@@ -527,6 +605,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                     from_latest,
                     base,
                     worktree,
+                    no_setup,
                 } => {
                     let (role, branch, from_latest) = match role {
                         // With a terminal, `pick_add` runs even when role and
@@ -558,10 +637,40 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                         base: base.as_deref(),
                         from_latest,
                     };
-                    hub.with_lock(|hub| {
+                    let mut after = hub.clone();
+                    let (name, lines) = hub.with_lock(|hub| {
                         let mut f = hub.resolve_feature(feature.as_deref())?;
-                        ops::add::add(hub, &mut f, &opts)
-                    })
+                        let lines = ops::add::add(hub, &mut f, &opts)?;
+                        Ok((f.name, lines))
+                    })?;
+                    print_lines(lines);
+                    if !no_setup {
+                        run_setup(&mut after, &name, std::slice::from_ref(&role))?;
+                    }
+                    Ok(Vec::new())
+                }
+                FeatureCommand::Setup { role, feature } => {
+                    let f = hub.resolve_feature(feature.as_deref())?;
+                    let jobs = hub::setup::rerun_jobs(&hub, &f, role.as_deref())?;
+                    if jobs.is_empty() {
+                        return Ok(vec![format!(
+                            "no hub-created worktree in feature '{}' has a setup script",
+                            f.name
+                        )]);
+                    }
+                    let failed: Vec<String> = run_jobs(&jobs)
+                        .into_iter()
+                        .filter(|o| o.status != hub::setup::Status::Ok)
+                        .map(|o| o.role)
+                        .collect();
+                    if failed.is_empty() {
+                        Ok(Vec::new())
+                    } else {
+                        Err(HubError::Precondition(format!(
+                            "setup failed for {}",
+                            failed.join(", ")
+                        )))
+                    }
                 }
                 FeatureCommand::SetBase {
                     role,

@@ -1641,6 +1641,7 @@ mod tests {
             base: "main".into(),
             branch_template: "feature/{feature}".into(),
             description: description.into(),
+            setup: None,
         }
     }
 

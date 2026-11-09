@@ -535,6 +535,7 @@ mod tests {
             base: "main".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         }
     }
 

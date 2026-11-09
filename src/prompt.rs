@@ -280,6 +280,7 @@ mod tests {
             base: "master".into(),
             branch_template: "{feature}".into(),
             description: "API service".into(),
+            setup: None,
         };
         assert_eq!(RoleRow(&repo).to_string(), "api  api-clone  API service");
         let bare = hub::manifest::RepoSpec {
@@ -298,6 +299,7 @@ mod tests {
             base: "master".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         };
         let repos = vec![spec("api"), spec("bff"), spec("ui")];
         fn names(rows: Vec<RoleRow<'_>>) -> Vec<String> {

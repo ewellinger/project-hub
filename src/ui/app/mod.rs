@@ -205,6 +205,20 @@ pub enum Loaded {
     },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SetupState {
+    Running { script: String },
+    Done(hub::setup::Outcome),
+}
+
+/// One role's setup script in the feature the last `start` or `add` touched.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SetupRow {
+    pub feature: String,
+    pub role: String,
+    pub state: SetupState,
+}
+
 /// Everything that can happen to the app: a key, a timer tick, or a result
 /// coming back from the event loop's side effects.
 #[derive(Debug)]
@@ -223,6 +237,13 @@ pub enum Event {
     Done {
         action: Action,
         result: Result<Vec<String>, HubError>,
+    },
+    /// A setup script of a feature `start` or `add` started or ended; sent
+    /// by the worker after `Done`, outside the hub lock.
+    Setup {
+        feature: String,
+        role: String,
+        state: SetupState,
     },
     Branches {
         role: String,
@@ -325,6 +346,10 @@ pub struct App {
     pub flow: Option<Flow>,
     /// The action currently running on the worker, if any.
     pub running: Option<Action>,
+    /// Setup scripts of the last `start` or `add`, as the worker reports them.
+    pub setups: Vec<SetupRow>,
+    /// Feature, title, and lines of the result popup those scripts append to.
+    action_lines: Option<(String, String, Vec<String>)>,
     /// A feature to select once the next list lands.
     pub select_next: Option<String>,
     /// The next list landing reads the forge for the selected row.
@@ -359,6 +384,8 @@ impl App {
             overlay: None,
             flow: None,
             running: None,
+            setups: Vec::new(),
+            action_lines: None,
             select_next: None,
             forge_next: false,
             fresh_next: false,
@@ -512,6 +539,14 @@ impl App {
                 Vec::new()
             }
             Event::Done { action, result } => self.done(action, result),
+            Event::Setup {
+                feature,
+                role,
+                state,
+            } => {
+                self.setup(feature, role, state);
+                Vec::new()
+            }
             Event::Branches { role, result } => self.feed_flow(Answer::Loaded(
                 result
                     .map(|rows| Loaded::Branches { role, rows })
@@ -658,6 +693,80 @@ impl App {
         }
     }
 
+    /// The role whose setup script is running, if any.
+    pub fn setup_in_flight(&self) -> Option<&str> {
+        self.setups
+            .iter()
+            .find(|r| matches!(r.state, SetupState::Running { .. }))
+            .map(|r| r.role.as_str())
+    }
+
+    /// Record a setup script's state; redraw the popup it belongs to, or
+    /// report a finished script in the footer when that popup is gone.
+    fn setup(&mut self, feature: String, role: String, state: SetupState) {
+        let index = match self
+            .setups
+            .iter()
+            .position(|r| r.feature == feature && r.role == role)
+        {
+            Some(i) => {
+                self.setups[i].state = state;
+                i
+            }
+            None => {
+                self.setups.push(SetupRow {
+                    feature: feature.clone(),
+                    role,
+                    state,
+                });
+                self.setups.len() - 1
+            }
+        };
+        let home = hub::env::home_dir();
+        let running = |role: &str, script: &str| format!("{role}  setup running…  {script}");
+        let popup_open = matches!(
+            (&self.overlay, &self.action_lines),
+            (Some(Overlay::Result { title, .. }), Some((f, action, _)))
+                if title == action && *f == feature
+        );
+        if popup_open {
+            let (_, title, action_lines) = self.action_lines.clone().expect("matched above");
+            let mut lines = action_lines;
+            let mut is_error = false;
+            for row in self.setups.iter().filter(|r| r.feature == feature) {
+                match &row.state {
+                    SetupState::Running { script } => {
+                        lines.push(running(&row.role, script));
+                    }
+                    SetupState::Done(outcome) => {
+                        is_error |= outcome.status != hub::setup::Status::Ok;
+                        let rendered = hub::setup::result_lines(outcome, 5, home.as_deref());
+                        lines.extend(
+                            rendered
+                                .into_iter()
+                                .map(|l| l.strip_prefix("  ").map(str::to_string).unwrap_or(l)),
+                        );
+                    }
+                }
+            }
+            self.overlay = Some(Overlay::result(title, lines, is_error));
+        } else {
+            let row = &self.setups[index];
+            let (line, is_error) = match &row.state {
+                // No popup (a one-line result goes to the footer): say it runs.
+                SetupState::Running { script } => (running(&row.role, script), false),
+                SetupState::Done(outcome) => (
+                    hub::setup::result_lines(outcome, 0, home.as_deref())
+                        .remove(0)
+                        .trim_start()
+                        .to_string(),
+                    outcome.status != hub::setup::Status::Ok,
+                ),
+            };
+            self.say(line, is_error);
+        }
+    }
+
     pub(super) fn say(&mut self, text: String, is_error: bool) {
         self.footer = Some(Footer {
             text,
@@ -736,6 +845,20 @@ impl App {
     fn done(&mut self, action: Action, result: Result<Vec<String>, HubError>) -> Vec<Effect> {
         self.running = None;
         let ok = result.is_ok();
+        if let Ok(lines) = &result
+            && let Some(feature) = match &action {
+                Action::Start { name, .. } => Some(name),
+                Action::Add { feature, .. } => Some(feature),
+                _ => None,
+            }
+        {
+            // The worker runs this action's setup scripts next; their rows
+            // append to the popup these lines open. Rows of an earlier
+            // action's scripts still running stay, so the quit guard holds.
+            self.setups
+                .retain(|r| matches!(r.state, SetupState::Running { .. }));
+            self.action_lines = Some((feature.clone(), action.to_string(), lines.clone()));
+        }
         match result {
             Ok(lines) if lines.len() == 1 => self.say(lines[0].clone(), false),
             Ok(lines) => self.overlay = Some(Overlay::result(action.to_string(), lines, false)),
@@ -957,6 +1080,215 @@ mod tests {
             summary("beta", FeatureStatus::Open),
         ])));
         assert_eq!(a.selected_row().id, RowId::Feature("beta".into()));
+    }
+
+    fn setup_outcome(status: hub::setup::Status) -> hub::setup::Outcome {
+        hub::setup::Outcome {
+            role: "api".into(),
+            status,
+            elapsed: Duration::from_millis(4200),
+            log: PathBuf::from("/x/acme/.git/hub/setup/beta/api.log"),
+        }
+    }
+
+    fn setup_event(state: SetupState) -> Event {
+        Event::Setup {
+            feature: "beta".into(),
+            role: "api".into(),
+            state,
+        }
+    }
+
+    fn start_beta(a: &mut App) {
+        let start = Action::Start {
+            name: "beta".into(),
+            repos: vec![("api".into(), None)],
+        };
+        a.run(start.clone());
+        a.update(Event::Done {
+            action: start,
+            result: Ok(vec!["Hub worktree: /x".into(), "api: beta at /y".into()]),
+        });
+    }
+
+    #[test]
+    fn setup_events_rewrite_the_start_popup_and_flip_it_to_error() {
+        let mut a = app();
+        start_beta(&mut a);
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        match &a.overlay {
+            Some(Overlay::Result {
+                title,
+                lines,
+                is_error,
+            }) => {
+                assert_eq!(title, "start beta");
+                assert_eq!(lines[1], "api: beta at /y");
+                assert_eq!(lines[2], "api  setup running…  scripts/api.sh");
+                assert!(!is_error);
+            }
+            other => panic!("{other:?}"),
+        }
+        a.update(setup_event(SetupState::Done(setup_outcome(
+            hub::setup::Status::Failed(1),
+        ))));
+        match &a.overlay {
+            Some(Overlay::Result {
+                lines, is_error, ..
+            }) => {
+                assert_eq!(lines.len(), 3, "{lines:?}");
+                assert!(
+                    lines[2].starts_with("api: setup failed (exit 1) after 4.2s; log "),
+                    "{lines:?}"
+                );
+                assert!(is_error);
+            }
+            other => panic!("{other:?}"),
+        }
+        assert!(a.setup_in_flight().is_none());
+    }
+
+    #[test]
+    fn a_setup_result_after_the_popup_closed_goes_to_the_footer() {
+        let mut a = app();
+        start_beta(&mut a);
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        a.update(key(KeyCode::Esc));
+        assert!(a.overlay.is_none());
+        a.update(setup_event(SetupState::Done(setup_outcome(
+            hub::setup::Status::Ok,
+        ))));
+        assert!(a.overlay.is_none());
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| !f.is_error && f.text == "api: setup ok (4.2s)")
+        );
+    }
+
+    /// A one-line result opens no popup, so the running script shows in the footer.
+    #[test]
+    fn a_running_setup_without_a_popup_shows_in_the_footer() {
+        let mut a = app();
+        let start = Action::Start {
+            name: "beta".into(),
+            repos: vec![("api".into(), None)],
+        };
+        a.run(start.clone());
+        a.update(Event::Done {
+            action: start,
+            result: Ok(vec!["api: beta at /y".into()]),
+        });
+        assert!(a.overlay.is_none());
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| !f.is_error && f.text == "api  setup running…  scripts/api.sh")
+        );
+    }
+
+    #[test]
+    fn quit_is_refused_while_setup_runs() {
+        let mut a = app();
+        start_beta(&mut a);
+        a.update(key(KeyCode::Esc));
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        assert_eq!(a.setup_in_flight(), Some("api"));
+        assert!(a.update(key(KeyCode::Char('q'))).is_empty());
+        assert!(!a.quit);
+        assert!(
+            a.footer.as_ref().is_some_and(
+                |f| f.is_error && f.text == "setup running for api; Ctrl-C quits anyway"
+            )
+        );
+        a.update(setup_event(SetupState::Done(setup_outcome(
+            hub::setup::Status::Ok,
+        ))));
+        a.update(key(KeyCode::Char('q')));
+        assert!(a.quit);
+    }
+
+    /// Two starts overlap: the second's popup shows only its own rows, and
+    /// the first's still-running script keeps the quit guard up.
+    #[test]
+    fn overlapping_setups_keep_their_rows_and_the_quit_guard_apart() {
+        let mut a = app();
+        start_beta(&mut a);
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        a.update(key(KeyCode::Esc));
+        let gamma = Action::Start {
+            name: "gamma".into(),
+            repos: vec![("ui".into(), None)],
+        };
+        a.run(gamma.clone());
+        a.update(Event::Done {
+            action: gamma,
+            result: Ok(vec!["Hub worktree: /g".into(), "ui: gamma at /h".into()]),
+        });
+        a.update(Event::Setup {
+            feature: "gamma".into(),
+            role: "ui".into(),
+            state: SetupState::Running {
+                script: "scripts/ui.sh".into(),
+            },
+        });
+        a.update(Event::Setup {
+            feature: "gamma".into(),
+            role: "ui".into(),
+            state: SetupState::Done(hub::setup::Outcome {
+                role: "ui".into(),
+                status: hub::setup::Status::Ok,
+                elapsed: Duration::from_secs(1),
+                log: PathBuf::from("/x/ui.log"),
+            }),
+        });
+        match &a.overlay {
+            Some(Overlay::Result { lines, .. }) => {
+                assert_eq!(lines.len(), 3, "only gamma's row: {lines:?}");
+                assert_eq!(lines[2], "ui: setup ok (1.0s)");
+            }
+            other => panic!("{other:?}"),
+        }
+        assert_eq!(a.setup_in_flight(), Some("api"), "beta's script still runs");
+        a.update(key(KeyCode::Esc));
+        a.update(setup_event(SetupState::Done(setup_outcome(
+            hub::setup::Status::Failed(2),
+        ))));
+        assert!(
+            a.footer
+                .as_ref()
+                .is_some_and(|f| f.is_error && f.text.starts_with("api: setup failed (exit 2)"))
+        );
+        assert!(a.setup_in_flight().is_none());
+    }
+
+    #[test]
+    fn setup_events_do_not_touch_a_foreign_popup() {
+        let mut a = app();
+        start_beta(&mut a);
+        a.update(key(KeyCode::Esc));
+        a.overlay = Some(Overlay::result(
+            "merged api".into(),
+            vec!["a".into(), "b".into()],
+            false,
+        ));
+        a.update(setup_event(SetupState::Running {
+            script: "scripts/api.sh".into(),
+        }));
+        assert!(
+            matches!(&a.overlay, Some(Overlay::Result { title, lines, .. }) if title == "merged api" && lines.len() == 2)
+        );
     }
 
     #[test]
@@ -1658,6 +1990,7 @@ mod tests {
             base: "main".into(),
             branch_template: "{feature}".into(),
             description: String::new(),
+            setup: None,
         }];
         a.update(key(KeyCode::Char('+')));
         let effects = a.update(key(KeyCode::Enter)); // picks ui

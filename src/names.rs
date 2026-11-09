@@ -74,6 +74,23 @@ pub fn validate_worktree_name(value: &str) -> Result<()> {
     }
 }
 
+/// A setup script path: names a file, relative, and made of plain or `.`
+/// components only (no `..`, no root), so it cannot escape the hub repo.
+pub fn validate_setup_path(value: &str) -> Result<()> {
+    let path = Path::new(value);
+    let ok = path.file_name().is_some()
+        && path
+            .components()
+            .all(|c| matches!(c, Component::Normal(_) | Component::CurDir));
+    if ok {
+        Ok(())
+    } else {
+        Err(HubError::Usage(format!(
+            "invalid setup script '{value}': must be a relative path inside the hub repo, without '..'"
+        )))
+    }
+}
+
 fn is_name_char(c: char) -> bool {
     c.is_ascii_alphanumeric() || c == '_' || c == '-'
 }
