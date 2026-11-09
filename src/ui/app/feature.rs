@@ -326,6 +326,7 @@ pub(crate) mod tests {
                 branch: "feature/x".into(),
                 stage: Stage::Working,
                 review: None,
+                viewed_quiet: false,
             }],
             frozen: Vec::new(),
         }

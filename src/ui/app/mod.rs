@@ -911,6 +911,7 @@ mod tests {
                 branch: format!("feature/{name}"),
                 stage: Stage::Working,
                 review: None,
+                viewed_quiet: false,
             }],
             frozen: Vec::new(),
         }

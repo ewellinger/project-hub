@@ -299,12 +299,14 @@ mod tests {
                     branch: "x".into(),
                     stage: Stage::Review,
                     review: None,
+                    viewed_quiet: false,
                 },
                 RoleSummary {
                     role: "ui".into(),
                     branch: "y".into(),
                     stage: Stage::Working,
                     review: None,
+                    viewed_quiet: false,
                 },
             ],
             frozen: Vec::new(),
@@ -332,6 +334,7 @@ mod tests {
             branch: "z".into(),
             stage: Stage::Merged,
             review: None,
+            viewed_quiet: false,
         });
         let a = App::new("acme", vec![s]);
         let rows = lines(100, 30, &a);
@@ -843,6 +846,7 @@ mod tests {
             branch: "z".into(),
             stage: Stage::Dropped,
             review: None,
+            viewed_quiet: false,
         });
         let text = joined(&lines(100, 30, &App::new("acme", vec![s])));
         assert!(!text.contains("bff"), "dropped role listed: {text}");
