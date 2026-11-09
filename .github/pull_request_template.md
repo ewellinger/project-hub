@@ -23,4 +23,4 @@
 ## Release
 
 - [ ] `CHANGELOG.md` updated under `Unreleased`, or no user-visible change
-- [ ] Version: none / patch / minor (anything that changes the binary, including `skills/hub/SKILL.md`, needs a bump)
+- [ ] Version: none / patch / minor (anything that changes the binary, including `skills/hub/*.md`, needs a bump)

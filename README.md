@@ -656,9 +656,10 @@ answers it up front, and an existing branch is never asked about.
 
 ## Agent skill
 
-`skills/hub/SKILL.md` teaches Claude Code and Codex to drive this binary. The
-binary embeds it at build time and writes it into every hub worktree as
-`.claude/skills/hub/SKILL.md` and `.agents/skills/hub/SKILL.md` on every
+`skills/hub/SKILL.md` teaches Claude Code and Codex to drive this binary;
+`skills/hub/setup-scripts.md`, which it links, covers writing a setup
+script. The binary embeds both at build time and writes them into every hub
+worktree under `.claude/skills/hub/` and `.agents/skills/hub/` on every
 command, so each hub always carries the copy that matches the installed
 `hub`. The files are generated: `hub init` adds them to the hub's `.gitignore`,
 every command also adds them to Git's local exclude file, and a copy that is

@@ -13,21 +13,30 @@ pub const SKILL: &str = include_str!("../skills/hub/SKILL.md");
 /// Where the skill lives in a worktree, for Claude Code and Codex.
 pub const SKILL_DIRS: [&str; 2] = [".claude/skills/hub", ".agents/skills/hub"];
 
-const SKILL_FILE: &str = "SKILL.md";
+/// Every file of the skill as (name, content); `SKILL.md` links the rest.
+pub const SKILL_FILES: [(&str, &str); 2] = [
+    ("SKILL.md", SKILL),
+    (
+        "setup-scripts.md",
+        include_str!("../skills/hub/setup-scripts.md"),
+    ),
+];
 
-/// Write the skill into `worktree` wherever it is missing or differs.
+/// Write the skill into `worktree` wherever a file is missing or differs.
 /// An up-to-date file is not touched.
 pub fn install(worktree: &Path) -> Result<()> {
     for dir in SKILL_DIRS {
         let dir = worktree.join(dir);
-        let path = dir.join(SKILL_FILE);
-        if std::fs::read_to_string(&path).ok().as_deref() == Some(SKILL) {
-            continue;
+        for (name, content) in SKILL_FILES {
+            let path = dir.join(name);
+            if std::fs::read_to_string(&path).ok().as_deref() == Some(content) {
+                continue;
+            }
+            std::fs::create_dir_all(&dir)
+                .map_err(|e| HubError::io(format!("creating {}", dir.display()), e))?;
+            std::fs::write(&path, content)
+                .map_err(|e| HubError::io(format!("writing {}", path.display()), e))?;
         }
-        std::fs::create_dir_all(&dir)
-            .map_err(|e| HubError::io(format!("creating {}", dir.display()), e))?;
-        std::fs::write(&path, SKILL)
-            .map_err(|e| HubError::io(format!("writing {}", path.display()), e))?;
     }
     Ok(())
 }
@@ -66,10 +75,11 @@ mod tests {
 
     use super::*;
 
-    fn skill_paths(dir: &Path) -> Vec<std::path::PathBuf> {
+    /// Every installed file with the content it must hold.
+    fn skill_paths(dir: &Path) -> Vec<(std::path::PathBuf, &'static str)> {
         SKILL_DIRS
             .iter()
-            .map(|d| dir.join(d).join(SKILL_FILE))
+            .flat_map(|d| SKILL_FILES.map(|(name, content)| (dir.join(d).join(name), content)))
             .collect()
     }
 
@@ -77,22 +87,28 @@ mod tests {
     fn install_writes_both_copies() {
         let tmp = tempfile::tempdir().unwrap();
         install(tmp.path()).unwrap();
-        for path in skill_paths(tmp.path()) {
+        for (path, content) in skill_paths(tmp.path()) {
             assert_eq!(
                 std::fs::read_to_string(&path).unwrap(),
-                SKILL,
+                content,
                 "{}",
                 path.display()
             );
         }
         assert!(SKILL.starts_with("---\nname: hub\n"));
+        for (name, _) in &SKILL_FILES[1..] {
+            assert!(
+                SKILL.contains(&format!("]({name})")),
+                "SKILL.md links {name}"
+            );
+        }
     }
 
     #[test]
     fn install_leaves_an_up_to_date_file_alone() {
         let tmp = tempfile::tempdir().unwrap();
         install(tmp.path()).unwrap();
-        for path in skill_paths(tmp.path()) {
+        for (path, _) in skill_paths(tmp.path()) {
             std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o444)).unwrap();
         }
         // A rewrite of a read-only file would fail; an untouched one succeeds.
@@ -103,12 +119,18 @@ mod tests {
     fn install_replaces_a_stale_copy() {
         let tmp = tempfile::tempdir().unwrap();
         install(tmp.path()).unwrap();
-        let [first, second]: [std::path::PathBuf; 2] = skill_paths(tmp.path()).try_into().unwrap();
-        std::fs::write(&first, "stale\n").unwrap();
-        std::fs::remove_file(&second).unwrap();
+        let files = skill_paths(tmp.path());
+        for (i, (path, _)) in files.iter().enumerate() {
+            if i % 2 == 0 {
+                std::fs::write(path, "stale\n").unwrap();
+            } else {
+                std::fs::remove_file(path).unwrap();
+            }
+        }
         install(tmp.path()).unwrap();
-        assert_eq!(std::fs::read_to_string(&first).unwrap(), SKILL);
-        assert_eq!(std::fs::read_to_string(&second).unwrap(), SKILL);
+        for (path, content) in &files {
+            assert_eq!(std::fs::read_to_string(path).unwrap(), *content);
+        }
     }
 
     #[test]
@@ -139,5 +161,9 @@ mod tests {
         install(tmp.path()).unwrap();
         assert!(git.is_ignored(".claude/skills/hub/SKILL.md").unwrap());
         assert!(git.is_ignored(".agents/skills/hub/SKILL.md").unwrap());
+        assert!(
+            git.is_ignored(".claude/skills/hub/setup-scripts.md")
+                .unwrap()
+        );
     }
 }
