@@ -12,12 +12,14 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-9eaa593f7abd794d0feb165d
     resource: repo://src/ops/config.rs
+  - id: openwiki-source-551bfbd71774ea4fd0b8f063
+    resource: repo://src/setup.rs
   - id: openwiki-source-1b5cfaa33f22a91204f59602
     resource: repo://src/tmux.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Environment and configuration
@@ -95,7 +97,19 @@ omit attach hints, and `hub tmux` refuses with `tmux is off (<reason>)`.
 Worktrees, workspace files, and feature records are still created.
 Coverage: `tests/tmux_off.rs`.
 
+## Setup script environment
+
+A role's setup script is configured in `hub.json` (the role's `setup` field),
+not in `config.toml`. It inherits the environment of the process that ran
+`hub` (shell, agent sandbox, or the dashboard's terminal), so `PATH` and
+credentials differ between those callers, and hub adds `HUB_ROLE`,
+`HUB_FEATURE`, `HUB_BRANCH`, `HUB_WORKTREE`, `HUB_BASE` (the role's main
+clone under `project_home`), and `HUB_ROOT` (the hub's main clone). Its log
+goes to `<git common dir>/hub/setup/<feature>/<role>.log`. See
+[Per-role setup scripts](../workflows/setup-scripts.md).
+
 ## Related pages
 
 - [Architecture overview](../architecture/overview.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
+- [Per-role setup scripts](../workflows/setup-scripts.md)

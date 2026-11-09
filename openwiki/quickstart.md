@@ -12,10 +12,12 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-c17c8e3e271a8329ed7a5e63
     resource: repo://src/feature.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+  - id: openwiki-source-551bfbd71774ea4fd0b8f063
+    resource: repo://src/setup.rs
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-08T00:30:19.819Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Quickstart
@@ -54,7 +56,8 @@ Bare `hub` in a terminal opens the dashboard.
 | `src/env.rs`, `src/names.rs`, `src/error.rs` | configuration, naming rules, errors/exit codes |
 | `src/ops/` | one module per command family |
 | `src/git.rs`, `src/tmux.rs`, `src/code.rs`, `src/workspace.rs`, `src/procs.rs`, `src/review.rs`, `src/review_state.rs` | external tool wrappers |
-| `src/skill.rs`, `skills/hub/SKILL.md` | agent skill embedded in the binary |
+| `src/setup.rs` | per-role setup scripts: selection, running, logs |
+| `src/skill.rs`, `skills/hub/*.md` | agent skill (`SKILL.md` plus `setup-scripts.md`) embedded in the binary |
 | `src/ui/` | ratatui dashboard |
 | `tests/`, `tests/fake-bin/` | integration tests with fake tmux/code/lsof/gh/glab |
 
@@ -68,6 +71,7 @@ Bare `hub` in a terminal opens the dashboard.
 | Change config resolution, `hub config`, or tmux on/off | [Environment and configuration](configuration/environment-and-config.md) |
 | Work on `hub init` or `hub repo add/set/remove/rename` | [Hub init and repo registration](workflows/hub-and-repo-management.md) |
 | Work on `feature start`/`add`, adoption, rollback, prompts, branch suggestions | [Starting features and adding roles](workflows/feature-start-and-add.md) |
+| Work on a role's `setup` script, `--setup`, `--no-setup`, `feature setup`, or setup logs | [Per-role setup scripts](workflows/setup-scripts.md) |
 | Work on `feature start-review` and GitLab/GitHub handling | [Reviewing a merge or pull request](workflows/start-review.md) |
 | Work on `review`, `set-base`, `merged`, `dropped`, `finish`, `remove` (reusing a finished feature's name), dirty/in-use refusals | [Review, merged, set-base, finish, and remove](workflows/review-merged-finish.md) |
 | Work on frozen bases: `freeze`/`unfreeze`/`refreeze`, pins, `start --freeze`, `add` on a frozen role | [Frozen bases: freeze, unfreeze, and refreeze](workflows/frozen-bases.md) |

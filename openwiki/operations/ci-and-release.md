@@ -4,6 +4,8 @@ title: CI and release
 description: The checks every pull request must pass (fmt, clippy, tests on Linux and macOS, MSRV 1.88), the dist-generated tag-driven release workflow that builds binaries and a shell installer, crates.io trusted publishing, and the version/CHANGELOG procedure.
 tags: [operations, ci, release, crates-io, cargo-dist, changelog]
 sources:
+  - id: openwiki-source-1e075575622e1a77a3dc46e6
+    resource: repo://.github/pull_request_template.md
   - id: openwiki-source-164e2da859b5277df81c7d94
     resource: repo://.github/workflows/ci.yml
   - id: openwiki-source-ae71a77808247924e19d6d00
@@ -16,10 +18,10 @@ sources:
     resource: repo://dist-workspace.toml
   - id: openwiki-source-eaeff68d3e917151c3a9cf0b
     resource: repo://towncrier.toml
-generated: { by: "claude-code", at: "2026-11-06T19:21:31.800Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # CI and release
@@ -69,8 +71,8 @@ the crates.io publish only run for plain versions.
 A release is a version bump, a tag, and a push:
 
 1. Choose the version: minor for a new capability, patch for a fix. Anything
-   that changes the binary needs a bump, including `skills/hub/SKILL.md`,
-   which is embedded at build time (see [Bundled agent skill](../integrations/agent-skill.md)).
+   that changes the binary needs a bump, including every `skills/hub/*.md` file,
+   all of which are embedded at build time (see [Bundled agent skill](../integrations/agent-skill.md)).
    The beta on `main` is only a guess at this number.
 2. Set `version` in `Cargo.toml` to the plain release version and build so
    `Cargo.lock` follows.

@@ -20,8 +20,8 @@ sources:
     resource: repo://tests/freeze.rs
 generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Frozen bases: freeze, unfreeze, and refreeze

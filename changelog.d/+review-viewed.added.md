@@ -1,1 +1,0 @@
-`hub feature viewed ROLE` (TUI `V`) records a review's head commit and comment count; `hub feature list`, the dashboard and `hub status` then flag the review as `pushed` or `N replies` when the other side moves.

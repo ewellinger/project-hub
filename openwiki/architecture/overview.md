@@ -14,10 +14,10 @@ sources:
     resource: repo://src/main.rs
   - id: openwiki-source-1da066772d42f80cecf3225c
     resource: repo://src/ops/review_state.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Architecture overview
@@ -44,7 +44,7 @@ touches, an optional tmux session, and a VS Code workspace.
 | Layer | Modules | Role |
 |---|---|---|
 | Core state | `hub`, `manifest`, `feature`, `env`, `names`, `error` | Locate a hub, load/validate `hub.json` and feature records, resolve configuration, validate names, define errors. See [Hub state](hub-state-and-locking.md) and [Features](../concepts/features-changes-and-stages.md). |
-| External tools | `git`, `tmux`, `code`, `procs`, `review`, `review_state`, `workspace`, `skill` | Thin wrappers that shell out to `git`, `tmux`, the editor, `lsof`, `glab`/`gh`, and generate workspace/skill files. `review_state` holds the typed state of a merge/pull request, its JSON parsers, and the forge read. See [Git, tmux, and editor](../integrations/git-tmux-editor.md). |
+| External tools | `git`, `tmux`, `code`, `procs`, `review`, `review_state`, `setup`, `workspace`, `skill` | Thin wrappers that shell out to `git`, `tmux`, the editor, `lsof`, `glab`/`gh`, and generate workspace/skill files. `review_state` holds the typed state of a merge/pull request, its JSON parsers, and the forge read. `setup` selects, runs, and logs per-role setup scripts (see [Per-role setup scripts](../workflows/setup-scripts.md)). See [Git, tmux, and editor](../integrations/git-tmux-editor.md). |
 | Operations | `ops::*` (`init`, `config`, `repo`, `start`, `start_review`, `add`, `resolve`, `freeze`, `set_base`, `review`, `viewed`, `merged`, `finish`, `remove`, `list`, `status`, `review_state`, `pull`, `session`, `suggest`) | One module per command family. Each returns `Result<Vec<String>>` of output lines, or a report struct that a renderer turns into lines/JSON. |
 | Presentation (binary only) | `prompt`, `ui::*` | Interactive pickers and the TUI dashboard. Both call the same `ops` functions the CLI does. |
 
@@ -73,6 +73,11 @@ error prints `Error: <message>` to stderr and exits with `err.exit_code()`.
   the pin or the latest base) run **before** the lock is taken, so cancelling
   touches nothing. In a terminal `feature add` always goes through its prompt,
   even when the role and branch are given.
+- `feature start`, `start-review`, and `add` print their op's lines first and
+  then, unless `--no-setup` is given, run the affected roles' setup scripts
+  after the lock is released, printing each result as it lands. A failed
+  script does not change their exit code; `feature setup` reruns scripts
+  without the lock and exits 1 when one fails.
 - `status` prints its table or JSON itself and then returns `HubError::Drift`
   when the report has structural drift, giving exit 30 after full output.
   For a feature it first calls `ops::review_state::attach(..., Source::Forge)`
@@ -108,3 +113,4 @@ Clap itself uses exit 2 for argument errors.
 - [Dashboard architecture](../ui/dashboard-architecture.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
 - [Review state from the forge](../workflows/review-state.md)
+- [Per-role setup scripts](../workflows/setup-scripts.md)

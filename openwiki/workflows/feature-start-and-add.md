@@ -18,10 +18,14 @@ sources:
     resource: repo://src/ops/suggest.rs
   - id: openwiki-source-fcdf0f9c4361c1ee384f2689
     resource: repo://src/prompt.rs
-generated: { by: "claude-code", at: "2026-11-07T06:20:58.481Z" }
+  - id: openwiki-source-551bfbd71774ea4fd0b8f063
+    resource: repo://src/setup.rs
+  - id: openwiki-source-e89fdc875b2c55e64982d891
+    resource: repo://tests/setup.rs
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-07T06:20:58.481Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Starting features and adding roles
@@ -176,6 +180,18 @@ After the record write, nothing is rolled back: the record is authoritative,
 and workspace/tmux failures are warnings with a retry command
 (`ops::session::after_save`).
 
+## Setup scripts after start and add
+
+When the locked op returns, the CLI prints its lines and then, unless
+`--no-setup` is given, runs the setup script of every role it touched that
+has a `setup` in `hub.json` and a worktree hub created: the `--repo` roles
+for `start`, the one role for `add`. Adopted worktrees, a branch used in the
+main clone, and frozen reference roles (`--freeze`) never run one. Scripts
+run one at a time in manifest order, outside the hub lock, and a failure is
+printed but never rolls back the feature or changes the exit code. The
+dashboard's Start and Add do the same. Details:
+[Per-role setup scripts](setup-scripts.md).
+
 ## Interactive prompts (`src/prompt.rs`)
 
 When stdin and stderr are both terminals (`prompt::is_interactive`), `main.rs`
@@ -225,3 +241,4 @@ rollback cases using the fixture's fault injection), and `tests/suggest.rs`;
 - [Features, changes, stages, and bases](../concepts/features-changes-and-stages.md)
 - [Git, tmux, and editor integration](../integrations/git-tmux-editor.md)
 - [Reviewing a merge or pull request](start-review.md)
+- [Per-role setup scripts](setup-scripts.md)

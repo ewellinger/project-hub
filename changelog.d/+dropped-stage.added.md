@@ -1,1 +1,0 @@
-`hub feature dropped ROLE` records an abandoned change (worktree removed, branch kept); `hub feature finish` refuses while a role is still working or in review unless `--force`; `hub feature remove` deletes dropped branches and prints each deleted tip; the `closed on … without merging` hint names the command; TUI key `d`.

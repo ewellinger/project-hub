@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1541a9e130dfacea78950856e636e0dd604deb1509c473d0fa6dbe263dc27cd2",
+  "pageVersion": "sha256:581bbf910b3c40e1431cb4a05ca1b869b71b5770f4f4b28451bae77aa6cc4391",
   "claims": [
     {
       "id": "claim_50edc17e96fd4bc182a2c240d4cff463",
@@ -121,8 +121,8 @@
       "statement": "Prompts run only when stdin and stderr are terminals, before the lock; start with no --repo asks for roles (none means docs-only), then which remaining roles to freeze, then branches; add always goes through its prompt in a terminal, asking for an addable role, a branch, and for a new branch of a frozen role whether to start from the pin or the latest base.",
       "evidence": [
         {
-          "resource": "repo://src/main.rs#L474-L559",
-          "version": "repo-lines-v1:sha256:1c28779272dd312d5af4839545aacc8eaa24cada4de0a1b63923942f314e242b:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxNzQ3OWU3NzNlMWIwMDJiNTI2MGJkNzgyMzJkMWI5ZTBmOWQ2ODFlZjIzYTM3N2JiMmNmNDU2NjcyYTBiZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzNTljNjA5Njc3OWVjMmRkMDA2NjkxN2E5NDkxZDExYTNlZDdhZDI5NDhlMDQ3NTgzMjdhNmQ3YjViYjU3ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNTRjNWYyMmQzYzZjYjdmN2U4MjYwZDUwMDEyZGQ4ODI4YWVmNTA4ODMxOTRlMjJlNzA0OThlODMyMTZiMDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2YzA2MzhhY2JlOTkwYTNhZGVjNDI0NjFmZWJlODFhM2UwOWVmOTZhNGE0Yjc5ZmM3M2FlNWNiM2RlYWI5Y2IifQ"
+          "resource": "repo://src/main.rs#L543-L650",
+          "version": "repo-lines-v1:sha256:9e55c5bc5e6cea97df5e8757851be626acf96c726c8ef11522ce15faa75838a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmNDBmNmRmZTdkNGVlNjk5YWY5ZTUwY2U4ZDUwYjQyNmIwZTEyNGM4MzIyMGI1N2VlNzk1ZGJlNzk4ZTA1NmMzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzZTQwY2Y0YTNhY2I5ZWY0OWQzYzE1ZGUyM2YwZjczZGZmMmI3NTcxNzA0Zjc2NWUyMTc5M2VmNTg0Y2FkYTc5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxYzhkZjFmYjAwYjE4ZGNjYTE1NDM0MDM5NmNmY2M3YzQzODQyYzRhNWY2OWFhYmFhOTc4OTdlNGY0ZDAwOGMzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4ZDBkOWEyNTc4NmJmZWMyZWMxMjQ5MjY2Y2YyZDM1MDA2OWM1ZTJjNWZkNzA0OWJjNjFlMTMyMmU4MDQ0YmI1In0"
         },
         {
           "resource": "repo://src/prompt.rs#L19-L170",
@@ -191,10 +191,28 @@
           "version": "repo-lines-v1:sha256:a9d97ef462c529534af33a7cf3159f747ad4aab19285adaf7f15084b54ed1258:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5Y2E4OTFiZmY3YWMxZjdjZWFhZTQwZWYwNTEwNjZiZTllZmU0N2I0ZTQyODFlODZjMzE5YmUyYzU1ZWJjZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYzk5MWNjNzc5YWM4NmIyMTY1N2ZjZWE3MWEzODdhODFlZDlhNDc5MWJiOWJjM2M1NDcyYzEyYjMzYWI1NTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5MWRiMmNlMjQ0ZDY1MWY5ODYyZTU3YzY5ZGI1Nzk4NjRlZmU2YjAyOWJmOTJkYWVjZjljYjcxZjk0NGJjYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNDA0Mzc3ZTY0N2M5YzI3YTdkMTA5OWZhOTgzZjMyOWI1MTU4ZDJmOTA5MjMxZmU1OTFkNjk1ZGNiOGU4NTkifQ"
         }
       ]
+    },
+    {
+      "id": "claim_a5c77d7e11d447ddac932f861eb00bfa",
+      "statement": "After feature start or add, unless --no-setup is given, the CLI runs the setup scripts of the touched roles' hub-created worktrees outside the lock, in manifest order; adopted, main-clone, and frozen checkouts never run one, and a failure does not roll back the feature.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L564-L650",
+          "version": "repo-lines-v1:sha256:6e0ff420e32a1e3ab334316cd489ab66d4911aa620bd76f584f28d55669cf978:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ODBhMzQ4NGVjODBiNjIwM2VkNjI2MTNhYTk3NzAwZmVmNDAwOWY5ZmJkNzZkNDAxODQyMDU4MGYyZGE1ZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlNDBjZjRhM2FjYjllZjQ5ZDNjMTVkZTIzZjBmNzNkZmYyYjc1NzE3MDRmNzY1ZTIxNzkzZWY1ODRjYWRhNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1NDQ4OGY1MTkzYjVjZDQwYWE4YjNlZGVmNmVmM2JhYjEzOTY1MmViM2JkZGYxMDA3ODlkMTgwMjEzZDY5YWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkMGQ5YTI1Nzg2YmZlYzJlYzEyNDkyNjZjZjJkMzUwMDY5YzVlMmM1ZmQ3MDQ5YmM2MWUxMzIyZTgwNDRiYjUifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L51-L73",
+          "version": "repo-lines-v1:sha256:2dca6b0b3029048910a133fd2505fa272b92ce56144a04936ee9a0a163516df4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjZmUyMmUwMGIzNThhNTI2ZmY4ODIyNWJkY2RhYzJmODEzYTgyYTE5MGU3MDJmYmQ3ZjExNmNhNzJkNDQ0YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3Y2MxOTUzNTdlMTgyYTkyMmQwY2VkNGY5MzkzYjYzYmMxNzA2ODc5ZGMzMzFiNThhMjUxNGU2YzVmYzFkODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMjIyYjg3ZGQzM2M3MDM1Mjc2OGZmODA3ZDY1OGJkOWQzOTg4MTE4OGNhNzVlY2ZhYTI0YTQwYzlhMDU4NDcifQ"
+        },
+        {
+          "resource": "repo://tests/setup.rs#L136-L177",
+          "version": "repo-lines-v1:sha256:4f189cdf7bf09ff420c5a2db0f01c44f52bbc4f437d33beea01abaa5631d44c8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1NGY5NmYzNTFkM2E2MzcwOTIxMGNkMGRlMzFlZmZjYjI0ZjhmZGQwNTY5ZDVmMDQxMjJjYmIyMzUxNjNiOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhYzQ3NzZlM2M2M2VlNTRjYjFlMDQyMDU0MDg2YjNkNWIyNzIyMTNhODUwYmExZDAwNTU3ZjlmZTAyZjgzZDQifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-07T06:20:58.481Z"
+    "at": "2026-11-09T20:44:31.979Z"
   }
 }

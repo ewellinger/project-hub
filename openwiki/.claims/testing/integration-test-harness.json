@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:4c0eeeacded7417c9d09b10093e9aaa1b5953b905a20782d4609e9be58aa7664",
+  "pageVersion": "sha256:08b6f0f1b98c3438bc7d3a6a430a6f631b4ddc9daed9132dee1f0935f7af6aa7",
   "claims": [
     {
       "id": "claim_e7bb87e6d26040048d8a5a66c62b1c65",
@@ -88,11 +88,11 @@
     },
     {
       "id": "claim_2c46174f9cc1466ba383ef930760cedd",
-      "statement": "tests/remove.rs covers `feature remove`: a removed name restarts with fresh branches, dropped branches are deleted with their tip printed, each clone is fetched once, branches resolve correctly when a tag shares their name, and open features, unmerged or still-on-origin branches, a branch reopened after being dropped, and a hub branch with commits are refused without deleting anything.",
+      "statement": "tests/remove.rs covers `feature remove`: a removed name restarts with fresh branches, dropped branches are deleted with their tip printed, setup logs are removed with the record, each clone is fetched once, branches resolve correctly when a tag shares their name, and open features, unmerged or still-on-origin branches, a branch reopened after being dropped, and a hub branch with commits are refused without deleting anything.",
       "evidence": [
         {
           "resource": "repo://tests/remove.rs",
-          "version": "repo-file-v1:sha256:2ba40565cbcff9f87bcdf1915440325dbe8ad86dc31ba70655702f747fba4834"
+          "version": "repo-file-v1:sha256:eb1c20054c1dc136bca3aad0e7bec4727aba9fd345b5b4eade49cebb506adc2a"
         }
       ]
     },
@@ -105,10 +105,20 @@
           "version": "repo-file-v1:sha256:04e9028208f4d01555425f3f743401fffb3adbe59c28a2bbbc146eb3b3814f01"
         }
       ]
+    },
+    {
+      "id": "claim_d1cedd02c38b430dbfdb82367ab42dba",
+      "statement": "tests/setup.rs covers setup scripts end to end: runs after start, add, and start-review; failures reported without failing the command; --no-setup; adopted and frozen worktrees skipped; and feature setup reruns, its exit 1 on failure, and its refusals.",
+      "evidence": [
+        {
+          "resource": "repo://tests/setup.rs",
+          "version": "repo-file-v1:sha256:13c4ea0e1567d286adb2e2f34cb36e5830db3cb667d3988492541ba81f95edc2"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-08T00:30:19.819Z"
+    "at": "2026-11-09T20:44:31.979Z"
   }
 }

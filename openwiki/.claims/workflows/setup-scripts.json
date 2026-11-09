@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d18bdf6c39cf2459f80d938ca98c7273b4c03f761ac13e85bf39785c8d0a7dc0",
+  "claims": [
+    {
+      "id": "claim_cb2856d105c644b3ab02e0635b85f0c9",
+      "statement": "A role's setup path must be relative, inside the hub repo, and free of '..'; it is validated by repo add/set and on every manifest load, and resolved against the hub's main clone.",
+      "evidence": [
+        {
+          "resource": "repo://src/manifest.rs#L121-L124",
+          "version": "repo-lines-v1:sha256:3c3483323fac2a54b6a8f0112db43deaf2693673c9e91edf9fe91191f911714a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTFjMWRiMTMzNDc3ZjhhMWQ4ZDQzYWM3ZjVkMGNhZTBiMGY0NmE0M2U0NjQ2ZGFlMWQwMDg0NTAzMjRkMTkyOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUyMmM0MmNkMTljNmQwM2Q4MDhjNDUyNzIwNTUyODI1YjdlYTFjNWI0OTFiMjE4NTExY2FjNzQxNWNmOWQ5YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2RjZDNmOWQwNWYwMTgyOGNjZDYzZjdlYThmZDEyMGQ4Mzk2ZmQ1N2RiOGRkYzQ2OGQ1ZTQxZjdiZDkzZDg4NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjM2ZWI5OTkyNzgzYTJiNjA1MTBhZDU4NTJiYTJhYTFjMzhhZWZlNzliZTQ5MDMwY2QwZDNjZTA0ZDJjYWM5YyJ9"
+        },
+        {
+          "resource": "repo://src/names.rs#L79-L92",
+          "version": "repo-lines-v1:sha256:fcaae226272fcbbf08b25452f609e1b117be1053f349779f338f1bccd424c49b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5Y2ZiNzExODJjODMzNGUyODM4ZDVlNjUzMDkwZDg3NDgwN2M3MjNkMzUwZTA3MDFkNGNmYTdmMTM5NTUyYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5OTczMGZiNjE3Yzg4ZDE3ODg1MDhhYmM2YzUxYzljMGNjNTMzYjg4MmEyMmIxOGU0N2U1MTFlOTBhNGI2ZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjZTZlZDVhZDczYWE3ZWM1YTg3ZDYwY2Y0ZjYxYzE2NzM4YTZiZTc0NjEwMmQ5ZDg5YzEyYzdmMWI1NmFjOTMifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L116-L139",
+          "version": "repo-lines-v1:sha256:0a378a043361dedccc62dd4a195073acbbf24b439f8e4bc3f20098d0804c16bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ODk4ZDY0ZTc3ZGQyM2Y5NDIyYTNmNTEzODYwZGUyNWJiNDQ0YWFiZTE2MzExNmM1YzI4YjcxMDZmNjNhNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNjMxYzMxMGIxZmNhNThmZTJkYTBjOWYzMzAwNjIzODQ0YmZhZDIwMDNhZmI4ODgzZjcyMmExZTFiZDcwZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwYjc0ZTA5MTkzNjdmZGMzNTg5NTIyYzJjMTMyMDBjYjJhNWY4NDBhN2JjNjQ0M2NiNTdkNjAzNGM5MmZiMGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac85533e5dc54592b0e4a275e15abd9f",
+      "statement": "Setup runs only for roles the command touched that have a setup, an open change, and a hub-created worktree, in manifest order; adopted worktrees are included only when requested and main-clone changes never qualify.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L51-L73",
+          "version": "repo-lines-v1:sha256:2dca6b0b3029048910a133fd2505fa272b92ce56144a04936ee9a0a163516df4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjZmUyMmUwMGIzNThhNTI2ZmY4ODIyNWJkY2RhYzJmODEzYTgyYTE5MGU3MDJmYmQ3ZjExNmNhNzJkNDQ0YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3Y2MxOTUzNTdlMTgyYTkyMmQwY2VkNGY5MzkzYjYzYmMxNzA2ODc5ZGMzMzFiNThhMjUxNGU2YzVmYzFkODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMjIyYjg3ZGQzM2M3MDM1Mjc2OGZmODA3ZDY1OGJkOWQzOTg4MTE4OGNhNzVlY2ZhYTI0YTQwYzlhMDU4NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ce57aad34e8d420cac992d5d40d46577",
+      "statement": "Setup scripts run after the hub lock is released: the CLI reloads hub.json and the saved feature record before building jobs, and the dashboard worker does the same on a Hub copy after Done.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L364-L390",
+          "version": "repo-lines-v1:sha256:1835b6ef9bc619226eaa838cfc4b9036f4fa52812b60c57873df054fc36410cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzY2NkNzIzYjdhMDk1N2RlYzNhMzdiNGYzN2FlMTA4OWZhYzFlZWQ5YjU0MzdkN2FmY2Q4ODEzNDVlYWJmZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzMjQ2MjU3NTk5ODNkNzdmMjA5NTQzNjljZTg5YTQ2MjE1ZjQzNjZjNjIwMTVkN2Y2ZjljODA4NWU4NTZjNWIifQ"
+        },
+        {
+          "resource": "repo://src/ui/worker.rs#L222-L255",
+          "version": "repo-lines-v1:sha256:d6decc539104d48cfa4ff1398525cd607d3411a1c25ad78144f6a2191b78454f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhM2ZhOTk0OWJmY2YxMzU5ZDNhNjY4MjM0N2UzZDRmMzdhZjVkODI3MDE2NTMyZjI3OTUzZDZjNjFkM2E0YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlMzgwZmFlOTNjNDc5YWVlZmZhY2ZjOWM2MGEzMDY4NThlOTEwN2M0MjVlMDAwOWRlMDQ3NDI2MWYyZTk3YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1NTdhNTI5Yjg1OTRlODJkMjU2MjM4ZTM3NmRkMTlhZTJhNDYyOTNmZjljNjI3OThiM2NmZmFhMWYyOTY1OWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c914c3cb95a7407fa27f18684753be74",
+      "statement": "A setup run takes a non-blocking lock on its role's log before truncating it, so a concurrent run of the same role fails with 'setup already running for ROLE' and leaves the first run's log intact; the script runs in the worktree with stdin closed and stdout/stderr in the log, without a timeout.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L157-L199",
+          "version": "repo-lines-v1:sha256:19a11972b38d04de1958418be31ed75b6631b2640c7430bd9a90afa5777be391:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxYTM4NmNlMWUxYmU2Zjc3OGJiZjhhMTY0YTE3YjRhNDYyYzU0ODUwN2Q5M2E1OWVhMTYwYmM2Yjk1YzQwZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5M2QxZmIyY2U1ZTE2NjU5MDJmNTY3NWQ5NWNiMWE0MzQwMmJhMDFkZjE0YzY2NzY5NDdkNDhjYzAzYzE2NzIifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L377-L395",
+          "version": "repo-lines-v1:sha256:6e9ea2c973a28889c960394e2ec195ca963554da300442ab541d24c353f68ed8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjVlZGY1OTQ5Y2ZlYTY3ODIyY2Y2OTExMzIzNjNkNjhkNmYxZTE2OWY1ZTBkNGY3YzE0ZTVmYTFlNmQ0ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5YTVkZDA3YzIwZmVmZmY3YjJhYmZlOTNiODA0YTQ1NGZmODMxNjdkY2ExMWU5Zjc0OTczZWU3MDBkYWUyYzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjOTFlYzRjNTFmNWZlOTViN2I3YTU5MDgxMDQ3ZTBiZjdlYWU0NTc2NmFmMDEwZWQ5Zjg1ZDc0ODJlOWI4OWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e718f6f9262e496ba74bc58de86a1412",
+      "statement": "A setup failure never fails feature start, add, or start-review; only hub feature setup exits with an error when a script does not succeed.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L364-L390",
+          "version": "repo-lines-v1:sha256:1835b6ef9bc619226eaa838cfc4b9036f4fa52812b60c57873df054fc36410cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzY2NkNzIzYjdhMDk1N2RlYzNhMzdiNGYzN2FlMTA4OWZhYzFlZWQ5YjU0MzdkN2FmY2Q4ODEzNDVlYWJmZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5ZTc2MzU1Y2YxMTk5NDgwYzNmOTk4MzZiMTQ4NmM4NDFkODkxZmFhZDkwNGM2MDhlMDkzMDIyZDM3NTdhZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzMjQ2MjU3NTk5ODNkNzdmMjA5NTQzNjljZTg5YTQ2MjE1ZjQzNjZjNjIwMTVkN2Y2ZjljODA4NWU4NTZjNWIifQ"
+        },
+        {
+          "resource": "repo://src/main.rs#L652-L674",
+          "version": "repo-lines-v1:sha256:d252947ee855a6c367b7da64c10741d99219aaf5d3e1f6c19908e65397ff5f47:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyYTZjYmM0OGRmNGM1MTk5OTI5N2E5ODcwYmQ0YmY2ZWU3ZjNiZDYzNjM3ZDc2OTUyNzliMGE0MzJjOGNhYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjODY3NTY5YjI2NWEyZTRmZjJiNzEwYzM0ZTAxY2I4MzM5NWIyZDFlYzQ4ZDljNGU0YTI0YmY2YmZlNzVkMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkYmFiNjUwOGU0MmJkODZmYmQyMTIzYzY5YjI5MDExODE0MDQzYTg3ZTkwYTQ3YmY5ZmM2MjE2YzRiNmY1NjMifQ"
+        },
+        {
+          "resource": "repo://tests/setup.rs#L219-L251",
+          "version": "repo-lines-v1:sha256:a3e668fe1d52bd67f8cd242b21dbe24bdb31fd8ed94770dcf9ebee75efaffdd4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmN2YzNWJiYmEwZTljNDY1MGFhYzI3Y2MwNzBlOGUyZDQwNTM4ZjhkZGQ4MDYzZTBjNjkwZmI5ODI2M2EzYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4NTkxM2Q1NzFkZmJhOTgzYWNhNDFhNDc1ZGUzMTQxZmYzM2IwZjBlNjcwYmQ5MjI3ZGRjOGQxZGIzNDlmNWIifQ"
+        },
+        {
+          "resource": "repo://tests/setup.rs#L87-L106",
+          "version": "repo-lines-v1:sha256:9fe1acad70551d69b774e31710496cd5f919206b825f56a8d8ea10854dc8b096:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiNGNjOGI2MDM3OGEwN2E5NmMyZmI4NTY4MmJlZGE5ZTFiNzk0ZmU0MjlmYzkwNmM0ZTdkOGU0MDRjNWFhZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyY2Q0ZGI0OGEzNTBlOGYwYjQ3OTQ0YzQ2ZTNmZmRiYmExMzJkMjI5MGE5MWQ3MDEyYjU2ZWI0NmM4YWI0ZjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmOWFkNDYzYmU3MWM1ZjQyMDk0NmFmYmYwN2QwZmU5ZjVmMTFkYTgyZjFlOTQ5MDNjYzMzOTVkOGMxYTBiMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM0NDFhZTRlMGU3NTMyZDhhN2IxZThhNjZhZWZmMjY2MGIxZTc4YWZkMTA2MmJkNjgxMGRmM2E3MmQzMzlhYmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4b4956c11d9d42d1bbf43e0e392ee32e",
+      "statement": "hub feature setup ROLE refuses a role without a setup script, a role without an open change, and a change in the main clone, but accepts an adopted worktree; without a role it runs only hub-created worktrees.",
+      "evidence": [
+        {
+          "resource": "repo://src/setup.rs#L75-L107",
+          "version": "repo-lines-v1:sha256:ed9ee8f834c396ba15273c0f8ed42e98c3c5f75e28878f1d0842d9b036c36c0b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NjU5NmViYTg5MDczODFmNzg5NDViNGIyMGYxMDYxM2M3ODkzNWU1MTMwMzhkNTEwYWI1MmRmNTllZTAzNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4ODU5MjEwZWJjYjEyY2Y2OGM2MTYyMjJmYzU2MGMxZjY4ZTJmYTMxZjYzMDQ5M2RmODA5NTg4ODdkNTdhZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5NjFhMDY2NjY0YTEzNzAwMmI0MDFiZWVjMTQ4YzQ3MGVhMDhjNmYxMTE3MTAwOGU3NTU3ZTcyZmE5ZjBhNzcifQ"
+        },
+        {
+          "resource": "repo://tests/setup.rs#L252-L365",
+          "version": "repo-lines-v1:sha256:a015d5deb0b7f1ee84699817dbf63638a17506fbc3faf208e2ad4ec12c5a4e13:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MDZjOTExZTU5MmQzMWIwZmZlNjJjNWQyODM5NzkwZDBmMTZlY2NjNjRjZTRmYjI2YmU5NThlZjU1Mjk4NTgxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ZjlhZDQ2M2JlNzFjNWY0MjA5NDZhZmJmMDdkMGZlOWY1ZjExZGE4MmYxZTk0OTAzY2MzMzk1ZDhjMWEwYjM4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_66c8bfa21927404a80068eb310ccc4cd",
+      "statement": "The CLI prints a failed or signaled setup's last 20 log lines, while the dashboard result popup shows at most five.",
+      "evidence": [
+        {
+          "resource": "repo://src/main.rs#L378-L390",
+          "version": "repo-lines-v1:sha256:48e8b448de6921abe091b26959794a95604fec7e91d31f49a973bb6aec80b13d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNzYxZmRiMmJjYmE2ZTY3N2FlOTJkZWY4NjhjMjk1M2Q0ZGU5NTRkMmVjMzMwZWI1Y2JmNTllODNkZTRlN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxMTZlNTM4MTgyODJhNzNhZmQwMjVkOTI1MTk3MTZkZmE4NWExYjcxZGRiYjk3MmZlMDExYzJlMzhhZmM3ZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzMjQ2MjU3NTk5ODNkNzdmMjA5NTQzNjljZTg5YTQ2MjE1ZjQzNjZjNjIwMTVkN2Y2ZjljODA4NWU4NTZjNWIifQ"
+        },
+        {
+          "resource": "repo://src/setup.rs#L216-L245",
+          "version": "repo-lines-v1:sha256:babb0886300416eb32eeb8b65660519ba6d85cb17f5713444ec0155443a7e5a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjN2UzZWEwOTllMmJhZTMwMTA4YmFmMjNkMDMxZDFiMzZjYmY1ZTk5YTA3YzQ0OGQ3YjE4MDU3MWZlZjhmZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxY2Y4Mjk0NDk0NTE3NGU2N2Y0OWU3ZjU1NmNhZWM0MWFmMzc2YmEzOWFjY2Q0NjA4ZjIyZTNkOWIzYjQwOTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiYzk4ZDZiMGRjNDkyYzUwMTZkZjEwODA1YTNhNTRlYjljMTg0YTVhNjEzN2U3ZjRiZWNmYTBjMjIwNTUwZDAifQ"
+        },
+        {
+          "resource": "repo://src/ui/app/mod.rs#L736-L750",
+          "version": "repo-lines-v1:sha256:2350e112569ef22e6a520d2f9faa3f68c935e1634687253e9ba5747b938bd6af:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczZWM3NzQzZTQyNWYyNmY4MmExZjcxZmRiZjJmN2NkMzQ3ZWJlZmQ0MWQyMTRmMzdlZTM5NzQ1NjY4OGZkNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjQ3OWNjMjMwNDQwZmQ0MWU4MjI0MjE4Njc5Njk4NTU5ZDI4OTNiZDY3YjQzODBhZmFiODExYjM4YTU1YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5YTkyODE0NDFhYmFjOTBmZWU2YTQzNDhiYmY1YWVlMWE4YTMzODliNzEwZTM1YWRiOTU4ZDk3YjQyM2E1MzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhMDQ4NzU0ZDIxYWM4MjE1YzI1MzdjYjUzNGZmMTUxNGQ3MWRkYzY4Y2ZjNjgzNDYxYTJiNmY2OTk1MGMwNmUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-09T20:44:31.979Z"
+  }
+}

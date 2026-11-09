@@ -21,7 +21,7 @@ sources:
 generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-08T00:30:19.819Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Review state from the forge

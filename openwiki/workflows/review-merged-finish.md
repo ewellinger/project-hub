@@ -24,10 +24,10 @@ sources:
     resource: repo://tests/remove.rs
   - id: openwiki-source-983d7d91e42d115a33ae5f36
     resource: repo://tests/review_merged.rs
-generated: { by: "claude-code", at: "2026-11-07T20:01:15.981Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-07T20:01:15.981Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Review, merged, set-base, finish, and remove
@@ -198,9 +198,9 @@ left to infer it from.
    hold commits that exist nowhere else, then the record
    (`.git/hub/features/NAME.json`) last, so a failure partway leaves the record
    for a rerun. The record is not in git, so this cannot be undone. Remote
-   branches are never touched. The feature's reviews lock file and
-   remembered review state (`.git/hub/reviews/NAME.lock` and `NAME.json`) are
-   deleted after the record; a failure there is ignored, since a leftover file
+   branches are never touched. The feature's reviews lock file,
+   remembered review state (`.git/hub/reviews/NAME.lock` and `NAME.json`), and
+   setup script logs (`.git/hub/setup/NAME/`) are deleted after the record; a failure there is ignored, since a leftover file
    is harmless.
 
 Frozen roles have no branches, so `remove` has nothing to do for them.

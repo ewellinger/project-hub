@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:dd96c2ae3bbc93d162127196eb40bcb183cfad3166f6f2efc3b6e263fc0036dc",
+  "pageVersion": "sha256:9d3a048f4299aa648f06d13566f8661ad159b6453c10fea3e5533778d1a29329",
   "claims": [
     {
       "id": "claim_4cbca4efef8f4194b14ecae1aba3234c",
@@ -35,7 +35,7 @@
           "version": "repo-lines-v1:sha256:cf049c5dc98148cbf074c3229e5f18d908bb241568904ac47e6c73ca05129054:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNDJkMjQ2NjQ4Njk5ODE3MWFmZTk1MjBjZTlhYmIzYThlNjJkMTZiYzIzOWJiODJjYjI5Y2VhMmE3YzlmMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5MjA4ZjM4MjI3ODAwY2FmMDJjYjIwN2E2MGVhMDBkZTE2MDgwZTQxZmFkYTU2ZjU5YjliYzQ5ZDU4ZjYyMjQifQ"
         },
         {
-          "resource": "repo://CONTRIBUTING.md#L105-L107",
+          "resource": "repo://CONTRIBUTING.md#L107-L109",
           "version": "repo-lines-v1:sha256:867e12b3be1c77bebe91a5194c4b3caa53bd4a27d22974bc5165723bc708b7fa:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRlNDBjMjA1YTE5OWY2NDgwMTJiODhhYjZjODkyNDViMGE2ZjdmN2NiMTVkNGFlNzJhOGI4MWFkMDQ1ZDdmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjIyNjgwZjViMWY4OGIyMjk4OTY1YmY0MDk3YjI0ZDZhMDhkMGY0MDg1MDQ0MTkxZTJjZDMwNzZhNTI1Njg1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzgzNGZjYTA3NjQzOTU2MTE2MDU1OWY3NWYzNDY4NTYwMGM3MTJmYTMyN2E1OTM1YjhjNjM1OGZmOGVkZTgxNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         },
         {
@@ -64,11 +64,15 @@
     },
     {
       "id": "claim_0a019eaae7bc43c1a3ab2929c4fab0ce",
-      "statement": "A release is cut by setting Cargo.toml to the plain version, building the changelog section from the fragments with `uvx towncrier build --yes --version <version>`, squash-merging, and pushing a v<version> tag; changes to the embedded SKILL.md also require a bump.",
+      "statement": "A release is cut by setting Cargo.toml to the plain version, building the changelog section from the fragments with `uvx towncrier build --yes --version <version>`, squash-merging, and pushing a v<version> tag; changes to any embedded skills/hub/*.md file also require a bump.",
       "evidence": [
         {
-          "resource": "repo://CONTRIBUTING.md#L64-L103",
-          "version": "repo-lines-v1:sha256:3cb24eb1ddf7234ad158e8a30b5f396f892ee3f22b4678af0ebd05902be6fad1:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MzFhNjUyOTFlNTE1ZDZmOGU3MzUyNWIxMjJjY2I3OTc1YTYwYjY0YWI2Y2FiNGZlM2NmMTBiOTdiZDRhMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMGEzNWQ4NzUzNGI4NmI0ZmE0NGFlODg0ZDZiNzk1ZjdlOGU4NzBjMDhmZmFkZTYwYTUwYTAwOGJmYzk4MzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkZWU3Yjc1MWVlN2NmN2I1ZjAyMGVmNDU3YThlMDUyZDFjMzU2YzBmYmM2ZDdiMmVlZWRkMGFlZmE1NjhlOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4NWM5ZjRhYjdmNGM1MWJjNDEwZWMzM2Q0OWIwMzU4NjE4OTYyZjU4M2VkYWM0MjZhOTE3Yzc5NzMwZWU2NzQifQ"
+          "resource": "repo://.github/pull_request_template.md#L23-L26",
+          "version": "repo-lines-v1:sha256:5d59f4fe62d0ae0b55bf36add522c5ca0f0d2f9f0e34d2a716dd144b5e853143:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTI2MTllZWMxMWNhMzM0NmQyZWI2MWQ3YjdkM2Q5OWJmMTI0MWRlYTMyNTZmYmJhMTVmNGEzMTk3NTQ0MzJkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODc0NmVlNjk2ZGRmNzgzMzE4YWRiMjVjMjliNzVjMGVhMTUyODBmZDU0ZWM3ZTNiMjU4NWUyYWU3MWJlMjRhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmNhYjJlZGJjNDQxZTVmZDNkNmM0ZGVhMDkyZGQ2NzliOWVkNDJhZDM3MDRlYThiMzlkNmRkZTE0ZGFiNTYzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://CONTRIBUTING.md#L66-L105",
+          "version": "repo-lines-v1:sha256:34c8a612674d73344983872b8ca84966492469f4934d7a5f01c5e2db257f480e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MzFhNjUyOTFlNTE1ZDZmOGU3MzUyNWIxMjJjY2I3OTc1YTYwYjY0YWI2Y2FiNGZlM2NmMTBiOTdiZDRhMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMGEzNWQ4NzUzNGI4NmI0ZmE0NGFlODg0ZDZiNzk1ZjdlOGU4NzBjMDhmZmFkZTYwYTUwYTAwOGJmYzk4MzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkZWU3Yjc1MWVlN2NmN2I1ZjAyMGVmNDU3YThlMDUyZDFjMzU2YzBmYmM2ZDdiMmVlZWRkMGFlZmE1NjhlOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4NWM5ZjRhYjdmNGM1MWJjNDEwZWMzM2Q0OWIwMzU4NjE4OTYyZjU4M2VkYWM0MjZhOTE3Yzc5NzMwZWU2NzQifQ"
         }
       ]
     },
@@ -87,7 +91,7 @@
       "statement": "A user-visible change adds a towncrier fragment `changelog.d/+<slug>.<type>.md` and steps the Cargo.toml version to the next beta; beta versions are never tagged because a ruleset refuses tags containing '-'.",
       "evidence": [
         {
-          "resource": "repo://CONTRIBUTING.md#L37-L59",
+          "resource": "repo://CONTRIBUTING.md#L39-L61",
           "version": "repo-lines-v1:sha256:73ab9a0f09478ac08093e33fd1f5b1a7c443cdc4a065c91a801ab3623cafebf0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlZTkzMzE5YTMzNzM5ZDQzMjZlNTUwOWI4ZjRmZTE1YTdkMWEwMjJjNGFlZTA1MjFjMjhlNjUyOWU1NTZiNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzMzYyM2U3YmIxYjYyMTk2ZTMxYTU5MjAwNzU5OTE4MmE1MzYwMjI5ZjNmOGMwNjdiNWQ5YzQ5ODVmNGYzMzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNDIzNTg5OTdlNGQ4Nzc3NmU3MTBkNGRjYjE1Y2NlNzk2MTJjY2I4MmU5YjE5MGEzMTg4OTQ3N2JkN2EwMzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMmU1NGM5NGExMGNmZjZlMTBlODg2ODRmZjIwMTEzZDg2ZDA4OTA2YTY5OTViODFhMTE1YjRjNjNjYzExY2YifQ"
         },
         {
@@ -98,7 +102,7 @@
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-11-06T19:21:31.800Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-09T20:44:31.979Z"
   }
 }

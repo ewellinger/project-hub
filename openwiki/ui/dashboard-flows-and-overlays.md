@@ -20,10 +20,10 @@ sources:
     resource: repo://src/ui/view/mod.rs
   - id: openwiki-source-d36a1897ad2613d7d98e64cb
     resource: repo://src/ui/worker.rs
-generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-08T00:30:19.819Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Dashboard flows and overlays
@@ -128,6 +128,21 @@ always-yes confirm callback to `ops::merged`, so adopted worktrees shown in the
 preview are removed without a second prompt. `ops::finish` takes no callback:
 it only reaches an open change's worktree with force.
 
+### Setup scripts after Start and Add
+
+`Action::Start` and `Action::Add` are the only dashboard actions that run
+setup scripts (`start-review` has no dashboard flow). The scripts run after
+the action's lock is released, so their results arrive after its `Result`
+overlay or footer line. While that overlay is open, it gains one line per
+script: `api  setup running…  scripts/api.sh`, then the CLI's result line
+(`api: setup ok (1.2s)`, `setup failed (exit N) after …; log …` followed by
+the last five log lines, `setup killed by a signal …`, or `setup could not
+start: …`), and turns into an error overlay when any script failed. A script
+that finishes after the overlay is dismissed reports its one-line result in
+the footer. `q`/`Esc` refuse to quit while any script runs. The dashboard has
+no `--no-setup` and no rerun key; `hub feature setup` reruns from the CLI.
+See [Per-role setup scripts](../workflows/setup-scripts.md).
+
 ## The feature screen (`feature.rs`)
 
 The feature screen shows one open feature's status report: the hub row, then
@@ -217,3 +232,4 @@ refresh age, reusing helpers from `view/dashboard.rs`.
 - [Starting features and adding roles](../workflows/feature-start-and-add.md)
 - [Review, merged, set-base, and finish](../workflows/review-merged-finish.md)
 - [Review state from the forge](../workflows/review-state.md)
+- [Per-role setup scripts](../workflows/setup-scripts.md)

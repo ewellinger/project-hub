@@ -20,10 +20,12 @@ sources:
     resource: repo://tests/remove.rs
   - id: openwiki-source-3ea48b9bb97138d656617af0
     resource: repo://tests/review_state.rs
-generated: { by: "claude-code", at: "2026-11-08T00:30:19.819Z" }
+  - id: openwiki-source-e89fdc875b2c55e64982d891
+    resource: repo://tests/setup.rs
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-08T00:30:19.819Z
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Testing and the integration harness
@@ -110,7 +112,7 @@ tests assert on logs and state instead of a live tmux server or network.
 | File | Covers |
 |---|---|
 | `tests/init.rs` | `hub init`, `--force` refresh |
-| `tests/repo.rs` | `repo add/set/remove/rename/list` |
+| `tests/repo.rs` | `repo add/set/remove/rename/list`, including recording and clearing a role's `--setup` |
 | `tests/config.rs` | `hub config` show/set/unset |
 | `tests/start.rs` | `feature start`, including `--freeze` |
 | `tests/add.rs`, `tests/resolve.rs` | `feature add`, change opening and adoption |
@@ -119,12 +121,13 @@ tests assert on logs and state instead of a live tmux server or network.
 | `tests/set_base.rs` | `feature set-base` |
 | `tests/review_merged.rs` | `feature review`, `feature merged`, `feature dropped`, and both closing a role on a finished feature in the record only |
 | `tests/finish.rs` | `feature finish`, including its refusal while a role is open and `--force` leaving stages as they were |
-| `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, a branch reopened after being dropped, and a hub branch with commits, all without partial deletion; deleting dropped branches and printing each deleted tip; fetching each clone once; resolving branches as `refs/heads/...` when a tag shares the name |
+| `tests/remove.rs` | `feature remove`: freeing a finished feature's name, refusing open features, unmerged or still-pushed branches, a branch reopened after being dropped, and a hub branch with commits, all without partial deletion; deleting dropped branches and printing each deleted tip; fetching each clone once; resolving branches as `refs/heads/...` when a tag shares the name; removing the feature's setup logs with its record |
 | `tests/list_status.rs` | `feature list`, `status` |
 | `tests/review_state.rs` | review state from the forge: the reviews store (changed URL, corrupt file, failed read, missing program, `feature remove`), the `status` review section, hints and JSON, `feature list` words and `--refresh`, and that `status --base` and `start-review`'s drift check never read review state; `feature viewed` (snapshot, refusals, unknown comment counts, succeeding while another command holds the hub lock, and an error naming its own role rather than a longer one such as `api-gw` for `api`), `pushed` / `N replies` attention in list and status, and viewed marks surviving a concurrent `status` write under the reviews lock |
+| `tests/setup.rs` | per-role setup scripts: running in the new worktree with the `HUB_*` environment after `start`, `add`, and `start-review`; a failing, missing, or non-executable script reported while the command still succeeds; `--no-setup`; adopted and frozen worktrees skipped; `feature setup` rerunning one role or every hub-created worktree, exiting 1 on failure, accepting a named adopted worktree, and refusing the main clone or a role without a script |
 | `tests/pull.rs` | `hub pull` |
 | `tests/tmux_off.rs` | behavior with sessions off |
-| `tests/skill.rs` | generated agent skill and its command table |
+| `tests/skill.rs` | generated agent skill, its command table, and the commands and flags `setup-scripts.md` names |
 | `tests/misc.rs` | `tmux`/`open`/`sync`, exit codes, the lock, finished-feature read-only rules, record location |
 | `tests/freeze.rs` | frozen bases: `freeze`/`unfreeze`/`refreeze` on reference roles and open changes, frozen `status` rows and drift, off-pin and dirty refusals, record-write rollbacks, `feature add` on a frozen role, `finish`/`pull`/`repo` interactions, and `feature list`'s frozen roles |
 

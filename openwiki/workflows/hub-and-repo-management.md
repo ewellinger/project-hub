@@ -4,14 +4,18 @@ title: Hub init and repo registration
 description: How `hub init` creates a hub (and `--force` refreshes init-owned files), and how `hub repo add`, `set`, `remove`, `rename` (including `--records-only` repair), and `list` edit `hub.json` with one commit on main while keeping per-machine feature records consistent.
 tags: [workflow, init, repo, manifest, rename, records]
 sources:
+  - id: openwiki-source-482a254fc9f19462c83aa694
+    resource: repo://src/names.rs
   - id: openwiki-source-03561c75d5622526b12cd559
     resource: repo://src/ops/init.rs
   - id: openwiki-source-70c2e2f99d62af87dfbdb300
     resource: repo://src/ops/repo.rs
-generated: { by: "claude-code", at: "2026-10-27T18:18:48.498Z" }
+  - id: openwiki-source-83fba7236f4d47d61a952e28
+    resource: repo://tests/repo.rs
+generated: { by: "claude-code", at: "2026-11-09T20:44:31.979Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-11-06T19:21:31.800Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T20:44:31.979Z
 ---
 
 # Hub init and repo registration
@@ -69,20 +73,27 @@ after upgrading `hub`; it cannot be combined with `--name` or
   exactly.
 - Base: `--base` or `origin/HEAD`'s branch (error if neither is available).
 - Branch template: `--branch-template` (must contain `{feature}`) or `{feature}`.
+- Setup script: optional `--setup PATH`, recorded as the role's `setup`. Only
+  the path's form is checked (relative, inside the hub repo, no `..`); the
+  file's existence, executable bit, and git status are not, and only
+  `hub.json` is committed, so the script itself must be committed separately
+  (see [Per-role setup scripts](setup-scripts.md)).
 - Appends the role (manifest order is deployment and tmux window order) and
   commits `hub: repo add ROLE`.
 
 ## `hub repo set ROLE`
 
-Changes any of `--clone`, `--base`, `--branch-template`, `--description` in
-place, keeping the role's position, in one commit. Needs at least one flag;
+Changes any of `--clone`, `--base`, `--branch-template`, `--description`,
+`--setup` in place, keeping the role's position, in one commit. Needs at least one flag;
 `--base` must not be empty or `origin/`-prefixed. Changing the base refuses
 while any open feature has the role frozen (either kind of pin), since the pin
 was taken from the old base. Changing the clone requires the new clone to be
 free, refuses while any open feature has an open change for the role or has it
 frozen, and re-reads the new clone's `origin` as the remote. A no-op change
 (including `--base` set to its current value) commits nothing and is never
-refused.
+refused. `--setup ""` clears the script; any other value gets the same path
+check as `repo add`. The output lists each changed field as
+`field: "old" -> "new"`.
 
 ## `hub repo remove ROLE`
 
@@ -120,7 +131,8 @@ made.
 
 ## `hub repo list [--json]`
 
-Prints role, clone, base, branch template, and description in manifest order;
+Prints role, clone, base, branch template, setup script, and description in
+manifest order;
 `--json` serializes the manifest's repo list.
 
 ## Tests
@@ -134,3 +146,4 @@ fixture's `block_commits`; see
 - [Frozen bases: freeze, unfreeze, and refreeze](frozen-bases.md)
 - [Hub state, manifest, and locking](../architecture/hub-state-and-locking.md)
 - [Bundled agent skill](../integrations/agent-skill.md)
+- [Per-role setup scripts](setup-scripts.md)
