@@ -723,6 +723,7 @@ impl App {
             }
         };
         let home = hub::env::home_dir();
+        let running = |role: &str, script: &str| format!("{role}  setup running…  {script}");
         let popup_open = matches!(
             (&self.overlay, &self.action_lines),
             (Some(Overlay::Result { title, .. }), Some((f, action, _)))
@@ -735,7 +736,7 @@ impl App {
             for row in self.setups.iter().filter(|r| r.feature == feature) {
                 match &row.state {
                     SetupState::Running { script } => {
-                        lines.push(format!("{}  setup running…  {script}", row.role));
+                        lines.push(running(&row.role, script));
                     }
                     SetupState::Done(outcome) => {
                         is_error |= outcome.status != hub::setup::Status::Ok;
@@ -753,9 +754,7 @@ impl App {
             let row = &self.setups[index];
             let (line, is_error) = match &row.state {
                 // No popup (a one-line result goes to the footer): say it runs.
-                SetupState::Running { script } => {
-                    (format!("{}  setup running…  {script}", row.role), false)
-                }
+                SetupState::Running { script } => (running(&row.role, script), false),
                 SetupState::Done(outcome) => (
                     hub::setup::result_lines(outcome, 0, home.as_deref())
                         .remove(0)

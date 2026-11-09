@@ -352,6 +352,12 @@ fn feature_setup_needs_a_configured_role() {
         .assert()
         .code(1)
         .stderr(predicate::str::contains("has no setup script"));
+    fx.hub(&hub, &["feature", "setup", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "no hub-created worktree in feature 'feat-1' has a setup script",
+        ));
     fx.hub(&hub, &["feature", "setup", "api", "--feature", "feat-1"])
         .assert()
         .code(1)

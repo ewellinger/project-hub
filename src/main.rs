@@ -652,6 +652,12 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 FeatureCommand::Setup { role, feature } => {
                     let f = hub.resolve_feature(feature.as_deref())?;
                     let jobs = hub::setup::rerun_jobs(&hub, &f, role.as_deref())?;
+                    if jobs.is_empty() {
+                        return Ok(vec![format!(
+                            "no hub-created worktree in feature '{}' has a setup script",
+                            f.name
+                        )]);
+                    }
                     let failed: Vec<String> = run_jobs(&jobs)
                         .into_iter()
                         .filter(|o| o.status != hub::setup::Status::Ok)

@@ -167,16 +167,27 @@ fn spawn_and_wait(job: &Job) -> std::result::Result<Status, String> {
         std::fs::create_dir_all(parent)
             .map_err(|e| format!("creating {}: {e}", parent.display()))?;
     }
-    let log = std::fs::File::create(&job.log)
-        .map_err(|e| format!("opening {}: {e}", job.log.display()))?;
-    let err = log
-        .try_clone()
-        .map_err(|e| format!("opening {}: {e}", job.log.display()))?;
+    let opening = |e: std::io::Error| format!("opening {}: {e}", job.log.display());
+    // Not truncated until locked: a second run of the same role (dashboard and
+    // CLI at once) must neither wipe the first one's log nor share its worktree.
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .write(true)
+        .truncate(false)
+        .open(&job.log)
+        .map_err(opening)?;
+    let mut lock = fd_lock::RwLock::new(file);
+    let log = lock
+        .try_write()
+        .map_err(|_| format!("setup already running for {}", job.role))?;
+    log.set_len(0).map_err(opening)?;
+    let out = log.try_clone().map_err(opening)?;
+    let err = log.try_clone().map_err(opening)?;
     let status = Command::new(&job.script)
         .current_dir(&job.cwd)
         .envs(job.env.iter().map(|(k, v)| (k, v)))
         .stdin(Stdio::null())
-        .stdout(log)
+        .stdout(out)
         .stderr(err)
         .status()
         .map_err(|e| format!("running {}: {e}", job.script.display()))?;
@@ -361,6 +372,26 @@ mod tests {
         let seen = std::fs::read_to_string(j.cwd.join("seen.txt")).unwrap();
         let cwd = j.cwd.canonicalize().unwrap();
         assert_eq!(seen, format!("api feat-1\n{}\n", cwd.display()));
+    }
+
+    #[test]
+    fn a_second_run_of_the_same_log_could_not_start_and_keeps_the_log() {
+        let dir = tempfile::tempdir().unwrap();
+        let s = script(dir.path(), "echo new\n", 0o755);
+        let j = job(dir.path(), s);
+        std::fs::create_dir_all(j.log.parent().unwrap()).unwrap();
+        std::fs::write(&j.log, "first run\n").unwrap();
+        let mut held = fd_lock::RwLock::new(std::fs::File::open(&j.log).unwrap());
+        let guard = held.write().unwrap();
+        let out = run(&j);
+        assert!(
+            matches!(out.status, Status::CouldNotStart(ref r) if r == "setup already running for api"),
+            "{out:?}"
+        );
+        assert_eq!(std::fs::read_to_string(&j.log).unwrap(), "first run\n");
+        drop(guard);
+        assert_eq!(run(&j).status, Status::Ok);
+        assert_eq!(std::fs::read_to_string(&j.log).unwrap(), "new\n");
     }
 
     #[test]
