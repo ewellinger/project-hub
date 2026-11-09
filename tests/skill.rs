@@ -151,6 +151,13 @@ fn init_installs_the_skill() {
     let hub = fx.init_hub("acme");
     for path in skill_files(&hub) {
         assert_eq!(std::fs::read_to_string(&path).unwrap(), hub::skill::SKILL);
+        let reference = path.with_file_name("setup-scripts.md");
+        assert_eq!(
+            std::fs::read_to_string(&reference).unwrap(),
+            hub::skill::SKILL_FILES[1].1,
+            "{}",
+            reference.display()
+        );
     }
     assert_eq!(fx.git(&hub, &["status", "--porcelain"]), "");
     assert_eq!(
