@@ -395,6 +395,18 @@ mod tests {
     }
 
     #[test]
+    fn a_background_process_left_by_the_script_does_not_keep_the_lock() {
+        let dir = tempfile::tempdir().unwrap();
+        // The sleep inherits the locked log as stdout and outlives the script;
+        // the guard's explicit unlock on drop frees the lock anyway.
+        let s = script(dir.path(), "sleep 5 &\necho done\n", 0o755);
+        let j = job(dir.path(), s);
+        assert_eq!(run(&j).status, Status::Ok);
+        assert_eq!(run(&j).status, Status::Ok, "rerun while the sleep lives");
+        assert_eq!(std::fs::read_to_string(&j.log).unwrap(), "done\n");
+    }
+
+    #[test]
     fn exit_code_and_stderr_are_reported() {
         let dir = tempfile::tempdir().unwrap();
         let s = script(dir.path(), "echo boom >&2\nexit 3\n", 0o755);

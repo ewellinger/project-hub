@@ -44,6 +44,9 @@ fn remove_deletes_merged_branches_and_the_record_so_the_name_is_free() {
     fx.hub(&hub, &["feature", "finish", "--feature", "feat-1"])
         .assert()
         .success();
+    let setup_logs = hub.join(".git/hub/setup/feat-1");
+    std::fs::create_dir_all(&setup_logs).unwrap();
+    std::fs::write(setup_logs.join("api.log"), "old").unwrap();
     fx.hub(&hub, &["feature", "remove", "feat-1"])
         .assert()
         .success()
@@ -53,6 +56,7 @@ fn remove_deletes_merged_branches_and_the_record_so_the_name_is_free() {
     }
     assert!(!branch_exists(&fx, &hub, "feat-1"), "hub branch deleted");
     assert!(!record_path(&hub).exists());
+    assert!(!setup_logs.exists(), "setup logs removed");
 
     fx.hub(&hub, &["feature", "start", "feat-1", "--repo", "api"])
         .assert()
