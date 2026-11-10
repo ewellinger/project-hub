@@ -389,7 +389,9 @@ commit and comment count beside the remembered state. Every later read
 compares against that mark. A new head gives the word `pushed`; a higher
 comment count gives `N replies`. Both sit after `merged` and `closed` and
 before every other word, in cyan, so the reviews that need you stand out in
-the list. `hub status` and the TUI show the same thing as a hint in STATE,
+the list. In the TUI, a marked review where nothing has moved shows its role
+name dimmed, in the features pane and in the role table, so the reviews you
+have already handled recede. `hub status` and the TUI show the same thing as a hint in STATE,
 `pushed since viewed` or `N replies since viewed`; the merged and closed
 hints and git's own hints come first, since closing the change outranks
 looking again. A review that was never marked is never flagged, and a new
