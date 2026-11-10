@@ -38,6 +38,11 @@ pub fn attention(state: &ReviewState) -> Option<Attention> {
     }
 }
 
+/// Marked viewed and nothing has moved since.
+pub fn viewed_quiet(state: &ReviewState) -> bool {
+    state.viewed.is_some() && attention(state).is_none()
+}
+
 pub type States = BTreeMap<String /* role */, ReviewState>;
 
 pub struct Target {
@@ -683,6 +688,23 @@ mod tests {
         let mut unmarked = marked("b", 9, "a", 7);
         unmarked.viewed = None;
         assert_eq!(attention(&unmarked), None);
+    }
+
+    #[test]
+    fn viewed_quiet_needs_a_mark_and_no_movement() {
+        assert!(viewed_quiet(&marked("a", 3, "a", 3)));
+        assert!(!viewed_quiet(&marked("b", 3, "a", 3)), "pushed");
+        assert!(!viewed_quiet(&marked("a", 4, "a", 3)), "replies");
+        let mut unmarked = marked("a", 3, "a", 3);
+        unmarked.viewed = None;
+        assert!(!viewed_quiet(&unmarked));
+        let mut unknown = marked("a", 3, "a", 3);
+        unknown.fields.head = None;
+        unknown.fields.comments = None;
+        assert!(
+            viewed_quiet(&unknown),
+            "unknowns never flag, so the mark stays quiet"
+        );
     }
 
     #[test]

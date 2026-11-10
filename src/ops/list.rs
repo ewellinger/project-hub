@@ -3,7 +3,7 @@ use serde::Serialize;
 use crate::error::{HubError, Result};
 use crate::feature::{FeatureStatus, Stage};
 use crate::hub::Hub;
-use crate::ops::review_state::{ReviewWord, remembered, word};
+use crate::ops::review_state::{ReviewWord, remembered, viewed_quiet, word};
 use crate::ops::table;
 
 #[derive(Debug, Clone, Serialize)]
@@ -12,6 +12,9 @@ pub struct RoleSummary {
     pub branch: String,
     pub stage: Stage,
     pub review: Option<ReviewWord>,
+    /// The review is marked viewed and has not moved. For the TUI only.
+    #[serde(skip)]
+    pub viewed_quiet: bool,
 }
 
 /// A frozen reference role: a read-only checkout pinned at `sha`, not a
@@ -42,6 +45,7 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
             // Only open review changes are remembered, so other roles get no word.
             let states = remembered(hub, &f);
             let review = |role: &str| states.get(role).and_then(word);
+            let quiet = |role: &str| states.get(role).is_some_and(viewed_quiet);
             let mut roles: Vec<RoleSummary> = hub
                 .manifest
                 .repos
@@ -52,6 +56,7 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
                         branch: c.branch.clone(),
                         stage: c.stage,
                         review: review(&repo.role),
+                        viewed_quiet: quiet(&repo.role),
                     })
                 })
                 .collect();
@@ -66,6 +71,7 @@ pub fn list(hub: &Hub) -> Result<Vec<FeatureSummary>> {
                         branch: last.branch.clone(),
                         stage: last.stage,
                         review: review(&change.role),
+                        viewed_quiet: quiet(&change.role),
                     });
                 }
             }
@@ -123,4 +129,23 @@ pub fn render_table(summaries: &[FeatureSummary]) -> Vec<String> {
 pub fn render_json(summaries: &[FeatureSummary]) -> Result<String> {
     serde_json::to_string_pretty(summaries)
         .map_err(|e| HubError::Precondition(format!("serializing features: {e}")))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn viewed_quiet_stays_out_of_the_json() {
+        let role = RoleSummary {
+            role: "api".into(),
+            branch: "x".into(),
+            stage: Stage::Review,
+            review: None,
+            viewed_quiet: true,
+        };
+        let json = serde_json::to_value(&role).unwrap();
+        assert!(json.get("viewed_quiet").is_none(), "{json}");
+        assert!(json.get("role").is_some(), "{json}");
+    }
 }

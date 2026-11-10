@@ -299,12 +299,14 @@ mod tests {
                     branch: "x".into(),
                     stage: Stage::Review,
                     review: None,
+                    viewed_quiet: false,
                 },
                 RoleSummary {
                     role: "ui".into(),
                     branch: "y".into(),
                     stage: Stage::Working,
                     review: None,
+                    viewed_quiet: false,
                 },
             ],
             frozen: Vec::new(),
@@ -332,6 +334,7 @@ mod tests {
             branch: "z".into(),
             stage: Stage::Merged,
             review: None,
+            viewed_quiet: false,
         });
         let a = App::new("acme", vec![s]);
         let rows = lines(100, 30, &a);
@@ -843,6 +846,7 @@ mod tests {
             branch: "z".into(),
             stage: Stage::Dropped,
             review: None,
+            viewed_quiet: false,
         });
         let text = joined(&lines(100, 30, &App::new("acme", vec![s])));
         assert!(!text.contains("bff"), "dropped role listed: {text}");
@@ -1310,6 +1314,84 @@ mod tests {
         let style = find_style(120, 30, &a, "feature/x");
         assert!(!style.add_modifier.contains(Modifier::ITALIC), "{style:?}");
         assert!(!style.add_modifier.contains(Modifier::DIM), "{style:?}");
+    }
+
+    #[test]
+    fn the_features_pane_dims_a_viewed_quiet_role_name() {
+        use hub::ops::review_state::ReviewWord;
+        let pane = |quiet: bool, word: ReviewWord| {
+            let mut s = summary("suspense", FeatureStatus::Open);
+            s.roles[0].viewed_quiet = quiet;
+            s.roles[0].review = Some(word);
+            App::new("acme", vec![s])
+        };
+        let dim = |a: &App, needle: &str| {
+            find_style(100, 30, a, needle)
+                .add_modifier
+                .contains(Modifier::DIM)
+        };
+        let quiet = pane(true, ReviewWord::Approved);
+        assert!(dim(&quiet, "api"), "viewed and quiet");
+        assert!(!dim(&quiet, "approved"), "the word keeps its style");
+        assert!(!dim(&quiet, "review│"), "the stage keeps its style");
+        assert!(
+            !dim(&pane(false, ReviewWord::Approved), "api"),
+            "never marked"
+        );
+        assert!(
+            !dim(&pane(false, ReviewWord::Pushed), "api"),
+            "marked, moved"
+        );
+    }
+
+    #[test]
+    fn the_feature_view_dims_the_role_cell_of_a_viewed_quiet_review() {
+        use crate::ui::app::feature::tests::{api_in_review, on_report};
+        use hub::review_state::Viewed;
+        let view = |viewed_head: Option<&str>| {
+            let Report::Feature {
+                feature,
+                mut report,
+            } = api_in_review()
+            else {
+                unreachable!()
+            };
+            let mut state = review_row(true).review.unwrap();
+            state.fields.head = Some("a".into());
+            state.fields.comments = Some(3);
+            state.viewed = viewed_head.map(|head| Viewed {
+                at: 1,
+                head: Some(head.into()),
+                comments: Some(3),
+            });
+            report.rows[1].review = Some(state);
+            on_report(Report::Feature { feature, report })
+        };
+        let dim = |a: &App, needle: &str| {
+            find_style(120, 30, a, needle)
+                .add_modifier
+                .contains(Modifier::DIM)
+        };
+        let quiet = view(Some("a"));
+        assert!(dim(&quiet, "api"), "viewed and quiet");
+        assert!(!dim(&quiet, "feature/x"), "only the ROLE cell");
+        // `api` is shorter than the ROLE column; the padding is not dim, so
+        // the selected row's bar is not broken beside the name.
+        let mut terminal = Terminal::new(TestBackend::new(120, 30)).unwrap();
+        terminal.draw(|f| render(&quiet, f)).unwrap();
+        let buffer = terminal.backend().buffer();
+        let padding = buffer
+            .content
+            .chunks(120)
+            .find_map(|row| {
+                let text: String = row.iter().map(|c| c.symbol()).collect();
+                let at = text[..text.find("api ")?].chars().count();
+                Some(row[at + 3].style())
+            })
+            .unwrap();
+        assert!(!padding.add_modifier.contains(Modifier::DIM), "{padding:?}");
+        assert!(!dim(&view(None), "api"), "never marked");
+        assert!(!dim(&view(Some("b")), "api"), "marked, moved");
     }
 
     const MR: &str = "https://gitlab.example.com/g/proj/-/merge_requests/412";
