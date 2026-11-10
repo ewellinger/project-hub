@@ -16,7 +16,9 @@ use crate::ui::app::{App, Report, RowId};
 use hub::env::{home_dir, shorten_home};
 use hub::feature::FeatureStatus;
 use hub::ops::format_age;
-use hub::ops::review_state::{REVIEW_HEADERS, ReviewWord, now_secs, review_age_line, review_cells};
+use hub::ops::review_state::{
+    REVIEW_HEADERS, ReviewWord, now_secs, review_age_line, review_cells, viewed_quiet,
+};
 use hub::ops::status::{StateColour, StatusRow, closed, state_colour, state_text};
 
 pub(super) const SPINNER: [&str; 4] = ["⠋", "⠙", "⠸", "⠴"];
@@ -32,30 +34,29 @@ pub(super) fn render_list(app: &App, frame: &mut Frame, area: Rect) {
     // Borders (2) and the highlight symbol `▸ ` (2), which ratatui reserves
     // on every row while one is selected.
     let inner = area.width.saturating_sub(4) as usize;
-    let items: Vec<ListItem> =
-        app.rows
-            .iter()
-            .map(|row| match &row.summary {
-                None => ListItem::new("base"),
-                Some(s) if s.status == FeatureStatus::Finished => {
-                    ListItem::new(Line::styled(format!("{}  finished", s.name), dim))
-                }
-                Some(s) => {
-                    let mut text = vec![Line::from(s.name.clone())];
-                    text.extend(
-                        s.roles.iter().filter(|r| r.stage.is_open()).map(|r| {
-                            stage_line(&r.role, r.review.as_ref(), r.stage.as_str(), inner)
-                        }),
-                    );
-                    text.extend(
-                        s.frozen
-                            .iter()
-                            .map(|f| stage_line(&f.role, None, "frozen", inner).style(read_only())),
-                    );
-                    ListItem::new(text)
-                }
-            })
-            .collect();
+    let items: Vec<ListItem> = app
+        .rows
+        .iter()
+        .map(|row| match &row.summary {
+            None => ListItem::new("base"),
+            Some(s) if s.status == FeatureStatus::Finished => {
+                ListItem::new(Line::styled(format!("{}  finished", s.name), dim))
+            }
+            Some(s) => {
+                let mut text = vec![Line::from(s.name.clone())];
+                text.extend(s.roles.iter().filter(|r| r.stage.is_open()).map(|r| {
+                    let line = stage_line(&r.role, r.review.as_ref(), r.stage.as_str(), inner);
+                    if r.viewed_quiet { dim_role(line) } else { line }
+                }));
+                text.extend(
+                    s.frozen
+                        .iter()
+                        .map(|f| stage_line(&f.role, None, "frozen", inner).style(read_only())),
+                );
+                ListItem::new(text)
+            }
+        })
+        .collect();
     let list = List::new(items)
         .block(Block::bordered().title(" features "))
         .highlight_symbol("▸ ")
@@ -94,6 +95,21 @@ fn stage_line(role: &str, word: Option<&ReviewWord>, stage: &str, width: usize) 
         Span::raw("  "),
         Span::styled(stage_text, style),
     ])
+}
+
+/// Dims the role name alone in a `stage_line`: a review marked viewed that
+/// has not moved. The indent and padding stay plain so the selected row's
+/// `REVERSED` bar is not dimmed beside the name.
+fn dim_role(mut line: Line<'static>) -> Line<'static> {
+    let mut indent = line.spans.remove(0).content.into_owned();
+    let pad = indent.split_off(indent.trim_end().len());
+    let name = indent.split_off(indent.len().min(2));
+    let dim = Style::new().add_modifier(Modifier::DIM);
+    line.spans.splice(
+        0..0,
+        [Span::raw(indent), Span::styled(name, dim), Span::raw(pad)],
+    );
+    line
 }
 
 /// `role_line` with a word placed left of the stage; the word is dropped when
@@ -367,8 +383,14 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
         .style(Style::new().add_modifier(Modifier::BOLD));
     let body = rows.iter().map(|r| {
         let colour = colour_of(state_colour(r));
+        // Viewed and quiet: the name alone is dim, unlike a closed row.
+        let role_style = if r.review.as_ref().is_some_and(viewed_quiet) {
+            Style::new().add_modifier(Modifier::DIM)
+        } else {
+            Style::new()
+        };
         let row = TableRow::new(vec![
-            Cell::from(r.role.as_str()),
+            Cell::from(r.role.as_str()).style(role_style),
             Cell::from(r.branch.as_str()),
             Cell::from(r.stage.as_str()),
             Cell::from(state_text(r)).style(Style::new().fg(colour)),
@@ -430,6 +452,33 @@ mod tests {
             assert_eq!(line.spans[1].style.fg, colour, "{stage}");
             assert_eq!(line.to_string(), role_line("api", stage, 20));
         }
+    }
+
+    #[test]
+    fn dim_role_dims_the_name_and_nothing_else() {
+        let plain = stage_line("api", Some(&ReviewWord::Approved), "review", 30);
+        let line = dim_role(plain.clone());
+        let dim = |s: &Span| s.style.add_modifier.contains(Modifier::DIM);
+        assert_eq!(line.spans[0].content, "  ");
+        assert_eq!(line.spans[1].content, "api");
+        assert!(dim(&line.spans[1]));
+        assert!(
+            line.spans
+                .iter()
+                .enumerate()
+                .all(|(i, s)| i == 1 || !dim(s)),
+            "{line:?}"
+        );
+        assert_eq!(line.to_string(), plain.to_string());
+        assert_eq!(line.spans.last().unwrap().style.fg, Some(Color::Yellow));
+    }
+
+    #[test]
+    fn dim_role_covers_a_truncated_name_and_survives_no_name() {
+        let line = dim_role(stage_line("a-very-long-role-name", None, "working", 20));
+        assert_eq!(line.spans[1].content, "a-very-lo…");
+        let tiny = stage_line("api", None, "working", 6);
+        assert_eq!(dim_role(tiny.clone()).to_string(), tiny.to_string());
     }
 
     #[test]

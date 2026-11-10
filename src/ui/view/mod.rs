@@ -1316,6 +1316,69 @@ mod tests {
         assert!(!style.add_modifier.contains(Modifier::DIM), "{style:?}");
     }
 
+    #[test]
+    fn the_features_pane_dims_a_viewed_quiet_role_name() {
+        use hub::ops::review_state::ReviewWord;
+        let pane = |quiet: bool, word: ReviewWord| {
+            let mut s = summary("suspense", FeatureStatus::Open);
+            s.roles[0].viewed_quiet = quiet;
+            s.roles[0].review = Some(word);
+            App::new("acme", vec![s])
+        };
+        let dim = |a: &App, needle: &str| {
+            find_style(100, 30, a, needle)
+                .add_modifier
+                .contains(Modifier::DIM)
+        };
+        let quiet = pane(true, ReviewWord::Approved);
+        assert!(dim(&quiet, "api"), "viewed and quiet");
+        assert!(!dim(&quiet, "approved"), "the word keeps its style");
+        assert!(!dim(&quiet, "review│"), "the stage keeps its style");
+        assert!(
+            !dim(&pane(false, ReviewWord::Approved), "api"),
+            "never marked"
+        );
+        assert!(
+            !dim(&pane(false, ReviewWord::Pushed), "api"),
+            "marked, moved"
+        );
+    }
+
+    #[test]
+    fn the_feature_view_dims_the_role_cell_of_a_viewed_quiet_review() {
+        use crate::ui::app::feature::tests::{api_in_review, on_report};
+        use hub::review_state::Viewed;
+        let view = |viewed_head: Option<&str>| {
+            let Report::Feature {
+                feature,
+                mut report,
+            } = api_in_review()
+            else {
+                unreachable!()
+            };
+            let mut state = review_row(true).review.unwrap();
+            state.fields.head = Some("a".into());
+            state.fields.comments = Some(3);
+            state.viewed = viewed_head.map(|head| Viewed {
+                at: 1,
+                head: Some(head.into()),
+                comments: Some(3),
+            });
+            report.rows[1].review = Some(state);
+            on_report(Report::Feature { feature, report })
+        };
+        let dim = |a: &App, needle: &str| {
+            find_style(120, 30, a, needle)
+                .add_modifier
+                .contains(Modifier::DIM)
+        };
+        let quiet = view(Some("a"));
+        assert!(dim(&quiet, "api"), "viewed and quiet");
+        assert!(!dim(&quiet, "feature/x"), "only the ROLE cell");
+        assert!(!dim(&view(None), "api"), "never marked");
+        assert!(!dim(&view(Some("b")), "api"), "marked, moved");
+    }
+
     const MR: &str = "https://gitlab.example.com/g/proj/-/merge_requests/412";
 
     /// An api row in review on `MR`, with state read now when `state`.
