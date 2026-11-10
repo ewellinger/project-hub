@@ -8,6 +8,13 @@ file by [towncrier](https://towncrier.readthedocs.io/) when a release is cut.
 
 <!-- towncrier release notes start -->
 
+## [0.28.1] - 2026-11-09
+
+### Changed
+
+- The dashboard dims the name of a role whose review is marked viewed and has not moved since, in the features pane and the role table.
+
+
 ## [0.28.0] - 2026-11-09
 
 ### Added
