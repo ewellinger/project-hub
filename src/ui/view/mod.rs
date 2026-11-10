@@ -1375,6 +1375,21 @@ mod tests {
         let quiet = view(Some("a"));
         assert!(dim(&quiet, "api"), "viewed and quiet");
         assert!(!dim(&quiet, "feature/x"), "only the ROLE cell");
+        // `api` is shorter than the ROLE column; the padding is not dim, so
+        // the selected row's bar is not broken beside the name.
+        let mut terminal = Terminal::new(TestBackend::new(120, 30)).unwrap();
+        terminal.draw(|f| render(&quiet, f)).unwrap();
+        let buffer = terminal.backend().buffer();
+        let padding = buffer
+            .content
+            .chunks(120)
+            .find_map(|row| {
+                let text: String = row.iter().map(|c| c.symbol()).collect();
+                let at = text[..text.find("api ")?].chars().count();
+                Some(row[at + 3].style())
+            })
+            .unwrap();
+        assert!(!padding.add_modifier.contains(Modifier::DIM), "{padding:?}");
         assert!(!dim(&view(None), "api"), "never marked");
         assert!(!dim(&view(Some("b")), "api"), "marked, moved");
     }

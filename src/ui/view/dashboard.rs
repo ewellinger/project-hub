@@ -390,7 +390,8 @@ pub(super) fn status_table<'a>(rows: &[&'a StatusRow], home: Option<&Path>) -> T
             Style::new()
         };
         let row = TableRow::new(vec![
-            Cell::from(r.role.as_str()).style(role_style),
+            // A span, not the cell: a cell style would dim the padding too.
+            Cell::from(Span::styled(r.role.as_str(), role_style)),
             Cell::from(r.branch.as_str()),
             Cell::from(r.stage.as_str()),
             Cell::from(state_text(r)).style(Style::new().fg(colour)),
