@@ -73,6 +73,7 @@ fn the_setup_reference_names_real_commands_and_flags() {
         (&["feature", "start-review"][..], "--no-setup"),
         (&["feature", "dropped"][..], "--force"),
         (&["status"][..], "--base"),
+        (&["status"][..], "--no-fetch"),
     ] {
         let mut argv = args.to_vec();
         argv.push("--help");
