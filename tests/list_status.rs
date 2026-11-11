@@ -1058,3 +1058,78 @@ fn status_json_carries_the_review_url_on_every_row_kind() {
     .unwrap();
     assert_eq!(feature["rows"][1]["review_url"], serde_json::Value::Null);
 }
+
+fn break_api_origin(fx: &Fixture) {
+    fx.git(
+        &fx.project_home.join("api-clone"),
+        &[
+            "remote",
+            "set-url",
+            "origin",
+            fx.root.join("missing.git").to_str().unwrap(),
+        ],
+    );
+}
+
+fn status_json(fx: &Fixture, hub: &std::path::Path, args: &[&str]) -> serde_json::Value {
+    let mut all = vec!["status", "--json"];
+    all.extend(args);
+    serde_json::from_str(&stdout(fx, hub, &all)).unwrap()
+}
+
+const NO_FETCH_NOTE: &str = "note: no fetch ran; counts and hints use the last fetched refs";
+
+#[test]
+fn status_no_fetch_skips_the_fetch_and_says_so() {
+    let (fx, hub) = world();
+    break_api_origin(&fx);
+    let json = status_json(&fx, &hub, &["--feature", "feat-1", "--no-fetch"]);
+    assert_eq!(json["fetched"], false);
+    assert!(json["warnings"].as_array().unwrap().is_empty(), "{json}");
+    assert_eq!(api_row(&json)["base_behind"], 0);
+    fx.hub(&hub, &["status", "--feature", "feat-1", "--no-fetch"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(NO_FETCH_NOTE))
+        .stdout(predicate::str::contains("warning: fetch failed").not());
+}
+
+#[test]
+fn status_says_it_fetched_by_default() {
+    let (fx, hub) = world();
+    let json = status_json(&fx, &hub, &["--feature", "feat-1"]);
+    assert_eq!(json["fetched"], true);
+    fx.hub(&hub, &["status", "--feature", "feat-1"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("note: no fetch ran").not());
+}
+
+#[test]
+fn base_status_no_fetch_skips_the_fetch() {
+    let (fx, hub) = world();
+    break_api_origin(&fx);
+    let json = status_json(&fx, &hub, &["--no-fetch"]);
+    assert_eq!(json["fetched"], false);
+    assert!(json["warnings"].as_array().unwrap().is_empty(), "{json}");
+    fx.hub(&hub, &["status", "--no-fetch"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(NO_FETCH_NOTE));
+    assert_eq!(status_json(&fx, &hub, &[])["fetched"], true);
+}
+
+#[test]
+fn status_no_fetch_counts_from_the_refs_on_disk() {
+    let (fx, hub) = world();
+    // Origin's base moves through another clone, so api-clone has not seen it.
+    let bare = fx.remotes.join("api-clone.git");
+    fx.git(&fx.root, &["clone", "-q", bare.to_str().unwrap(), "other"]);
+    let other = fx.root.join("other");
+    fx.commit_file(&other, "base.txt", "base moves");
+    fx.git(&other, &["push", "-q", "origin", "master"]);
+    let stale = status_json(&fx, &hub, &["--feature", "feat-1", "--no-fetch"]);
+    assert_eq!(api_row(&stale)["base_behind"], 0);
+    let fresh = status_json(&fx, &hub, &["--feature", "feat-1"]);
+    assert_eq!(api_row(&fresh)["base_behind"], 1);
+}

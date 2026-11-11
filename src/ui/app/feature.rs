@@ -394,6 +394,7 @@ pub(crate) mod tests {
                     status_row("ui", "old-ui", "merged"),
                 ],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             },
         }
@@ -418,6 +419,7 @@ pub(crate) mod tests {
                     status_row("api", "feature/x", "working"),
                 ],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             },
         }
@@ -989,6 +991,7 @@ pub(crate) mod tests {
                 status_row("ui", "feature/y", "working"),
             ],
             warnings: vec![],
+            fetched: true,
             drift: false,
         };
         let mut a = on_report(Report::Feature {
@@ -1230,6 +1233,7 @@ pub(crate) mod tests {
                 status: FeatureStatus::Open,
                 rows: vec![status_row("hub", "suspense", "-"), frozen_status_row("ui")],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             },
         });

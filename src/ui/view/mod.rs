@@ -379,6 +379,7 @@ mod tests {
                     row("api", "master", "-", true, None),
                 ],
                 warnings: vec!["fetch failed for ui".into()],
+                fetched: true,
                 drift: true,
             }),
         );
@@ -431,6 +432,7 @@ mod tests {
                         Some("looks merged"),
                     )],
                     warnings: vec![],
+                    fetched: true,
                     drift: false,
                 },
             }),
@@ -474,6 +476,7 @@ mod tests {
                         Some("looks merged"),
                     )],
                     warnings: vec![],
+                    fetched: true,
                     drift: false,
                 },
             }),
@@ -807,6 +810,7 @@ mod tests {
                     row("ui", "feature/y", "merged", false, None),
                 ],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             }),
         );
@@ -832,6 +836,7 @@ mod tests {
                     row("ui", "feature/y", "dropped", false, None),
                 ],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             }),
         );
@@ -889,6 +894,7 @@ mod tests {
                 hub: "acme".into(),
                 rows: vec![lagging],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             }),
         );
@@ -1038,6 +1044,7 @@ mod tests {
                 hub: "acme".into(),
                 rows: vec![],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             }),
         );
@@ -1439,6 +1446,7 @@ mod tests {
                     status,
                     rows,
                     warnings: vec![],
+                    fetched: true,
                     drift: false,
                 },
             }),

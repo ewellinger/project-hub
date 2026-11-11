@@ -1985,6 +1985,7 @@ mod tests {
                 status_row("api", "feature/x", "working"),
             ],
             warnings: vec![],
+            fetched: true,
             drift: false,
         };
         app.cache.insert(

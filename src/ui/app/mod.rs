@@ -1558,6 +1558,7 @@ mod tests {
                 status: FeatureStatus::Open,
                 rows: vec![],
                 warnings: vec![],
+                fetched: true,
                 drift: false,
             },
         }
@@ -1589,6 +1590,7 @@ mod tests {
                 drift: false,
             }],
             warnings: vec![],
+            fetched: true,
             drift: false,
         })
     }

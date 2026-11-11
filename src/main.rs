@@ -95,6 +95,9 @@ enum Command {
         /// Print as JSON
         #[arg(long)]
         json: bool,
+        /// Skip the git fetches; counts and hints use the refs already on disk
+        #[arg(long)]
+        no_fetch: bool,
     },
 }
 
@@ -809,11 +812,12 @@ fn run(cli: Cli) -> Result<Vec<String>> {
             feature,
             base,
             json,
+            no_fetch,
         } => {
             let hub = locate()?;
             let (lines, drift) = if !base && (feature.is_some() || hub.cwd_feature.is_some()) {
                 let f = hub.resolve_feature(feature.as_deref())?;
-                let mut report = ops::status::status(&hub, &f)?;
+                let mut report = ops::status::status(&hub, &f, !no_fetch)?;
                 ops::review_state::attach(&hub, &f, &mut report, ops::review_state::Source::Forge);
                 let lines = if json {
                     vec![ops::status::render_json(&report)?]
@@ -822,7 +826,7 @@ fn run(cli: Cli) -> Result<Vec<String>> {
                 };
                 (lines, report.drift)
             } else {
-                let report = ops::status::base_status(&hub)?;
+                let report = ops::status::base_status(&hub, !no_fetch)?;
                 let lines = if json {
                     vec![ops::status::render_base_json(&report)?]
                 } else {

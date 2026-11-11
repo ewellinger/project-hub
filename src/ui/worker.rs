@@ -26,9 +26,9 @@ pub fn request(hub: &Hub, row: RowId, r#gen: u64, forge: bool, tx: Sender<Event>
     let hub = hub.clone();
     thread::spawn(move || {
         let result = match &row {
-            RowId::Base => ops::status::base_status(&hub).map(Report::Base),
+            RowId::Base => ops::status::base_status(&hub, true).map(Report::Base),
             RowId::Feature(name) => hub.load_feature(name).and_then(|f| {
-                let mut report = ops::status::status(&hub, &f)?;
+                let mut report = ops::status::status(&hub, &f, true)?;
                 let source = if forge {
                     Source::Forge
                 } else {
