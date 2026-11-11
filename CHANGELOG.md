@@ -8,6 +8,13 @@ file by [towncrier](https://towncrier.readthedocs.io/) when a release is cut.
 
 <!-- towncrier release notes start -->
 
+## [0.29.0] - 2026-11-11
+
+### Added
+
+- `hub status --no-fetch` skips the git fetches and reports from the refs already on disk, while still reading review state from the forge; `hub status --json` now carries `fetched`.
+
+
 ## [0.28.1] - 2026-11-09
 
 ### Changed
