@@ -968,3 +968,21 @@ fn a_mark_on_a_role_this_status_could_not_read_survives() {
     let file = fx.reviews_json(&hub, "feat-1").unwrap();
     assert_eq!(file["api"]["viewed"]["comments"], 0, "{file}");
 }
+
+#[test]
+fn status_no_fetch_still_reads_the_forge() {
+    let (fx, hub) = world();
+    api_in_review_with_failed_pipeline(&fx, &hub);
+    let before = fx.provider_log().len();
+    let json: serde_json::Value =
+        serde_json::from_str(&status(&fx, &hub, &["--no-fetch", "--json"])).unwrap();
+    assert_eq!(json["fetched"], false);
+    let api = json["rows"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|r| r["role"] == "api")
+        .unwrap();
+    assert_eq!(api["review"]["pipeline"], "failed");
+    assert!(fx.provider_log().len() > before, "the forge was read");
+}

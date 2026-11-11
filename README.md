@@ -227,7 +227,7 @@ creates in that repo, with `{feature}` substituted; it defaults to
 | `hub feature finish [--force]` | Remove every worktree and the session; keep every branch. Refuses while a role is `working` or `review` unless `--force`, which also removes dirty worktrees |
 | `hub feature remove NAME` | Free a finished feature's name for reuse: delete its local member branches (each marked merged or dropped, or contained in its base, and gone from origin), its hub branch (nothing beyond `main`), and its record; any refusal changes nothing |
 | `hub feature list [--all] [--refresh] [--json]` | Open features with the stage of each role, a review word after a role in review (`api:review(ci failed)`), and frozen roles as `ROLE:frozen`; `--all` includes finished ones; `--refresh` reads review state from the forge for every open feature first |
-| `hub status [--feature N] [--base] [--json]` | Compare feature state, or base checkouts from any hub worktree, with reality; merged or dropped roles and finished features list under `Completed`; a feature's merge and pull requests list in a review section; exit 30 on structural drift |
+| `hub status [--feature N] [--base] [--json] [--no-fetch]` | Compare feature state, or base checkouts from any hub worktree, with reality; `--no-fetch` skips the git fetches; merged or dropped roles and finished features list under `Completed`; a feature's merge and pull requests list in a review section; exit 30 on structural drift |
 | `hub pull [--feature N] [--base]` | Fast-forward each role's checkout to its copy on origin: the base checkouts from the main hub, the feature's open changes from a feature worktree; a checkout that cannot simply move forward is reported and left alone |
 | `hub config [--json]` / `hub config set KEY VALUE` / `hub config unset KEY` | Show each config key with its value and source / validate and write a key / remove it; works outside a hub |
 | `hub tmux` / `hub open` / `hub sync` | Repair the session / open the workspace / regenerate it; from the main hub, `tmux` and `open` use all base checkouts |
@@ -345,6 +345,15 @@ structural drift and exit 30. A merged or dropped role, or every row of a finish
 feature, has no worktree by design, so `status` lists it in a separate
 `Completed` table with role, branch, and stage rather than as missing. Paths
 under your home directory print as `~/…`; `--json` keeps them absolute.
+
+`hub status --no-fetch` skips every `git fetch`, in the member clones and in
+the hub, for callers that poll, such as a dashboard reading `rows[].review`.
+`ahead`/`behind`, `base_behind`, and the `merged into <base>` and `gone from
+origin` hints then reflect whatever was fetched last. Review state is still
+read from the forge, so `review` and the `merged on GitLab` / `GitHub` hint
+stay current. `--json` carries a top-level `fetched` (`false` with the flag,
+`true` otherwise), and the table ends with `note: no fetch ran; counts and
+hints use the last fetched refs`.
 
 For a feature with a role in review and a recorded `review_url`, `status`
 also reads each merge or pull request from the forge, through `glab api` or

@@ -62,6 +62,9 @@ pub struct StatusReport {
     pub rows: Vec<StatusRow>,
     /// Non-fatal problems, such as a clone whose fetch failed.
     pub warnings: Vec<String>,
+    /// False when the caller skipped the fetches: counts and git-derived
+    /// hints then come from whatever was fetched last.
+    pub fetched: bool,
     pub drift: bool,
 }
 
@@ -71,17 +74,22 @@ pub struct BaseStatusReport {
     pub rows: Vec<StatusRow>,
     /// Non-fatal problems, such as a clone whose fetch failed.
     pub warnings: Vec<String>,
+    /// False when the caller skipped the fetches: counts and git-derived
+    /// hints then come from whatever was fetched last.
+    pub fetched: bool,
     pub drift: bool,
 }
 
 /// Compare the main hub and every registered repo's main clone with their
 /// configured base branches. The hub's own origin is fetched too, when it
-/// has one, alongside the repos' fetches.
-pub fn base_status(hub: &Hub) -> Result<BaseStatusReport> {
+/// has one, alongside the repos' fetches. With `fetch` false nothing is
+/// fetched and the rows use the refs already on disk.
+pub fn base_status(hub: &Hub, fetch: bool) -> Result<BaseStatusReport> {
     let mut warnings = Vec::new();
     let (hub_fetch, repo_results) = thread::scope(|scope| {
-        let hub_handle = scope.spawn(|| fetch_hub(hub));
-        let repo_results = parallel_map(&hub.manifest.repos, |repo| base_repo_row(hub, repo));
+        let hub_handle = scope.spawn(|| fetch_hub(hub, fetch));
+        let repo_results =
+            parallel_map(&hub.manifest.repos, |repo| base_repo_row(hub, repo, fetch));
         (
             hub_handle.join().expect("hub fetch worker panicked"),
             repo_results,
@@ -99,6 +107,7 @@ pub fn base_status(hub: &Hub) -> Result<BaseStatusReport> {
         hub: hub.manifest.name.clone(),
         rows,
         warnings,
+        fetched: fetch,
         drift,
     })
 }
@@ -108,10 +117,11 @@ pub fn base_status(hub: &Hub) -> Result<BaseStatusReport> {
 /// whatever was fetched last. Returns the warnings instead of pushing into a
 /// shared vector, so the caller can run this on its own thread alongside the
 /// member fetches.
-fn fetch_hub(hub: &Hub) -> Result<Vec<String>> {
+fn fetch_hub(hub: &Hub, fetch: bool) -> Result<Vec<String>> {
     let mut warnings = Vec::new();
     let git = hub.git();
-    if git.has_remotes()?
+    if fetch
+        && git.has_remotes()?
         && let Err(err) = git.fetch("origin")
     {
         warnings.push(format!(
@@ -153,7 +163,7 @@ fn base_hub_row(hub: &Hub) -> Result<StatusRow> {
     })
 }
 
-fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)> {
+fn base_repo_row(hub: &Hub, repo: &RepoSpec, fetch: bool) -> Result<(StatusRow, Vec<String>)> {
     let path = hub.env.clone_path(&repo.clone);
     let git = Git::new(&path);
     let mut warnings = Vec::new();
@@ -189,7 +199,7 @@ fn base_repo_row(hub: &Hub, repo: &RepoSpec) -> Result<(StatusRow, Vec<String>)>
             warnings,
         ));
     }
-    if let Err(err) = git.fetch("origin") {
+    if fetch && let Err(err) = git.fetch("origin") {
         warnings.push(format!(
             "fetch failed in {}: {err}; status uses the last fetched refs",
             path.display()
@@ -243,19 +253,26 @@ pub fn closed(stage: &str) -> bool {
 /// change so the merge hints and base lag see current remote refs, and it
 /// fetches the hub's own origin too when it has one. A failed fetch
 /// (offline, moved remote) is a warning, and both then use whatever was
-/// fetched last.
-pub fn status(hub: &Hub, feature: &Feature) -> Result<StatusReport> {
+/// fetched last. With `fetch` false nothing is fetched at all.
+pub fn status(hub: &Hub, feature: &Feature, fetch: bool) -> Result<StatusReport> {
     let mut warnings = Vec::new();
     let groups = group_changes_by_clone(&feature.changes);
     let (hub_fetch, group_results) = thread::scope(|scope| {
-        let hub_handle = scope.spawn(|| fetch_hub(hub));
+        let hub_handle = scope.spawn(|| fetch_hub(hub, fetch));
         let group_results = parallel_map(&groups, |group| {
             let mut fetched = HashSet::new();
             let mut results = Vec::new();
             for &(index, change) in group {
                 let mut change_warnings = Vec::new();
-                let result = change_row(hub, feature, change, &mut fetched, &mut change_warnings)
-                    .map(|row| (row, change_warnings));
+                let result = change_row(
+                    hub,
+                    feature,
+                    change,
+                    fetch,
+                    &mut fetched,
+                    &mut change_warnings,
+                )
+                .map(|row| (row, change_warnings));
                 let failed = result.is_err();
                 results.push((index, result));
                 if failed {
@@ -288,6 +305,7 @@ pub fn status(hub: &Hub, feature: &Feature) -> Result<StatusReport> {
         status: feature.status,
         rows,
         warnings,
+        fetched: fetch,
         drift,
     })
 }
@@ -394,6 +412,7 @@ fn change_row(
     hub: &Hub,
     feature: &Feature,
     change: &Change,
+    fetch: bool,
     fetched: &mut HashSet<String>,
     warnings: &mut Vec<String>,
 ) -> Result<StatusRow> {
@@ -432,7 +451,8 @@ fn change_row(
             drift: open,
         });
     }
-    if open
+    if fetch
+        && open
         && fetched.insert(change.clone.clone())
         && let Err(err) = git.fetch("origin")
     {
@@ -609,6 +629,7 @@ fn render_table_with_home(
         ));
     }
     lines.extend(warning_lines(&report.warnings));
+    lines.extend(no_fetch_note(report.fetched));
     lines
 }
 
@@ -646,7 +667,12 @@ pub fn render_base_table(report: &BaseStatusReport) -> Vec<String> {
     let rows: Vec<&StatusRow> = report.rows.iter().collect();
     lines.extend(open_table(&rows, home_dir().as_deref()));
     lines.extend(warning_lines(&report.warnings));
+    lines.extend(no_fetch_note(report.fetched));
     lines
+}
+
+fn no_fetch_note(fetched: bool) -> Option<String> {
+    (!fetched).then(|| "note: no fetch ran; counts and hints use the last fetched refs".into())
 }
 
 fn warning_lines(warnings: &[String]) -> impl Iterator<Item = String> + '_ {
@@ -858,6 +884,7 @@ pub(crate) mod tests {
             status: FeatureStatus::Open,
             rows: vec![],
             warnings: vec![],
+            fetched: true,
             drift: false,
         }
     }

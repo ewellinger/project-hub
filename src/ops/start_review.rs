@@ -103,12 +103,12 @@ pub fn start_review(hub: &Hub, opts: &StartReviewOptions) -> Result<(String, Vec
 /// provider call: the base checkouts always, the invoking feature when
 /// run from one of its worktrees.
 fn require_no_drift(hub: &Hub) -> Result<()> {
-    if status::base_status(hub)?.drift {
+    if status::base_status(hub, true)?.drift {
         return Err(HubError::Drift);
     }
     if let Some(name) = &hub.cwd_feature {
         let feature = hub.load_feature(name)?;
-        if status::status(hub, &feature)?.drift {
+        if status::status(hub, &feature, true)?.drift {
             return Err(HubError::Drift);
         }
     }
