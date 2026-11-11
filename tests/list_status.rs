@@ -1133,3 +1133,21 @@ fn status_no_fetch_counts_from_the_refs_on_disk() {
     let fresh = status_json(&fx, &hub, &["--feature", "feat-1"]);
     assert_eq!(api_row(&fresh)["base_behind"], 1);
 }
+
+#[test]
+fn status_no_fetch_skips_the_hub_fetch_too() {
+    let (fx, hub) = world();
+    fx.git(
+        &hub,
+        &[
+            "remote",
+            "add",
+            "origin",
+            fx.root.join("missing-hub.git").to_str().unwrap(),
+        ],
+    );
+    for args in [&["--feature", "feat-1", "--no-fetch"][..], &["--no-fetch"]] {
+        let json = status_json(&fx, &hub, args);
+        assert!(json["warnings"].as_array().unwrap().is_empty(), "{json}");
+    }
+}
